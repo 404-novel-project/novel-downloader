@@ -1,4 +1,3 @@
-/// <reference path="../../../../../src/rules/special/original/pixiv.d.ts" />
 import { Book } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 export declare class Pixiv extends BaseRuleClass {

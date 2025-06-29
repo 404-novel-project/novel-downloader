@@ -1,4 +1,3 @@
-/// <reference types="tampermonkey" />
 export declare function fetchWithRetry(input: RequestInfo, init?: RequestInit): Promise<Response>;
 export declare function fetchWithTimeout(input: string, options?: RequestInit, timeout?: number): Promise<Response>;
 export interface GfetchRequestInit {

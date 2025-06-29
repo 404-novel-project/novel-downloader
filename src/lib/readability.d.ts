@@ -9,7 +9,7 @@ interface ReadabilityOptions {
     serializer?: (node: Node) => string | Element;
     disableJSONLD?: boolean;
 }
-export declare function parse(doc: Document, options?: ReadabilityOptions): {
+export declare function parse(doc: Document, options?: ReadabilityOptions): null | {
     title: string;
     byline: string;
     dir: string;
@@ -18,7 +18,7 @@ export declare function parse(doc: Document, options?: ReadabilityOptions): {
     length: number;
     excerpt: string;
     siteName: string;
-} | null;
+};
 export declare function fetchAndParse(url: string, charset?: string, init?: RequestInit, patch?: (doc: Document) => Document, options?: ReadabilityOptions): Promise<{
     title: string;
     byline: string;

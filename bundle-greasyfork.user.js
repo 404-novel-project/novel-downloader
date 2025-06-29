@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1194
+// @version        5.2.1195
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -67,6 +67,7 @@
 // @exclude        *://m.xszj.org/b/*/cs/*
 // @exclude        *://m.bixiange.me/*/*/*.html
 // @exclude        *://www.fxshu.top/*/*_*.html
+// @exclude        *://www.xiguashuwu.com/book/*/*.html
 // @match          *://101kanshu.com/book/*.html
 // @match          *://www.sudugu.com/*
 // @match          *://www.po18.tw/books/*
@@ -320,6 +321,7 @@
 // @match          *://www.52shuku.vip/*/*.html
 // @match          *://mangguoshufang.com/*/*/info.html
 // @match          *://m.bixiange.me/*/*/
+// @match          *://www.xiguashuwu.com/book/*/
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
@@ -328,6 +330,7 @@
 // @connect        self
 // @connect        bilibili.com
 // @connect        lightnovel.us
+// @connect        www.fxshu.top
 // @connect        qidian.com
 // @connect        yuewen.com
 // @connect        kuangxiangit.com
@@ -426,10 +429,14 @@
 // @license        AGPL-3.0-or-later
 // @namespace      https://blog.bgme.me
 // @noframes
-// @require        https://unpkg.com/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
-// @require        https://unpkg.com/fflate@0.8.0/umd/index.js#sha512-3yw8GlXXje/3cAJoUioEOZlQkRQptqZLsWUL2KUUkvsiTMpnuXPAn6ESSAeQVLnY+2VrTHOADFMTElWqjKG/Yg==
+// @require        https://unpkg.com/crypto-js@4.2.0/crypto-js.js#sha512-XRbFQ+ZhXm1gOO0z66M5IEMivMr+rXWYM9DrNkqgpGQ29XY7/E9PVov++wzIXa2Lt4Zv2gLDi3f1UKFlL60HFQ==
+// @require        https://unpkg.com/fflate@0.8.2/umd/index.js#sha512-8l6PLZDUdQBuIjsM0vEKUCup9KP+EsB6NlvUtFrDneI1JoIvIJGmxIoiq0qnA31BeKdAwYcTk0TQg71AX9HgRA==
 // @require        https://unpkg.com/nunjucks@3.2.4/browser/nunjucks.min.js#sha512-YvU0oaPCJSOIFni9rIOthOs5GgtU5kNZMKQG/Nt33t/H9g/1+TK7KJuMsCZS6v4O3+x253OZlTzPryrUtxxORw==
-// @require        https://unpkg.com/vue@3.3.4/dist/vue.global.prod.js#sha512-7cmvZh1K81vCevOl9YPcvR6lCFgxol/biMYQ+YwsCiQFePxFrMVbJaHGUlu01/2EhNxKzKRpztUhWrwLyKCfiQ==
+// @require        https://unpkg.com/vue@3.3.13/dist/vue.global.prod.js#sha512-BR1xH5zlomzRP22mtARVL6Ubbk6oYFfbrFhpVI12zsJtaXfSRIHkxjpKYi38WZ6ZoBF68KKDm33shrPIMPSPQw==
+// @require        https://unpkg.com/onnxruntime-web@1.22.0/dist/ort.min.js#sha512-at7pWj/BAyQT89+V/9BiuAa/WeHjsf87fLwrcgD+uzlgsvM8/kgKOgHV/xxzcWiB98XvSTezWc0bgKjCqZwjGw==
+// @require        https://unpkg.com/@oovz/esearch-ocr/dist/eSearchOCR.umd.js#sha512-UvCk39TnG39qAlff1bfsl3J5s8TrKVkNN14cyf2cDmnON+VOWZvHxYmFIvbw/GRmLz0M2CLs/oaVDdwuG5WS7Q==
+// @require        https://unpkg.com/@techstark/opencv-js@4.11.0-release.1/dist/opencv.js#sha512-6Rb1LoaC9dHPLtrQhND5lLcLe2u3hh92yKTvIRQkMSj2A1EDhK0O4aptnEXAuKQcKtKZwACDoQnrrEKCFt5WdA==
+// @require        https://unpkg.com/@zip.js/zip.js@2.7.62/dist/zip.min.js#sha512-8UoMtmTLe5v6bghaGcKYJYJU2exs8FAlqNRC1qKK5QQMNguOzSS4qwhnz6e112swDTVHNCYd9M+rsjkWr9QP3Q==
 // @run-at         document-start
 // @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.meta.js
 // ==/UserScript==
@@ -3374,853 +3381,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./src/ui/ChapterList.less":
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
-// Imports
-
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, `:root {
-  --good-chapter-color: #41b883;
-  --bad-chapter-color: #e73838;
-  --warning-chapter-color: #ff9900;
-}
-div.chapter-list-loading {
-  padding-top: 5em;
-  padding-bottom: 5em;
-  text-align: center;
-}
-div.chapter-list {
-  max-height: 200px;
-  overflow-y: scroll;
-}
-div.chapter-list .section {
-  margin-top: 1.5em;
-  display: grid;
-  grid-template-columns: 32% 32% 32%;
-}
-div.chapter-list .section > h3:first-child {
-  grid-column-end: span 3;
-  text-align: center;
-}
-div.chapter-list .section > div.chapter {
-  text-align: center;
-  padding-top: 0.5em;
-  padding-bottom: 0.3em;
-  padding-left: 23px;
-  padding-right: 20px;
-  border: 1px solid #d9d9d9;
-  border-radius: 5px;
-  margin-left: 10px;
-  margin-top: 5px;
-  margin-right: 0;
-  margin-bottom: 0;
-}
-div.chapter-list .section a.disabled {
-  pointer-events: none;
-  cursor: default;
-}
-div.chapter-list .section a {
-  text-decoration: none;
-}
-div.chapter-list div.chapter.good {
-  background: var(--good-chapter-color);
-}
-div.chapter-list div.chapter.bad {
-  background: var(--bad-chapter-color);
-}
-div.chapter-list div.chapter.good.warning {
-  background: var(--warning-chapter-color);
-}
-div.chapter-list div.chapter.bad a,
-div.chapter-list div.chapter.good a {
-  color: white;
-  font-size: 0.9em;
-}
-.nd-setting-body span.good {
-  color: var(--good-chapter-color);
-}
-.nd-setting-body span.bad {
-  color: var(--bad-chapter-color);
-}
-.nd-setting-body span.warning {
-  color: var(--warning-chapter-color);
-}
-`, ""]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
-/***/ "./src/ui/TestUI.less":
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
-// Imports
-
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, `#test-page-div {
-  max-height: 300px;
-  overflow-y: scroll;
-}
-#test-page-div table {
-  text-align: center;
-}
-#test-page-div td {
-  all: revert;
-  padding-top: 0.3em;
-}
-#test-page-div td > img {
-  max-height: 15em;
-}
-#test-page-div tr > td:nth-child(1) {
-  font-weight: bold;
-  min-width: 7em;
-}
-#test-page-div tr > td:nth-child(2) div,
-#test-page-div tr > td:nth-child(2) p {
-  text-align: left;
-}
-#test-page-div hr {
-  margin-top: 1.5em;
-  margin-bottom: 1.5em;
-}
-#test-page-div h2 {
-  text-align: center;
-  margin-bottom: 1.3em;
-}
-#test-page-div h4 {
-  text-align: center;
-}
-#test-page-div .chapter p {
-  line-height: 1.4;
-}
-#test-page-div .chapter img {
-  max-width: 95%;
-}
-#test-page-div .preview-chapter-setting {
-  text-align: center;
-  margin-bottom: 1em;
-}
-#test-page-div .preview-chapter-setting button {
-  cursor: pointer;
-  margin-left: 0.5em;
-  padding: 0px 10px;
-}
-#test-page-div .preview-chapter-setting button:disabled {
-  cursor: not-allowed;
-}
-#test-page-div .loading-spinner {
-  text-align: center;
-  margin: 1em 0;
-}
-#test-page-div .loading-spinner .spinner {
-  display: inline-block;
-  width: 30px;
-  height: 30px;
-  border: 3px solid rgba(0, 0, 0, 0.3);
-  border-radius: 50%;
-  border-top-color: #000;
-  animation: spin 1s ease-in-out infinite;
-  margin-bottom: 0.5em;
-}
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-`, ""]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
-/***/ "./src/ui/button.less":
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
-// Imports
-
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, `.button-div {
-  position: fixed;
-  top: 15%;
-  right: 5%;
-  z-index: 10000;
-}
-.button-div button {
-  border-style: none;
-  text-align: center;
-  vertical-align: baseline;
-  background-color: rgba(128, 128, 128, 0.2);
-  padding: 3px;
-  border-radius: 12px;
-  min-width: auto;
-  min-height: auto;
-}
-.button-div img.start,
-.button-div img.jump {
-  height: 2em;
-}
-.button-div img.setting {
-  height: 1em;
-}
-`, ""]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
-/***/ "./src/ui/setting.less":
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
-// Imports
-
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, `.nd-setting-body {
-  background: #e0e0e0;
-  padding: 1em;
-  border-top-right-radius: 3px;
-}
-.nd-setting-body hr {
-  margin-top: 0.8em;
-  margin-bottom: 0.8em;
-}
-.nd-setting-body input[type="checkbox"],
-.nd-setting-body input[type="radio"],
-.nd-setting-body input[type="text"] {
-  position: static;
-  opacity: 1;
-  margin: auto;
-  padding: initial;
-  appearance: revert !important;
-  -webkit-appearance: revert !important;
-  all: revert;
-}
-dialog-ui .tab-button {
-  padding: 6px 10px;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-  border: 1px solid #ccc;
-  cursor: pointer;
-  background: #f0f0f0;
-  margin-bottom: -1px;
-  margin-right: -1px;
-  color: black;
-  line-height: normal;
-  display: inline-block;
-  text-align: center;
-  font-weight: bold;
-  max-width: 9em;
-  box-sizing: initial;
-}
-dialog-ui .tab-button:hover {
-  background: #e0e0e0;
-}
-dialog-ui .tab-button.active {
-  background: #e0e0e0;
-}
-dialog-ui #nd-setting-tab-1 input + label {
-  all: revert;
-}
-dialog-ui #nd-setting-tab-2 select {
-  all: revert;
-}
-.nd-setting-footer {
-  background: #e0e0e0;
-  padding-bottom: 0.7em;
-  text-align: center;
-  border-bottom-left-radius: 3px;
-  border-bottom-right-radius: 3px;
-}
-.nd-setting-footer > button {
-  all: revert;
-}
-/* 日志页面 */
-#novel-downloader-log {
-  max-height: 300px;
-  overflow: scroll;
-}
-/* 彩色斜纹 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */
-.hr-twill-colorful {
-  all: revert;
-  border: 0;
-  padding: 3px;
-  background: linear-gradient(135deg, red, orange, green, blue, purple);
-  --mask-image: repeating-linear-gradient(135deg, #000 0px, #000 1px, transparent 1px, transparent 6px);
-  -webkit-mask-image: var(--mask-image);
-  mask-image: var(--mask-image);
-}
-/* 两头虚 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */
-.hr-edge-weak {
-  all: revert;
-  border: 0;
-  padding-top: 1px;
-  background: linear-gradient(to right, transparent, #d0d0d5, transparent);
-}
-`, ""]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
-/***/ "./src/save/main.css":
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
-// Imports
-
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, `h1 {
-  line-height: 130%;
-  text-align: center;
-  font-weight: bold;
-  font-size: xx-large;
-  margin-top: 3.2em;
-  margin-bottom: 3.3em;
-}
-
-h2 {
-  line-height: 130%;
-  text-align: center;
-  font-weight: bold;
-  font-size: x-large;
-  margin-top: 1.2em;
-  margin-bottom: 2.3em;
-}
-
-div {
-  margin: 0;
-  padding: 0;
-  text-align: justify;
-}
-
-p {
-  text-indent: 2em;
-  display: block;
-  line-height: 1.3em;
-  margin-top: 0.4em;
-  margin-bottom: 0.4em;
-}
-
-img {
-  vertical-align: text-bottom;
-  max-width: 90%;
-}
-
-.title {
-  margin-bottom: 0.7em;
-}
-`, ""]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
-/***/ "./src/save/sgc-toc.css":
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
-// Imports
-
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, `div.sgc-toc-title {
-  font-size: 2em;
-  font-weight: bold;
-  margin-bottom: 1em;
-  text-align: center;
-}
-
-div.sgc-toc-level-1 {
-  margin-left: 0em;
-}
-
-div.sgc-toc-level-2 {
-  margin-left: 2em;
-}
-
-div.sgc-toc-level-3 {
-  margin-left: 2em;
-}
-
-div.sgc-toc-level-4 {
-  margin-left: 2em;
-}
-
-div.sgc-toc-level-5 {
-  margin-left: 2em;
-}
-
-div.sgc-toc-level-6 {
-  margin-left: 2em;
-}
-`, ""]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
-/***/ "./src/save/toc.css":
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
-// Imports
-
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, `img {
-  max-width: 100%;
-  max-height: 15em;
-}
-
-.introduction {
-  font-size: smaller;
-  max-height: 18em;
-  overflow-y: scroll;
-}
-
-.introduction p {
-  text-indent: 0;
-}
-
-.bookurl {
-  text-align: center;
-  font-size: smaller;
-  padding-top: 1em;
-  padding-bottom: 0.5em;
-  margin-top: 0.4em;
-}
-
-.bookurl > a {
-  color: gray;
-}
-
-.info h3 {
-  padding-left: 0.5em;
-  margin-top: -1.2em;
-  margin-bottom: 0.5em;
-}
-
-.section {
-  margin-top: 1.5em;
-  display: grid;
-  grid-template-columns: 33% 33% 33%;
-}
-
-.section > h2:first-child {
-  grid-column-end: span 3;
-}
-
-.section > .chapter {
-  padding-bottom: 0.3em;
-  text-align: center;
-}
-
-.main > h1 {
-  margin-top: 1.5em;
-  margin-bottom: 1.5em;
-}
-
-a.disabled {
-  pointer-events: none;
-  cursor: default;
-  color: gray;
-}
-
-.author::before {
-  content: "作者：";
-}
-
-.author {
-  text-align: center;
-  margin-top: -3em;
-  margin-bottom: 3em;
-}
-`, ""]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
-/***/ "./src/save/web.css":
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
-// Imports
-
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, `body {
-  background-color: #f0f0f2;
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
-    "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-div.main {
-  width: 900px;
-  margin: 5em auto;
-  padding: 2em;
-  background-color: #fdfdff;
-  border-radius: 0.5em;
-  box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, 0.02);
-}
-
-@media (max-width: 700px) {
-  div.main {
-    margin: 0 auto;
-    width: auto;
-  }
-}
-`, ""]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
-/***/ "./src/ui/FilterTab.css":
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
-// Imports
-
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, `.filter-setting {
-  padding-top: 0.4em;
-  padding-bottom: 0.8em;
-  text-align: center;
-}
-
-.filter-input + .filter-setter {
-  margin-top: 1em;
-}
-
-.filter-description {
-  font-size: larger;
-  color: cornflowerblue;
-}
-`, ""]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
-/***/ "./src/ui/dialog.css":
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
-// Imports
-
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, `.overlay {
-  visibility: hidden;
-  opacity: 0;
-  z-index: 100000;
-  position: fixed;
-  top: -50%;
-  left: -50%;
-  height: 200%;
-  width: 200%;
-  background-color: black;
-}
-
-.overlay.open {
-  opacity: 0.8;
-  visibility: visible;
-  transition: opacity 0.2s ease-in;
-}
-
-.overlay:not(.open) {
-  transition: visibility 0.2s step-end, opacity 0.2s ease-in;
-}
-
-.out {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  z-index: 100001;
-}
-
-.dialog {
-  width: 720px;
-  max-height: 70%;
-  display: none;
-  opacity: 0;
-  z-index: 100100;
-  position: fixed;
-  margin: 0;
-  padding: 0;
-}
-
-.dialog.open {
-  opacity: 1;
-  display: block;
-  transition: opacity 0.2s ease-in;
-}
-
-.dialog > * {
-  box-sizing: border-box;
-}
-
-.dialog > .titlebar {
-  background-color: white;
-  min-height: 24px;
-  position: relative;
-}
-
-.dialog-title {
-  padding: 10px;
-  text-transform: uppercase;
-  background: #ff7bac;
-  color: #ffffff;
-  margin: 0;
-  font-size: 1.5em;
-  text-align: center;
-}
-
-.dialog-close {
-  background: #ff7bac;
-  color: #ffffff;
-
-  font-style: normal;
-  font-weight: 400;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-  user-select: none;
-
-  cursor: pointer;
-  font-size: 120%;
-  margin: 0;
-  padding: 0;
-  width: 3.6em;
-  height: 92%;
-  border: 1px solid transparent;
-  transition-duration: 0.2s;
-  display: block;
-
-  position: absolute;
-  right: 0;
-  top: 0;
-  white-space: nowrap;
-}
-
-.dialog > .body {
-  background-color: white;
-  border: 1px solid rgb(255 125 175 / 80%);
-  text-align: left;
-
-  line-height: 1.5;
-  padding: 1em;
-
-  overflow: auto;
-  min-width: 280px;
-
-  height: calc(100% - 2.1em);
-  max-height: 900px;
-}
-`, ""]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
-/***/ "./src/ui/progress.css":
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
-// Imports
-
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, `#nd-progress {
-  position: fixed;
-  bottom: 8%;
-  right: 3%;
-  z-index: 2147483647;
-  border-style: none;
-  text-align: center;
-  vertical-align: baseline;
-  background-color: rgba(210, 210, 210, 0.2);
-  padding: 6px;
-  border-radius: 12px;
-}
-
-#chapter-progress {
-  --color: green;
-  --position: 0%;
-  width: 200px;
-  height: 10px;
-  border-radius: 30px;
-  background-color: #ccc;
-  background-image: radial-gradient(
-      closest-side circle at var(--position),
-      var(--color),
-      var(--color) 100%,
-      transparent
-    ),
-    linear-gradient(var(--color), var(--color));
-  background-image: -webkit-radial-gradient(
-      var(--position),
-      circle closest-side,
-      var(--color),
-      var(--color) 100%,
-      transparent
-    ),
-    -webkit-linear-gradient(var(--color), var(--color));
-  background-size: 100%, var(--position);
-  background-repeat: no-repeat;
-}
-
-#zip-progress {
-  --color: yellow;
-  --position: 0%;
-  width: 200px;
-  height: 10px;
-  border-radius: 30px;
-  background-color: #ccc;
-  background-image: radial-gradient(
-      closest-side circle at var(--position),
-      var(--color),
-      var(--color) 100%,
-      transparent
-    ),
-    linear-gradient(var(--color), var(--color));
-  background-image: -webkit-radial-gradient(
-      var(--position),
-      circle closest-side,
-      var(--color),
-      var(--color) 100%,
-      transparent
-    ),
-    -webkit-linear-gradient(var(--color), var(--color));
-  background-size: 100%, var(--position);
-  background-repeat: no-repeat;
-  margin-top: 5px;
-}
-`, ""]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
 /***/ "./node_modules/css-loader/dist/runtime/api.js":
 /***/ ((module) => {
 
@@ -4331,7 +3491,8 @@ module.exports = function (i) {
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function(a,b){if(true)!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (b),
 		__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 		(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));else {}})(this,function(){"use strict";function b(a,b){return"undefined"==typeof b?b={autoBom:!1}:"object"!=typeof b&&(console.warn("Deprecated: Expected third argument to be a object"),b={autoBom:!b}),b.autoBom&&/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(a.type)?new Blob(["\uFEFF",a],{type:a.type}):a}function c(a,b,c){var d=new XMLHttpRequest;d.open("GET",a),d.responseType="blob",d.onload=function(){g(d.response,b,c)},d.onerror=function(){console.error("could not download file")},d.send()}function d(a){var b=new XMLHttpRequest;b.open("HEAD",a,!1);try{b.send()}catch(a){}return 200<=b.status&&299>=b.status}function e(a){try{a.dispatchEvent(new MouseEvent("click"))}catch(c){var b=document.createEvent("MouseEvents");b.initMouseEvent("click",!0,!0,window,0,0,0,80,20,!1,!1,!1,!1,0,null),a.dispatchEvent(b)}}var f="object"==typeof window&&window.window===window?window:"object"==typeof self&&self.self===self?self:"object"==typeof __webpack_require__.g&&__webpack_require__.g.global===__webpack_require__.g?__webpack_require__.g:void 0,a=f.navigator&&/Macintosh/.test(navigator.userAgent)&&/AppleWebKit/.test(navigator.userAgent)&&!/Safari/.test(navigator.userAgent),g=f.saveAs||("object"!=typeof window||window!==f?function(){}:"download"in HTMLAnchorElement.prototype&&!a?function(b,g,h){var i=f.URL||f.webkitURL,j=document.createElement("a");g=g||b.name||"download",j.download=g,j.rel="noopener","string"==typeof b?(j.href=b,j.origin===location.origin?e(j):d(j.href)?c(b,g,h):e(j,j.target="_blank")):(j.href=i.createObjectURL(b),setTimeout(function(){i.revokeObjectURL(j.href)},4E4),setTimeout(function(){e(j)},0))}:"msSaveOrOpenBlob"in navigator?function(f,g,h){if(g=g||f.name||"download","string"!=typeof f)navigator.msSaveOrOpenBlob(b(f,h),g);else if(d(f))c(f,g,h);else{var i=document.createElement("a");i.href=f,i.target="_blank",setTimeout(function(){e(i)})}}:function(b,d,e,g){if(g=g||open("","_blank"),g&&(g.document.title=g.document.body.innerText="downloading..."),"string"==typeof b)return c(b,d,e);var h="application/octet-stream"===b.type,i=/constructor/i.test(f.HTMLElement)||f.safari,j=/CriOS\/[\d]+/.test(navigator.userAgent);if((j||h&&i||a)&&"undefined"!=typeof FileReader){var k=new FileReader;k.onloadend=function(){var a=k.result;a=j?a:a.replace(/^data:[^;]*;/,"data:attachment/file;"),g?g.location.href=a:location=a,g=null},k.readAsDataURL(b)}else{var l=f.URL||f.webkitURL,m=l.createObjectURL(b);g?g.location=m:location.href=m,g=null,setTimeout(function(){l.revokeObjectURL(m)},4E4)}});f.saveAs=g.saveAs=g, true&&(module.exports=g)});
+		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));else // removed by dead control flow
+{}})(this,function(){"use strict";function b(a,b){return"undefined"==typeof b?b={autoBom:!1}:"object"!=typeof b&&(console.warn("Deprecated: Expected third argument to be a object"),b={autoBom:!b}),b.autoBom&&/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(a.type)?new Blob(["\uFEFF",a],{type:a.type}):a}function c(a,b,c){var d=new XMLHttpRequest;d.open("GET",a),d.responseType="blob",d.onload=function(){g(d.response,b,c)},d.onerror=function(){console.error("could not download file")},d.send()}function d(a){var b=new XMLHttpRequest;b.open("HEAD",a,!1);try{b.send()}catch(a){}return 200<=b.status&&299>=b.status}function e(a){try{a.dispatchEvent(new MouseEvent("click"))}catch(c){var b=document.createEvent("MouseEvents");b.initMouseEvent("click",!0,!0,window,0,0,0,80,20,!1,!1,!1,!1,0,null),a.dispatchEvent(b)}}var f="object"==typeof window&&window.window===window?window:"object"==typeof self&&self.self===self?self:"object"==typeof __webpack_require__.g&&__webpack_require__.g.global===__webpack_require__.g?__webpack_require__.g:void 0,a=f.navigator&&/Macintosh/.test(navigator.userAgent)&&/AppleWebKit/.test(navigator.userAgent)&&!/Safari/.test(navigator.userAgent),g=f.saveAs||("object"!=typeof window||window!==f?function(){}:"download"in HTMLAnchorElement.prototype&&!a?function(b,g,h){var i=f.URL||f.webkitURL,j=document.createElement("a");g=g||b.name||"download",j.download=g,j.rel="noopener","string"==typeof b?(j.href=b,j.origin===location.origin?e(j):d(j.href)?c(b,g,h):e(j,j.target="_blank")):(j.href=i.createObjectURL(b),setTimeout(function(){i.revokeObjectURL(j.href)},4E4),setTimeout(function(){e(j)},0))}:"msSaveOrOpenBlob"in navigator?function(f,g,h){if(g=g||f.name||"download","string"!=typeof f)navigator.msSaveOrOpenBlob(b(f,h),g);else if(d(f))c(f,g,h);else{var i=document.createElement("a");i.href=f,i.target="_blank",setTimeout(function(){e(i)})}}:function(b,d,e,g){if(g=g||open("","_blank"),g&&(g.document.title=g.document.body.innerText="downloading..."),"string"==typeof b)return c(b,d,e);var h="application/octet-stream"===b.type,i=/constructor/i.test(f.HTMLElement)||f.safari,j=/CriOS\/[\d]+/.test(navigator.userAgent);if((j||h&&i||a)&&"undefined"!=typeof FileReader){var k=new FileReader;k.onloadend=function(){var a=k.result;a=j?a:a.replace(/^data:[^;]*;/,"data:attachment/file;"),g?g.location.href=a:location=a,g=null},k.readAsDataURL(b)}else{var l=f.URL||f.webkitURL,m=l.createObjectURL(b);g?g.location=m:location.href=m,g=null,setTimeout(function(){l.revokeObjectURL(m)},4E4)}});f.saveAs=g.saveAs=g, true&&(module.exports=g)});
 
 //# sourceMappingURL=FileSaver.min.js.map
 
@@ -4354,7 +3515,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
 		(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
 		__WEBPACK_AMD_DEFINE_FACTORY__),
 		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else {}
+    } else // removed by dead control flow
+{}
 }(this, function () {
     "use strict";
 
@@ -4702,18 +3864,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
 /***/ }),
 
 /***/ "./node_modules/magic-bytes.js/dist/index.js":
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.filetypeextension = exports.filetypemime = exports.filetypename = exports.filetypeinfo = void 0;
-const pattern_tree_1 = __importDefault(__webpack_require__("./node_modules/magic-bytes.js/dist/model/pattern-tree.js"));
+exports.register = exports.filetypeextension = exports.filetypemime = exports.filetypename = exports.filetypeinfo = void 0;
+const pattern_tree_1 = __webpack_require__("./node_modules/magic-bytes.js/dist/model/pattern-tree.js");
 const toHex_1 = __webpack_require__("./node_modules/magic-bytes.js/dist/model/toHex.js");
-const patternTree = pattern_tree_1.default();
+const patternTree = pattern_tree_1.createTree();
 const filetypeinfo = (bytes) => {
     let tree = patternTree;
     for (const k of Object.keys(tree.offset)) {
@@ -4765,6 +3924,10 @@ const filetypeextension = (bytes) => exports.filetypeinfo(bytes)
     .map((e) => (e.extension ? e.extension : null))
     .filter((x) => x !== null);
 exports.filetypeextension = filetypeextension;
+const register = (typename, signature, additionalInfo, offset) => {
+    pattern_tree_1.add(typename, signature, additionalInfo, offset);
+};
+exports.register = register;
 
 
 /***/ }),
@@ -4775,6 +3938,7 @@ exports.filetypeextension = filetypeextension;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.createTree = exports.add = void 0;
 const toHex_1 = __webpack_require__("./node_modules/magic-bytes.js/dist/model/toHex.js");
 const tree_1 = __webpack_require__("./node_modules/magic-bytes.js/dist/model/tree.js");
 // https://en.wikipedia.org/wiki/List_of_file_signatures
@@ -4802,19 +3966,20 @@ const add = (typename, signature, additionalInfo, offset) => {
         }
     }
 };
-add("gif", ["0x47", "0x49", "0x46", "0x38", "0x37", "0x61"], {
+exports.add = add;
+exports.add("gif", ["0x47", "0x49", "0x46", "0x38", "0x37", "0x61"], {
     mime: "image/gif",
     extension: "gif",
 });
-add("gif", ["0x47", "0x49", "0x46", "0x38", "0x39", "0x61"], {
+exports.add("gif", ["0x47", "0x49", "0x46", "0x38", "0x39", "0x61"], {
     mime: "image/gif",
     extension: "gif",
 });
-add("jpg", ["0xFF", "0xD8", "0xFF"], {
+exports.add("jpg", ["0xFF", "0xD8", "0xFF"], {
     mime: "image/jpeg",
     extension: "jpeg",
 });
-add("webp", [
+exports.add("webp", [
     "0x52",
     "0x49",
     "0x46",
@@ -4828,41 +3993,41 @@ add("webp", [
     "0x42",
     "0x50",
 ], { mime: "image/webp", extension: "webp" });
-add("heif", ["0x66", "0x74", "0x79", "0x70", "0x6D", "0x69", "0x66", "0x31"], { mime: "image/heif", extension: "heif" }, 4);
-add("heif", ["0x66", "0x74", "0x79", "0x70", "0x68", "0x65", "0x69", "0x63"], { mime: "image/heif", extension: "heic" }, 4);
-add("rpm", ["0xed", "0xab", "0xee", "0xdb"]);
-add("bin", ["0x53", "0x50", "0x30", "0x31"], {
+exports.add("heif", ["0x66", "0x74", "0x79", "0x70", "0x6D", "0x69", "0x66", "0x31"], { mime: "image/heif", extension: "heif" }, 4);
+exports.add("heif", ["0x66", "0x74", "0x79", "0x70", "0x68", "0x65", "0x69", "0x63"], { mime: "image/heif", extension: "heic" }, 4);
+exports.add("rpm", ["0xed", "0xab", "0xee", "0xdb"]);
+exports.add("bin", ["0x53", "0x50", "0x30", "0x31"], {
     mime: "application/octet-stream",
     extension: "bin",
 });
-add("pic", ["0x00"]);
-add("pif", ["0x00"]);
-add("sea", ["0x00"]);
-add("ytr", ["0x00"]);
+exports.add("pic", ["0x00"]);
+exports.add("pif", ["0x00"]);
+exports.add("sea", ["0x00"]);
+exports.add("ytr", ["0x00"]);
 // 66747970
 // 6D703432
-add("mp4", ["0x66", "0x74", "0x79", "0x70"], { mime: "video/mp4", extension: "mp4" }, 0x4);
-add("ttf", ["0x00", "0x01", "0x00", "0x00", "0x00"], {
+exports.add("mp4", ["0x66", "0x74", "0x79", "0x70"], { mime: "video/mp4", extension: "mp4" }, 0x4);
+exports.add("ttf", ["0x00", "0x01", "0x00", "0x00", "0x00"], {
     mime: "font/ttf",
     extension: "ttf",
 });
-add("otf", ["0x4F", "0x54", "0x54", "0x4F"], {
+exports.add("otf", ["0x4F", "0x54", "0x54", "0x4F"], {
     mime: "font/otf",
     extension: "otf",
 });
-add("eot", ["0x50", "0x4C"], {
+exports.add("eot", ["0x50", "0x4C"], {
     mime: "application/vnd.ms-fontobject",
     extension: "eot",
 });
-add("woff", ["0x77", "0x4F", "0x46", "0x46"], {
+exports.add("woff", ["0x77", "0x4F", "0x46", "0x46"], {
     mime: "font/woff",
     extension: "woff",
 });
-add("woff2", ["0x77", "0x4F", "0x46", "0x32"], {
+exports.add("woff2", ["0x77", "0x4F", "0x46", "0x32"], {
     mime: "font/woff2",
     extension: "woff2",
 });
-add("pdb", [
+exports.add("pdb", [
     "0x00",
     "0x00",
     "0x00",
@@ -4888,18 +4053,18 @@ add("pdb", [
     "0x00",
     "0x00",
 ]);
-add("dba", ["0xBE", "0xBA", "0xFE", "0xCA"]);
-add("dba2", ["0x00", "0x01", "0x42", "0x44"]);
-add("tda", ["0x00", "0x01", "0x44", "0x54"]);
-add("tda2", ["0x00", "0x01", "0x00", "0x00"]);
-add("ico", ["0x00", "0x00", "0x01", "0x00"], {
+exports.add("dba", ["0xBE", "0xBA", "0xFE", "0xCA"]);
+exports.add("dba2", ["0x00", "0x01", "0x42", "0x44"]);
+exports.add("tda", ["0x00", "0x01", "0x44", "0x54"]);
+exports.add("tda2", ["0x00", "0x01", "0x00", "0x00"]);
+exports.add("ico", ["0x00", "0x00", "0x01", "0x00"], {
     mime: "image/x-icon",
     extension: "ico",
 });
-add("3gp", ["0x66", "0x74", "0x79", "0x70", "0x33", "0x67"]);
-add("z", ["0x1F", "0x9D"]);
-add("tar.z", ["0x1F", "0xA0"]);
-add("bac", [
+exports.add("3gp", ["0x66", "0x74", "0x79", "0x70", "0x33", "0x67"]);
+exports.add("z", ["0x1F", "0x9D"]);
+exports.add("tar.z", ["0x1F", "0xA0"]);
+exports.add("bac", [
     "0x42",
     "0x41",
     "0x43",
@@ -4913,19 +4078,19 @@ add("bac", [
     "0x53",
     "0x4B",
 ]);
-add("bz2", ["0x42", "0x5A", "0x68"], {
+exports.add("bz2", ["0x42", "0x5A", "0x68"], {
     mime: "application/x-bzip2",
     extension: "bz2",
 });
-add("tif", ["0x49", "0x49", "0x2A", "0x00"], {
+exports.add("tif", ["0x49", "0x49", "0x2A", "0x00"], {
     mime: "image/tiff",
     extension: "tif",
 });
-add("tiff", ["0x4D", "0x4D", "0x00", "0x2A"], {
+exports.add("tiff", ["0x4D", "0x4D", "0x00", "0x2A"], {
     mime: "image/tiff",
     extension: "tiff",
 });
-add("cr2", [
+exports.add("cr2", [
     "0x49",
     "0x49",
     "0x2A",
@@ -4937,14 +4102,14 @@ add("cr2", [
     "0x43",
     "0x52",
 ]);
-add("cin", ["0x80", "0x2A", "0x5F", "0xD7"]);
-add("cin1", ["0x52", "0x4E", "0x43", "0x01"]);
-add("cin2", ["0x52", "0x4E", "0x43", "0x02"]);
-add("dpx", ["0x53", "0x44", "0x50", "0x58"]);
-add("dpx2", ["0x58", "0x50", "0x44", "0x53"]);
-add("exr", ["0x76", "0x2F", "0x31", "0x01"]);
-add("bpg", ["0x42", "0x50", "0x47", "0xFB"]);
-add("ilbm", [
+exports.add("cin", ["0x80", "0x2A", "0x5F", "0xD7"]);
+exports.add("cin1", ["0x52", "0x4E", "0x43", "0x01"]);
+exports.add("cin2", ["0x52", "0x4E", "0x43", "0x02"]);
+exports.add("dpx", ["0x53", "0x44", "0x50", "0x58"]);
+exports.add("dpx2", ["0x58", "0x50", "0x44", "0x53"]);
+exports.add("exr", ["0x76", "0x2F", "0x31", "0x01"]);
+exports.add("bpg", ["0x42", "0x50", "0x47", "0xFB"]);
+exports.add("ilbm", [
     "0x46",
     "0x4F",
     "0x52",
@@ -4958,7 +4123,7 @@ add("ilbm", [
     "0x42",
     "0x4D",
 ]);
-add("8svx", [
+exports.add("8svx", [
     "0x46",
     "0x4F",
     "0x52",
@@ -4972,7 +4137,7 @@ add("8svx", [
     "0x56",
     "0x58",
 ]);
-add("acbm", [
+exports.add("acbm", [
     "0x46",
     "0x4F",
     "0x52",
@@ -4986,7 +4151,7 @@ add("acbm", [
     "0x42",
     "0x4D",
 ]);
-add("anbm", [
+exports.add("anbm", [
     "0x46",
     "0x4F",
     "0x52",
@@ -5000,7 +4165,7 @@ add("anbm", [
     "0x42",
     "0x4D",
 ]);
-add("anim", [
+exports.add("anim", [
     "0x46",
     "0x4F",
     "0x52",
@@ -5014,7 +4179,7 @@ add("anim", [
     "0x49",
     "0x4D",
 ]);
-add("faxx", [
+exports.add("faxx", [
     "0x46",
     "0x4F",
     "0x52",
@@ -5028,7 +4193,7 @@ add("faxx", [
     "0x58",
     "0x58",
 ]);
-add("ftxt", [
+exports.add("ftxt", [
     "0x46",
     "0x4F",
     "0x52",
@@ -5042,7 +4207,7 @@ add("ftxt", [
     "0x58",
     "0x54",
 ]);
-add("smus", [
+exports.add("smus", [
     "0x46",
     "0x4F",
     "0x52",
@@ -5056,7 +4221,7 @@ add("smus", [
     "0x55",
     "0x53",
 ]);
-add("cmus", [
+exports.add("cmus", [
     "0x46",
     "0x4F",
     "0x52",
@@ -5070,7 +4235,7 @@ add("cmus", [
     "0x55",
     "0x53",
 ]);
-add("yuvn", [
+exports.add("yuvn", [
     "0x46",
     "0x4F",
     "0x52",
@@ -5084,7 +4249,7 @@ add("yuvn", [
     "0x56",
     "0x4E",
 ]);
-add("iff", [
+exports.add("iff", [
     "0x46",
     "0x4F",
     "0x52",
@@ -5098,7 +4263,7 @@ add("iff", [
     "0x4E",
     "0x54",
 ]);
-add("aiff", [
+exports.add("aiff", [
     "0x46",
     "0x4F",
     "0x52",
@@ -5112,179 +4277,179 @@ add("aiff", [
     "0x46",
     "0x46",
 ], { mime: "audio/x-aiff", extension: "aiff" });
-add("idx", ["0x49", "0x4E", "0x44", "0x58"]);
-add("lz", ["0x4C", "0x5A", "0x49", "0x50"]);
-add("exe", ["0x4D", "0x5A"]);
-add("zip", ["0x50", "0x4B", "0x03", "0x04"], {
+exports.add("idx", ["0x49", "0x4E", "0x44", "0x58"]);
+exports.add("lz", ["0x4C", "0x5A", "0x49", "0x50"]);
+exports.add("exe", ["0x4D", "0x5A"]);
+exports.add("zip", ["0x50", "0x4B", "0x03", "0x04"], {
     mime: "application/zip",
     extension: "zip",
 });
-add("zip", ["0x50", "0x4B", "0x05", "0x06"], {
+exports.add("zip", ["0x50", "0x4B", "0x05", "0x06"], {
     mime: "application/zip",
     extension: "zip",
 });
-add("zip", ["0x50", "0x4B", "0x07", "0x08"], {
+exports.add("zip", ["0x50", "0x4B", "0x07", "0x08"], {
     mime: "application/zip",
     extension: "zip",
 });
-add("jar", ["0x50", "0x4B", "0x03", "0x04"], {
+exports.add("jar", ["0x50", "0x4B", "0x03", "0x04"], {
     mime: "application/java-archive",
     extension: "jar",
 });
-add("jar", ["0x50", "0x4B", "0x05", "0x06"], {
+exports.add("jar", ["0x50", "0x4B", "0x05", "0x06"], {
     mime: "application/java-archive",
     extension: "jar",
 });
-add("jar", ["0x50", "0x4B", "0x07", "0x08"], {
+exports.add("jar", ["0x50", "0x4B", "0x07", "0x08"], {
     mime: "application/java-archive",
     extension: "jar",
 });
-add("odt", ["0x50", "0x4B", "0x03", "0x04"], {
+exports.add("odt", ["0x50", "0x4B", "0x03", "0x04"], {
     mime: "application/vnd.oasis.opendocument.text",
     extension: "odt",
 });
-add("odt", ["0x50", "0x4B", "0x05", "0x06"], {
+exports.add("odt", ["0x50", "0x4B", "0x05", "0x06"], {
     mime: "application/vnd.oasis.opendocument.text",
     extension: "odt",
 });
-add("odt", ["0x50", "0x4B", "0x07", "0x08"], {
+exports.add("odt", ["0x50", "0x4B", "0x07", "0x08"], {
     mime: "application/vnd.oasis.opendocument.text",
     extension: "odt",
 });
-add("ods", ["0x50", "0x4B", "0x03", "0x04"], {
+exports.add("ods", ["0x50", "0x4B", "0x03", "0x04"], {
     mime: "application/vnd.oasis.opendocument.spreadsheet",
     extension: "ods",
 });
-add("ods", ["0x50", "0x4B", "0x05", "0x06"], {
+exports.add("ods", ["0x50", "0x4B", "0x05", "0x06"], {
     mime: "application/vnd.oasis.opendocument.spreadsheet",
     extension: "ods",
 });
-add("ods", ["0x50", "0x4B", "0x07", "0x08"], {
+exports.add("ods", ["0x50", "0x4B", "0x07", "0x08"], {
     mime: "application/vnd.oasis.opendocument.spreadsheet",
     extension: "ods",
 });
-add("odp", ["0x50", "0x4B", "0x03", "0x04"], {
+exports.add("odp", ["0x50", "0x4B", "0x03", "0x04"], {
     mime: "application/vnd.oasis.opendocument.presentation",
     extension: "odp",
 });
-add("odp", ["0x50", "0x4B", "0x05", "0x06"], {
+exports.add("odp", ["0x50", "0x4B", "0x05", "0x06"], {
     mime: "application/vnd.oasis.opendocument.presentation",
     extension: "odp",
 });
-add("odp", ["0x50", "0x4B", "0x07", "0x08"], {
+exports.add("odp", ["0x50", "0x4B", "0x07", "0x08"], {
     mime: "application/vnd.oasis.opendocument.presentation",
     extension: "odp",
 });
-add("docx", ["0x50", "0x4B", "0x03", "0x04"], {
+exports.add("docx", ["0x50", "0x4B", "0x03", "0x04"], {
     mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     extension: "docx",
 });
-add("docx", ["0x50", "0x4B", "0x05", "0x06"], {
+exports.add("docx", ["0x50", "0x4B", "0x05", "0x06"], {
     mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     extension: "docx",
 });
-add("docx", ["0x50", "0x4B", "0x07", "0x08"], {
+exports.add("docx", ["0x50", "0x4B", "0x07", "0x08"], {
     mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     extension: "docx",
 });
-add("xlsx", ["0x50", "0x4B", "0x03", "0x04"], {
+exports.add("xlsx", ["0x50", "0x4B", "0x03", "0x04"], {
     mime: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     extension: "xlsx",
 });
-add("xlsx", ["0x50", "0x4B", "0x05", "0x06"], {
+exports.add("xlsx", ["0x50", "0x4B", "0x05", "0x06"], {
     mime: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     extension: "xlsx",
 });
-add("xlsx", ["0x50", "0x4B", "0x07", "0x08"], {
+exports.add("xlsx", ["0x50", "0x4B", "0x07", "0x08"], {
     mime: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     extension: "xlsx",
 });
-add("pptx", ["0x50", "0x4B", "0x03", "0x04"], {
+exports.add("pptx", ["0x50", "0x4B", "0x03", "0x04"], {
     mime: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
     extension: "pptx",
 });
-add("pptx", ["0x50", "0x4B", "0x05", "0x06"], {
+exports.add("pptx", ["0x50", "0x4B", "0x05", "0x06"], {
     mime: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
     extension: "pptx",
 });
-add("pptx", ["0x50", "0x4B", "0x07", "0x08"], {
+exports.add("pptx", ["0x50", "0x4B", "0x07", "0x08"], {
     mime: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
     extension: "pptx",
 });
-add("vsdx", ["0x50", "0x4B", "0x03", "0x04"], {
+exports.add("vsdx", ["0x50", "0x4B", "0x03", "0x04"], {
     mime: "application/vnd.ms-visio.drawing",
     extension: "vsdx",
 });
-add("vsdx", ["0x50", "0x4B", "0x05", "0x06"], {
+exports.add("vsdx", ["0x50", "0x4B", "0x05", "0x06"], {
     mime: "application/vnd.ms-visio.drawing",
     extension: "vsdx",
 });
-add("vsdx", ["0x50", "0x4B", "0x07", "0x08"], {
+exports.add("vsdx", ["0x50", "0x4B", "0x07", "0x08"], {
     mime: "application/vnd.ms-visio.drawing",
     extension: "vsdx",
 });
-add("apk", ["0x50", "0x4B", "0x03", "0x04"], {
+exports.add("apk", ["0x50", "0x4B", "0x03", "0x04"], {
     mime: "application/vnd.android.package-archive",
     extension: "apk",
 });
-add("apk", ["0x50", "0x4B", "0x05", "0x06"], {
+exports.add("apk", ["0x50", "0x4B", "0x05", "0x06"], {
     mime: "application/vnd.android.package-archive",
     extension: "apk",
 });
-add("apk", ["0x50", "0x4B", "0x07", "0x08"], {
+exports.add("apk", ["0x50", "0x4B", "0x07", "0x08"], {
     mime: "application/vnd.android.package-archive",
     extension: "apk",
 });
-add("aar", ["0x50", "0x4B", "0x03", "0x04"], {
+exports.add("aar", ["0x50", "0x4B", "0x03", "0x04"], {
     mime: "application/vnd.android.package-archive",
     extension: "aar",
 });
-add("aar", ["0x50", "0x4B", "0x05", "0x06"], {
+exports.add("aar", ["0x50", "0x4B", "0x05", "0x06"], {
     mime: "application/vnd.android.package-archive",
     extension: "aar",
 });
-add("aar", ["0x50", "0x4B", "0x07", "0x08"], {
+exports.add("aar", ["0x50", "0x4B", "0x07", "0x08"], {
     mime: "application/vnd.android.package-archive",
     extension: "aar",
 });
-add("rar", ["0x52", "0x61", "0x72", "0x21", "0x1A", "0x07", "0x00"], {
+exports.add("rar", ["0x52", "0x61", "0x72", "0x21", "0x1A", "0x07", "0x00"], {
     mime: "application/vnd.rar",
     extension: "rar",
 });
-add("rar", ["0x52", "0x61", "0x72", "0x21", "0x1A", "0x07", "0x01", "0x00"], {
+exports.add("rar", ["0x52", "0x61", "0x72", "0x21", "0x1A", "0x07", "0x01", "0x00"], {
     mime: "application/vnd.rar",
     extension: "rar",
 });
-add("rar", ["0x7F", "0x45", "0x4C", "0x46"], {
+exports.add("rar", ["0x7F", "0x45", "0x4C", "0x46"], {
     mime: "application/vnd.rar",
     extension: "rar",
 });
-add("png", ["0x89", "0x50", "0x4E", "0x47", "0x0D", "0x0A", "0x1A", "0x0A"], {
+exports.add("png", ["0x89", "0x50", "0x4E", "0x47", "0x0D", "0x0A", "0x1A", "0x0A"], {
     mime: "image/png",
     extension: "png",
 });
-add("apng", ["0x89", "0x50", "0x4E", "0x47", "0x0D", "0x0A", "0x1A", "0x0A"], {
+exports.add("apng", ["0x89", "0x50", "0x4E", "0x47", "0x0D", "0x0A", "0x1A", "0x0A"], {
     mime: "image/apng",
     extension: "apng",
 });
-add("class", ["0xCA", "0xFE", "0xBA", "0xBE"]);
-add("class", ["0xEF", "0xBB", "0xBF"]);
-add("class", ["0xFE", "0xed", "0xFA", "0xCE"], undefined, 0x1000);
-add("class", ["0xFE", "0xed", "0xFA", "0xCF"], undefined, 0x1000);
-add("class", ["0xCE", "0xFA", "0xed", "0xFE"]);
-add("class", ["0xCF", "0xFA", "0xed", "0xFE"]);
-add("class", ["0xFF", "0xFE"]);
-add("class", ["0xFF", "0xFE"]);
-add("class", ["0xFF", "0xFE", "0x00", "0x00"]);
-add("ps", ["0x25", "0x21", "0x50", "0x53"], {
+exports.add("class", ["0xCA", "0xFE", "0xBA", "0xBE"]);
+exports.add("class", ["0xEF", "0xBB", "0xBF"]);
+exports.add("class", ["0xFE", "0xed", "0xFA", "0xCE"], undefined, 0x1000);
+exports.add("class", ["0xFE", "0xed", "0xFA", "0xCF"], undefined, 0x1000);
+exports.add("class", ["0xCE", "0xFA", "0xed", "0xFE"]);
+exports.add("class", ["0xCF", "0xFA", "0xed", "0xFE"]);
+exports.add("class", ["0xFF", "0xFE"]);
+exports.add("class", ["0xFF", "0xFE"]);
+exports.add("class", ["0xFF", "0xFE", "0x00", "0x00"]);
+exports.add("ps", ["0x25", "0x21", "0x50", "0x53"], {
     mime: "application/postscript",
-    extension: ".ps"
+    extension: ".ps",
 });
-add("pdf", ["0x25", "0x50", "0x44", "0x46"], {
+exports.add("pdf", ["0x25", "0x50", "0x44", "0x46"], {
     mime: "application/pdf",
     extension: "pdf",
 });
-add("asf", [
+exports.add("asf", [
     "0x30",
     "0x26",
     "0xB2",
@@ -5302,7 +4467,7 @@ add("asf", [
     "0xCE",
     "0x6C",
 ]);
-add("wma", [
+exports.add("wma", [
     "0x30",
     "0x26",
     "0xB2",
@@ -5320,7 +4485,7 @@ add("wma", [
     "0xCE",
     "0x6C",
 ]);
-add("wmv", [
+exports.add("wmv", [
     "0x30",
     "0x26",
     "0xB2",
@@ -5338,7 +4503,7 @@ add("wmv", [
     "0xCE",
     "0x6C",
 ]);
-add("deploymentimage", [
+exports.add("deploymentimage", [
     "0x24",
     "0x53",
     "0x44",
@@ -5349,7 +4514,7 @@ add("deploymentimage", [
     "0x31",
 ]);
 // ogg video ' theora'
-add("ogv", [
+exports.add("ogv", [
     "0x4F",
     "0x67",
     "0x67",
@@ -5390,7 +4555,7 @@ add("ogv", [
     extension: "ogv",
 });
 // ogg video '\x01video'
-add("ogm", [
+exports.add("ogm", [
     "0x4F",
     "0x67",
     "0x67",
@@ -5431,7 +4596,7 @@ add("ogm", [
     extension: "ogm",
 });
 // ogg audio ' FLAC'
-add("oga", [
+exports.add("oga", [
     "0x4F",
     "0x67",
     "0x67",
@@ -5470,7 +4635,7 @@ add("oga", [
     extension: "oga",
 });
 // ogg audio 'Speex  '
-add("spx", [
+exports.add("spx", [
     "0x4F",
     "0x67",
     "0x67",
@@ -5511,7 +4676,7 @@ add("spx", [
     extension: "spx",
 });
 // ogg audio '\x01vorbis '
-add("ogg", [
+exports.add("ogg", [
     "0x4F",
     "0x67",
     "0x67",
@@ -5552,16 +4717,16 @@ add("ogg", [
     extension: "ogg",
 });
 // default OGG container
-add("ogx", ["0x4F", "0x67", "0x67", "0x53"], {
+exports.add("ogx", ["0x4F", "0x67", "0x67", "0x53"], {
     mime: "application/ogg",
     extension: "ogx",
 });
-add("psd", ["0x38", "0x42", "0x50", "0x53"], {
+exports.add("psd", ["0x38", "0x42", "0x50", "0x53"], {
     mime: "application/x-photoshop",
     extension: "psd",
 });
-add("clip", ["0x43", "0x53", "0x46", "0x43", "0x48", "0x55", "0x4e", "0x4b"]);
-add("wav", [
+exports.add("clip", ["0x43", "0x53", "0x46", "0x43", "0x48", "0x55", "0x4e", "0x4b"]);
+exports.add("wav", [
     "0x52",
     "0x49",
     "0x46",
@@ -5575,7 +4740,7 @@ add("wav", [
     "0x56",
     "0x45",
 ], { mime: "audio/x-wav", extension: "wav" });
-add("avi", [
+exports.add("avi", [
     "0x52",
     "0x49",
     "0x46",
@@ -5589,39 +4754,39 @@ add("avi", [
     "0x49",
     "0x20",
 ], { mime: "video/x-msvideo", extension: "avi" });
-add("mp3", ["0xFF", "0xFB"], { mime: "audio/mpeg", extension: "mp3" });
-add("mp3", ["0xFF", "0xF3"], { mime: "audio/mpeg", extension: "mp3" });
-add("mp3", ["0xFF", "0xF2"], { mime: "audio/mpeg", extension: "mp3" });
-add("mp3", ["0x49", "0x44", "0x33"], { mime: "audio/mpeg", extension: "mp3" });
-add("bmp", ["0x42", "0x4D"], { mime: "image/bmp", extension: "bmp" });
-add("iso", ["0x43", "0x44", "0x30", "0x30", "0x31"]);
-add("flac", ["0x66", "0x4C", "0x61", "0x43"]);
-add("mid", ["0x4D", "0x54", "0x68", "0x64"], {
+exports.add("mp3", ["0xFF", "0xFB"], { mime: "audio/mpeg", extension: "mp3" });
+exports.add("mp3", ["0xFF", "0xF3"], { mime: "audio/mpeg", extension: "mp3" });
+exports.add("mp3", ["0xFF", "0xF2"], { mime: "audio/mpeg", extension: "mp3" });
+exports.add("mp3", ["0x49", "0x44", "0x33"], { mime: "audio/mpeg", extension: "mp3" });
+exports.add("bmp", ["0x42", "0x4D"], { mime: "image/bmp", extension: "bmp" });
+exports.add("iso", ["0x43", "0x44", "0x30", "0x30", "0x31"]);
+exports.add("flac", ["0x66", "0x4C", "0x61", "0x43"]);
+exports.add("mid", ["0x4D", "0x54", "0x68", "0x64"], {
     mime: "audio/midi",
     extension: "mid",
 });
-add("midi", ["0x4D", "0x54", "0x68", "0x64"], {
+exports.add("midi", ["0x4D", "0x54", "0x68", "0x64"], {
     mime: "audio/midi",
     extension: "midi",
 });
-add("doc", ["0xD0", "0xCF", "0x11", "0xE0", "0xA1", "0xB1", "0x1A", "0xE1"], {
+exports.add("doc", ["0xD0", "0xCF", "0x11", "0xE0", "0xA1", "0xB1", "0x1A", "0xE1"], {
     mime: "application/msword",
     extension: "doc",
 });
-add("xls", ["0xD0", "0xCF", "0x11", "0xE0", "0xA1", "0xB1", "0x1A", "0xE1"], {
+exports.add("xls", ["0xD0", "0xCF", "0x11", "0xE0", "0xA1", "0xB1", "0x1A", "0xE1"], {
     mime: "application/vnd.ms-excel",
     extension: "xls",
 });
-add("ppt", ["0xD0", "0xCF", "0x11", "0xE0", "0xA1", "0xB1", "0x1A", "0xE1"], {
+exports.add("ppt", ["0xD0", "0xCF", "0x11", "0xE0", "0xA1", "0xB1", "0x1A", "0xE1"], {
     mime: "application/vnd.ms-powerpoint",
     extension: "ppt",
 });
-add("msg", ["0xD0", "0xCF", "0x11", "0xE0", "0xA1", "0xB1", "0x1A", "0xE1"]);
-add("dex", ["0x64", "0x65", "0x78", "0x0A", "0x30", "0x33", "0x35", "0x00"]);
-add("vmdk", ["0x4B", "0x44", "0x4D"]);
-add("crx", ["0x43", "0x72", "0x32", "0x34"]);
-add("fh8", ["0x41", "0x47", "0x44", "0x33"]);
-add("cwk", [
+exports.add("msg", ["0xD0", "0xCF", "0x11", "0xE0", "0xA1", "0xB1", "0x1A", "0xE1"]);
+exports.add("dex", ["0x64", "0x65", "0x78", "0x0A", "0x30", "0x33", "0x35", "0x00"]);
+exports.add("vmdk", ["0x4B", "0x44", "0x4D"]);
+exports.add("crx", ["0x43", "0x72", "0x32", "0x34"]);
+exports.add("fh8", ["0x41", "0x47", "0x44", "0x33"]);
+exports.add("cwk", [
     "0x05",
     "0x07",
     "0x00",
@@ -5645,7 +4810,7 @@ add("cwk", [
     "0x00",
     "0x01",
 ]);
-add("cwk", [
+exports.add("cwk", [
     "0x06",
     "0x07",
     "0xE1",
@@ -5669,27 +4834,27 @@ add("cwk", [
     "0x00",
     "0x01",
 ]);
-add("toast", ["0x45", "0x52", "0x02", "0x00", "0x00", "0x00"]);
-add("toast", ["0x8B", "0x45", "0x52", "0x02", "0x00", "0x00", "0x00"]);
-add("dmg", ["0x78", "0x01", "0x73", "0x0D", "0x62", "0x62", "0x60"]);
-add("xar", ["0x78", "0x61", "0x72", "0x21"]);
-add("dat", ["0x50", "0x4D", "0x4F", "0x43", "0x43", "0x4D", "0x4F", "0x43"]);
-add("nes", ["0x4E", "0x45", "0x53", "0x1A"]);
-add("tar", ["0x75", "0x73", "0x74", "0x61", "0x72", "0x00", "0x30", "0x30"], {
+exports.add("toast", ["0x45", "0x52", "0x02", "0x00", "0x00", "0x00"]);
+exports.add("toast", ["0x8B", "0x45", "0x52", "0x02", "0x00", "0x00", "0x00"]);
+exports.add("dmg", ["0x78", "0x01", "0x73", "0x0D", "0x62", "0x62", "0x60"]);
+exports.add("xar", ["0x78", "0x61", "0x72", "0x21"]);
+exports.add("dat", ["0x50", "0x4D", "0x4F", "0x43", "0x43", "0x4D", "0x4F", "0x43"]);
+exports.add("nes", ["0x4E", "0x45", "0x53", "0x1A"]);
+exports.add("tar", ["0x75", "0x73", "0x74", "0x61", "0x72", "0x00", "0x30", "0x30"], {
     // As per Mozilla documentation available at:
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
     // or wikipedia page:
     // https://en.wikipedia.org/wiki/List_of_archive_formats
     mime: "application/x-tar",
-    extension: "tar"
+    extension: "tar",
 }, 0x101);
-add("tar", ["0x75", "0x73", "0x74", "0x61", "0x72", "0x20", "0x20", "0x00"], {
+exports.add("tar", ["0x75", "0x73", "0x74", "0x61", "0x72", "0x20", "0x20", "0x00"], {
     mime: "application/x-tar",
-    extension: "tar"
+    extension: "tar",
 }, 0x101);
-add("tox", ["0x74", "0x6F", "0x78", "0x33"]);
-add("mlv", ["0x4D", "0x4C", "0x56", "0x49"]);
-add("windowsupdate", [
+exports.add("tox", ["0x74", "0x6F", "0x78", "0x33"]);
+exports.add("mlv", ["0x4D", "0x4C", "0x56", "0x49"]);
+exports.add("windowsupdate", [
     "0x44",
     "0x43",
     "0x4D",
@@ -5699,131 +4864,131 @@ add("windowsupdate", [
     "0x33",
     "0x30",
 ]);
-add("7z", ["0x37", "0x7A", "0xBC", "0xAF", "0x27", "0x1C"], {
+exports.add("7z", ["0x37", "0x7A", "0xBC", "0xAF", "0x27", "0x1C"], {
     mime: "application/x-7z-compressed",
     extension: "7z",
 });
-add("gz", ["0x1F", "0x8B"], { mime: "application/gzip", extension: "gz" });
-add("tar.gz", ["0x1F", "0x8B"], {
+exports.add("gz", ["0x1F", "0x8B"], { mime: "application/gzip", extension: "gz" });
+exports.add("tar.gz", ["0x1F", "0x8B"], {
     mime: "application/gzip",
     extension: "tar.gz",
 });
-add("xz", ["0xFD", "0x37", "0x7A", "0x58", "0x5A", "0x00", "0x00"], {
+exports.add("xz", ["0xFD", "0x37", "0x7A", "0x58", "0x5A", "0x00", "0x00"], {
     mime: "application/gzip",
     extension: "xz",
 });
-add("tar.xz", ["0xFD", "0x37", "0x7A", "0x58", "0x5A", "0x00", "0x00"], {
+exports.add("tar.xz", ["0xFD", "0x37", "0x7A", "0x58", "0x5A", "0x00", "0x00"], {
     mime: "application/gzip",
     extension: "tar.xz",
 });
-add("lz2", ["0x04", "0x22", "0x4D", "0x18"]);
-add("cab", ["0x4D", "0x53", "0x43", "0x46"]);
-add("mkv", ["0x1A", "0x45", "0xDF", "0xA3"], {
+exports.add("lz2", ["0x04", "0x22", "0x4D", "0x18"]);
+exports.add("cab", ["0x4D", "0x53", "0x43", "0x46"]);
+exports.add("mkv", ["0x1A", "0x45", "0xDF", "0xA3"], {
     mime: "video/x-matroska",
     extension: "mkv",
 });
-add("mka", ["0x1A", "0x45", "0xDF", "0xA3"], {
+exports.add("mka", ["0x1A", "0x45", "0xDF", "0xA3"], {
     mime: "audio/x-matroska",
     extension: "mka",
 });
-add("mks", ["0x1A", "0x45", "0xDF", "0xA3"], {
+exports.add("mks", ["0x1A", "0x45", "0xDF", "0xA3"], {
     mime: "video/x-matroska",
     extension: "mks",
 });
-add("mk3d", ["0x1A", "0x45", "0xDF", "0xA3"]);
-add("webm", ["0x1A", "0x45", "0xDF", "0xA3"], {
+exports.add("mk3d", ["0x1A", "0x45", "0xDF", "0xA3"]);
+exports.add("webm", ["0x1A", "0x45", "0xDF", "0xA3"], {
     mime: "audio/webm",
     extension: "webm",
 });
-add("dcm", ["0x44", "0x49", "0x43", "0x4D"], undefined, 0x80);
-add("xml", ["0x3C", "0x3f", "0x78", "0x6d", "0x6C", "0x20"], {
+exports.add("dcm", ["0x44", "0x49", "0x43", "0x4D"], undefined, 0x80);
+exports.add("xml", ["0x3C", "0x3f", "0x78", "0x6d", "0x6C", "0x20"], {
     mime: "application/xml",
     extension: "xml",
 });
-add("wasm", ["0x00", "0x61", "0x73", "0x6d"], {
+exports.add("wasm", ["0x00", "0x61", "0x73", "0x6d"], {
     mime: "application/wasm",
     extension: "wasm",
 });
-add("lep", ["0xCF", "0x84", "0x01"]);
-add("swf", ["0x43", "0x57", "0x53"], {
+exports.add("lep", ["0xCF", "0x84", "0x01"]);
+exports.add("swf", ["0x43", "0x57", "0x53"], {
     mime: "application/x-shockwave-flash",
     extension: "swf",
 });
-add("swf", ["0x46", "0x57", "0x53"], {
+exports.add("swf", ["0x46", "0x57", "0x53"], {
     mime: "application/x-shockwave-flash",
     extension: "swf",
 });
-add("deb", ["0x21", "0x3C", "0x61", "0x72", "0x63", "0x68", "0x3E"]);
-add("rtf", ["0x7B", "0x5C", "0x72", "0x74", "0x66", "0x31"], {
+exports.add("deb", ["0x21", "0x3C", "0x61", "0x72", "0x63", "0x68", "0x3E"]);
+exports.add("rtf", ["0x7B", "0x5C", "0x72", "0x74", "0x66", "0x31"], {
     mime: "application/rtf",
     extension: "rtf",
 });
-add("m2p", ["0x00", "0x00", "0x01", "0xBA"]);
-add("vob", ["0x00", "0x00", "0x01", "0xBA"]);
-add("mpg", ["0x00", "0x00", "0x01", "0xBA"], {
+exports.add("m2p", ["0x00", "0x00", "0x01", "0xBA"]);
+exports.add("vob", ["0x00", "0x00", "0x01", "0xBA"]);
+exports.add("mpg", ["0x00", "0x00", "0x01", "0xBA"], {
     mime: "video/mpeg",
     extension: "mpg",
 });
-add("mpeg", ["0x00", "0x00", "0x01", "0xBA"], {
+exports.add("mpeg", ["0x00", "0x00", "0x01", "0xBA"], {
     mime: "video/mpeg",
     extension: "mpeg",
 });
-add("mpeg", ["0x47"], { mime: "video/mpeg", extension: "mpeg" });
-add("mpeg", ["0x00", "0x00", "0x01", "0xB3"], {
+exports.add("mpeg", ["0x47"], { mime: "video/mpeg", extension: "mpeg" });
+exports.add("mpeg", ["0x00", "0x00", "0x01", "0xB3"], {
     mime: "video/mpeg",
     extension: "mpeg",
 });
 // mov 'free' TODO: find test file
-add("mov", ["0x66", "0x72", "0x65", "0x65"], {
+exports.add("mov", ["0x66", "0x72", "0x65", "0x65"], {
     mime: "video/quicktime",
     extension: "mov",
 }, 0x4);
 // mov 'mdat'
-add("mov", ["0x6D", "0x64", "0x61", "0x74"], {
+exports.add("mov", ["0x6D", "0x64", "0x61", "0x74"], {
     mime: "video/quicktime",
     extension: "mov",
 }, 0x4);
 // mov 'moov' TODO: find test file
-add("mov", ["0x6D", "0x6F", "0x6F", "0x76"], {
+exports.add("mov", ["0x6D", "0x6F", "0x6F", "0x76"], {
     mime: "video/quicktime",
     extension: "mov",
 }, 0x4);
 // move 'wide' TODO: find test file
-add("mov", ["0x77", "0x69", "0x64", "0x65"], {
+exports.add("mov", ["0x77", "0x69", "0x64", "0x65"], {
     mime: "video/quicktime",
     extension: "mov",
 }, 0x4);
 // mov 'ftypqt'
-add("mov", ["0x66", "0x74", "0x79", "0x70", "0x71", "0x74"], {
+exports.add("mov", ["0x66", "0x74", "0x79", "0x70", "0x71", "0x74"], {
     mime: "video/quicktime",
     extension: "mov",
 }, 0x4);
-add("hl2demo", ["0x48", "0x4C", "0x32", "0x44", "0x45", "0x4D", "0x4F"]);
-add("txt", ["0xEF", "0xBB", "0xBF"], {
+exports.add("hl2demo", ["0x48", "0x4C", "0x32", "0x44", "0x45", "0x4D", "0x4F"]);
+exports.add("txt", ["0xEF", "0xBB", "0xBF"], {
     mime: "text/plain; charset=UTF-8",
     extension: "txt",
 });
-add("txt", ["0xFF", "0xFE"], {
+exports.add("txt", ["0xFF", "0xFE"], {
     mime: "text/plain; charset=UTF-16LE",
     extension: "txt",
 });
-add("txt", ["0xFE", "0xFF"], {
+exports.add("txt", ["0xFE", "0xFF"], {
     mime: "text/plain; charset=UTF-16BE",
     extension: "txt",
 });
-add("txt", ["0xFF", "0xFE", "0x00", "0x00"], {
+exports.add("txt", ["0xFF", "0xFE", "0x00", "0x00"], {
     mime: "text/plain; charset=UTF-32LE",
     extension: "txt",
 });
-add("txt", ["0x00", "0x00", "0xFE", "0xFF"], {
+exports.add("txt", ["0x00", "0x00", "0xFE", "0xFF"], {
     mime: "text/plain; charset=UTF-32BE",
     extension: "txt",
 });
-add("SubRip", ["0x31", "0x0D", "0x0A", "0x30", "0x30", "0x3A"], {
+exports.add("SubRip", ["0x31", "0x0D", "0x0A", "0x30", "0x30", "0x3A"], {
     mime: "application/x-subrip",
     extension: "srt",
 });
-add("WebVTT", [
+exports.add("WebVTT", [
     "0xEF",
     "0xBB",
     "0xBF",
@@ -5838,7 +5003,7 @@ add("WebVTT", [
     mime: "text/vtt",
     extension: "vtt",
 });
-add("WebVTT", [
+exports.add("WebVTT", [
     "0xEF",
     "0xBB",
     "0xBF",
@@ -5853,7 +5018,7 @@ add("WebVTT", [
     mime: "text/vtt",
     extension: "vtt",
 });
-add("WebVTT", [
+exports.add("WebVTT", [
     "0xEF",
     "0xBB",
     "0xBF",
@@ -5868,7 +5033,7 @@ add("WebVTT", [
     mime: "text/vtt",
     extension: "vtt",
 });
-add("WebVTT", [
+exports.add("WebVTT", [
     "0xEF",
     "0xBB",
     "0xBF",
@@ -5883,50 +5048,56 @@ add("WebVTT", [
     mime: "text/vtt",
     extension: "vtt",
 });
-add("WebVTT", ["0x57", "0x45", "0x42", "0x56", "0x54", "0x54", "0x0A"], {
+exports.add("WebVTT", ["0x57", "0x45", "0x42", "0x56", "0x54", "0x54", "0x0A"], {
     mime: "text/vtt",
     extension: "vtt",
 });
-add("WebVTT", ["0x57", "0x45", "0x42", "0x56", "0x54", "0x54", "0x0D"], {
+exports.add("WebVTT", ["0x57", "0x45", "0x42", "0x56", "0x54", "0x54", "0x0D"], {
     mime: "text/vtt",
     extension: "vtt",
 });
-add("WebVTT", ["0x57", "0x45", "0x42", "0x56", "0x54", "0x54", "0x20"], {
+exports.add("WebVTT", ["0x57", "0x45", "0x42", "0x56", "0x54", "0x54", "0x20"], {
     mime: "text/vtt",
     extension: "vtt",
 });
-add("WebVTT", ["0x57", "0x45", "0x42", "0x56", "0x54", "0x54", "0x09"], {
+exports.add("WebVTT", ["0x57", "0x45", "0x42", "0x56", "0x54", "0x54", "0x09"], {
     mime: "text/vtt",
     extension: "vtt",
 });
-add("Json", ["0x7B"], {
+exports.add("Json", ["0x7B"], {
     mime: "application/json",
     extension: ".json",
 });
-add("Json", ["0x5B"], {
+exports.add("Json", ["0x5B"], {
     mime: "application/json",
     extension: ".json",
 });
-add("ELF", ["0x7F", "0x45", "0x4C", "0x46"], {
+exports.add("ELF", ["0x7F", "0x45", "0x4C", "0x46"], {
     mime: "application/x-executable",
     extension: ".elf",
 });
-add("Mach-O", ["0xFE", "0xED", "0xFA", "0xC"], {
+exports.add("Mach-O", ["0xFE", "0xED", "0xFA", "0xC"], {
     mime: "application/x-mach-binary",
     extension: ".o",
 });
-add("Mach-O", ["0xFE", "0xED", "0xFA", "0xCF"], {
+exports.add("Mach-O", ["0xFE", "0xED", "0xFA", "0xCF"], {
     mime: "application/x-executable",
     extension: "elf",
 });
-add("EML", ["0x52", "0x65", "0x63", "0x65", "0x69", "0x76", "0x65", "0x64", "0x3A"], {
+exports.add("EML", ["0x52", "0x65", "0x63", "0x65", "0x69", "0x76", "0x65", "0x64", "0x3A"], {
     mime: "message/rfc822",
     extension: ".eml",
 });
-add("SVG", ["0x3c", "0x73", "0x76", "0x67"], {
+exports.add("SVG", ["0x3c", "0x73", "0x76", "0x67"], {
     mime: "image/svg+xml",
     extension: "svg",
 });
+exports.add("avif", ["0x66", "0x74", "0x79", "0x70", "0x61", "0x76", "0x69", "0x66"], {
+    mime: "image/avif",
+    extension: "avif",
+}, 4);
+const createTree = () => tree;
+exports.createTree = createTree;
 exports["default"] = () => tree;
 
 
@@ -5960,22 +5131,19 @@ const createMatch = (leaf) => ({
     mime: leaf.info.mime,
     extension: leaf.info.extension,
 });
-const isMatchingNode = (tree, path) => tree && path.length === 0;
-const head = (arr) => arr[0];
-const tail = (arr) => arr.slice(1, arr.length);
+const isLeafNode = (tree, path) => tree && path.length === 0;
 const merge = (node, tree) => {
     if (node.bytes.length === 0)
         return tree;
-    const currentByte = head(node.bytes); // 0
-    const path = tail(node.bytes); // [1,2]
+    const [currentByte, ...path] = node.bytes;
     const currentTree = tree.bytes[currentByte];
     // traversed to end. Just add key to leaf.
-    if (isMatchingNode(currentTree, path)) {
+    if (isLeafNode(currentTree, path)) {
         const matchingNode = tree.bytes[currentByte];
         tree.bytes[currentByte] = {
             ...matchingNode,
             matches: [
-                ...(matchingNode.matches ? matchingNode.matches : []),
+                ...(matchingNode.matches ?? []),
                 createMatch(node),
             ],
         };
@@ -5984,14 +5152,9 @@ const merge = (node, tree) => {
     // Path exists already, Merge subtree
     if (tree.bytes[currentByte]) {
         tree.bytes[currentByte] = exports.merge(exports.createNode(node.typename, path, node.info), tree.bytes[currentByte]);
-        return tree;
     }
-    // Tree did not exist before
-    if (!tree.bytes[currentByte]) {
-        tree.bytes[currentByte] = {
-            ...tree.bytes[currentByte],
-            ...exports.createComplexNode(node.typename, path, node.info),
-        };
+    else { // Tree did not exist before
+        tree.bytes[currentByte] = exports.createComplexNode(node.typename, path, node.info);
     }
     return tree;
 };
@@ -6005,8 +5168,7 @@ const createComplexNode = (typename, bytes, info) => {
         bytes: {},
         matches: undefined,
     };
-    const currentKey = head(bytes); // 0
-    const path = tail(bytes); // [1,2]
+    const [currentKey, ...path] = bytes;
     if (bytes.length === 0) {
         return {
             matches: [
@@ -6026,6 +5188,14 @@ exports.createComplexNode = createComplexNode;
 
 /***/ }),
 
+/***/ "./node_modules/mime-db/db.json":
+/***/ ((module) => {
+
+"use strict";
+module.exports = /*#__PURE__*/JSON.parse('{"application/1d-interleaved-parityfec":{"source":"iana"},"application/3gpdash-qoe-report+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/3gpp-ims+xml":{"source":"iana","compressible":true},"application/3gpphal+json":{"source":"iana","compressible":true},"application/3gpphalforms+json":{"source":"iana","compressible":true},"application/a2l":{"source":"iana"},"application/ace+cbor":{"source":"iana"},"application/ace+json":{"source":"iana","compressible":true},"application/ace-groupcomm+cbor":{"source":"iana"},"application/ace-trl+cbor":{"source":"iana"},"application/activemessage":{"source":"iana"},"application/activity+json":{"source":"iana","compressible":true},"application/aif+cbor":{"source":"iana"},"application/aif+json":{"source":"iana","compressible":true},"application/alto-cdni+json":{"source":"iana","compressible":true},"application/alto-cdnifilter+json":{"source":"iana","compressible":true},"application/alto-costmap+json":{"source":"iana","compressible":true},"application/alto-costmapfilter+json":{"source":"iana","compressible":true},"application/alto-directory+json":{"source":"iana","compressible":true},"application/alto-endpointcost+json":{"source":"iana","compressible":true},"application/alto-endpointcostparams+json":{"source":"iana","compressible":true},"application/alto-endpointprop+json":{"source":"iana","compressible":true},"application/alto-endpointpropparams+json":{"source":"iana","compressible":true},"application/alto-error+json":{"source":"iana","compressible":true},"application/alto-networkmap+json":{"source":"iana","compressible":true},"application/alto-networkmapfilter+json":{"source":"iana","compressible":true},"application/alto-propmap+json":{"source":"iana","compressible":true},"application/alto-propmapparams+json":{"source":"iana","compressible":true},"application/alto-tips+json":{"source":"iana","compressible":true},"application/alto-tipsparams+json":{"source":"iana","compressible":true},"application/alto-updatestreamcontrol+json":{"source":"iana","compressible":true},"application/alto-updatestreamparams+json":{"source":"iana","compressible":true},"application/aml":{"source":"iana"},"application/andrew-inset":{"source":"iana","extensions":["ez"]},"application/appinstaller":{"compressible":false,"extensions":["appinstaller"]},"application/applefile":{"source":"iana"},"application/applixware":{"source":"apache","extensions":["aw"]},"application/appx":{"compressible":false,"extensions":["appx"]},"application/appxbundle":{"compressible":false,"extensions":["appxbundle"]},"application/at+jwt":{"source":"iana"},"application/atf":{"source":"iana"},"application/atfx":{"source":"iana"},"application/atom+xml":{"source":"iana","compressible":true,"extensions":["atom"]},"application/atomcat+xml":{"source":"iana","compressible":true,"extensions":["atomcat"]},"application/atomdeleted+xml":{"source":"iana","compressible":true,"extensions":["atomdeleted"]},"application/atomicmail":{"source":"iana"},"application/atomsvc+xml":{"source":"iana","compressible":true,"extensions":["atomsvc"]},"application/atsc-dwd+xml":{"source":"iana","compressible":true,"extensions":["dwd"]},"application/atsc-dynamic-event-message":{"source":"iana"},"application/atsc-held+xml":{"source":"iana","compressible":true,"extensions":["held"]},"application/atsc-rdt+json":{"source":"iana","compressible":true},"application/atsc-rsat+xml":{"source":"iana","compressible":true,"extensions":["rsat"]},"application/atxml":{"source":"iana"},"application/auth-policy+xml":{"source":"iana","compressible":true},"application/automationml-aml+xml":{"source":"iana","compressible":true,"extensions":["aml"]},"application/automationml-amlx+zip":{"source":"iana","compressible":false,"extensions":["amlx"]},"application/bacnet-xdd+zip":{"source":"iana","compressible":false},"application/batch-smtp":{"source":"iana"},"application/bdoc":{"compressible":false,"extensions":["bdoc"]},"application/beep+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/bufr":{"source":"iana"},"application/c2pa":{"source":"iana"},"application/calendar+json":{"source":"iana","compressible":true},"application/calendar+xml":{"source":"iana","compressible":true,"extensions":["xcs"]},"application/call-completion":{"source":"iana"},"application/cals-1840":{"source":"iana"},"application/captive+json":{"source":"iana","compressible":true},"application/cbor":{"source":"iana"},"application/cbor-seq":{"source":"iana"},"application/cccex":{"source":"iana"},"application/ccmp+xml":{"source":"iana","compressible":true},"application/ccxml+xml":{"source":"iana","compressible":true,"extensions":["ccxml"]},"application/cda+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/cdfx+xml":{"source":"iana","compressible":true,"extensions":["cdfx"]},"application/cdmi-capability":{"source":"iana","extensions":["cdmia"]},"application/cdmi-container":{"source":"iana","extensions":["cdmic"]},"application/cdmi-domain":{"source":"iana","extensions":["cdmid"]},"application/cdmi-object":{"source":"iana","extensions":["cdmio"]},"application/cdmi-queue":{"source":"iana","extensions":["cdmiq"]},"application/cdni":{"source":"iana"},"application/ce+cbor":{"source":"iana"},"application/cea":{"source":"iana"},"application/cea-2018+xml":{"source":"iana","compressible":true},"application/cellml+xml":{"source":"iana","compressible":true},"application/cfw":{"source":"iana"},"application/cid-edhoc+cbor-seq":{"source":"iana"},"application/city+json":{"source":"iana","compressible":true},"application/city+json-seq":{"source":"iana"},"application/clr":{"source":"iana"},"application/clue+xml":{"source":"iana","compressible":true},"application/clue_info+xml":{"source":"iana","compressible":true},"application/cms":{"source":"iana"},"application/cnrp+xml":{"source":"iana","compressible":true},"application/coap-eap":{"source":"iana"},"application/coap-group+json":{"source":"iana","compressible":true},"application/coap-payload":{"source":"iana"},"application/commonground":{"source":"iana"},"application/concise-problem-details+cbor":{"source":"iana"},"application/conference-info+xml":{"source":"iana","compressible":true},"application/cose":{"source":"iana"},"application/cose-key":{"source":"iana"},"application/cose-key-set":{"source":"iana"},"application/cose-x509":{"source":"iana"},"application/cpl+xml":{"source":"iana","compressible":true,"extensions":["cpl"]},"application/csrattrs":{"source":"iana"},"application/csta+xml":{"source":"iana","compressible":true},"application/cstadata+xml":{"source":"iana","compressible":true},"application/csvm+json":{"source":"iana","compressible":true},"application/cu-seeme":{"source":"apache","extensions":["cu"]},"application/cwl":{"source":"iana","extensions":["cwl"]},"application/cwl+json":{"source":"iana","compressible":true},"application/cwl+yaml":{"source":"iana"},"application/cwt":{"source":"iana"},"application/cybercash":{"source":"iana"},"application/dart":{"compressible":true},"application/dash+xml":{"source":"iana","compressible":true,"extensions":["mpd"]},"application/dash-patch+xml":{"source":"iana","compressible":true,"extensions":["mpp"]},"application/dashdelta":{"source":"iana"},"application/davmount+xml":{"source":"iana","compressible":true,"extensions":["davmount"]},"application/dca-rft":{"source":"iana"},"application/dcd":{"source":"iana"},"application/dec-dx":{"source":"iana"},"application/dialog-info+xml":{"source":"iana","compressible":true},"application/dicom":{"source":"iana","extensions":["dcm"]},"application/dicom+json":{"source":"iana","compressible":true},"application/dicom+xml":{"source":"iana","compressible":true},"application/dii":{"source":"iana"},"application/dit":{"source":"iana"},"application/dns":{"source":"iana"},"application/dns+json":{"source":"iana","compressible":true},"application/dns-message":{"source":"iana"},"application/docbook+xml":{"source":"apache","compressible":true,"extensions":["dbk"]},"application/dots+cbor":{"source":"iana"},"application/dpop+jwt":{"source":"iana"},"application/dskpp+xml":{"source":"iana","compressible":true},"application/dssc+der":{"source":"iana","extensions":["dssc"]},"application/dssc+xml":{"source":"iana","compressible":true,"extensions":["xdssc"]},"application/dvcs":{"source":"iana"},"application/eat+cwt":{"source":"iana"},"application/eat+jwt":{"source":"iana"},"application/eat-bun+cbor":{"source":"iana"},"application/eat-bun+json":{"source":"iana","compressible":true},"application/eat-ucs+cbor":{"source":"iana"},"application/eat-ucs+json":{"source":"iana","compressible":true},"application/ecmascript":{"source":"apache","compressible":true,"extensions":["ecma"]},"application/edhoc+cbor-seq":{"source":"iana"},"application/edi-consent":{"source":"iana"},"application/edi-x12":{"source":"iana","compressible":false},"application/edifact":{"source":"iana","compressible":false},"application/efi":{"source":"iana"},"application/elm+json":{"source":"iana","charset":"UTF-8","compressible":true},"application/elm+xml":{"source":"iana","compressible":true},"application/emergencycalldata.cap+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/emergencycalldata.comment+xml":{"source":"iana","compressible":true},"application/emergencycalldata.control+xml":{"source":"iana","compressible":true},"application/emergencycalldata.deviceinfo+xml":{"source":"iana","compressible":true},"application/emergencycalldata.ecall.msd":{"source":"iana"},"application/emergencycalldata.legacyesn+json":{"source":"iana","compressible":true},"application/emergencycalldata.providerinfo+xml":{"source":"iana","compressible":true},"application/emergencycalldata.serviceinfo+xml":{"source":"iana","compressible":true},"application/emergencycalldata.subscriberinfo+xml":{"source":"iana","compressible":true},"application/emergencycalldata.veds+xml":{"source":"iana","compressible":true},"application/emma+xml":{"source":"iana","compressible":true,"extensions":["emma"]},"application/emotionml+xml":{"source":"iana","compressible":true,"extensions":["emotionml"]},"application/encaprtp":{"source":"iana"},"application/entity-statement+jwt":{"source":"iana"},"application/epp+xml":{"source":"iana","compressible":true},"application/epub+zip":{"source":"iana","compressible":false,"extensions":["epub"]},"application/eshop":{"source":"iana"},"application/exi":{"source":"iana","extensions":["exi"]},"application/expect-ct-report+json":{"source":"iana","compressible":true},"application/express":{"source":"iana","extensions":["exp"]},"application/fastinfoset":{"source":"iana"},"application/fastsoap":{"source":"iana"},"application/fdf":{"source":"iana","extensions":["fdf"]},"application/fdt+xml":{"source":"iana","compressible":true,"extensions":["fdt"]},"application/fhir+json":{"source":"iana","charset":"UTF-8","compressible":true},"application/fhir+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/fido.trusted-apps+json":{"compressible":true},"application/fits":{"source":"iana"},"application/flexfec":{"source":"iana"},"application/font-sfnt":{"source":"iana"},"application/font-tdpfr":{"source":"iana","extensions":["pfr"]},"application/font-woff":{"source":"iana","compressible":false},"application/framework-attributes+xml":{"source":"iana","compressible":true},"application/geo+json":{"source":"iana","compressible":true,"extensions":["geojson"]},"application/geo+json-seq":{"source":"iana"},"application/geopackage+sqlite3":{"source":"iana"},"application/geopose+json":{"source":"iana","compressible":true},"application/geoxacml+json":{"source":"iana","compressible":true},"application/geoxacml+xml":{"source":"iana","compressible":true},"application/gltf-buffer":{"source":"iana"},"application/gml+xml":{"source":"iana","compressible":true,"extensions":["gml"]},"application/gnap-binding-jws":{"source":"iana"},"application/gnap-binding-jwsd":{"source":"iana"},"application/gnap-binding-rotation-jws":{"source":"iana"},"application/gnap-binding-rotation-jwsd":{"source":"iana"},"application/gpx+xml":{"source":"apache","compressible":true,"extensions":["gpx"]},"application/grib":{"source":"iana"},"application/gxf":{"source":"apache","extensions":["gxf"]},"application/gzip":{"source":"iana","compressible":false,"extensions":["gz"]},"application/h224":{"source":"iana"},"application/held+xml":{"source":"iana","compressible":true},"application/hjson":{"extensions":["hjson"]},"application/hl7v2+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/http":{"source":"iana"},"application/hyperstudio":{"source":"iana","extensions":["stk"]},"application/ibe-key-request+xml":{"source":"iana","compressible":true},"application/ibe-pkg-reply+xml":{"source":"iana","compressible":true},"application/ibe-pp-data":{"source":"iana"},"application/iges":{"source":"iana"},"application/im-iscomposing+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/index":{"source":"iana"},"application/index.cmd":{"source":"iana"},"application/index.obj":{"source":"iana"},"application/index.response":{"source":"iana"},"application/index.vnd":{"source":"iana"},"application/inkml+xml":{"source":"iana","compressible":true,"extensions":["ink","inkml"]},"application/iotp":{"source":"iana"},"application/ipfix":{"source":"iana","extensions":["ipfix"]},"application/ipp":{"source":"iana"},"application/isup":{"source":"iana"},"application/its+xml":{"source":"iana","compressible":true,"extensions":["its"]},"application/java-archive":{"source":"iana","compressible":false,"extensions":["jar","war","ear"]},"application/java-serialized-object":{"source":"apache","compressible":false,"extensions":["ser"]},"application/java-vm":{"source":"apache","compressible":false,"extensions":["class"]},"application/javascript":{"source":"apache","charset":"UTF-8","compressible":true,"extensions":["js"]},"application/jf2feed+json":{"source":"iana","compressible":true},"application/jose":{"source":"iana"},"application/jose+json":{"source":"iana","compressible":true},"application/jrd+json":{"source":"iana","compressible":true},"application/jscalendar+json":{"source":"iana","compressible":true},"application/jscontact+json":{"source":"iana","compressible":true},"application/json":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["json","map"]},"application/json-patch+json":{"source":"iana","compressible":true},"application/json-seq":{"source":"iana"},"application/json5":{"extensions":["json5"]},"application/jsonml+json":{"source":"apache","compressible":true,"extensions":["jsonml"]},"application/jsonpath":{"source":"iana"},"application/jwk+json":{"source":"iana","compressible":true},"application/jwk-set+json":{"source":"iana","compressible":true},"application/jwk-set+jwt":{"source":"iana"},"application/jwt":{"source":"iana"},"application/kpml-request+xml":{"source":"iana","compressible":true},"application/kpml-response+xml":{"source":"iana","compressible":true},"application/ld+json":{"source":"iana","compressible":true,"extensions":["jsonld"]},"application/lgr+xml":{"source":"iana","compressible":true,"extensions":["lgr"]},"application/link-format":{"source":"iana"},"application/linkset":{"source":"iana"},"application/linkset+json":{"source":"iana","compressible":true},"application/load-control+xml":{"source":"iana","compressible":true},"application/logout+jwt":{"source":"iana"},"application/lost+xml":{"source":"iana","compressible":true,"extensions":["lostxml"]},"application/lostsync+xml":{"source":"iana","compressible":true},"application/lpf+zip":{"source":"iana","compressible":false},"application/lxf":{"source":"iana"},"application/mac-binhex40":{"source":"iana","extensions":["hqx"]},"application/mac-compactpro":{"source":"apache","extensions":["cpt"]},"application/macwriteii":{"source":"iana"},"application/mads+xml":{"source":"iana","compressible":true,"extensions":["mads"]},"application/manifest+json":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["webmanifest"]},"application/marc":{"source":"iana","extensions":["mrc"]},"application/marcxml+xml":{"source":"iana","compressible":true,"extensions":["mrcx"]},"application/mathematica":{"source":"iana","extensions":["ma","nb","mb"]},"application/mathml+xml":{"source":"iana","compressible":true,"extensions":["mathml"]},"application/mathml-content+xml":{"source":"iana","compressible":true},"application/mathml-presentation+xml":{"source":"iana","compressible":true},"application/mbms-associated-procedure-description+xml":{"source":"iana","compressible":true},"application/mbms-deregister+xml":{"source":"iana","compressible":true},"application/mbms-envelope+xml":{"source":"iana","compressible":true},"application/mbms-msk+xml":{"source":"iana","compressible":true},"application/mbms-msk-response+xml":{"source":"iana","compressible":true},"application/mbms-protection-description+xml":{"source":"iana","compressible":true},"application/mbms-reception-report+xml":{"source":"iana","compressible":true},"application/mbms-register+xml":{"source":"iana","compressible":true},"application/mbms-register-response+xml":{"source":"iana","compressible":true},"application/mbms-schedule+xml":{"source":"iana","compressible":true},"application/mbms-user-service-description+xml":{"source":"iana","compressible":true},"application/mbox":{"source":"iana","extensions":["mbox"]},"application/media-policy-dataset+xml":{"source":"iana","compressible":true,"extensions":["mpf"]},"application/media_control+xml":{"source":"iana","compressible":true},"application/mediaservercontrol+xml":{"source":"iana","compressible":true,"extensions":["mscml"]},"application/merge-patch+json":{"source":"iana","compressible":true},"application/metalink+xml":{"source":"apache","compressible":true,"extensions":["metalink"]},"application/metalink4+xml":{"source":"iana","compressible":true,"extensions":["meta4"]},"application/mets+xml":{"source":"iana","compressible":true,"extensions":["mets"]},"application/mf4":{"source":"iana"},"application/mikey":{"source":"iana"},"application/mipc":{"source":"iana"},"application/missing-blocks+cbor-seq":{"source":"iana"},"application/mmt-aei+xml":{"source":"iana","compressible":true,"extensions":["maei"]},"application/mmt-usd+xml":{"source":"iana","compressible":true,"extensions":["musd"]},"application/mods+xml":{"source":"iana","compressible":true,"extensions":["mods"]},"application/moss-keys":{"source":"iana"},"application/moss-signature":{"source":"iana"},"application/mosskey-data":{"source":"iana"},"application/mosskey-request":{"source":"iana"},"application/mp21":{"source":"iana","extensions":["m21","mp21"]},"application/mp4":{"source":"iana","extensions":["mp4","mpg4","mp4s","m4p"]},"application/mpeg4-generic":{"source":"iana"},"application/mpeg4-iod":{"source":"iana"},"application/mpeg4-iod-xmt":{"source":"iana"},"application/mrb-consumer+xml":{"source":"iana","compressible":true},"application/mrb-publish+xml":{"source":"iana","compressible":true},"application/msc-ivr+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/msc-mixer+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/msix":{"compressible":false,"extensions":["msix"]},"application/msixbundle":{"compressible":false,"extensions":["msixbundle"]},"application/msword":{"source":"iana","compressible":false,"extensions":["doc","dot"]},"application/mud+json":{"source":"iana","compressible":true},"application/multipart-core":{"source":"iana"},"application/mxf":{"source":"iana","extensions":["mxf"]},"application/n-quads":{"source":"iana","extensions":["nq"]},"application/n-triples":{"source":"iana","extensions":["nt"]},"application/nasdata":{"source":"iana"},"application/news-checkgroups":{"source":"iana","charset":"US-ASCII"},"application/news-groupinfo":{"source":"iana","charset":"US-ASCII"},"application/news-transmission":{"source":"iana"},"application/nlsml+xml":{"source":"iana","compressible":true},"application/node":{"source":"iana","extensions":["cjs"]},"application/nss":{"source":"iana"},"application/oauth-authz-req+jwt":{"source":"iana"},"application/oblivious-dns-message":{"source":"iana"},"application/ocsp-request":{"source":"iana"},"application/ocsp-response":{"source":"iana"},"application/octet-stream":{"source":"iana","compressible":true,"extensions":["bin","dms","lrf","mar","so","dist","distz","pkg","bpk","dump","elc","deploy","exe","dll","deb","dmg","iso","img","msi","msp","msm","buffer"]},"application/oda":{"source":"iana","extensions":["oda"]},"application/odm+xml":{"source":"iana","compressible":true},"application/odx":{"source":"iana"},"application/oebps-package+xml":{"source":"iana","compressible":true,"extensions":["opf"]},"application/ogg":{"source":"iana","compressible":false,"extensions":["ogx"]},"application/ohttp-keys":{"source":"iana"},"application/omdoc+xml":{"source":"apache","compressible":true,"extensions":["omdoc"]},"application/onenote":{"source":"apache","extensions":["onetoc","onetoc2","onetmp","onepkg","one","onea"]},"application/opc-nodeset+xml":{"source":"iana","compressible":true},"application/oscore":{"source":"iana"},"application/oxps":{"source":"iana","extensions":["oxps"]},"application/p21":{"source":"iana"},"application/p21+zip":{"source":"iana","compressible":false},"application/p2p-overlay+xml":{"source":"iana","compressible":true,"extensions":["relo"]},"application/parityfec":{"source":"iana"},"application/passport":{"source":"iana"},"application/patch-ops-error+xml":{"source":"iana","compressible":true,"extensions":["xer"]},"application/pdf":{"source":"iana","compressible":false,"extensions":["pdf"]},"application/pdx":{"source":"iana"},"application/pem-certificate-chain":{"source":"iana"},"application/pgp-encrypted":{"source":"iana","compressible":false,"extensions":["pgp"]},"application/pgp-keys":{"source":"iana","extensions":["asc"]},"application/pgp-signature":{"source":"iana","extensions":["sig","asc"]},"application/pics-rules":{"source":"apache","extensions":["prf"]},"application/pidf+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/pidf-diff+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/pkcs10":{"source":"iana","extensions":["p10"]},"application/pkcs12":{"source":"iana"},"application/pkcs7-mime":{"source":"iana","extensions":["p7m","p7c"]},"application/pkcs7-signature":{"source":"iana","extensions":["p7s"]},"application/pkcs8":{"source":"iana","extensions":["p8"]},"application/pkcs8-encrypted":{"source":"iana"},"application/pkix-attr-cert":{"source":"iana","extensions":["ac"]},"application/pkix-cert":{"source":"iana","extensions":["cer"]},"application/pkix-crl":{"source":"iana","extensions":["crl"]},"application/pkix-pkipath":{"source":"iana","extensions":["pkipath"]},"application/pkixcmp":{"source":"iana","extensions":["pki"]},"application/pls+xml":{"source":"iana","compressible":true,"extensions":["pls"]},"application/poc-settings+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/postscript":{"source":"iana","compressible":true,"extensions":["ai","eps","ps"]},"application/ppsp-tracker+json":{"source":"iana","compressible":true},"application/private-token-issuer-directory":{"source":"iana"},"application/private-token-request":{"source":"iana"},"application/private-token-response":{"source":"iana"},"application/problem+json":{"source":"iana","compressible":true},"application/problem+xml":{"source":"iana","compressible":true},"application/provenance+xml":{"source":"iana","compressible":true,"extensions":["provx"]},"application/provided-claims+jwt":{"source":"iana"},"application/prs.alvestrand.titrax-sheet":{"source":"iana"},"application/prs.cww":{"source":"iana","extensions":["cww"]},"application/prs.cyn":{"source":"iana","charset":"7-BIT"},"application/prs.hpub+zip":{"source":"iana","compressible":false},"application/prs.implied-document+xml":{"source":"iana","compressible":true},"application/prs.implied-executable":{"source":"iana"},"application/prs.implied-object+json":{"source":"iana","compressible":true},"application/prs.implied-object+json-seq":{"source":"iana"},"application/prs.implied-object+yaml":{"source":"iana"},"application/prs.implied-structure":{"source":"iana"},"application/prs.mayfile":{"source":"iana"},"application/prs.nprend":{"source":"iana"},"application/prs.plucker":{"source":"iana"},"application/prs.rdf-xml-crypt":{"source":"iana"},"application/prs.vcfbzip2":{"source":"iana"},"application/prs.xsf+xml":{"source":"iana","compressible":true,"extensions":["xsf"]},"application/pskc+xml":{"source":"iana","compressible":true,"extensions":["pskcxml"]},"application/pvd+json":{"source":"iana","compressible":true},"application/qsig":{"source":"iana"},"application/raml+yaml":{"compressible":true,"extensions":["raml"]},"application/raptorfec":{"source":"iana"},"application/rdap+json":{"source":"iana","compressible":true},"application/rdf+xml":{"source":"iana","compressible":true,"extensions":["rdf","owl"]},"application/reginfo+xml":{"source":"iana","compressible":true,"extensions":["rif"]},"application/relax-ng-compact-syntax":{"source":"iana","extensions":["rnc"]},"application/remote-printing":{"source":"apache"},"application/reputon+json":{"source":"iana","compressible":true},"application/resolve-response+jwt":{"source":"iana"},"application/resource-lists+xml":{"source":"iana","compressible":true,"extensions":["rl"]},"application/resource-lists-diff+xml":{"source":"iana","compressible":true,"extensions":["rld"]},"application/rfc+xml":{"source":"iana","compressible":true},"application/riscos":{"source":"iana"},"application/rlmi+xml":{"source":"iana","compressible":true},"application/rls-services+xml":{"source":"iana","compressible":true,"extensions":["rs"]},"application/route-apd+xml":{"source":"iana","compressible":true,"extensions":["rapd"]},"application/route-s-tsid+xml":{"source":"iana","compressible":true,"extensions":["sls"]},"application/route-usd+xml":{"source":"iana","compressible":true,"extensions":["rusd"]},"application/rpki-checklist":{"source":"iana"},"application/rpki-ghostbusters":{"source":"iana","extensions":["gbr"]},"application/rpki-manifest":{"source":"iana","extensions":["mft"]},"application/rpki-publication":{"source":"iana"},"application/rpki-roa":{"source":"iana","extensions":["roa"]},"application/rpki-signed-tal":{"source":"iana"},"application/rpki-updown":{"source":"iana"},"application/rsd+xml":{"source":"apache","compressible":true,"extensions":["rsd"]},"application/rss+xml":{"source":"apache","compressible":true,"extensions":["rss"]},"application/rtf":{"source":"iana","compressible":true,"extensions":["rtf"]},"application/rtploopback":{"source":"iana"},"application/rtx":{"source":"iana"},"application/samlassertion+xml":{"source":"iana","compressible":true},"application/samlmetadata+xml":{"source":"iana","compressible":true},"application/sarif+json":{"source":"iana","compressible":true},"application/sarif-external-properties+json":{"source":"iana","compressible":true},"application/sbe":{"source":"iana"},"application/sbml+xml":{"source":"iana","compressible":true,"extensions":["sbml"]},"application/scaip+xml":{"source":"iana","compressible":true},"application/scim+json":{"source":"iana","compressible":true},"application/scvp-cv-request":{"source":"iana","extensions":["scq"]},"application/scvp-cv-response":{"source":"iana","extensions":["scs"]},"application/scvp-vp-request":{"source":"iana","extensions":["spq"]},"application/scvp-vp-response":{"source":"iana","extensions":["spp"]},"application/sdp":{"source":"iana","extensions":["sdp"]},"application/secevent+jwt":{"source":"iana"},"application/senml+cbor":{"source":"iana"},"application/senml+json":{"source":"iana","compressible":true},"application/senml+xml":{"source":"iana","compressible":true,"extensions":["senmlx"]},"application/senml-etch+cbor":{"source":"iana"},"application/senml-etch+json":{"source":"iana","compressible":true},"application/senml-exi":{"source":"iana"},"application/sensml+cbor":{"source":"iana"},"application/sensml+json":{"source":"iana","compressible":true},"application/sensml+xml":{"source":"iana","compressible":true,"extensions":["sensmlx"]},"application/sensml-exi":{"source":"iana"},"application/sep+xml":{"source":"iana","compressible":true},"application/sep-exi":{"source":"iana"},"application/session-info":{"source":"iana"},"application/set-payment":{"source":"iana"},"application/set-payment-initiation":{"source":"iana","extensions":["setpay"]},"application/set-registration":{"source":"iana"},"application/set-registration-initiation":{"source":"iana","extensions":["setreg"]},"application/sgml":{"source":"iana"},"application/sgml-open-catalog":{"source":"iana"},"application/shf+xml":{"source":"iana","compressible":true,"extensions":["shf"]},"application/sieve":{"source":"iana","extensions":["siv","sieve"]},"application/simple-filter+xml":{"source":"iana","compressible":true},"application/simple-message-summary":{"source":"iana"},"application/simplesymbolcontainer":{"source":"iana"},"application/sipc":{"source":"iana"},"application/slate":{"source":"iana"},"application/smil":{"source":"apache"},"application/smil+xml":{"source":"iana","compressible":true,"extensions":["smi","smil"]},"application/smpte336m":{"source":"iana"},"application/soap+fastinfoset":{"source":"iana"},"application/soap+xml":{"source":"iana","compressible":true},"application/sparql-query":{"source":"iana","extensions":["rq"]},"application/sparql-results+xml":{"source":"iana","compressible":true,"extensions":["srx"]},"application/spdx+json":{"source":"iana","compressible":true},"application/spirits-event+xml":{"source":"iana","compressible":true},"application/sql":{"source":"iana","extensions":["sql"]},"application/srgs":{"source":"iana","extensions":["gram"]},"application/srgs+xml":{"source":"iana","compressible":true,"extensions":["grxml"]},"application/sru+xml":{"source":"iana","compressible":true,"extensions":["sru"]},"application/ssdl+xml":{"source":"apache","compressible":true,"extensions":["ssdl"]},"application/sslkeylogfile":{"source":"iana"},"application/ssml+xml":{"source":"iana","compressible":true,"extensions":["ssml"]},"application/st2110-41":{"source":"iana"},"application/stix+json":{"source":"iana","compressible":true},"application/stratum":{"source":"iana"},"application/swid+cbor":{"source":"iana"},"application/swid+xml":{"source":"iana","compressible":true,"extensions":["swidtag"]},"application/tamp-apex-update":{"source":"iana"},"application/tamp-apex-update-confirm":{"source":"iana"},"application/tamp-community-update":{"source":"iana"},"application/tamp-community-update-confirm":{"source":"iana"},"application/tamp-error":{"source":"iana"},"application/tamp-sequence-adjust":{"source":"iana"},"application/tamp-sequence-adjust-confirm":{"source":"iana"},"application/tamp-status-query":{"source":"iana"},"application/tamp-status-response":{"source":"iana"},"application/tamp-update":{"source":"iana"},"application/tamp-update-confirm":{"source":"iana"},"application/tar":{"compressible":true},"application/taxii+json":{"source":"iana","compressible":true},"application/td+json":{"source":"iana","compressible":true},"application/tei+xml":{"source":"iana","compressible":true,"extensions":["tei","teicorpus"]},"application/tetra_isi":{"source":"iana"},"application/thraud+xml":{"source":"iana","compressible":true,"extensions":["tfi"]},"application/timestamp-query":{"source":"iana"},"application/timestamp-reply":{"source":"iana"},"application/timestamped-data":{"source":"iana","extensions":["tsd"]},"application/tlsrpt+gzip":{"source":"iana"},"application/tlsrpt+json":{"source":"iana","compressible":true},"application/tm+json":{"source":"iana","compressible":true},"application/tnauthlist":{"source":"iana"},"application/toc+cbor":{"source":"iana"},"application/token-introspection+jwt":{"source":"iana"},"application/toml":{"source":"iana","compressible":true,"extensions":["toml"]},"application/trickle-ice-sdpfrag":{"source":"iana"},"application/trig":{"source":"iana","extensions":["trig"]},"application/trust-chain+json":{"source":"iana","compressible":true},"application/trust-mark+jwt":{"source":"iana"},"application/trust-mark-delegation+jwt":{"source":"iana"},"application/ttml+xml":{"source":"iana","compressible":true,"extensions":["ttml"]},"application/tve-trigger":{"source":"iana"},"application/tzif":{"source":"iana"},"application/tzif-leap":{"source":"iana"},"application/ubjson":{"compressible":false,"extensions":["ubj"]},"application/uccs+cbor":{"source":"iana"},"application/ujcs+json":{"source":"iana","compressible":true},"application/ulpfec":{"source":"iana"},"application/urc-grpsheet+xml":{"source":"iana","compressible":true},"application/urc-ressheet+xml":{"source":"iana","compressible":true,"extensions":["rsheet"]},"application/urc-targetdesc+xml":{"source":"iana","compressible":true,"extensions":["td"]},"application/urc-uisocketdesc+xml":{"source":"iana","compressible":true},"application/vc":{"source":"iana"},"application/vc+cose":{"source":"iana"},"application/vc+jwt":{"source":"iana"},"application/vcard+json":{"source":"iana","compressible":true},"application/vcard+xml":{"source":"iana","compressible":true},"application/vemmi":{"source":"iana"},"application/vividence.scriptfile":{"source":"apache"},"application/vnd.1000minds.decision-model+xml":{"source":"iana","compressible":true,"extensions":["1km"]},"application/vnd.1ob":{"source":"iana"},"application/vnd.3gpp-prose+xml":{"source":"iana","compressible":true},"application/vnd.3gpp-prose-pc3a+xml":{"source":"iana","compressible":true},"application/vnd.3gpp-prose-pc3ach+xml":{"source":"iana","compressible":true},"application/vnd.3gpp-prose-pc3ch+xml":{"source":"iana","compressible":true},"application/vnd.3gpp-prose-pc8+xml":{"source":"iana","compressible":true},"application/vnd.3gpp-v2x-local-service-information":{"source":"iana"},"application/vnd.3gpp.5gnas":{"source":"iana"},"application/vnd.3gpp.5gsa2x":{"source":"iana"},"application/vnd.3gpp.5gsa2x-local-service-information":{"source":"iana"},"application/vnd.3gpp.5gsv2x":{"source":"iana"},"application/vnd.3gpp.5gsv2x-local-service-information":{"source":"iana"},"application/vnd.3gpp.access-transfer-events+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.bsf+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.crs+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.current-location-discovery+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.gmop+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.gtpc":{"source":"iana"},"application/vnd.3gpp.interworking-data":{"source":"iana"},"application/vnd.3gpp.lpp":{"source":"iana"},"application/vnd.3gpp.mc-signalling-ear":{"source":"iana"},"application/vnd.3gpp.mcdata-affiliation-command+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-msgstore-ctrl-request+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-payload":{"source":"iana"},"application/vnd.3gpp.mcdata-regroup+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-service-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-signalling":{"source":"iana"},"application/vnd.3gpp.mcdata-ue-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-user-profile+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-affiliation-command+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-floor-request+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-location-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-mbms-usage-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-regroup+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-service-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-signed+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-ue-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-ue-init-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-user-profile+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-affiliation-command+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-location-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-mbms-usage-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-regroup+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-service-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-transmission-request+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-ue-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-user-profile+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mid-call+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.ngap":{"source":"iana"},"application/vnd.3gpp.pfcp":{"source":"iana"},"application/vnd.3gpp.pic-bw-large":{"source":"iana","extensions":["plb"]},"application/vnd.3gpp.pic-bw-small":{"source":"iana","extensions":["psb"]},"application/vnd.3gpp.pic-bw-var":{"source":"iana","extensions":["pvb"]},"application/vnd.3gpp.pinapp-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.s1ap":{"source":"iana"},"application/vnd.3gpp.seal-group-doc+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.seal-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.seal-location-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.seal-mbms-usage-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.seal-network-qos-management-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.seal-ue-config-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.seal-unicast-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.seal-user-profile-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.sms":{"source":"iana"},"application/vnd.3gpp.sms+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.srvcc-ext+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.srvcc-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.state-and-event-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.ussd+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.v2x":{"source":"iana"},"application/vnd.3gpp.vae-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp2.bcmcsinfo+xml":{"source":"iana","compressible":true},"application/vnd.3gpp2.sms":{"source":"iana"},"application/vnd.3gpp2.tcap":{"source":"iana","extensions":["tcap"]},"application/vnd.3lightssoftware.imagescal":{"source":"iana"},"application/vnd.3m.post-it-notes":{"source":"iana","extensions":["pwn"]},"application/vnd.accpac.simply.aso":{"source":"iana","extensions":["aso"]},"application/vnd.accpac.simply.imp":{"source":"iana","extensions":["imp"]},"application/vnd.acm.addressxfer+json":{"source":"iana","compressible":true},"application/vnd.acm.chatbot+json":{"source":"iana","compressible":true},"application/vnd.acucobol":{"source":"iana","extensions":["acu"]},"application/vnd.acucorp":{"source":"iana","extensions":["atc","acutc"]},"application/vnd.adobe.air-application-installer-package+zip":{"source":"apache","compressible":false,"extensions":["air"]},"application/vnd.adobe.flash.movie":{"source":"iana"},"application/vnd.adobe.formscentral.fcdt":{"source":"iana","extensions":["fcdt"]},"application/vnd.adobe.fxp":{"source":"iana","extensions":["fxp","fxpl"]},"application/vnd.adobe.partial-upload":{"source":"iana"},"application/vnd.adobe.xdp+xml":{"source":"iana","compressible":true,"extensions":["xdp"]},"application/vnd.adobe.xfdf":{"source":"apache","extensions":["xfdf"]},"application/vnd.aether.imp":{"source":"iana"},"application/vnd.afpc.afplinedata":{"source":"iana"},"application/vnd.afpc.afplinedata-pagedef":{"source":"iana"},"application/vnd.afpc.cmoca-cmresource":{"source":"iana"},"application/vnd.afpc.foca-charset":{"source":"iana"},"application/vnd.afpc.foca-codedfont":{"source":"iana"},"application/vnd.afpc.foca-codepage":{"source":"iana"},"application/vnd.afpc.modca":{"source":"iana"},"application/vnd.afpc.modca-cmtable":{"source":"iana"},"application/vnd.afpc.modca-formdef":{"source":"iana"},"application/vnd.afpc.modca-mediummap":{"source":"iana"},"application/vnd.afpc.modca-objectcontainer":{"source":"iana"},"application/vnd.afpc.modca-overlay":{"source":"iana"},"application/vnd.afpc.modca-pagesegment":{"source":"iana"},"application/vnd.age":{"source":"iana","extensions":["age"]},"application/vnd.ah-barcode":{"source":"apache"},"application/vnd.ahead.space":{"source":"iana","extensions":["ahead"]},"application/vnd.airzip.filesecure.azf":{"source":"iana","extensions":["azf"]},"application/vnd.airzip.filesecure.azs":{"source":"iana","extensions":["azs"]},"application/vnd.amadeus+json":{"source":"iana","compressible":true},"application/vnd.amazon.ebook":{"source":"apache","extensions":["azw"]},"application/vnd.amazon.mobi8-ebook":{"source":"iana"},"application/vnd.americandynamics.acc":{"source":"iana","extensions":["acc"]},"application/vnd.amiga.ami":{"source":"iana","extensions":["ami"]},"application/vnd.amundsen.maze+xml":{"source":"iana","compressible":true},"application/vnd.android.ota":{"source":"iana"},"application/vnd.android.package-archive":{"source":"apache","compressible":false,"extensions":["apk"]},"application/vnd.anki":{"source":"iana"},"application/vnd.anser-web-certificate-issue-initiation":{"source":"iana","extensions":["cii"]},"application/vnd.anser-web-funds-transfer-initiation":{"source":"apache","extensions":["fti"]},"application/vnd.antix.game-component":{"source":"iana","extensions":["atx"]},"application/vnd.apache.arrow.file":{"source":"iana"},"application/vnd.apache.arrow.stream":{"source":"iana"},"application/vnd.apache.parquet":{"source":"iana"},"application/vnd.apache.thrift.binary":{"source":"iana"},"application/vnd.apache.thrift.compact":{"source":"iana"},"application/vnd.apache.thrift.json":{"source":"iana"},"application/vnd.apexlang":{"source":"iana"},"application/vnd.api+json":{"source":"iana","compressible":true},"application/vnd.aplextor.warrp+json":{"source":"iana","compressible":true},"application/vnd.apothekende.reservation+json":{"source":"iana","compressible":true},"application/vnd.apple.installer+xml":{"source":"iana","compressible":true,"extensions":["mpkg"]},"application/vnd.apple.keynote":{"source":"iana","extensions":["key"]},"application/vnd.apple.mpegurl":{"source":"iana","extensions":["m3u8"]},"application/vnd.apple.numbers":{"source":"iana","extensions":["numbers"]},"application/vnd.apple.pages":{"source":"iana","extensions":["pages"]},"application/vnd.apple.pkpass":{"compressible":false,"extensions":["pkpass"]},"application/vnd.arastra.swi":{"source":"apache"},"application/vnd.aristanetworks.swi":{"source":"iana","extensions":["swi"]},"application/vnd.artisan+json":{"source":"iana","compressible":true},"application/vnd.artsquare":{"source":"iana"},"application/vnd.astraea-software.iota":{"source":"iana","extensions":["iota"]},"application/vnd.audiograph":{"source":"iana","extensions":["aep"]},"application/vnd.autodesk.fbx":{"extensions":["fbx"]},"application/vnd.autopackage":{"source":"iana"},"application/vnd.avalon+json":{"source":"iana","compressible":true},"application/vnd.avistar+xml":{"source":"iana","compressible":true},"application/vnd.balsamiq.bmml+xml":{"source":"iana","compressible":true,"extensions":["bmml"]},"application/vnd.balsamiq.bmpr":{"source":"iana"},"application/vnd.banana-accounting":{"source":"iana"},"application/vnd.bbf.usp.error":{"source":"iana"},"application/vnd.bbf.usp.msg":{"source":"iana"},"application/vnd.bbf.usp.msg+json":{"source":"iana","compressible":true},"application/vnd.bekitzur-stech+json":{"source":"iana","compressible":true},"application/vnd.belightsoft.lhzd+zip":{"source":"iana","compressible":false},"application/vnd.belightsoft.lhzl+zip":{"source":"iana","compressible":false},"application/vnd.bint.med-content":{"source":"iana"},"application/vnd.biopax.rdf+xml":{"source":"iana","compressible":true},"application/vnd.blink-idb-value-wrapper":{"source":"iana"},"application/vnd.blueice.multipass":{"source":"iana","extensions":["mpm"]},"application/vnd.bluetooth.ep.oob":{"source":"iana"},"application/vnd.bluetooth.le.oob":{"source":"iana"},"application/vnd.bmi":{"source":"iana","extensions":["bmi"]},"application/vnd.bpf":{"source":"iana"},"application/vnd.bpf3":{"source":"iana"},"application/vnd.businessobjects":{"source":"iana","extensions":["rep"]},"application/vnd.byu.uapi+json":{"source":"iana","compressible":true},"application/vnd.bzip3":{"source":"iana"},"application/vnd.c3voc.schedule+xml":{"source":"iana","compressible":true},"application/vnd.cab-jscript":{"source":"iana"},"application/vnd.canon-cpdl":{"source":"iana"},"application/vnd.canon-lips":{"source":"iana"},"application/vnd.capasystems-pg+json":{"source":"iana","compressible":true},"application/vnd.cendio.thinlinc.clientconf":{"source":"iana"},"application/vnd.century-systems.tcp_stream":{"source":"iana"},"application/vnd.chemdraw+xml":{"source":"iana","compressible":true,"extensions":["cdxml"]},"application/vnd.chess-pgn":{"source":"iana"},"application/vnd.chipnuts.karaoke-mmd":{"source":"iana","extensions":["mmd"]},"application/vnd.ciedi":{"source":"iana"},"application/vnd.cinderella":{"source":"iana","extensions":["cdy"]},"application/vnd.cirpack.isdn-ext":{"source":"iana"},"application/vnd.citationstyles.style+xml":{"source":"iana","compressible":true,"extensions":["csl"]},"application/vnd.claymore":{"source":"iana","extensions":["cla"]},"application/vnd.cloanto.rp9":{"source":"iana","extensions":["rp9"]},"application/vnd.clonk.c4group":{"source":"iana","extensions":["c4g","c4d","c4f","c4p","c4u"]},"application/vnd.cluetrust.cartomobile-config":{"source":"iana","extensions":["c11amc"]},"application/vnd.cluetrust.cartomobile-config-pkg":{"source":"iana","extensions":["c11amz"]},"application/vnd.cncf.helm.chart.content.v1.tar+gzip":{"source":"iana"},"application/vnd.cncf.helm.chart.provenance.v1.prov":{"source":"iana"},"application/vnd.cncf.helm.config.v1+json":{"source":"iana","compressible":true},"application/vnd.coffeescript":{"source":"iana"},"application/vnd.collabio.xodocuments.document":{"source":"iana"},"application/vnd.collabio.xodocuments.document-template":{"source":"iana"},"application/vnd.collabio.xodocuments.presentation":{"source":"iana"},"application/vnd.collabio.xodocuments.presentation-template":{"source":"iana"},"application/vnd.collabio.xodocuments.spreadsheet":{"source":"iana"},"application/vnd.collabio.xodocuments.spreadsheet-template":{"source":"iana"},"application/vnd.collection+json":{"source":"iana","compressible":true},"application/vnd.collection.doc+json":{"source":"iana","compressible":true},"application/vnd.collection.next+json":{"source":"iana","compressible":true},"application/vnd.comicbook+zip":{"source":"iana","compressible":false},"application/vnd.comicbook-rar":{"source":"iana"},"application/vnd.commerce-battelle":{"source":"iana"},"application/vnd.commonspace":{"source":"iana","extensions":["csp"]},"application/vnd.contact.cmsg":{"source":"iana","extensions":["cdbcmsg"]},"application/vnd.coreos.ignition+json":{"source":"iana","compressible":true},"application/vnd.cosmocaller":{"source":"iana","extensions":["cmc"]},"application/vnd.crick.clicker":{"source":"iana","extensions":["clkx"]},"application/vnd.crick.clicker.keyboard":{"source":"iana","extensions":["clkk"]},"application/vnd.crick.clicker.palette":{"source":"iana","extensions":["clkp"]},"application/vnd.crick.clicker.template":{"source":"iana","extensions":["clkt"]},"application/vnd.crick.clicker.wordbank":{"source":"iana","extensions":["clkw"]},"application/vnd.criticaltools.wbs+xml":{"source":"iana","compressible":true,"extensions":["wbs"]},"application/vnd.cryptii.pipe+json":{"source":"iana","compressible":true},"application/vnd.crypto-shade-file":{"source":"iana"},"application/vnd.cryptomator.encrypted":{"source":"iana"},"application/vnd.cryptomator.vault":{"source":"iana"},"application/vnd.ctc-posml":{"source":"iana","extensions":["pml"]},"application/vnd.ctct.ws+xml":{"source":"iana","compressible":true},"application/vnd.cups-pdf":{"source":"iana"},"application/vnd.cups-postscript":{"source":"iana"},"application/vnd.cups-ppd":{"source":"iana","extensions":["ppd"]},"application/vnd.cups-raster":{"source":"iana"},"application/vnd.cups-raw":{"source":"iana"},"application/vnd.curl":{"source":"iana"},"application/vnd.curl.car":{"source":"apache","extensions":["car"]},"application/vnd.curl.pcurl":{"source":"apache","extensions":["pcurl"]},"application/vnd.cyan.dean.root+xml":{"source":"iana","compressible":true},"application/vnd.cybank":{"source":"iana"},"application/vnd.cyclonedx+json":{"source":"iana","compressible":true},"application/vnd.cyclonedx+xml":{"source":"iana","compressible":true},"application/vnd.d2l.coursepackage1p0+zip":{"source":"iana","compressible":false},"application/vnd.d3m-dataset":{"source":"iana"},"application/vnd.d3m-problem":{"source":"iana"},"application/vnd.dart":{"source":"iana","compressible":true,"extensions":["dart"]},"application/vnd.data-vision.rdz":{"source":"iana","extensions":["rdz"]},"application/vnd.datalog":{"source":"iana"},"application/vnd.datapackage+json":{"source":"iana","compressible":true},"application/vnd.dataresource+json":{"source":"iana","compressible":true},"application/vnd.dbf":{"source":"iana","extensions":["dbf"]},"application/vnd.dcmp+xml":{"source":"iana","compressible":true,"extensions":["dcmp"]},"application/vnd.debian.binary-package":{"source":"iana"},"application/vnd.dece.data":{"source":"iana","extensions":["uvf","uvvf","uvd","uvvd"]},"application/vnd.dece.ttml+xml":{"source":"iana","compressible":true,"extensions":["uvt","uvvt"]},"application/vnd.dece.unspecified":{"source":"iana","extensions":["uvx","uvvx"]},"application/vnd.dece.zip":{"source":"iana","extensions":["uvz","uvvz"]},"application/vnd.denovo.fcselayout-link":{"source":"iana","extensions":["fe_launch"]},"application/vnd.desmume.movie":{"source":"iana"},"application/vnd.dir-bi.plate-dl-nosuffix":{"source":"iana"},"application/vnd.dm.delegation+xml":{"source":"iana","compressible":true},"application/vnd.dna":{"source":"iana","extensions":["dna"]},"application/vnd.document+json":{"source":"iana","compressible":true},"application/vnd.dolby.mlp":{"source":"apache","extensions":["mlp"]},"application/vnd.dolby.mobile.1":{"source":"iana"},"application/vnd.dolby.mobile.2":{"source":"iana"},"application/vnd.doremir.scorecloud-binary-document":{"source":"iana"},"application/vnd.dpgraph":{"source":"iana","extensions":["dpg"]},"application/vnd.dreamfactory":{"source":"iana","extensions":["dfac"]},"application/vnd.drive+json":{"source":"iana","compressible":true},"application/vnd.ds-keypoint":{"source":"apache","extensions":["kpxx"]},"application/vnd.dtg.local":{"source":"iana"},"application/vnd.dtg.local.flash":{"source":"iana"},"application/vnd.dtg.local.html":{"source":"iana"},"application/vnd.dvb.ait":{"source":"iana","extensions":["ait"]},"application/vnd.dvb.dvbisl+xml":{"source":"iana","compressible":true},"application/vnd.dvb.dvbj":{"source":"iana"},"application/vnd.dvb.esgcontainer":{"source":"iana"},"application/vnd.dvb.ipdcdftnotifaccess":{"source":"iana"},"application/vnd.dvb.ipdcesgaccess":{"source":"iana"},"application/vnd.dvb.ipdcesgaccess2":{"source":"iana"},"application/vnd.dvb.ipdcesgpdd":{"source":"iana"},"application/vnd.dvb.ipdcroaming":{"source":"iana"},"application/vnd.dvb.iptv.alfec-base":{"source":"iana"},"application/vnd.dvb.iptv.alfec-enhancement":{"source":"iana"},"application/vnd.dvb.notif-aggregate-root+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-container+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-generic+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-ia-msglist+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-ia-registration-request+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-ia-registration-response+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-init+xml":{"source":"iana","compressible":true},"application/vnd.dvb.pfr":{"source":"iana"},"application/vnd.dvb.service":{"source":"iana","extensions":["svc"]},"application/vnd.dxr":{"source":"iana"},"application/vnd.dynageo":{"source":"iana","extensions":["geo"]},"application/vnd.dzr":{"source":"iana"},"application/vnd.easykaraoke.cdgdownload":{"source":"iana"},"application/vnd.ecdis-update":{"source":"iana"},"application/vnd.ecip.rlp":{"source":"iana"},"application/vnd.eclipse.ditto+json":{"source":"iana","compressible":true},"application/vnd.ecowin.chart":{"source":"iana","extensions":["mag"]},"application/vnd.ecowin.filerequest":{"source":"iana"},"application/vnd.ecowin.fileupdate":{"source":"iana"},"application/vnd.ecowin.series":{"source":"iana"},"application/vnd.ecowin.seriesrequest":{"source":"iana"},"application/vnd.ecowin.seriesupdate":{"source":"iana"},"application/vnd.efi.img":{"source":"iana"},"application/vnd.efi.iso":{"source":"iana"},"application/vnd.eln+zip":{"source":"iana","compressible":false},"application/vnd.emclient.accessrequest+xml":{"source":"iana","compressible":true},"application/vnd.enliven":{"source":"iana","extensions":["nml"]},"application/vnd.enphase.envoy":{"source":"iana"},"application/vnd.eprints.data+xml":{"source":"iana","compressible":true},"application/vnd.epson.esf":{"source":"iana","extensions":["esf"]},"application/vnd.epson.msf":{"source":"iana","extensions":["msf"]},"application/vnd.epson.quickanime":{"source":"iana","extensions":["qam"]},"application/vnd.epson.salt":{"source":"iana","extensions":["slt"]},"application/vnd.epson.ssf":{"source":"iana","extensions":["ssf"]},"application/vnd.ericsson.quickcall":{"source":"iana"},"application/vnd.erofs":{"source":"iana"},"application/vnd.espass-espass+zip":{"source":"iana","compressible":false},"application/vnd.eszigno3+xml":{"source":"iana","compressible":true,"extensions":["es3","et3"]},"application/vnd.etsi.aoc+xml":{"source":"iana","compressible":true},"application/vnd.etsi.asic-e+zip":{"source":"iana","compressible":false},"application/vnd.etsi.asic-s+zip":{"source":"iana","compressible":false},"application/vnd.etsi.cug+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvcommand+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvdiscovery+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvprofile+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvsad-bc+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvsad-cod+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvsad-npvr+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvservice+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvsync+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvueprofile+xml":{"source":"iana","compressible":true},"application/vnd.etsi.mcid+xml":{"source":"iana","compressible":true},"application/vnd.etsi.mheg5":{"source":"iana"},"application/vnd.etsi.overload-control-policy-dataset+xml":{"source":"iana","compressible":true},"application/vnd.etsi.pstn+xml":{"source":"iana","compressible":true},"application/vnd.etsi.sci+xml":{"source":"iana","compressible":true},"application/vnd.etsi.simservs+xml":{"source":"iana","compressible":true},"application/vnd.etsi.timestamp-token":{"source":"iana"},"application/vnd.etsi.tsl+xml":{"source":"iana","compressible":true},"application/vnd.etsi.tsl.der":{"source":"iana"},"application/vnd.eu.kasparian.car+json":{"source":"iana","compressible":true},"application/vnd.eudora.data":{"source":"iana"},"application/vnd.evolv.ecig.profile":{"source":"iana"},"application/vnd.evolv.ecig.settings":{"source":"iana"},"application/vnd.evolv.ecig.theme":{"source":"iana"},"application/vnd.exstream-empower+zip":{"source":"iana","compressible":false},"application/vnd.exstream-package":{"source":"iana"},"application/vnd.ezpix-album":{"source":"iana","extensions":["ez2"]},"application/vnd.ezpix-package":{"source":"iana","extensions":["ez3"]},"application/vnd.f-secure.mobile":{"source":"iana"},"application/vnd.familysearch.gedcom+zip":{"source":"iana","compressible":false},"application/vnd.fastcopy-disk-image":{"source":"iana"},"application/vnd.fdf":{"source":"apache","extensions":["fdf"]},"application/vnd.fdsn.mseed":{"source":"iana","extensions":["mseed"]},"application/vnd.fdsn.seed":{"source":"iana","extensions":["seed","dataless"]},"application/vnd.fdsn.stationxml+xml":{"source":"iana","charset":"XML-BASED","compressible":true},"application/vnd.ffsns":{"source":"iana"},"application/vnd.ficlab.flb+zip":{"source":"iana","compressible":false},"application/vnd.filmit.zfc":{"source":"iana"},"application/vnd.fints":{"source":"iana"},"application/vnd.firemonkeys.cloudcell":{"source":"iana"},"application/vnd.flographit":{"source":"iana","extensions":["gph"]},"application/vnd.fluxtime.clip":{"source":"iana","extensions":["ftc"]},"application/vnd.font-fontforge-sfd":{"source":"iana"},"application/vnd.framemaker":{"source":"iana","extensions":["fm","frame","maker","book"]},"application/vnd.freelog.comic":{"source":"iana"},"application/vnd.frogans.fnc":{"source":"apache","extensions":["fnc"]},"application/vnd.frogans.ltf":{"source":"apache","extensions":["ltf"]},"application/vnd.fsc.weblaunch":{"source":"iana","extensions":["fsc"]},"application/vnd.fujifilm.fb.docuworks":{"source":"iana"},"application/vnd.fujifilm.fb.docuworks.binder":{"source":"iana"},"application/vnd.fujifilm.fb.docuworks.container":{"source":"iana"},"application/vnd.fujifilm.fb.jfi+xml":{"source":"iana","compressible":true},"application/vnd.fujitsu.oasys":{"source":"iana","extensions":["oas"]},"application/vnd.fujitsu.oasys2":{"source":"iana","extensions":["oa2"]},"application/vnd.fujitsu.oasys3":{"source":"iana","extensions":["oa3"]},"application/vnd.fujitsu.oasysgp":{"source":"iana","extensions":["fg5"]},"application/vnd.fujitsu.oasysprs":{"source":"iana","extensions":["bh2"]},"application/vnd.fujixerox.art-ex":{"source":"iana"},"application/vnd.fujixerox.art4":{"source":"iana"},"application/vnd.fujixerox.ddd":{"source":"iana","extensions":["ddd"]},"application/vnd.fujixerox.docuworks":{"source":"iana","extensions":["xdw"]},"application/vnd.fujixerox.docuworks.binder":{"source":"iana","extensions":["xbd"]},"application/vnd.fujixerox.docuworks.container":{"source":"iana"},"application/vnd.fujixerox.hbpl":{"source":"iana"},"application/vnd.fut-misnet":{"source":"iana"},"application/vnd.futoin+cbor":{"source":"iana"},"application/vnd.futoin+json":{"source":"iana","compressible":true},"application/vnd.fuzzysheet":{"source":"iana","extensions":["fzs"]},"application/vnd.ga4gh.passport+jwt":{"source":"iana"},"application/vnd.genomatix.tuxedo":{"source":"iana","extensions":["txd"]},"application/vnd.genozip":{"source":"iana"},"application/vnd.gentics.grd+json":{"source":"iana","compressible":true},"application/vnd.gentoo.catmetadata+xml":{"source":"iana","compressible":true},"application/vnd.gentoo.ebuild":{"source":"iana"},"application/vnd.gentoo.eclass":{"source":"iana"},"application/vnd.gentoo.gpkg":{"source":"iana"},"application/vnd.gentoo.manifest":{"source":"iana"},"application/vnd.gentoo.pkgmetadata+xml":{"source":"iana","compressible":true},"application/vnd.gentoo.xpak":{"source":"iana"},"application/vnd.geo+json":{"source":"apache","compressible":true},"application/vnd.geocube+xml":{"source":"apache","compressible":true},"application/vnd.geogebra.file":{"source":"iana","extensions":["ggb"]},"application/vnd.geogebra.pinboard":{"source":"iana"},"application/vnd.geogebra.slides":{"source":"iana","extensions":["ggs"]},"application/vnd.geogebra.tool":{"source":"iana","extensions":["ggt"]},"application/vnd.geometry-explorer":{"source":"iana","extensions":["gex","gre"]},"application/vnd.geonext":{"source":"iana","extensions":["gxt"]},"application/vnd.geoplan":{"source":"iana","extensions":["g2w"]},"application/vnd.geospace":{"source":"iana","extensions":["g3w"]},"application/vnd.gerber":{"source":"iana"},"application/vnd.globalplatform.card-content-mgt":{"source":"iana"},"application/vnd.globalplatform.card-content-mgt-response":{"source":"iana"},"application/vnd.gmx":{"source":"iana","extensions":["gmx"]},"application/vnd.gnu.taler.exchange+json":{"source":"iana","compressible":true},"application/vnd.gnu.taler.merchant+json":{"source":"iana","compressible":true},"application/vnd.google-apps.audio":{},"application/vnd.google-apps.document":{"compressible":false,"extensions":["gdoc"]},"application/vnd.google-apps.drawing":{"compressible":false,"extensions":["gdraw"]},"application/vnd.google-apps.drive-sdk":{"compressible":false},"application/vnd.google-apps.file":{},"application/vnd.google-apps.folder":{"compressible":false},"application/vnd.google-apps.form":{"compressible":false,"extensions":["gform"]},"application/vnd.google-apps.fusiontable":{},"application/vnd.google-apps.jam":{"compressible":false,"extensions":["gjam"]},"application/vnd.google-apps.mail-layout":{},"application/vnd.google-apps.map":{"compressible":false,"extensions":["gmap"]},"application/vnd.google-apps.photo":{},"application/vnd.google-apps.presentation":{"compressible":false,"extensions":["gslides"]},"application/vnd.google-apps.script":{"compressible":false,"extensions":["gscript"]},"application/vnd.google-apps.shortcut":{},"application/vnd.google-apps.site":{"compressible":false,"extensions":["gsite"]},"application/vnd.google-apps.spreadsheet":{"compressible":false,"extensions":["gsheet"]},"application/vnd.google-apps.unknown":{},"application/vnd.google-apps.video":{},"application/vnd.google-earth.kml+xml":{"source":"iana","compressible":true,"extensions":["kml"]},"application/vnd.google-earth.kmz":{"source":"iana","compressible":false,"extensions":["kmz"]},"application/vnd.gov.sk.e-form+xml":{"source":"apache","compressible":true},"application/vnd.gov.sk.e-form+zip":{"source":"iana","compressible":false},"application/vnd.gov.sk.xmldatacontainer+xml":{"source":"iana","compressible":true,"extensions":["xdcf"]},"application/vnd.gpxsee.map+xml":{"source":"iana","compressible":true},"application/vnd.grafeq":{"source":"iana","extensions":["gqf","gqs"]},"application/vnd.gridmp":{"source":"iana"},"application/vnd.groove-account":{"source":"iana","extensions":["gac"]},"application/vnd.groove-help":{"source":"iana","extensions":["ghf"]},"application/vnd.groove-identity-message":{"source":"iana","extensions":["gim"]},"application/vnd.groove-injector":{"source":"iana","extensions":["grv"]},"application/vnd.groove-tool-message":{"source":"iana","extensions":["gtm"]},"application/vnd.groove-tool-template":{"source":"iana","extensions":["tpl"]},"application/vnd.groove-vcard":{"source":"iana","extensions":["vcg"]},"application/vnd.hal+json":{"source":"iana","compressible":true},"application/vnd.hal+xml":{"source":"iana","compressible":true,"extensions":["hal"]},"application/vnd.handheld-entertainment+xml":{"source":"iana","compressible":true,"extensions":["zmm"]},"application/vnd.hbci":{"source":"iana","extensions":["hbci"]},"application/vnd.hc+json":{"source":"iana","compressible":true},"application/vnd.hcl-bireports":{"source":"iana"},"application/vnd.hdt":{"source":"iana"},"application/vnd.heroku+json":{"source":"iana","compressible":true},"application/vnd.hhe.lesson-player":{"source":"iana","extensions":["les"]},"application/vnd.hp-hpgl":{"source":"iana","extensions":["hpgl"]},"application/vnd.hp-hpid":{"source":"iana","extensions":["hpid"]},"application/vnd.hp-hps":{"source":"iana","extensions":["hps"]},"application/vnd.hp-jlyt":{"source":"iana","extensions":["jlt"]},"application/vnd.hp-pcl":{"source":"iana","extensions":["pcl"]},"application/vnd.hp-pclxl":{"source":"iana","extensions":["pclxl"]},"application/vnd.hsl":{"source":"iana"},"application/vnd.httphone":{"source":"iana"},"application/vnd.hydrostatix.sof-data":{"source":"iana","extensions":["sfd-hdstx"]},"application/vnd.hyper+json":{"source":"iana","compressible":true},"application/vnd.hyper-item+json":{"source":"iana","compressible":true},"application/vnd.hyperdrive+json":{"source":"iana","compressible":true},"application/vnd.hzn-3d-crossword":{"source":"iana"},"application/vnd.ibm.afplinedata":{"source":"apache"},"application/vnd.ibm.electronic-media":{"source":"iana"},"application/vnd.ibm.minipay":{"source":"iana","extensions":["mpy"]},"application/vnd.ibm.modcap":{"source":"apache","extensions":["afp","listafp","list3820"]},"application/vnd.ibm.rights-management":{"source":"iana","extensions":["irm"]},"application/vnd.ibm.secure-container":{"source":"iana","extensions":["sc"]},"application/vnd.iccprofile":{"source":"iana","extensions":["icc","icm"]},"application/vnd.ieee.1905":{"source":"iana"},"application/vnd.igloader":{"source":"iana","extensions":["igl"]},"application/vnd.imagemeter.folder+zip":{"source":"iana","compressible":false},"application/vnd.imagemeter.image+zip":{"source":"iana","compressible":false},"application/vnd.immervision-ivp":{"source":"iana","extensions":["ivp"]},"application/vnd.immervision-ivu":{"source":"iana","extensions":["ivu"]},"application/vnd.ims.imsccv1p1":{"source":"iana"},"application/vnd.ims.imsccv1p2":{"source":"iana"},"application/vnd.ims.imsccv1p3":{"source":"iana"},"application/vnd.ims.lis.v2.result+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolconsumerprofile+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolproxy+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolproxy.id+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolsettings+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolsettings.simple+json":{"source":"iana","compressible":true},"application/vnd.informedcontrol.rms+xml":{"source":"iana","compressible":true},"application/vnd.informix-visionary":{"source":"apache"},"application/vnd.infotech.project":{"source":"iana"},"application/vnd.infotech.project+xml":{"source":"iana","compressible":true},"application/vnd.innopath.wamp.notification":{"source":"iana"},"application/vnd.insors.igm":{"source":"iana","extensions":["igm"]},"application/vnd.intercon.formnet":{"source":"iana","extensions":["xpw","xpx"]},"application/vnd.intergeo":{"source":"iana","extensions":["i2g"]},"application/vnd.intertrust.digibox":{"source":"iana"},"application/vnd.intertrust.nncp":{"source":"iana"},"application/vnd.intu.qbo":{"source":"iana","extensions":["qbo"]},"application/vnd.intu.qfx":{"source":"iana","extensions":["qfx"]},"application/vnd.ipfs.ipns-record":{"source":"iana"},"application/vnd.ipld.car":{"source":"iana"},"application/vnd.ipld.dag-cbor":{"source":"iana"},"application/vnd.ipld.dag-json":{"source":"iana"},"application/vnd.ipld.raw":{"source":"iana"},"application/vnd.iptc.g2.catalogitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.conceptitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.knowledgeitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.newsitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.newsmessage+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.packageitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.planningitem+xml":{"source":"iana","compressible":true},"application/vnd.ipunplugged.rcprofile":{"source":"iana","extensions":["rcprofile"]},"application/vnd.irepository.package+xml":{"source":"iana","compressible":true,"extensions":["irp"]},"application/vnd.is-xpr":{"source":"iana","extensions":["xpr"]},"application/vnd.isac.fcs":{"source":"iana","extensions":["fcs"]},"application/vnd.iso11783-10+zip":{"source":"iana","compressible":false},"application/vnd.jam":{"source":"iana","extensions":["jam"]},"application/vnd.japannet-directory-service":{"source":"iana"},"application/vnd.japannet-jpnstore-wakeup":{"source":"iana"},"application/vnd.japannet-payment-wakeup":{"source":"iana"},"application/vnd.japannet-registration":{"source":"iana"},"application/vnd.japannet-registration-wakeup":{"source":"iana"},"application/vnd.japannet-setstore-wakeup":{"source":"iana"},"application/vnd.japannet-verification":{"source":"iana"},"application/vnd.japannet-verification-wakeup":{"source":"iana"},"application/vnd.jcp.javame.midlet-rms":{"source":"iana","extensions":["rms"]},"application/vnd.jisp":{"source":"iana","extensions":["jisp"]},"application/vnd.joost.joda-archive":{"source":"iana","extensions":["joda"]},"application/vnd.jsk.isdn-ngn":{"source":"iana"},"application/vnd.kahootz":{"source":"iana","extensions":["ktz","ktr"]},"application/vnd.kde.karbon":{"source":"iana","extensions":["karbon"]},"application/vnd.kde.kchart":{"source":"iana","extensions":["chrt"]},"application/vnd.kde.kformula":{"source":"iana","extensions":["kfo"]},"application/vnd.kde.kivio":{"source":"iana","extensions":["flw"]},"application/vnd.kde.kontour":{"source":"iana","extensions":["kon"]},"application/vnd.kde.kpresenter":{"source":"iana","extensions":["kpr","kpt"]},"application/vnd.kde.kspread":{"source":"iana","extensions":["ksp"]},"application/vnd.kde.kword":{"source":"iana","extensions":["kwd","kwt"]},"application/vnd.kdl":{"source":"iana"},"application/vnd.kenameaapp":{"source":"iana","extensions":["htke"]},"application/vnd.keyman.kmp+zip":{"source":"iana","compressible":false},"application/vnd.keyman.kmx":{"source":"iana"},"application/vnd.kidspiration":{"source":"iana","extensions":["kia"]},"application/vnd.kinar":{"source":"iana","extensions":["kne","knp"]},"application/vnd.koan":{"source":"iana","extensions":["skp","skd","skt","skm"]},"application/vnd.kodak-descriptor":{"source":"iana","extensions":["sse"]},"application/vnd.las":{"source":"iana"},"application/vnd.las.las+json":{"source":"iana","compressible":true},"application/vnd.las.las+xml":{"source":"iana","compressible":true,"extensions":["lasxml"]},"application/vnd.laszip":{"source":"iana"},"application/vnd.ldev.productlicensing":{"source":"iana"},"application/vnd.leap+json":{"source":"iana","compressible":true},"application/vnd.liberty-request+xml":{"source":"iana","compressible":true},"application/vnd.llamagraphics.life-balance.desktop":{"source":"iana","extensions":["lbd"]},"application/vnd.llamagraphics.life-balance.exchange+xml":{"source":"iana","compressible":true,"extensions":["lbe"]},"application/vnd.logipipe.circuit+zip":{"source":"iana","compressible":false},"application/vnd.loom":{"source":"iana"},"application/vnd.lotus-1-2-3":{"source":"iana","extensions":["123"]},"application/vnd.lotus-approach":{"source":"iana","extensions":["apr"]},"application/vnd.lotus-freelance":{"source":"iana","extensions":["pre"]},"application/vnd.lotus-notes":{"source":"iana","extensions":["nsf"]},"application/vnd.lotus-organizer":{"source":"iana","extensions":["org"]},"application/vnd.lotus-screencam":{"source":"iana","extensions":["scm"]},"application/vnd.lotus-wordpro":{"source":"iana","extensions":["lwp"]},"application/vnd.macports.portpkg":{"source":"iana","extensions":["portpkg"]},"application/vnd.mapbox-vector-tile":{"source":"iana","extensions":["mvt"]},"application/vnd.marlin.drm.actiontoken+xml":{"source":"iana","compressible":true},"application/vnd.marlin.drm.conftoken+xml":{"source":"iana","compressible":true},"application/vnd.marlin.drm.license+xml":{"source":"iana","compressible":true},"application/vnd.marlin.drm.mdcf":{"source":"iana"},"application/vnd.mason+json":{"source":"iana","compressible":true},"application/vnd.maxar.archive.3tz+zip":{"source":"iana","compressible":false},"application/vnd.maxmind.maxmind-db":{"source":"iana"},"application/vnd.mcd":{"source":"iana","extensions":["mcd"]},"application/vnd.mdl":{"source":"iana"},"application/vnd.mdl-mbsdf":{"source":"iana"},"application/vnd.medcalcdata":{"source":"iana","extensions":["mc1"]},"application/vnd.mediastation.cdkey":{"source":"iana","extensions":["cdkey"]},"application/vnd.medicalholodeck.recordxr":{"source":"iana"},"application/vnd.meridian-slingshot":{"source":"iana"},"application/vnd.mermaid":{"source":"iana"},"application/vnd.mfer":{"source":"iana","extensions":["mwf"]},"application/vnd.mfmp":{"source":"iana","extensions":["mfm"]},"application/vnd.micro+json":{"source":"iana","compressible":true},"application/vnd.micrografx.flo":{"source":"iana","extensions":["flo"]},"application/vnd.micrografx.igx":{"source":"iana","extensions":["igx"]},"application/vnd.microsoft.portable-executable":{"source":"iana"},"application/vnd.microsoft.windows.thumbnail-cache":{"source":"iana"},"application/vnd.miele+json":{"source":"iana","compressible":true},"application/vnd.mif":{"source":"iana","extensions":["mif"]},"application/vnd.minisoft-hp3000-save":{"source":"iana"},"application/vnd.mitsubishi.misty-guard.trustweb":{"source":"iana"},"application/vnd.mobius.daf":{"source":"iana","extensions":["daf"]},"application/vnd.mobius.dis":{"source":"iana","extensions":["dis"]},"application/vnd.mobius.mbk":{"source":"iana","extensions":["mbk"]},"application/vnd.mobius.mqy":{"source":"iana","extensions":["mqy"]},"application/vnd.mobius.msl":{"source":"iana","extensions":["msl"]},"application/vnd.mobius.plc":{"source":"iana","extensions":["plc"]},"application/vnd.mobius.txf":{"source":"iana","extensions":["txf"]},"application/vnd.modl":{"source":"iana"},"application/vnd.mophun.application":{"source":"iana","extensions":["mpn"]},"application/vnd.mophun.certificate":{"source":"iana","extensions":["mpc"]},"application/vnd.motorola.flexsuite":{"source":"iana"},"application/vnd.motorola.flexsuite.adsi":{"source":"iana"},"application/vnd.motorola.flexsuite.fis":{"source":"iana"},"application/vnd.motorola.flexsuite.gotap":{"source":"iana"},"application/vnd.motorola.flexsuite.kmr":{"source":"iana"},"application/vnd.motorola.flexsuite.ttc":{"source":"iana"},"application/vnd.motorola.flexsuite.wem":{"source":"iana"},"application/vnd.motorola.iprm":{"source":"iana"},"application/vnd.mozilla.xul+xml":{"source":"iana","compressible":true,"extensions":["xul"]},"application/vnd.ms-3mfdocument":{"source":"iana"},"application/vnd.ms-artgalry":{"source":"iana","extensions":["cil"]},"application/vnd.ms-asf":{"source":"iana"},"application/vnd.ms-cab-compressed":{"source":"iana","extensions":["cab"]},"application/vnd.ms-color.iccprofile":{"source":"apache"},"application/vnd.ms-excel":{"source":"iana","compressible":false,"extensions":["xls","xlm","xla","xlc","xlt","xlw"]},"application/vnd.ms-excel.addin.macroenabled.12":{"source":"iana","extensions":["xlam"]},"application/vnd.ms-excel.sheet.binary.macroenabled.12":{"source":"iana","extensions":["xlsb"]},"application/vnd.ms-excel.sheet.macroenabled.12":{"source":"iana","extensions":["xlsm"]},"application/vnd.ms-excel.template.macroenabled.12":{"source":"iana","extensions":["xltm"]},"application/vnd.ms-fontobject":{"source":"iana","compressible":true,"extensions":["eot"]},"application/vnd.ms-htmlhelp":{"source":"iana","extensions":["chm"]},"application/vnd.ms-ims":{"source":"iana","extensions":["ims"]},"application/vnd.ms-lrm":{"source":"iana","extensions":["lrm"]},"application/vnd.ms-office.activex+xml":{"source":"iana","compressible":true},"application/vnd.ms-officetheme":{"source":"iana","extensions":["thmx"]},"application/vnd.ms-opentype":{"source":"apache","compressible":true},"application/vnd.ms-outlook":{"compressible":false,"extensions":["msg"]},"application/vnd.ms-package.obfuscated-opentype":{"source":"apache"},"application/vnd.ms-pki.seccat":{"source":"apache","extensions":["cat"]},"application/vnd.ms-pki.stl":{"source":"apache","extensions":["stl"]},"application/vnd.ms-playready.initiator+xml":{"source":"iana","compressible":true},"application/vnd.ms-powerpoint":{"source":"iana","compressible":false,"extensions":["ppt","pps","pot"]},"application/vnd.ms-powerpoint.addin.macroenabled.12":{"source":"iana","extensions":["ppam"]},"application/vnd.ms-powerpoint.presentation.macroenabled.12":{"source":"iana","extensions":["pptm"]},"application/vnd.ms-powerpoint.slide.macroenabled.12":{"source":"iana","extensions":["sldm"]},"application/vnd.ms-powerpoint.slideshow.macroenabled.12":{"source":"iana","extensions":["ppsm"]},"application/vnd.ms-powerpoint.template.macroenabled.12":{"source":"iana","extensions":["potm"]},"application/vnd.ms-printdevicecapabilities+xml":{"source":"iana","compressible":true},"application/vnd.ms-printing.printticket+xml":{"source":"apache","compressible":true},"application/vnd.ms-printschematicket+xml":{"source":"iana","compressible":true},"application/vnd.ms-project":{"source":"iana","extensions":["mpp","mpt"]},"application/vnd.ms-tnef":{"source":"iana"},"application/vnd.ms-visio.viewer":{"extensions":["vdx"]},"application/vnd.ms-windows.devicepairing":{"source":"iana"},"application/vnd.ms-windows.nwprinting.oob":{"source":"iana"},"application/vnd.ms-windows.printerpairing":{"source":"iana"},"application/vnd.ms-windows.wsd.oob":{"source":"iana"},"application/vnd.ms-wmdrm.lic-chlg-req":{"source":"iana"},"application/vnd.ms-wmdrm.lic-resp":{"source":"iana"},"application/vnd.ms-wmdrm.meter-chlg-req":{"source":"iana"},"application/vnd.ms-wmdrm.meter-resp":{"source":"iana"},"application/vnd.ms-word.document.macroenabled.12":{"source":"iana","extensions":["docm"]},"application/vnd.ms-word.template.macroenabled.12":{"source":"iana","extensions":["dotm"]},"application/vnd.ms-works":{"source":"iana","extensions":["wps","wks","wcm","wdb"]},"application/vnd.ms-wpl":{"source":"iana","extensions":["wpl"]},"application/vnd.ms-xpsdocument":{"source":"iana","compressible":false,"extensions":["xps"]},"application/vnd.msa-disk-image":{"source":"iana"},"application/vnd.mseq":{"source":"iana","extensions":["mseq"]},"application/vnd.msgpack":{"source":"iana"},"application/vnd.msign":{"source":"iana"},"application/vnd.multiad.creator":{"source":"iana"},"application/vnd.multiad.creator.cif":{"source":"iana"},"application/vnd.music-niff":{"source":"iana"},"application/vnd.musician":{"source":"iana","extensions":["mus"]},"application/vnd.muvee.style":{"source":"iana","extensions":["msty"]},"application/vnd.mynfc":{"source":"iana","extensions":["taglet"]},"application/vnd.nacamar.ybrid+json":{"source":"iana","compressible":true},"application/vnd.nato.bindingdataobject+cbor":{"source":"iana"},"application/vnd.nato.bindingdataobject+json":{"source":"iana","compressible":true},"application/vnd.nato.bindingdataobject+xml":{"source":"iana","compressible":true,"extensions":["bdo"]},"application/vnd.nato.openxmlformats-package.iepd+zip":{"source":"iana","compressible":false},"application/vnd.ncd.control":{"source":"iana"},"application/vnd.ncd.reference":{"source":"iana"},"application/vnd.nearst.inv+json":{"source":"iana","compressible":true},"application/vnd.nebumind.line":{"source":"iana"},"application/vnd.nervana":{"source":"iana"},"application/vnd.netfpx":{"source":"iana"},"application/vnd.neurolanguage.nlu":{"source":"iana","extensions":["nlu"]},"application/vnd.nimn":{"source":"iana"},"application/vnd.nintendo.nitro.rom":{"source":"iana"},"application/vnd.nintendo.snes.rom":{"source":"iana"},"application/vnd.nitf":{"source":"iana","extensions":["ntf","nitf"]},"application/vnd.noblenet-directory":{"source":"iana","extensions":["nnd"]},"application/vnd.noblenet-sealer":{"source":"iana","extensions":["nns"]},"application/vnd.noblenet-web":{"source":"iana","extensions":["nnw"]},"application/vnd.nokia.catalogs":{"source":"iana"},"application/vnd.nokia.conml+wbxml":{"source":"iana"},"application/vnd.nokia.conml+xml":{"source":"iana","compressible":true},"application/vnd.nokia.iptv.config+xml":{"source":"iana","compressible":true},"application/vnd.nokia.isds-radio-presets":{"source":"iana"},"application/vnd.nokia.landmark+wbxml":{"source":"iana"},"application/vnd.nokia.landmark+xml":{"source":"iana","compressible":true},"application/vnd.nokia.landmarkcollection+xml":{"source":"iana","compressible":true},"application/vnd.nokia.n-gage.ac+xml":{"source":"iana","compressible":true,"extensions":["ac"]},"application/vnd.nokia.n-gage.data":{"source":"iana","extensions":["ngdat"]},"application/vnd.nokia.n-gage.symbian.install":{"source":"apache","extensions":["n-gage"]},"application/vnd.nokia.ncd":{"source":"iana"},"application/vnd.nokia.pcd+wbxml":{"source":"iana"},"application/vnd.nokia.pcd+xml":{"source":"iana","compressible":true},"application/vnd.nokia.radio-preset":{"source":"iana","extensions":["rpst"]},"application/vnd.nokia.radio-presets":{"source":"iana","extensions":["rpss"]},"application/vnd.novadigm.edm":{"source":"iana","extensions":["edm"]},"application/vnd.novadigm.edx":{"source":"iana","extensions":["edx"]},"application/vnd.novadigm.ext":{"source":"iana","extensions":["ext"]},"application/vnd.ntt-local.content-share":{"source":"iana"},"application/vnd.ntt-local.file-transfer":{"source":"iana"},"application/vnd.ntt-local.ogw_remote-access":{"source":"iana"},"application/vnd.ntt-local.sip-ta_remote":{"source":"iana"},"application/vnd.ntt-local.sip-ta_tcp_stream":{"source":"iana"},"application/vnd.oai.workflows":{"source":"iana"},"application/vnd.oai.workflows+json":{"source":"iana","compressible":true},"application/vnd.oai.workflows+yaml":{"source":"iana"},"application/vnd.oasis.opendocument.base":{"source":"iana"},"application/vnd.oasis.opendocument.chart":{"source":"iana","extensions":["odc"]},"application/vnd.oasis.opendocument.chart-template":{"source":"iana","extensions":["otc"]},"application/vnd.oasis.opendocument.database":{"source":"apache","extensions":["odb"]},"application/vnd.oasis.opendocument.formula":{"source":"iana","extensions":["odf"]},"application/vnd.oasis.opendocument.formula-template":{"source":"iana","extensions":["odft"]},"application/vnd.oasis.opendocument.graphics":{"source":"iana","compressible":false,"extensions":["odg"]},"application/vnd.oasis.opendocument.graphics-template":{"source":"iana","extensions":["otg"]},"application/vnd.oasis.opendocument.image":{"source":"iana","extensions":["odi"]},"application/vnd.oasis.opendocument.image-template":{"source":"iana","extensions":["oti"]},"application/vnd.oasis.opendocument.presentation":{"source":"iana","compressible":false,"extensions":["odp"]},"application/vnd.oasis.opendocument.presentation-template":{"source":"iana","extensions":["otp"]},"application/vnd.oasis.opendocument.spreadsheet":{"source":"iana","compressible":false,"extensions":["ods"]},"application/vnd.oasis.opendocument.spreadsheet-template":{"source":"iana","extensions":["ots"]},"application/vnd.oasis.opendocument.text":{"source":"iana","compressible":false,"extensions":["odt"]},"application/vnd.oasis.opendocument.text-master":{"source":"iana","extensions":["odm"]},"application/vnd.oasis.opendocument.text-master-template":{"source":"iana"},"application/vnd.oasis.opendocument.text-template":{"source":"iana","extensions":["ott"]},"application/vnd.oasis.opendocument.text-web":{"source":"iana","extensions":["oth"]},"application/vnd.obn":{"source":"iana"},"application/vnd.ocf+cbor":{"source":"iana"},"application/vnd.oci.image.manifest.v1+json":{"source":"iana","compressible":true},"application/vnd.oftn.l10n+json":{"source":"iana","compressible":true},"application/vnd.oipf.contentaccessdownload+xml":{"source":"iana","compressible":true},"application/vnd.oipf.contentaccessstreaming+xml":{"source":"iana","compressible":true},"application/vnd.oipf.cspg-hexbinary":{"source":"iana"},"application/vnd.oipf.dae.svg+xml":{"source":"iana","compressible":true},"application/vnd.oipf.dae.xhtml+xml":{"source":"iana","compressible":true},"application/vnd.oipf.mippvcontrolmessage+xml":{"source":"iana","compressible":true},"application/vnd.oipf.pae.gem":{"source":"iana"},"application/vnd.oipf.spdiscovery+xml":{"source":"iana","compressible":true},"application/vnd.oipf.spdlist+xml":{"source":"iana","compressible":true},"application/vnd.oipf.ueprofile+xml":{"source":"iana","compressible":true},"application/vnd.oipf.userprofile+xml":{"source":"iana","compressible":true},"application/vnd.olpc-sugar":{"source":"iana","extensions":["xo"]},"application/vnd.oma-scws-config":{"source":"iana"},"application/vnd.oma-scws-http-request":{"source":"iana"},"application/vnd.oma-scws-http-response":{"source":"iana"},"application/vnd.oma.bcast.associated-procedure-parameter+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.drm-trigger+xml":{"source":"apache","compressible":true},"application/vnd.oma.bcast.imd+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.ltkm":{"source":"iana"},"application/vnd.oma.bcast.notification+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.provisioningtrigger":{"source":"iana"},"application/vnd.oma.bcast.sgboot":{"source":"iana"},"application/vnd.oma.bcast.sgdd+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.sgdu":{"source":"iana"},"application/vnd.oma.bcast.simple-symbol-container":{"source":"iana"},"application/vnd.oma.bcast.smartcard-trigger+xml":{"source":"apache","compressible":true},"application/vnd.oma.bcast.sprov+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.stkm":{"source":"iana"},"application/vnd.oma.cab-address-book+xml":{"source":"iana","compressible":true},"application/vnd.oma.cab-feature-handler+xml":{"source":"iana","compressible":true},"application/vnd.oma.cab-pcc+xml":{"source":"iana","compressible":true},"application/vnd.oma.cab-subs-invite+xml":{"source":"iana","compressible":true},"application/vnd.oma.cab-user-prefs+xml":{"source":"iana","compressible":true},"application/vnd.oma.dcd":{"source":"iana"},"application/vnd.oma.dcdc":{"source":"iana"},"application/vnd.oma.dd2+xml":{"source":"iana","compressible":true,"extensions":["dd2"]},"application/vnd.oma.drm.risd+xml":{"source":"iana","compressible":true},"application/vnd.oma.group-usage-list+xml":{"source":"iana","compressible":true},"application/vnd.oma.lwm2m+cbor":{"source":"iana"},"application/vnd.oma.lwm2m+json":{"source":"iana","compressible":true},"application/vnd.oma.lwm2m+tlv":{"source":"iana"},"application/vnd.oma.pal+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.detailed-progress-report+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.final-report+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.groups+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.invocation-descriptor+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.optimized-progress-report+xml":{"source":"iana","compressible":true},"application/vnd.oma.push":{"source":"iana"},"application/vnd.oma.scidm.messages+xml":{"source":"iana","compressible":true},"application/vnd.oma.xcap-directory+xml":{"source":"iana","compressible":true},"application/vnd.omads-email+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.omads-file+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.omads-folder+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.omaloc-supl-init":{"source":"iana"},"application/vnd.onepager":{"source":"iana"},"application/vnd.onepagertamp":{"source":"iana"},"application/vnd.onepagertamx":{"source":"iana"},"application/vnd.onepagertat":{"source":"iana"},"application/vnd.onepagertatp":{"source":"iana"},"application/vnd.onepagertatx":{"source":"iana"},"application/vnd.onvif.metadata":{"source":"iana"},"application/vnd.openblox.game+xml":{"source":"iana","compressible":true,"extensions":["obgx"]},"application/vnd.openblox.game-binary":{"source":"iana"},"application/vnd.openeye.oeb":{"source":"iana"},"application/vnd.openofficeorg.extension":{"source":"apache","extensions":["oxt"]},"application/vnd.openstreetmap.data+xml":{"source":"iana","compressible":true,"extensions":["osm"]},"application/vnd.opentimestamps.ots":{"source":"iana"},"application/vnd.openvpi.dspx+json":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.custom-properties+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.customxmlproperties+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawing+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.chart+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.chartshapes+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.diagramcolors+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.diagramdata+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.diagramlayout+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.diagramstyle+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.extended-properties+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.commentauthors+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.comments+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.handoutmaster+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.notesmaster+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.notesslide+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.presentation":{"source":"iana","compressible":false,"extensions":["pptx"]},"application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.presprops+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slide":{"source":"iana","extensions":["sldx"]},"application/vnd.openxmlformats-officedocument.presentationml.slide+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slidelayout+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slidemaster+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slideshow":{"source":"iana","extensions":["ppsx"]},"application/vnd.openxmlformats-officedocument.presentationml.slideshow.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slideupdateinfo+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.tablestyles+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.tags+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.template":{"source":"iana","extensions":["potx"]},"application/vnd.openxmlformats-officedocument.presentationml.template.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.viewprops+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.calcchain+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.connections+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.dialogsheet+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.externallink+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.pivotcachedefinition+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.pivotcacherecords+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.pivottable+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.querytable+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.revisionheaders+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.revisionlog+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.sharedstrings+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":{"source":"iana","compressible":false,"extensions":["xlsx"]},"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.sheetmetadata+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.tablesinglecells+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.template":{"source":"iana","extensions":["xltx"]},"application/vnd.openxmlformats-officedocument.spreadsheetml.template.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.usernames+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.volatiledependencies+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.theme+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.themeoverride+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.vmldrawing":{"source":"iana"},"application/vnd.openxmlformats-officedocument.wordprocessingml.comments+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.document":{"source":"iana","compressible":false,"extensions":["docx"]},"application/vnd.openxmlformats-officedocument.wordprocessingml.document.glossary+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.endnotes+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.fonttable+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.footnotes+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.template":{"source":"iana","extensions":["dotx"]},"application/vnd.openxmlformats-officedocument.wordprocessingml.template.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.websettings+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-package.core-properties+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-package.digital-signature-xmlsignature+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-package.relationships+xml":{"source":"iana","compressible":true},"application/vnd.oracle.resource+json":{"source":"iana","compressible":true},"application/vnd.orange.indata":{"source":"iana"},"application/vnd.osa.netdeploy":{"source":"iana"},"application/vnd.osgeo.mapguide.package":{"source":"iana","extensions":["mgp"]},"application/vnd.osgi.bundle":{"source":"iana"},"application/vnd.osgi.dp":{"source":"iana","extensions":["dp"]},"application/vnd.osgi.subsystem":{"source":"iana","extensions":["esa"]},"application/vnd.otps.ct-kip+xml":{"source":"iana","compressible":true},"application/vnd.oxli.countgraph":{"source":"iana"},"application/vnd.pagerduty+json":{"source":"iana","compressible":true},"application/vnd.palm":{"source":"iana","extensions":["pdb","pqa","oprc"]},"application/vnd.panoply":{"source":"iana"},"application/vnd.paos.xml":{"source":"iana"},"application/vnd.patentdive":{"source":"iana"},"application/vnd.patientecommsdoc":{"source":"iana"},"application/vnd.pawaafile":{"source":"iana","extensions":["paw"]},"application/vnd.pcos":{"source":"iana"},"application/vnd.pg.format":{"source":"iana","extensions":["str"]},"application/vnd.pg.osasli":{"source":"iana","extensions":["ei6"]},"application/vnd.piaccess.application-licence":{"source":"iana"},"application/vnd.picsel":{"source":"iana","extensions":["efif"]},"application/vnd.pmi.widget":{"source":"iana","extensions":["wg"]},"application/vnd.poc.group-advertisement+xml":{"source":"iana","compressible":true},"application/vnd.pocketlearn":{"source":"iana","extensions":["plf"]},"application/vnd.powerbuilder6":{"source":"iana","extensions":["pbd"]},"application/vnd.powerbuilder6-s":{"source":"iana"},"application/vnd.powerbuilder7":{"source":"iana"},"application/vnd.powerbuilder7-s":{"source":"iana"},"application/vnd.powerbuilder75":{"source":"iana"},"application/vnd.powerbuilder75-s":{"source":"iana"},"application/vnd.preminet":{"source":"iana"},"application/vnd.previewsystems.box":{"source":"iana","extensions":["box"]},"application/vnd.procrate.brushset":{"extensions":["brushset"]},"application/vnd.procreate.brush":{"extensions":["brush"]},"application/vnd.procreate.dream":{"extensions":["drm"]},"application/vnd.proteus.magazine":{"source":"iana","extensions":["mgz"]},"application/vnd.psfs":{"source":"iana"},"application/vnd.pt.mundusmundi":{"source":"iana"},"application/vnd.publishare-delta-tree":{"source":"iana","extensions":["qps"]},"application/vnd.pvi.ptid1":{"source":"iana","extensions":["ptid"]},"application/vnd.pwg-multiplexed":{"source":"iana"},"application/vnd.pwg-xhtml-print+xml":{"source":"iana","compressible":true,"extensions":["xhtm"]},"application/vnd.qualcomm.brew-app-res":{"source":"iana"},"application/vnd.quarantainenet":{"source":"iana"},"application/vnd.quark.quarkxpress":{"source":"iana","extensions":["qxd","qxt","qwd","qwt","qxl","qxb"]},"application/vnd.quobject-quoxdocument":{"source":"iana"},"application/vnd.radisys.moml+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit-conf+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit-conn+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit-dialog+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit-stream+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-conf+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-base+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-fax-detect+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-fax-sendrecv+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-group+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-speech+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-transform+xml":{"source":"iana","compressible":true},"application/vnd.rainstor.data":{"source":"iana"},"application/vnd.rapid":{"source":"iana"},"application/vnd.rar":{"source":"iana","extensions":["rar"]},"application/vnd.realvnc.bed":{"source":"iana","extensions":["bed"]},"application/vnd.recordare.musicxml":{"source":"iana","extensions":["mxl"]},"application/vnd.recordare.musicxml+xml":{"source":"iana","compressible":true,"extensions":["musicxml"]},"application/vnd.relpipe":{"source":"iana"},"application/vnd.renlearn.rlprint":{"source":"iana"},"application/vnd.resilient.logic":{"source":"iana"},"application/vnd.restful+json":{"source":"iana","compressible":true},"application/vnd.rig.cryptonote":{"source":"iana","extensions":["cryptonote"]},"application/vnd.rim.cod":{"source":"apache","extensions":["cod"]},"application/vnd.rn-realmedia":{"source":"apache","extensions":["rm"]},"application/vnd.rn-realmedia-vbr":{"source":"apache","extensions":["rmvb"]},"application/vnd.route66.link66+xml":{"source":"iana","compressible":true,"extensions":["link66"]},"application/vnd.rs-274x":{"source":"iana"},"application/vnd.ruckus.download":{"source":"iana"},"application/vnd.s3sms":{"source":"iana"},"application/vnd.sailingtracker.track":{"source":"iana","extensions":["st"]},"application/vnd.sar":{"source":"iana"},"application/vnd.sbm.cid":{"source":"iana"},"application/vnd.sbm.mid2":{"source":"iana"},"application/vnd.scribus":{"source":"iana"},"application/vnd.sealed.3df":{"source":"iana"},"application/vnd.sealed.csf":{"source":"iana"},"application/vnd.sealed.doc":{"source":"iana"},"application/vnd.sealed.eml":{"source":"iana"},"application/vnd.sealed.mht":{"source":"iana"},"application/vnd.sealed.net":{"source":"iana"},"application/vnd.sealed.ppt":{"source":"iana"},"application/vnd.sealed.tiff":{"source":"iana"},"application/vnd.sealed.xls":{"source":"iana"},"application/vnd.sealedmedia.softseal.html":{"source":"iana"},"application/vnd.sealedmedia.softseal.pdf":{"source":"iana"},"application/vnd.seemail":{"source":"iana","extensions":["see"]},"application/vnd.seis+json":{"source":"iana","compressible":true},"application/vnd.sema":{"source":"iana","extensions":["sema"]},"application/vnd.semd":{"source":"iana","extensions":["semd"]},"application/vnd.semf":{"source":"iana","extensions":["semf"]},"application/vnd.shade-save-file":{"source":"iana"},"application/vnd.shana.informed.formdata":{"source":"iana","extensions":["ifm"]},"application/vnd.shana.informed.formtemplate":{"source":"iana","extensions":["itp"]},"application/vnd.shana.informed.interchange":{"source":"iana","extensions":["iif"]},"application/vnd.shana.informed.package":{"source":"iana","extensions":["ipk"]},"application/vnd.shootproof+json":{"source":"iana","compressible":true},"application/vnd.shopkick+json":{"source":"iana","compressible":true},"application/vnd.shp":{"source":"iana"},"application/vnd.shx":{"source":"iana"},"application/vnd.sigrok.session":{"source":"iana"},"application/vnd.simtech-mindmapper":{"source":"iana","extensions":["twd","twds"]},"application/vnd.siren+json":{"source":"iana","compressible":true},"application/vnd.sketchometry":{"source":"iana"},"application/vnd.smaf":{"source":"iana","extensions":["mmf"]},"application/vnd.smart.notebook":{"source":"iana"},"application/vnd.smart.teacher":{"source":"iana","extensions":["teacher"]},"application/vnd.smintio.portals.archive":{"source":"iana"},"application/vnd.snesdev-page-table":{"source":"iana"},"application/vnd.software602.filler.form+xml":{"source":"iana","compressible":true,"extensions":["fo"]},"application/vnd.software602.filler.form-xml-zip":{"source":"iana"},"application/vnd.solent.sdkm+xml":{"source":"iana","compressible":true,"extensions":["sdkm","sdkd"]},"application/vnd.spotfire.dxp":{"source":"iana","extensions":["dxp"]},"application/vnd.spotfire.sfs":{"source":"iana","extensions":["sfs"]},"application/vnd.sqlite3":{"source":"iana"},"application/vnd.sss-cod":{"source":"iana"},"application/vnd.sss-dtf":{"source":"iana"},"application/vnd.sss-ntf":{"source":"iana"},"application/vnd.stardivision.calc":{"source":"apache","extensions":["sdc"]},"application/vnd.stardivision.draw":{"source":"apache","extensions":["sda"]},"application/vnd.stardivision.impress":{"source":"apache","extensions":["sdd"]},"application/vnd.stardivision.math":{"source":"apache","extensions":["smf"]},"application/vnd.stardivision.writer":{"source":"apache","extensions":["sdw","vor"]},"application/vnd.stardivision.writer-global":{"source":"apache","extensions":["sgl"]},"application/vnd.stepmania.package":{"source":"iana","extensions":["smzip"]},"application/vnd.stepmania.stepchart":{"source":"iana","extensions":["sm"]},"application/vnd.street-stream":{"source":"iana"},"application/vnd.sun.wadl+xml":{"source":"iana","compressible":true,"extensions":["wadl"]},"application/vnd.sun.xml.calc":{"source":"apache","extensions":["sxc"]},"application/vnd.sun.xml.calc.template":{"source":"apache","extensions":["stc"]},"application/vnd.sun.xml.draw":{"source":"apache","extensions":["sxd"]},"application/vnd.sun.xml.draw.template":{"source":"apache","extensions":["std"]},"application/vnd.sun.xml.impress":{"source":"apache","extensions":["sxi"]},"application/vnd.sun.xml.impress.template":{"source":"apache","extensions":["sti"]},"application/vnd.sun.xml.math":{"source":"apache","extensions":["sxm"]},"application/vnd.sun.xml.writer":{"source":"apache","extensions":["sxw"]},"application/vnd.sun.xml.writer.global":{"source":"apache","extensions":["sxg"]},"application/vnd.sun.xml.writer.template":{"source":"apache","extensions":["stw"]},"application/vnd.sus-calendar":{"source":"iana","extensions":["sus","susp"]},"application/vnd.svd":{"source":"iana","extensions":["svd"]},"application/vnd.swiftview-ics":{"source":"iana"},"application/vnd.sybyl.mol2":{"source":"iana"},"application/vnd.sycle+xml":{"source":"iana","compressible":true},"application/vnd.syft+json":{"source":"iana","compressible":true},"application/vnd.symbian.install":{"source":"apache","extensions":["sis","sisx"]},"application/vnd.syncml+xml":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["xsm"]},"application/vnd.syncml.dm+wbxml":{"source":"iana","charset":"UTF-8","extensions":["bdm"]},"application/vnd.syncml.dm+xml":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["xdm"]},"application/vnd.syncml.dm.notification":{"source":"iana"},"application/vnd.syncml.dmddf+wbxml":{"source":"iana"},"application/vnd.syncml.dmddf+xml":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["ddf"]},"application/vnd.syncml.dmtnds+wbxml":{"source":"iana"},"application/vnd.syncml.dmtnds+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.syncml.ds.notification":{"source":"iana"},"application/vnd.tableschema+json":{"source":"iana","compressible":true},"application/vnd.tao.intent-module-archive":{"source":"iana","extensions":["tao"]},"application/vnd.tcpdump.pcap":{"source":"iana","extensions":["pcap","cap","dmp"]},"application/vnd.think-cell.ppttc+json":{"source":"iana","compressible":true},"application/vnd.tmd.mediaflex.api+xml":{"source":"iana","compressible":true},"application/vnd.tml":{"source":"iana"},"application/vnd.tmobile-livetv":{"source":"iana","extensions":["tmo"]},"application/vnd.tri.onesource":{"source":"iana"},"application/vnd.trid.tpt":{"source":"iana","extensions":["tpt"]},"application/vnd.triscape.mxs":{"source":"iana","extensions":["mxs"]},"application/vnd.trueapp":{"source":"iana","extensions":["tra"]},"application/vnd.truedoc":{"source":"iana"},"application/vnd.ubisoft.webplayer":{"source":"iana"},"application/vnd.ufdl":{"source":"iana","extensions":["ufd","ufdl"]},"application/vnd.uic.osdm+json":{"source":"iana","compressible":true},"application/vnd.uiq.theme":{"source":"iana","extensions":["utz"]},"application/vnd.umajin":{"source":"iana","extensions":["umj"]},"application/vnd.unity":{"source":"iana","extensions":["unityweb"]},"application/vnd.uoml+xml":{"source":"iana","compressible":true,"extensions":["uoml","uo"]},"application/vnd.uplanet.alert":{"source":"iana"},"application/vnd.uplanet.alert-wbxml":{"source":"iana"},"application/vnd.uplanet.bearer-choice":{"source":"iana"},"application/vnd.uplanet.bearer-choice-wbxml":{"source":"iana"},"application/vnd.uplanet.cacheop":{"source":"iana"},"application/vnd.uplanet.cacheop-wbxml":{"source":"iana"},"application/vnd.uplanet.channel":{"source":"iana"},"application/vnd.uplanet.channel-wbxml":{"source":"iana"},"application/vnd.uplanet.list":{"source":"iana"},"application/vnd.uplanet.list-wbxml":{"source":"iana"},"application/vnd.uplanet.listcmd":{"source":"iana"},"application/vnd.uplanet.listcmd-wbxml":{"source":"iana"},"application/vnd.uplanet.signal":{"source":"iana"},"application/vnd.uri-map":{"source":"iana"},"application/vnd.valve.source.material":{"source":"iana"},"application/vnd.vcx":{"source":"iana","extensions":["vcx"]},"application/vnd.vd-study":{"source":"iana"},"application/vnd.vectorworks":{"source":"iana"},"application/vnd.vel+json":{"source":"iana","compressible":true},"application/vnd.veraison.tsm-report+cbor":{"source":"iana"},"application/vnd.veraison.tsm-report+json":{"source":"iana","compressible":true},"application/vnd.verimatrix.vcas":{"source":"iana"},"application/vnd.veritone.aion+json":{"source":"iana","compressible":true},"application/vnd.veryant.thin":{"source":"iana"},"application/vnd.ves.encrypted":{"source":"iana"},"application/vnd.vidsoft.vidconference":{"source":"iana"},"application/vnd.visio":{"source":"iana","extensions":["vsd","vst","vss","vsw","vsdx","vtx"]},"application/vnd.visionary":{"source":"iana","extensions":["vis"]},"application/vnd.vividence.scriptfile":{"source":"iana"},"application/vnd.vocalshaper.vsp4":{"source":"iana"},"application/vnd.vsf":{"source":"iana","extensions":["vsf"]},"application/vnd.wap.sic":{"source":"iana"},"application/vnd.wap.slc":{"source":"iana"},"application/vnd.wap.wbxml":{"source":"iana","charset":"UTF-8","extensions":["wbxml"]},"application/vnd.wap.wmlc":{"source":"iana","extensions":["wmlc"]},"application/vnd.wap.wmlscriptc":{"source":"iana","extensions":["wmlsc"]},"application/vnd.wasmflow.wafl":{"source":"iana"},"application/vnd.webturbo":{"source":"iana","extensions":["wtb"]},"application/vnd.wfa.dpp":{"source":"iana"},"application/vnd.wfa.p2p":{"source":"iana"},"application/vnd.wfa.wsc":{"source":"iana"},"application/vnd.windows.devicepairing":{"source":"iana"},"application/vnd.wmc":{"source":"iana"},"application/vnd.wmf.bootstrap":{"source":"iana"},"application/vnd.wolfram.mathematica":{"source":"iana"},"application/vnd.wolfram.mathematica.package":{"source":"iana"},"application/vnd.wolfram.player":{"source":"iana","extensions":["nbp"]},"application/vnd.wordlift":{"source":"iana"},"application/vnd.wordperfect":{"source":"iana","extensions":["wpd"]},"application/vnd.wqd":{"source":"iana","extensions":["wqd"]},"application/vnd.wrq-hp3000-labelled":{"source":"iana"},"application/vnd.wt.stf":{"source":"iana","extensions":["stf"]},"application/vnd.wv.csp+wbxml":{"source":"iana"},"application/vnd.wv.csp+xml":{"source":"iana","compressible":true},"application/vnd.wv.ssp+xml":{"source":"iana","compressible":true},"application/vnd.xacml+json":{"source":"iana","compressible":true},"application/vnd.xara":{"source":"iana","extensions":["xar"]},"application/vnd.xarin.cpj":{"source":"iana"},"application/vnd.xecrets-encrypted":{"source":"iana"},"application/vnd.xfdl":{"source":"iana","extensions":["xfdl"]},"application/vnd.xfdl.webform":{"source":"iana"},"application/vnd.xmi+xml":{"source":"iana","compressible":true},"application/vnd.xmpie.cpkg":{"source":"iana"},"application/vnd.xmpie.dpkg":{"source":"iana"},"application/vnd.xmpie.plan":{"source":"iana"},"application/vnd.xmpie.ppkg":{"source":"iana"},"application/vnd.xmpie.xlim":{"source":"iana"},"application/vnd.yamaha.hv-dic":{"source":"iana","extensions":["hvd"]},"application/vnd.yamaha.hv-script":{"source":"iana","extensions":["hvs"]},"application/vnd.yamaha.hv-voice":{"source":"iana","extensions":["hvp"]},"application/vnd.yamaha.openscoreformat":{"source":"iana","extensions":["osf"]},"application/vnd.yamaha.openscoreformat.osfpvg+xml":{"source":"iana","compressible":true,"extensions":["osfpvg"]},"application/vnd.yamaha.remote-setup":{"source":"iana"},"application/vnd.yamaha.smaf-audio":{"source":"iana","extensions":["saf"]},"application/vnd.yamaha.smaf-phrase":{"source":"iana","extensions":["spf"]},"application/vnd.yamaha.through-ngn":{"source":"iana"},"application/vnd.yamaha.tunnel-udpencap":{"source":"iana"},"application/vnd.yaoweme":{"source":"iana"},"application/vnd.yellowriver-custom-menu":{"source":"iana","extensions":["cmp"]},"application/vnd.zul":{"source":"iana","extensions":["zir","zirz"]},"application/vnd.zzazz.deck+xml":{"source":"iana","compressible":true,"extensions":["zaz"]},"application/voicexml+xml":{"source":"iana","compressible":true,"extensions":["vxml"]},"application/voucher-cms+json":{"source":"iana","compressible":true},"application/voucher-jws+json":{"source":"iana","compressible":true},"application/vp":{"source":"iana"},"application/vp+cose":{"source":"iana"},"application/vp+jwt":{"source":"iana"},"application/vq-rtcpxr":{"source":"iana"},"application/wasm":{"source":"iana","compressible":true,"extensions":["wasm"]},"application/watcherinfo+xml":{"source":"iana","compressible":true,"extensions":["wif"]},"application/webpush-options+json":{"source":"iana","compressible":true},"application/whoispp-query":{"source":"iana"},"application/whoispp-response":{"source":"iana"},"application/widget":{"source":"iana","extensions":["wgt"]},"application/winhlp":{"source":"apache","extensions":["hlp"]},"application/wita":{"source":"iana"},"application/wordperfect5.1":{"source":"iana"},"application/wsdl+xml":{"source":"iana","compressible":true,"extensions":["wsdl"]},"application/wspolicy+xml":{"source":"iana","compressible":true,"extensions":["wspolicy"]},"application/x-7z-compressed":{"source":"apache","compressible":false,"extensions":["7z"]},"application/x-abiword":{"source":"apache","extensions":["abw"]},"application/x-ace-compressed":{"source":"apache","extensions":["ace"]},"application/x-amf":{"source":"apache"},"application/x-apple-diskimage":{"source":"apache","extensions":["dmg"]},"application/x-arj":{"compressible":false,"extensions":["arj"]},"application/x-authorware-bin":{"source":"apache","extensions":["aab","x32","u32","vox"]},"application/x-authorware-map":{"source":"apache","extensions":["aam"]},"application/x-authorware-seg":{"source":"apache","extensions":["aas"]},"application/x-bcpio":{"source":"apache","extensions":["bcpio"]},"application/x-bdoc":{"compressible":false,"extensions":["bdoc"]},"application/x-bittorrent":{"source":"apache","extensions":["torrent"]},"application/x-blender":{"extensions":["blend"]},"application/x-blorb":{"source":"apache","extensions":["blb","blorb"]},"application/x-bzip":{"source":"apache","compressible":false,"extensions":["bz"]},"application/x-bzip2":{"source":"apache","compressible":false,"extensions":["bz2","boz"]},"application/x-cbr":{"source":"apache","extensions":["cbr","cba","cbt","cbz","cb7"]},"application/x-cdlink":{"source":"apache","extensions":["vcd"]},"application/x-cfs-compressed":{"source":"apache","extensions":["cfs"]},"application/x-chat":{"source":"apache","extensions":["chat"]},"application/x-chess-pgn":{"source":"apache","extensions":["pgn"]},"application/x-chrome-extension":{"extensions":["crx"]},"application/x-cocoa":{"source":"nginx","extensions":["cco"]},"application/x-compress":{"source":"apache"},"application/x-compressed":{"extensions":["rar"]},"application/x-conference":{"source":"apache","extensions":["nsc"]},"application/x-cpio":{"source":"apache","extensions":["cpio"]},"application/x-csh":{"source":"apache","extensions":["csh"]},"application/x-deb":{"compressible":false},"application/x-debian-package":{"source":"apache","extensions":["deb","udeb"]},"application/x-dgc-compressed":{"source":"apache","extensions":["dgc"]},"application/x-director":{"source":"apache","extensions":["dir","dcr","dxr","cst","cct","cxt","w3d","fgd","swa"]},"application/x-doom":{"source":"apache","extensions":["wad"]},"application/x-dtbncx+xml":{"source":"apache","compressible":true,"extensions":["ncx"]},"application/x-dtbook+xml":{"source":"apache","compressible":true,"extensions":["dtb"]},"application/x-dtbresource+xml":{"source":"apache","compressible":true,"extensions":["res"]},"application/x-dvi":{"source":"apache","compressible":false,"extensions":["dvi"]},"application/x-envoy":{"source":"apache","extensions":["evy"]},"application/x-eva":{"source":"apache","extensions":["eva"]},"application/x-font-bdf":{"source":"apache","extensions":["bdf"]},"application/x-font-dos":{"source":"apache"},"application/x-font-framemaker":{"source":"apache"},"application/x-font-ghostscript":{"source":"apache","extensions":["gsf"]},"application/x-font-libgrx":{"source":"apache"},"application/x-font-linux-psf":{"source":"apache","extensions":["psf"]},"application/x-font-pcf":{"source":"apache","extensions":["pcf"]},"application/x-font-snf":{"source":"apache","extensions":["snf"]},"application/x-font-speedo":{"source":"apache"},"application/x-font-sunos-news":{"source":"apache"},"application/x-font-type1":{"source":"apache","extensions":["pfa","pfb","pfm","afm"]},"application/x-font-vfont":{"source":"apache"},"application/x-freearc":{"source":"apache","extensions":["arc"]},"application/x-futuresplash":{"source":"apache","extensions":["spl"]},"application/x-gca-compressed":{"source":"apache","extensions":["gca"]},"application/x-glulx":{"source":"apache","extensions":["ulx"]},"application/x-gnumeric":{"source":"apache","extensions":["gnumeric"]},"application/x-gramps-xml":{"source":"apache","extensions":["gramps"]},"application/x-gtar":{"source":"apache","extensions":["gtar"]},"application/x-gzip":{"source":"apache"},"application/x-hdf":{"source":"apache","extensions":["hdf"]},"application/x-httpd-php":{"compressible":true,"extensions":["php"]},"application/x-install-instructions":{"source":"apache","extensions":["install"]},"application/x-ipynb+json":{"compressible":true,"extensions":["ipynb"]},"application/x-iso9660-image":{"source":"apache","extensions":["iso"]},"application/x-iwork-keynote-sffkey":{"extensions":["key"]},"application/x-iwork-numbers-sffnumbers":{"extensions":["numbers"]},"application/x-iwork-pages-sffpages":{"extensions":["pages"]},"application/x-java-archive-diff":{"source":"nginx","extensions":["jardiff"]},"application/x-java-jnlp-file":{"source":"apache","compressible":false,"extensions":["jnlp"]},"application/x-javascript":{"compressible":true},"application/x-keepass2":{"extensions":["kdbx"]},"application/x-latex":{"source":"apache","compressible":false,"extensions":["latex"]},"application/x-lua-bytecode":{"extensions":["luac"]},"application/x-lzh-compressed":{"source":"apache","extensions":["lzh","lha"]},"application/x-makeself":{"source":"nginx","extensions":["run"]},"application/x-mie":{"source":"apache","extensions":["mie"]},"application/x-mobipocket-ebook":{"source":"apache","extensions":["prc","mobi"]},"application/x-mpegurl":{"compressible":false},"application/x-ms-application":{"source":"apache","extensions":["application"]},"application/x-ms-shortcut":{"source":"apache","extensions":["lnk"]},"application/x-ms-wmd":{"source":"apache","extensions":["wmd"]},"application/x-ms-wmz":{"source":"apache","extensions":["wmz"]},"application/x-ms-xbap":{"source":"apache","extensions":["xbap"]},"application/x-msaccess":{"source":"apache","extensions":["mdb"]},"application/x-msbinder":{"source":"apache","extensions":["obd"]},"application/x-mscardfile":{"source":"apache","extensions":["crd"]},"application/x-msclip":{"source":"apache","extensions":["clp"]},"application/x-msdos-program":{"extensions":["exe"]},"application/x-msdownload":{"source":"apache","extensions":["exe","dll","com","bat","msi"]},"application/x-msmediaview":{"source":"apache","extensions":["mvb","m13","m14"]},"application/x-msmetafile":{"source":"apache","extensions":["wmf","wmz","emf","emz"]},"application/x-msmoney":{"source":"apache","extensions":["mny"]},"application/x-mspublisher":{"source":"apache","extensions":["pub"]},"application/x-msschedule":{"source":"apache","extensions":["scd"]},"application/x-msterminal":{"source":"apache","extensions":["trm"]},"application/x-mswrite":{"source":"apache","extensions":["wri"]},"application/x-netcdf":{"source":"apache","extensions":["nc","cdf"]},"application/x-ns-proxy-autoconfig":{"compressible":true,"extensions":["pac"]},"application/x-nzb":{"source":"apache","extensions":["nzb"]},"application/x-perl":{"source":"nginx","extensions":["pl","pm"]},"application/x-pilot":{"source":"nginx","extensions":["prc","pdb"]},"application/x-pkcs12":{"source":"apache","compressible":false,"extensions":["p12","pfx"]},"application/x-pkcs7-certificates":{"source":"apache","extensions":["p7b","spc"]},"application/x-pkcs7-certreqresp":{"source":"apache","extensions":["p7r"]},"application/x-pki-message":{"source":"iana"},"application/x-rar-compressed":{"source":"apache","compressible":false,"extensions":["rar"]},"application/x-redhat-package-manager":{"source":"nginx","extensions":["rpm"]},"application/x-research-info-systems":{"source":"apache","extensions":["ris"]},"application/x-sea":{"source":"nginx","extensions":["sea"]},"application/x-sh":{"source":"apache","compressible":true,"extensions":["sh"]},"application/x-shar":{"source":"apache","extensions":["shar"]},"application/x-shockwave-flash":{"source":"apache","compressible":false,"extensions":["swf"]},"application/x-silverlight-app":{"source":"apache","extensions":["xap"]},"application/x-sql":{"source":"apache","extensions":["sql"]},"application/x-stuffit":{"source":"apache","compressible":false,"extensions":["sit"]},"application/x-stuffitx":{"source":"apache","extensions":["sitx"]},"application/x-subrip":{"source":"apache","extensions":["srt"]},"application/x-sv4cpio":{"source":"apache","extensions":["sv4cpio"]},"application/x-sv4crc":{"source":"apache","extensions":["sv4crc"]},"application/x-t3vm-image":{"source":"apache","extensions":["t3"]},"application/x-tads":{"source":"apache","extensions":["gam"]},"application/x-tar":{"source":"apache","compressible":true,"extensions":["tar"]},"application/x-tcl":{"source":"apache","extensions":["tcl","tk"]},"application/x-tex":{"source":"apache","extensions":["tex"]},"application/x-tex-tfm":{"source":"apache","extensions":["tfm"]},"application/x-texinfo":{"source":"apache","extensions":["texinfo","texi"]},"application/x-tgif":{"source":"apache","extensions":["obj"]},"application/x-ustar":{"source":"apache","extensions":["ustar"]},"application/x-virtualbox-hdd":{"compressible":true,"extensions":["hdd"]},"application/x-virtualbox-ova":{"compressible":true,"extensions":["ova"]},"application/x-virtualbox-ovf":{"compressible":true,"extensions":["ovf"]},"application/x-virtualbox-vbox":{"compressible":true,"extensions":["vbox"]},"application/x-virtualbox-vbox-extpack":{"compressible":false,"extensions":["vbox-extpack"]},"application/x-virtualbox-vdi":{"compressible":true,"extensions":["vdi"]},"application/x-virtualbox-vhd":{"compressible":true,"extensions":["vhd"]},"application/x-virtualbox-vmdk":{"compressible":true,"extensions":["vmdk"]},"application/x-wais-source":{"source":"apache","extensions":["src"]},"application/x-web-app-manifest+json":{"compressible":true,"extensions":["webapp"]},"application/x-www-form-urlencoded":{"source":"iana","compressible":true},"application/x-x509-ca-cert":{"source":"iana","extensions":["der","crt","pem"]},"application/x-x509-ca-ra-cert":{"source":"iana"},"application/x-x509-next-ca-cert":{"source":"iana"},"application/x-xfig":{"source":"apache","extensions":["fig"]},"application/x-xliff+xml":{"source":"apache","compressible":true,"extensions":["xlf"]},"application/x-xpinstall":{"source":"apache","compressible":false,"extensions":["xpi"]},"application/x-xz":{"source":"apache","extensions":["xz"]},"application/x-zip-compressed":{"extensions":["zip"]},"application/x-zmachine":{"source":"apache","extensions":["z1","z2","z3","z4","z5","z6","z7","z8"]},"application/x400-bp":{"source":"iana"},"application/xacml+xml":{"source":"iana","compressible":true},"application/xaml+xml":{"source":"apache","compressible":true,"extensions":["xaml"]},"application/xcap-att+xml":{"source":"iana","compressible":true,"extensions":["xav"]},"application/xcap-caps+xml":{"source":"iana","compressible":true,"extensions":["xca"]},"application/xcap-diff+xml":{"source":"iana","compressible":true,"extensions":["xdf"]},"application/xcap-el+xml":{"source":"iana","compressible":true,"extensions":["xel"]},"application/xcap-error+xml":{"source":"iana","compressible":true},"application/xcap-ns+xml":{"source":"iana","compressible":true,"extensions":["xns"]},"application/xcon-conference-info+xml":{"source":"iana","compressible":true},"application/xcon-conference-info-diff+xml":{"source":"iana","compressible":true},"application/xenc+xml":{"source":"iana","compressible":true,"extensions":["xenc"]},"application/xfdf":{"source":"iana","extensions":["xfdf"]},"application/xhtml+xml":{"source":"iana","compressible":true,"extensions":["xhtml","xht"]},"application/xhtml-voice+xml":{"source":"apache","compressible":true},"application/xliff+xml":{"source":"iana","compressible":true,"extensions":["xlf"]},"application/xml":{"source":"iana","compressible":true,"extensions":["xml","xsl","xsd","rng"]},"application/xml-dtd":{"source":"iana","compressible":true,"extensions":["dtd"]},"application/xml-external-parsed-entity":{"source":"iana"},"application/xml-patch+xml":{"source":"iana","compressible":true},"application/xmpp+xml":{"source":"iana","compressible":true},"application/xop+xml":{"source":"iana","compressible":true,"extensions":["xop"]},"application/xproc+xml":{"source":"apache","compressible":true,"extensions":["xpl"]},"application/xslt+xml":{"source":"iana","compressible":true,"extensions":["xsl","xslt"]},"application/xspf+xml":{"source":"apache","compressible":true,"extensions":["xspf"]},"application/xv+xml":{"source":"iana","compressible":true,"extensions":["mxml","xhvml","xvml","xvm"]},"application/yaml":{"source":"iana"},"application/yang":{"source":"iana","extensions":["yang"]},"application/yang-data+cbor":{"source":"iana"},"application/yang-data+json":{"source":"iana","compressible":true},"application/yang-data+xml":{"source":"iana","compressible":true},"application/yang-patch+json":{"source":"iana","compressible":true},"application/yang-patch+xml":{"source":"iana","compressible":true},"application/yang-sid+json":{"source":"iana","compressible":true},"application/yin+xml":{"source":"iana","compressible":true,"extensions":["yin"]},"application/zip":{"source":"iana","compressible":false,"extensions":["zip"]},"application/zip+dotlottie":{"extensions":["lottie"]},"application/zlib":{"source":"iana"},"application/zstd":{"source":"iana"},"audio/1d-interleaved-parityfec":{"source":"iana"},"audio/32kadpcm":{"source":"iana"},"audio/3gpp":{"source":"iana","compressible":false,"extensions":["3gpp"]},"audio/3gpp2":{"source":"iana"},"audio/aac":{"source":"iana","extensions":["adts","aac"]},"audio/ac3":{"source":"iana"},"audio/adpcm":{"source":"apache","extensions":["adp"]},"audio/amr":{"source":"iana","extensions":["amr"]},"audio/amr-wb":{"source":"iana"},"audio/amr-wb+":{"source":"iana"},"audio/aptx":{"source":"iana"},"audio/asc":{"source":"iana"},"audio/atrac-advanced-lossless":{"source":"iana"},"audio/atrac-x":{"source":"iana"},"audio/atrac3":{"source":"iana"},"audio/basic":{"source":"iana","compressible":false,"extensions":["au","snd"]},"audio/bv16":{"source":"iana"},"audio/bv32":{"source":"iana"},"audio/clearmode":{"source":"iana"},"audio/cn":{"source":"iana"},"audio/dat12":{"source":"iana"},"audio/dls":{"source":"iana"},"audio/dsr-es201108":{"source":"iana"},"audio/dsr-es202050":{"source":"iana"},"audio/dsr-es202211":{"source":"iana"},"audio/dsr-es202212":{"source":"iana"},"audio/dv":{"source":"iana"},"audio/dvi4":{"source":"iana"},"audio/eac3":{"source":"iana"},"audio/encaprtp":{"source":"iana"},"audio/evrc":{"source":"iana"},"audio/evrc-qcp":{"source":"iana"},"audio/evrc0":{"source":"iana"},"audio/evrc1":{"source":"iana"},"audio/evrcb":{"source":"iana"},"audio/evrcb0":{"source":"iana"},"audio/evrcb1":{"source":"iana"},"audio/evrcnw":{"source":"iana"},"audio/evrcnw0":{"source":"iana"},"audio/evrcnw1":{"source":"iana"},"audio/evrcwb":{"source":"iana"},"audio/evrcwb0":{"source":"iana"},"audio/evrcwb1":{"source":"iana"},"audio/evs":{"source":"iana"},"audio/flac":{"source":"iana"},"audio/flexfec":{"source":"iana"},"audio/fwdred":{"source":"iana"},"audio/g711-0":{"source":"iana"},"audio/g719":{"source":"iana"},"audio/g722":{"source":"iana"},"audio/g7221":{"source":"iana"},"audio/g723":{"source":"iana"},"audio/g726-16":{"source":"iana"},"audio/g726-24":{"source":"iana"},"audio/g726-32":{"source":"iana"},"audio/g726-40":{"source":"iana"},"audio/g728":{"source":"iana"},"audio/g729":{"source":"iana"},"audio/g7291":{"source":"iana"},"audio/g729d":{"source":"iana"},"audio/g729e":{"source":"iana"},"audio/gsm":{"source":"iana"},"audio/gsm-efr":{"source":"iana"},"audio/gsm-hr-08":{"source":"iana"},"audio/ilbc":{"source":"iana"},"audio/ip-mr_v2.5":{"source":"iana"},"audio/isac":{"source":"apache"},"audio/l16":{"source":"iana"},"audio/l20":{"source":"iana"},"audio/l24":{"source":"iana","compressible":false},"audio/l8":{"source":"iana"},"audio/lpc":{"source":"iana"},"audio/matroska":{"source":"iana"},"audio/melp":{"source":"iana"},"audio/melp1200":{"source":"iana"},"audio/melp2400":{"source":"iana"},"audio/melp600":{"source":"iana"},"audio/mhas":{"source":"iana"},"audio/midi":{"source":"apache","extensions":["mid","midi","kar","rmi"]},"audio/midi-clip":{"source":"iana"},"audio/mobile-xmf":{"source":"iana","extensions":["mxmf"]},"audio/mp3":{"compressible":false,"extensions":["mp3"]},"audio/mp4":{"source":"iana","compressible":false,"extensions":["m4a","mp4a","m4b"]},"audio/mp4a-latm":{"source":"iana"},"audio/mpa":{"source":"iana"},"audio/mpa-robust":{"source":"iana"},"audio/mpeg":{"source":"iana","compressible":false,"extensions":["mpga","mp2","mp2a","mp3","m2a","m3a"]},"audio/mpeg4-generic":{"source":"iana"},"audio/musepack":{"source":"apache"},"audio/ogg":{"source":"iana","compressible":false,"extensions":["oga","ogg","spx","opus"]},"audio/opus":{"source":"iana"},"audio/parityfec":{"source":"iana"},"audio/pcma":{"source":"iana"},"audio/pcma-wb":{"source":"iana"},"audio/pcmu":{"source":"iana"},"audio/pcmu-wb":{"source":"iana"},"audio/prs.sid":{"source":"iana"},"audio/qcelp":{"source":"iana"},"audio/raptorfec":{"source":"iana"},"audio/red":{"source":"iana"},"audio/rtp-enc-aescm128":{"source":"iana"},"audio/rtp-midi":{"source":"iana"},"audio/rtploopback":{"source":"iana"},"audio/rtx":{"source":"iana"},"audio/s3m":{"source":"apache","extensions":["s3m"]},"audio/scip":{"source":"iana"},"audio/silk":{"source":"apache","extensions":["sil"]},"audio/smv":{"source":"iana"},"audio/smv-qcp":{"source":"iana"},"audio/smv0":{"source":"iana"},"audio/sofa":{"source":"iana"},"audio/sp-midi":{"source":"iana"},"audio/speex":{"source":"iana"},"audio/t140c":{"source":"iana"},"audio/t38":{"source":"iana"},"audio/telephone-event":{"source":"iana"},"audio/tetra_acelp":{"source":"iana"},"audio/tetra_acelp_bb":{"source":"iana"},"audio/tone":{"source":"iana"},"audio/tsvcis":{"source":"iana"},"audio/uemclip":{"source":"iana"},"audio/ulpfec":{"source":"iana"},"audio/usac":{"source":"iana"},"audio/vdvi":{"source":"iana"},"audio/vmr-wb":{"source":"iana"},"audio/vnd.3gpp.iufp":{"source":"iana"},"audio/vnd.4sb":{"source":"iana"},"audio/vnd.audiokoz":{"source":"iana"},"audio/vnd.celp":{"source":"iana"},"audio/vnd.cisco.nse":{"source":"iana"},"audio/vnd.cmles.radio-events":{"source":"iana"},"audio/vnd.cns.anp1":{"source":"iana"},"audio/vnd.cns.inf1":{"source":"iana"},"audio/vnd.dece.audio":{"source":"iana","extensions":["uva","uvva"]},"audio/vnd.digital-winds":{"source":"iana","extensions":["eol"]},"audio/vnd.dlna.adts":{"source":"iana"},"audio/vnd.dolby.heaac.1":{"source":"iana"},"audio/vnd.dolby.heaac.2":{"source":"iana"},"audio/vnd.dolby.mlp":{"source":"iana"},"audio/vnd.dolby.mps":{"source":"iana"},"audio/vnd.dolby.pl2":{"source":"iana"},"audio/vnd.dolby.pl2x":{"source":"iana"},"audio/vnd.dolby.pl2z":{"source":"iana"},"audio/vnd.dolby.pulse.1":{"source":"iana"},"audio/vnd.dra":{"source":"iana","extensions":["dra"]},"audio/vnd.dts":{"source":"iana","extensions":["dts"]},"audio/vnd.dts.hd":{"source":"iana","extensions":["dtshd"]},"audio/vnd.dts.uhd":{"source":"iana"},"audio/vnd.dvb.file":{"source":"iana"},"audio/vnd.everad.plj":{"source":"iana"},"audio/vnd.hns.audio":{"source":"iana"},"audio/vnd.lucent.voice":{"source":"iana","extensions":["lvp"]},"audio/vnd.ms-playready.media.pya":{"source":"iana","extensions":["pya"]},"audio/vnd.nokia.mobile-xmf":{"source":"iana"},"audio/vnd.nortel.vbk":{"source":"iana"},"audio/vnd.nuera.ecelp4800":{"source":"iana","extensions":["ecelp4800"]},"audio/vnd.nuera.ecelp7470":{"source":"iana","extensions":["ecelp7470"]},"audio/vnd.nuera.ecelp9600":{"source":"iana","extensions":["ecelp9600"]},"audio/vnd.octel.sbc":{"source":"iana"},"audio/vnd.presonus.multitrack":{"source":"iana"},"audio/vnd.qcelp":{"source":"apache"},"audio/vnd.rhetorex.32kadpcm":{"source":"iana"},"audio/vnd.rip":{"source":"iana","extensions":["rip"]},"audio/vnd.rn-realaudio":{"compressible":false},"audio/vnd.sealedmedia.softseal.mpeg":{"source":"iana"},"audio/vnd.vmx.cvsd":{"source":"iana"},"audio/vnd.wave":{"compressible":false},"audio/vorbis":{"source":"iana","compressible":false},"audio/vorbis-config":{"source":"iana"},"audio/wav":{"compressible":false,"extensions":["wav"]},"audio/wave":{"compressible":false,"extensions":["wav"]},"audio/webm":{"source":"apache","compressible":false,"extensions":["weba"]},"audio/x-aac":{"source":"apache","compressible":false,"extensions":["aac"]},"audio/x-aiff":{"source":"apache","extensions":["aif","aiff","aifc"]},"audio/x-caf":{"source":"apache","compressible":false,"extensions":["caf"]},"audio/x-flac":{"source":"apache","extensions":["flac"]},"audio/x-m4a":{"source":"nginx","extensions":["m4a"]},"audio/x-matroska":{"source":"apache","extensions":["mka"]},"audio/x-mpegurl":{"source":"apache","extensions":["m3u"]},"audio/x-ms-wax":{"source":"apache","extensions":["wax"]},"audio/x-ms-wma":{"source":"apache","extensions":["wma"]},"audio/x-pn-realaudio":{"source":"apache","extensions":["ram","ra"]},"audio/x-pn-realaudio-plugin":{"source":"apache","extensions":["rmp"]},"audio/x-realaudio":{"source":"nginx","extensions":["ra"]},"audio/x-tta":{"source":"apache"},"audio/x-wav":{"source":"apache","extensions":["wav"]},"audio/xm":{"source":"apache","extensions":["xm"]},"chemical/x-cdx":{"source":"apache","extensions":["cdx"]},"chemical/x-cif":{"source":"apache","extensions":["cif"]},"chemical/x-cmdf":{"source":"apache","extensions":["cmdf"]},"chemical/x-cml":{"source":"apache","extensions":["cml"]},"chemical/x-csml":{"source":"apache","extensions":["csml"]},"chemical/x-pdb":{"source":"apache"},"chemical/x-xyz":{"source":"apache","extensions":["xyz"]},"font/collection":{"source":"iana","extensions":["ttc"]},"font/otf":{"source":"iana","compressible":true,"extensions":["otf"]},"font/sfnt":{"source":"iana"},"font/ttf":{"source":"iana","compressible":true,"extensions":["ttf"]},"font/woff":{"source":"iana","extensions":["woff"]},"font/woff2":{"source":"iana","extensions":["woff2"]},"image/aces":{"source":"iana","extensions":["exr"]},"image/apng":{"source":"iana","compressible":false,"extensions":["apng"]},"image/avci":{"source":"iana","extensions":["avci"]},"image/avcs":{"source":"iana","extensions":["avcs"]},"image/avif":{"source":"iana","compressible":false,"extensions":["avif"]},"image/bmp":{"source":"iana","compressible":true,"extensions":["bmp","dib"]},"image/cgm":{"source":"iana","extensions":["cgm"]},"image/dicom-rle":{"source":"iana","extensions":["drle"]},"image/dpx":{"source":"iana","extensions":["dpx"]},"image/emf":{"source":"iana","extensions":["emf"]},"image/fits":{"source":"iana","extensions":["fits"]},"image/g3fax":{"source":"iana","extensions":["g3"]},"image/gif":{"source":"iana","compressible":false,"extensions":["gif"]},"image/heic":{"source":"iana","extensions":["heic"]},"image/heic-sequence":{"source":"iana","extensions":["heics"]},"image/heif":{"source":"iana","extensions":["heif"]},"image/heif-sequence":{"source":"iana","extensions":["heifs"]},"image/hej2k":{"source":"iana","extensions":["hej2"]},"image/ief":{"source":"iana","extensions":["ief"]},"image/j2c":{"source":"iana"},"image/jaii":{"source":"iana","extensions":["jaii"]},"image/jais":{"source":"iana","extensions":["jais"]},"image/jls":{"source":"iana","extensions":["jls"]},"image/jp2":{"source":"iana","compressible":false,"extensions":["jp2","jpg2"]},"image/jpeg":{"source":"iana","compressible":false,"extensions":["jpg","jpeg","jpe"]},"image/jph":{"source":"iana","extensions":["jph"]},"image/jphc":{"source":"iana","extensions":["jhc"]},"image/jpm":{"source":"iana","compressible":false,"extensions":["jpm","jpgm"]},"image/jpx":{"source":"iana","compressible":false,"extensions":["jpx","jpf"]},"image/jxl":{"source":"iana","extensions":["jxl"]},"image/jxr":{"source":"iana","extensions":["jxr"]},"image/jxra":{"source":"iana","extensions":["jxra"]},"image/jxrs":{"source":"iana","extensions":["jxrs"]},"image/jxs":{"source":"iana","extensions":["jxs"]},"image/jxsc":{"source":"iana","extensions":["jxsc"]},"image/jxsi":{"source":"iana","extensions":["jxsi"]},"image/jxss":{"source":"iana","extensions":["jxss"]},"image/ktx":{"source":"iana","extensions":["ktx"]},"image/ktx2":{"source":"iana","extensions":["ktx2"]},"image/naplps":{"source":"iana"},"image/pjpeg":{"compressible":false,"extensions":["jfif"]},"image/png":{"source":"iana","compressible":false,"extensions":["png"]},"image/prs.btif":{"source":"iana","extensions":["btif","btf"]},"image/prs.pti":{"source":"iana","extensions":["pti"]},"image/pwg-raster":{"source":"iana"},"image/sgi":{"source":"apache","extensions":["sgi"]},"image/svg+xml":{"source":"iana","compressible":true,"extensions":["svg","svgz"]},"image/t38":{"source":"iana","extensions":["t38"]},"image/tiff":{"source":"iana","compressible":false,"extensions":["tif","tiff"]},"image/tiff-fx":{"source":"iana","extensions":["tfx"]},"image/vnd.adobe.photoshop":{"source":"iana","compressible":true,"extensions":["psd"]},"image/vnd.airzip.accelerator.azv":{"source":"iana","extensions":["azv"]},"image/vnd.clip":{"source":"iana"},"image/vnd.cns.inf2":{"source":"iana"},"image/vnd.dece.graphic":{"source":"iana","extensions":["uvi","uvvi","uvg","uvvg"]},"image/vnd.djvu":{"source":"iana","extensions":["djvu","djv"]},"image/vnd.dvb.subtitle":{"source":"iana","extensions":["sub"]},"image/vnd.dwg":{"source":"iana","extensions":["dwg"]},"image/vnd.dxf":{"source":"iana","extensions":["dxf"]},"image/vnd.fastbidsheet":{"source":"iana","extensions":["fbs"]},"image/vnd.fpx":{"source":"iana","extensions":["fpx"]},"image/vnd.fst":{"source":"iana","extensions":["fst"]},"image/vnd.fujixerox.edmics-mmr":{"source":"iana","extensions":["mmr"]},"image/vnd.fujixerox.edmics-rlc":{"source":"iana","extensions":["rlc"]},"image/vnd.globalgraphics.pgb":{"source":"iana"},"image/vnd.microsoft.icon":{"source":"iana","compressible":true,"extensions":["ico"]},"image/vnd.mix":{"source":"iana"},"image/vnd.mozilla.apng":{"source":"iana"},"image/vnd.ms-dds":{"compressible":true,"extensions":["dds"]},"image/vnd.ms-modi":{"source":"iana","extensions":["mdi"]},"image/vnd.ms-photo":{"source":"apache","extensions":["wdp"]},"image/vnd.net-fpx":{"source":"iana","extensions":["npx"]},"image/vnd.pco.b16":{"source":"iana","extensions":["b16"]},"image/vnd.radiance":{"source":"iana"},"image/vnd.sealed.png":{"source":"iana"},"image/vnd.sealedmedia.softseal.gif":{"source":"iana"},"image/vnd.sealedmedia.softseal.jpg":{"source":"iana"},"image/vnd.svf":{"source":"iana"},"image/vnd.tencent.tap":{"source":"iana","extensions":["tap"]},"image/vnd.valve.source.texture":{"source":"iana","extensions":["vtf"]},"image/vnd.wap.wbmp":{"source":"iana","extensions":["wbmp"]},"image/vnd.xiff":{"source":"iana","extensions":["xif"]},"image/vnd.zbrush.pcx":{"source":"iana","extensions":["pcx"]},"image/webp":{"source":"iana","extensions":["webp"]},"image/wmf":{"source":"iana","extensions":["wmf"]},"image/x-3ds":{"source":"apache","extensions":["3ds"]},"image/x-adobe-dng":{"extensions":["dng"]},"image/x-cmu-raster":{"source":"apache","extensions":["ras"]},"image/x-cmx":{"source":"apache","extensions":["cmx"]},"image/x-emf":{"source":"iana"},"image/x-freehand":{"source":"apache","extensions":["fh","fhc","fh4","fh5","fh7"]},"image/x-icon":{"source":"apache","compressible":true,"extensions":["ico"]},"image/x-jng":{"source":"nginx","extensions":["jng"]},"image/x-mrsid-image":{"source":"apache","extensions":["sid"]},"image/x-ms-bmp":{"source":"nginx","compressible":true,"extensions":["bmp"]},"image/x-pcx":{"source":"apache","extensions":["pcx"]},"image/x-pict":{"source":"apache","extensions":["pic","pct"]},"image/x-portable-anymap":{"source":"apache","extensions":["pnm"]},"image/x-portable-bitmap":{"source":"apache","extensions":["pbm"]},"image/x-portable-graymap":{"source":"apache","extensions":["pgm"]},"image/x-portable-pixmap":{"source":"apache","extensions":["ppm"]},"image/x-rgb":{"source":"apache","extensions":["rgb"]},"image/x-tga":{"source":"apache","extensions":["tga"]},"image/x-wmf":{"source":"iana"},"image/x-xbitmap":{"source":"apache","extensions":["xbm"]},"image/x-xcf":{"compressible":false},"image/x-xpixmap":{"source":"apache","extensions":["xpm"]},"image/x-xwindowdump":{"source":"apache","extensions":["xwd"]},"message/bhttp":{"source":"iana"},"message/cpim":{"source":"iana"},"message/delivery-status":{"source":"iana"},"message/disposition-notification":{"source":"iana","extensions":["disposition-notification"]},"message/external-body":{"source":"iana"},"message/feedback-report":{"source":"iana"},"message/global":{"source":"iana","extensions":["u8msg"]},"message/global-delivery-status":{"source":"iana","extensions":["u8dsn"]},"message/global-disposition-notification":{"source":"iana","extensions":["u8mdn"]},"message/global-headers":{"source":"iana","extensions":["u8hdr"]},"message/http":{"source":"iana","compressible":false},"message/imdn+xml":{"source":"iana","compressible":true},"message/mls":{"source":"iana"},"message/news":{"source":"apache"},"message/ohttp-req":{"source":"iana"},"message/ohttp-res":{"source":"iana"},"message/partial":{"source":"iana","compressible":false},"message/rfc822":{"source":"iana","compressible":true,"extensions":["eml","mime","mht","mhtml"]},"message/s-http":{"source":"apache"},"message/sip":{"source":"iana"},"message/sipfrag":{"source":"iana"},"message/tracking-status":{"source":"iana"},"message/vnd.si.simp":{"source":"apache"},"message/vnd.wfa.wsc":{"source":"iana","extensions":["wsc"]},"model/3mf":{"source":"iana","extensions":["3mf"]},"model/e57":{"source":"iana"},"model/gltf+json":{"source":"iana","compressible":true,"extensions":["gltf"]},"model/gltf-binary":{"source":"iana","compressible":true,"extensions":["glb"]},"model/iges":{"source":"iana","compressible":false,"extensions":["igs","iges"]},"model/jt":{"source":"iana","extensions":["jt"]},"model/mesh":{"source":"iana","compressible":false,"extensions":["msh","mesh","silo"]},"model/mtl":{"source":"iana","extensions":["mtl"]},"model/obj":{"source":"iana","extensions":["obj"]},"model/prc":{"source":"iana","extensions":["prc"]},"model/step":{"source":"iana","extensions":["step","stp","stpnc","p21","210"]},"model/step+xml":{"source":"iana","compressible":true,"extensions":["stpx"]},"model/step+zip":{"source":"iana","compressible":false,"extensions":["stpz"]},"model/step-xml+zip":{"source":"iana","compressible":false,"extensions":["stpxz"]},"model/stl":{"source":"iana","extensions":["stl"]},"model/u3d":{"source":"iana","extensions":["u3d"]},"model/vnd.bary":{"source":"iana","extensions":["bary"]},"model/vnd.cld":{"source":"iana","extensions":["cld"]},"model/vnd.collada+xml":{"source":"iana","compressible":true,"extensions":["dae"]},"model/vnd.dwf":{"source":"iana","extensions":["dwf"]},"model/vnd.flatland.3dml":{"source":"iana"},"model/vnd.gdl":{"source":"iana","extensions":["gdl"]},"model/vnd.gs-gdl":{"source":"apache"},"model/vnd.gs.gdl":{"source":"iana"},"model/vnd.gtw":{"source":"iana","extensions":["gtw"]},"model/vnd.moml+xml":{"source":"iana","compressible":true},"model/vnd.mts":{"source":"iana","extensions":["mts"]},"model/vnd.opengex":{"source":"iana","extensions":["ogex"]},"model/vnd.parasolid.transmit.binary":{"source":"iana","extensions":["x_b"]},"model/vnd.parasolid.transmit.text":{"source":"iana","extensions":["x_t"]},"model/vnd.pytha.pyox":{"source":"iana","extensions":["pyo","pyox"]},"model/vnd.rosette.annotated-data-model":{"source":"iana"},"model/vnd.sap.vds":{"source":"iana","extensions":["vds"]},"model/vnd.usda":{"source":"iana","extensions":["usda"]},"model/vnd.usdz+zip":{"source":"iana","compressible":false,"extensions":["usdz"]},"model/vnd.valve.source.compiled-map":{"source":"iana","extensions":["bsp"]},"model/vnd.vtu":{"source":"iana","extensions":["vtu"]},"model/vrml":{"source":"iana","compressible":false,"extensions":["wrl","vrml"]},"model/x3d+binary":{"source":"apache","compressible":false,"extensions":["x3db","x3dbz"]},"model/x3d+fastinfoset":{"source":"iana","extensions":["x3db"]},"model/x3d+vrml":{"source":"apache","compressible":false,"extensions":["x3dv","x3dvz"]},"model/x3d+xml":{"source":"iana","compressible":true,"extensions":["x3d","x3dz"]},"model/x3d-vrml":{"source":"iana","extensions":["x3dv"]},"multipart/alternative":{"source":"iana","compressible":false},"multipart/appledouble":{"source":"iana"},"multipart/byteranges":{"source":"iana"},"multipart/digest":{"source":"iana"},"multipart/encrypted":{"source":"iana","compressible":false},"multipart/form-data":{"source":"iana","compressible":false},"multipart/header-set":{"source":"iana"},"multipart/mixed":{"source":"iana"},"multipart/multilingual":{"source":"iana"},"multipart/parallel":{"source":"iana"},"multipart/related":{"source":"iana","compressible":false},"multipart/report":{"source":"iana"},"multipart/signed":{"source":"iana","compressible":false},"multipart/vnd.bint.med-plus":{"source":"iana"},"multipart/voice-message":{"source":"iana"},"multipart/x-mixed-replace":{"source":"iana"},"text/1d-interleaved-parityfec":{"source":"iana"},"text/cache-manifest":{"source":"iana","compressible":true,"extensions":["appcache","manifest"]},"text/calendar":{"source":"iana","extensions":["ics","ifb"]},"text/calender":{"compressible":true},"text/cmd":{"compressible":true},"text/coffeescript":{"extensions":["coffee","litcoffee"]},"text/cql":{"source":"iana"},"text/cql-expression":{"source":"iana"},"text/cql-identifier":{"source":"iana"},"text/css":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["css"]},"text/csv":{"source":"iana","compressible":true,"extensions":["csv"]},"text/csv-schema":{"source":"iana"},"text/directory":{"source":"iana"},"text/dns":{"source":"iana"},"text/ecmascript":{"source":"apache"},"text/encaprtp":{"source":"iana"},"text/enriched":{"source":"iana"},"text/fhirpath":{"source":"iana"},"text/flexfec":{"source":"iana"},"text/fwdred":{"source":"iana"},"text/gff3":{"source":"iana"},"text/grammar-ref-list":{"source":"iana"},"text/hl7v2":{"source":"iana"},"text/html":{"source":"iana","compressible":true,"extensions":["html","htm","shtml"]},"text/jade":{"extensions":["jade"]},"text/javascript":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["js","mjs"]},"text/jcr-cnd":{"source":"iana"},"text/jsx":{"compressible":true,"extensions":["jsx"]},"text/less":{"compressible":true,"extensions":["less"]},"text/markdown":{"source":"iana","compressible":true,"extensions":["md","markdown"]},"text/mathml":{"source":"nginx","extensions":["mml"]},"text/mdx":{"compressible":true,"extensions":["mdx"]},"text/mizar":{"source":"iana"},"text/n3":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["n3"]},"text/parameters":{"source":"iana","charset":"UTF-8"},"text/parityfec":{"source":"iana"},"text/plain":{"source":"iana","compressible":true,"extensions":["txt","text","conf","def","list","log","in","ini"]},"text/provenance-notation":{"source":"iana","charset":"UTF-8"},"text/prs.fallenstein.rst":{"source":"iana"},"text/prs.lines.tag":{"source":"iana","extensions":["dsc"]},"text/prs.prop.logic":{"source":"iana"},"text/prs.texi":{"source":"iana"},"text/raptorfec":{"source":"iana"},"text/red":{"source":"iana"},"text/rfc822-headers":{"source":"iana"},"text/richtext":{"source":"iana","compressible":true,"extensions":["rtx"]},"text/rtf":{"source":"iana","compressible":true,"extensions":["rtf"]},"text/rtp-enc-aescm128":{"source":"iana"},"text/rtploopback":{"source":"iana"},"text/rtx":{"source":"iana"},"text/sgml":{"source":"iana","extensions":["sgml","sgm"]},"text/shaclc":{"source":"iana"},"text/shex":{"source":"iana","extensions":["shex"]},"text/slim":{"extensions":["slim","slm"]},"text/spdx":{"source":"iana","extensions":["spdx"]},"text/strings":{"source":"iana"},"text/stylus":{"extensions":["stylus","styl"]},"text/t140":{"source":"iana"},"text/tab-separated-values":{"source":"iana","compressible":true,"extensions":["tsv"]},"text/troff":{"source":"iana","extensions":["t","tr","roff","man","me","ms"]},"text/turtle":{"source":"iana","charset":"UTF-8","extensions":["ttl"]},"text/ulpfec":{"source":"iana"},"text/uri-list":{"source":"iana","compressible":true,"extensions":["uri","uris","urls"]},"text/vcard":{"source":"iana","compressible":true,"extensions":["vcard"]},"text/vnd.a":{"source":"iana"},"text/vnd.abc":{"source":"iana"},"text/vnd.ascii-art":{"source":"iana"},"text/vnd.curl":{"source":"iana","extensions":["curl"]},"text/vnd.curl.dcurl":{"source":"apache","extensions":["dcurl"]},"text/vnd.curl.mcurl":{"source":"apache","extensions":["mcurl"]},"text/vnd.curl.scurl":{"source":"apache","extensions":["scurl"]},"text/vnd.debian.copyright":{"source":"iana","charset":"UTF-8"},"text/vnd.dmclientscript":{"source":"iana"},"text/vnd.dvb.subtitle":{"source":"iana","extensions":["sub"]},"text/vnd.esmertec.theme-descriptor":{"source":"iana","charset":"UTF-8"},"text/vnd.exchangeable":{"source":"iana"},"text/vnd.familysearch.gedcom":{"source":"iana","extensions":["ged"]},"text/vnd.ficlab.flt":{"source":"iana"},"text/vnd.fly":{"source":"iana","extensions":["fly"]},"text/vnd.fmi.flexstor":{"source":"iana","extensions":["flx"]},"text/vnd.gml":{"source":"iana"},"text/vnd.graphviz":{"source":"iana","extensions":["gv"]},"text/vnd.hans":{"source":"iana"},"text/vnd.hgl":{"source":"iana"},"text/vnd.in3d.3dml":{"source":"iana","extensions":["3dml"]},"text/vnd.in3d.spot":{"source":"iana","extensions":["spot"]},"text/vnd.iptc.newsml":{"source":"iana"},"text/vnd.iptc.nitf":{"source":"iana"},"text/vnd.latex-z":{"source":"iana"},"text/vnd.motorola.reflex":{"source":"iana"},"text/vnd.ms-mediapackage":{"source":"iana"},"text/vnd.net2phone.commcenter.command":{"source":"iana"},"text/vnd.radisys.msml-basic-layout":{"source":"iana"},"text/vnd.senx.warpscript":{"source":"iana"},"text/vnd.si.uricatalogue":{"source":"apache"},"text/vnd.sosi":{"source":"iana"},"text/vnd.sun.j2me.app-descriptor":{"source":"iana","charset":"UTF-8","extensions":["jad"]},"text/vnd.trolltech.linguist":{"source":"iana","charset":"UTF-8"},"text/vnd.vcf":{"source":"iana"},"text/vnd.wap.si":{"source":"iana"},"text/vnd.wap.sl":{"source":"iana"},"text/vnd.wap.wml":{"source":"iana","extensions":["wml"]},"text/vnd.wap.wmlscript":{"source":"iana","extensions":["wmls"]},"text/vnd.zoo.kcl":{"source":"iana"},"text/vtt":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["vtt"]},"text/wgsl":{"source":"iana","extensions":["wgsl"]},"text/x-asm":{"source":"apache","extensions":["s","asm"]},"text/x-c":{"source":"apache","extensions":["c","cc","cxx","cpp","h","hh","dic"]},"text/x-component":{"source":"nginx","extensions":["htc"]},"text/x-fortran":{"source":"apache","extensions":["f","for","f77","f90"]},"text/x-gwt-rpc":{"compressible":true},"text/x-handlebars-template":{"extensions":["hbs"]},"text/x-java-source":{"source":"apache","extensions":["java"]},"text/x-jquery-tmpl":{"compressible":true},"text/x-lua":{"extensions":["lua"]},"text/x-markdown":{"compressible":true,"extensions":["mkd"]},"text/x-nfo":{"source":"apache","extensions":["nfo"]},"text/x-opml":{"source":"apache","extensions":["opml"]},"text/x-org":{"compressible":true,"extensions":["org"]},"text/x-pascal":{"source":"apache","extensions":["p","pas"]},"text/x-processing":{"compressible":true,"extensions":["pde"]},"text/x-sass":{"extensions":["sass"]},"text/x-scss":{"extensions":["scss"]},"text/x-setext":{"source":"apache","extensions":["etx"]},"text/x-sfv":{"source":"apache","extensions":["sfv"]},"text/x-suse-ymp":{"compressible":true,"extensions":["ymp"]},"text/x-uuencode":{"source":"apache","extensions":["uu"]},"text/x-vcalendar":{"source":"apache","extensions":["vcs"]},"text/x-vcard":{"source":"apache","extensions":["vcf"]},"text/xml":{"source":"iana","compressible":true,"extensions":["xml"]},"text/xml-external-parsed-entity":{"source":"iana"},"text/yaml":{"compressible":true,"extensions":["yaml","yml"]},"video/1d-interleaved-parityfec":{"source":"iana"},"video/3gpp":{"source":"iana","extensions":["3gp","3gpp"]},"video/3gpp-tt":{"source":"iana"},"video/3gpp2":{"source":"iana","extensions":["3g2"]},"video/av1":{"source":"iana"},"video/bmpeg":{"source":"iana"},"video/bt656":{"source":"iana"},"video/celb":{"source":"iana"},"video/dv":{"source":"iana"},"video/encaprtp":{"source":"iana"},"video/evc":{"source":"iana"},"video/ffv1":{"source":"iana"},"video/flexfec":{"source":"iana"},"video/h261":{"source":"iana","extensions":["h261"]},"video/h263":{"source":"iana","extensions":["h263"]},"video/h263-1998":{"source":"iana"},"video/h263-2000":{"source":"iana"},"video/h264":{"source":"iana","extensions":["h264"]},"video/h264-rcdo":{"source":"iana"},"video/h264-svc":{"source":"iana"},"video/h265":{"source":"iana"},"video/h266":{"source":"iana"},"video/iso.segment":{"source":"iana","extensions":["m4s"]},"video/jpeg":{"source":"iana","extensions":["jpgv"]},"video/jpeg2000":{"source":"iana"},"video/jpm":{"source":"apache","extensions":["jpm","jpgm"]},"video/jxsv":{"source":"iana"},"video/lottie+json":{"source":"iana","compressible":true},"video/matroska":{"source":"iana"},"video/matroska-3d":{"source":"iana"},"video/mj2":{"source":"iana","extensions":["mj2","mjp2"]},"video/mp1s":{"source":"iana"},"video/mp2p":{"source":"iana"},"video/mp2t":{"source":"iana","extensions":["ts","m2t","m2ts","mts"]},"video/mp4":{"source":"iana","compressible":false,"extensions":["mp4","mp4v","mpg4"]},"video/mp4v-es":{"source":"iana"},"video/mpeg":{"source":"iana","compressible":false,"extensions":["mpeg","mpg","mpe","m1v","m2v"]},"video/mpeg4-generic":{"source":"iana"},"video/mpv":{"source":"iana"},"video/nv":{"source":"iana"},"video/ogg":{"source":"iana","compressible":false,"extensions":["ogv"]},"video/parityfec":{"source":"iana"},"video/pointer":{"source":"iana"},"video/quicktime":{"source":"iana","compressible":false,"extensions":["qt","mov"]},"video/raptorfec":{"source":"iana"},"video/raw":{"source":"iana"},"video/rtp-enc-aescm128":{"source":"iana"},"video/rtploopback":{"source":"iana"},"video/rtx":{"source":"iana"},"video/scip":{"source":"iana"},"video/smpte291":{"source":"iana"},"video/smpte292m":{"source":"iana"},"video/ulpfec":{"source":"iana"},"video/vc1":{"source":"iana"},"video/vc2":{"source":"iana"},"video/vnd.cctv":{"source":"iana"},"video/vnd.dece.hd":{"source":"iana","extensions":["uvh","uvvh"]},"video/vnd.dece.mobile":{"source":"iana","extensions":["uvm","uvvm"]},"video/vnd.dece.mp4":{"source":"iana"},"video/vnd.dece.pd":{"source":"iana","extensions":["uvp","uvvp"]},"video/vnd.dece.sd":{"source":"iana","extensions":["uvs","uvvs"]},"video/vnd.dece.video":{"source":"iana","extensions":["uvv","uvvv"]},"video/vnd.directv.mpeg":{"source":"iana"},"video/vnd.directv.mpeg-tts":{"source":"iana"},"video/vnd.dlna.mpeg-tts":{"source":"iana"},"video/vnd.dvb.file":{"source":"iana","extensions":["dvb"]},"video/vnd.fvt":{"source":"iana","extensions":["fvt"]},"video/vnd.hns.video":{"source":"iana"},"video/vnd.iptvforum.1dparityfec-1010":{"source":"iana"},"video/vnd.iptvforum.1dparityfec-2005":{"source":"iana"},"video/vnd.iptvforum.2dparityfec-1010":{"source":"iana"},"video/vnd.iptvforum.2dparityfec-2005":{"source":"iana"},"video/vnd.iptvforum.ttsavc":{"source":"iana"},"video/vnd.iptvforum.ttsmpeg2":{"source":"iana"},"video/vnd.motorola.video":{"source":"iana"},"video/vnd.motorola.videop":{"source":"iana"},"video/vnd.mpegurl":{"source":"iana","extensions":["mxu","m4u"]},"video/vnd.ms-playready.media.pyv":{"source":"iana","extensions":["pyv"]},"video/vnd.nokia.interleaved-multimedia":{"source":"iana"},"video/vnd.nokia.mp4vr":{"source":"iana"},"video/vnd.nokia.videovoip":{"source":"iana"},"video/vnd.objectvideo":{"source":"iana"},"video/vnd.planar":{"source":"iana"},"video/vnd.radgamettools.bink":{"source":"iana"},"video/vnd.radgamettools.smacker":{"source":"apache"},"video/vnd.sealed.mpeg1":{"source":"iana"},"video/vnd.sealed.mpeg4":{"source":"iana"},"video/vnd.sealed.swf":{"source":"iana"},"video/vnd.sealedmedia.softseal.mov":{"source":"iana"},"video/vnd.uvvu.mp4":{"source":"iana","extensions":["uvu","uvvu"]},"video/vnd.vivo":{"source":"iana","extensions":["viv"]},"video/vnd.youtube.yt":{"source":"iana"},"video/vp8":{"source":"iana"},"video/vp9":{"source":"iana"},"video/webm":{"source":"apache","compressible":false,"extensions":["webm"]},"video/x-f4v":{"source":"apache","extensions":["f4v"]},"video/x-fli":{"source":"apache","extensions":["fli"]},"video/x-flv":{"source":"apache","compressible":false,"extensions":["flv"]},"video/x-m4v":{"source":"apache","extensions":["m4v"]},"video/x-matroska":{"source":"apache","compressible":false,"extensions":["mkv","mk3d","mks"]},"video/x-mng":{"source":"apache","extensions":["mng"]},"video/x-ms-asf":{"source":"apache","extensions":["asf","asx"]},"video/x-ms-vob":{"source":"apache","extensions":["vob"]},"video/x-ms-wm":{"source":"apache","extensions":["wm"]},"video/x-ms-wmv":{"source":"apache","compressible":false,"extensions":["wmv"]},"video/x-ms-wmx":{"source":"apache","extensions":["wmx"]},"video/x-ms-wvx":{"source":"apache","extensions":["wvx"]},"video/x-msvideo":{"source":"apache","extensions":["avi"]},"video/x-sgi-movie":{"source":"apache","extensions":["movie"]},"video/x-smv":{"source":"apache","extensions":["smv"]},"x-conference/x-cooltalk":{"source":"apache","extensions":["ice"]},"x-shader/x-fragment":{"compressible":true},"x-shader/x-vertex":{"compressible":true}}');
+
+/***/ }),
+
 /***/ "./node_modules/mime-db/index.js":
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -6041,6 +5211,195 @@ exports.createComplexNode = createComplexNode;
  */
 
 module.exports = __webpack_require__("./node_modules/mime-db/db.json")
+
+
+/***/ }),
+
+/***/ "./node_modules/p-limit/index.js":
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  A: () => (/* binding */ pLimit)
+});
+
+;// ./node_modules/p-limit/node_modules/yocto-queue/index.js
+/*
+How it works:
+`this.#head` is an instance of `Node` which keeps track of its current value and nests another instance of `Node` that keeps the value that comes after it. When a value is provided to `.enqueue()`, the code needs to iterate through `this.#head`, going deeper and deeper to find the last value. However, iterating through every single item is slow. This problem is solved by saving a reference to the last value as `this.#tail` so that it can reference it to add a new value.
+*/
+
+class Node {
+	value;
+	next;
+
+	constructor(value) {
+		this.value = value;
+	}
+}
+
+class Queue {
+	#head;
+	#tail;
+	#size;
+
+	constructor() {
+		this.clear();
+	}
+
+	enqueue(value) {
+		const node = new Node(value);
+
+		if (this.#head) {
+			this.#tail.next = node;
+			this.#tail = node;
+		} else {
+			this.#head = node;
+			this.#tail = node;
+		}
+
+		this.#size++;
+	}
+
+	dequeue() {
+		const current = this.#head;
+		if (!current) {
+			return;
+		}
+
+		this.#head = this.#head.next;
+		this.#size--;
+		return current.value;
+	}
+
+	peek() {
+		if (!this.#head) {
+			return;
+		}
+
+		return this.#head.value;
+
+		// TODO: Node.js 18.
+		// return this.#head?.value;
+	}
+
+	clear() {
+		this.#head = undefined;
+		this.#tail = undefined;
+		this.#size = 0;
+	}
+
+	get size() {
+		return this.#size;
+	}
+
+	* [Symbol.iterator]() {
+		let current = this.#head;
+
+		while (current) {
+			yield current.value;
+			current = current.next;
+		}
+	}
+
+	* drain() {
+		while (this.#head) {
+			yield this.dequeue();
+		}
+	}
+}
+
+;// ./node_modules/p-limit/async-hooks-stub.js
+const AsyncResource = {
+	bind(fn, _type, thisArg) {
+		return fn.bind(thisArg);
+	},
+};
+
+class AsyncLocalStorage {
+	getStore() {
+		return undefined;
+	}
+
+	run(_store, callback) {
+		return callback();
+	}
+}
+
+;// ./node_modules/p-limit/index.js
+
+
+
+function pLimit(concurrency) {
+	if (!((Number.isInteger(concurrency) || concurrency === Number.POSITIVE_INFINITY) && concurrency > 0)) {
+		throw new TypeError('Expected `concurrency` to be a number from 1 and up');
+	}
+
+	const queue = new Queue();
+	let activeCount = 0;
+
+	const next = () => {
+		activeCount--;
+
+		if (queue.size > 0) {
+			queue.dequeue()();
+		}
+	};
+
+	const run = async (function_, resolve, arguments_) => {
+		activeCount++;
+
+		const result = (async () => function_(...arguments_))();
+
+		resolve(result);
+
+		try {
+			await result;
+		} catch {}
+
+		next();
+	};
+
+	const enqueue = (function_, resolve, arguments_) => {
+		queue.enqueue(
+			AsyncResource.bind(run.bind(undefined, function_, resolve, arguments_)),
+		);
+
+		(async () => {
+			// This function needs to wait until the next microtask before comparing
+			// `activeCount` to `concurrency`, because `activeCount` is updated asynchronously
+			// when the run function is dequeued and called. The comparison in the if-statement
+			// needs to happen asynchronously as well to get an up-to-date value for `activeCount`.
+			await Promise.resolve();
+
+			if (activeCount < concurrency && queue.size > 0) {
+				queue.dequeue()();
+			}
+		})();
+	};
+
+	const generator = (function_, ...arguments_) => new Promise(resolve => {
+		enqueue(function_, resolve, arguments_);
+	});
+
+	Object.defineProperties(generator, {
+		activeCount: {
+			get: () => activeCount,
+		},
+		pendingCount: {
+			get: () => queue.size,
+		},
+		clearQueue: {
+			value() {
+				queue.clear();
+			},
+		},
+	});
+
+	return generator;
+}
 
 
 /***/ }),
@@ -6510,6 +5869,7 @@ function SourceMapGenerator(aArgs) {
   this._file = util.getArg(aArgs, 'file', null);
   this._sourceRoot = util.getArg(aArgs, 'sourceRoot', null);
   this._skipValidation = util.getArg(aArgs, 'skipValidation', false);
+  this._ignoreInvalidMapping = util.getArg(aArgs, 'ignoreInvalidMapping', false);
   this._sources = new ArraySet();
   this._names = new ArraySet();
   this._mappings = new MappingList();
@@ -6524,12 +5884,12 @@ SourceMapGenerator.prototype._version = 3;
  * @param aSourceMapConsumer The SourceMap.
  */
 SourceMapGenerator.fromSourceMap =
-  function SourceMapGenerator_fromSourceMap(aSourceMapConsumer) {
+  function SourceMapGenerator_fromSourceMap(aSourceMapConsumer, generatorOps) {
     var sourceRoot = aSourceMapConsumer.sourceRoot;
-    var generator = new SourceMapGenerator({
+    var generator = new SourceMapGenerator(Object.assign(generatorOps || {}, {
       file: aSourceMapConsumer.file,
       sourceRoot: sourceRoot
-    });
+    }));
     aSourceMapConsumer.eachMapping(function (mapping) {
       var newMapping = {
         generated: {
@@ -6592,7 +5952,9 @@ SourceMapGenerator.prototype.addMapping =
     var name = util.getArg(aArgs, 'name', null);
 
     if (!this._skipValidation) {
-      this._validateMapping(generated, original, source, name);
+      if (this._validateMapping(generated, original, source, name) === false) {
+        return;
+      }
     }
 
     if (source != null) {
@@ -6758,11 +6120,18 @@ SourceMapGenerator.prototype._validateMapping =
     // specific error message to try to guide them the right way.
     // For example: https://github.com/Polymer/polymer-bundler/pull/519
     if (aOriginal && typeof aOriginal.line !== 'number' && typeof aOriginal.column !== 'number') {
-        throw new Error(
-            'original.line and original.column are not numbers -- you probably meant to omit ' +
-            'the original mapping entirely and only map the generated position. If so, pass ' +
-            'null for the original mapping instead of an object with empty or null values.'
-        );
+      var message = 'original.line and original.column are not numbers -- you probably meant to omit ' +
+      'the original mapping entirely and only map the generated position. If so, pass ' +
+      'null for the original mapping instead of an object with empty or null values.'
+
+      if (this._ignoreInvalidMapping) {
+        if (typeof console !== 'undefined' && console.warn) {
+          console.warn(message);
+        }
+        return false;
+      } else {
+        throw new Error(message);
+      }
     }
 
     if (aGenerated && 'line' in aGenerated && 'column' in aGenerated
@@ -6780,12 +6149,21 @@ SourceMapGenerator.prototype._validateMapping =
       return;
     }
     else {
-      throw new Error('Invalid mapping: ' + JSON.stringify({
+      var message = 'Invalid mapping: ' + JSON.stringify({
         generated: aGenerated,
         source: aSource,
         original: aOriginal,
         name: aName
-      }));
+      });
+
+      if (this._ignoreInvalidMapping) {
+        if (typeof console !== 'undefined' && console.warn) {
+          console.warn(message);
+        }
+        return false;
+      } else {
+        throw new Error(message)
+      }
     }
   };
 
@@ -10981,17 +10359,97 @@ class Options extends Common {
 var save_misc = __webpack_require__("./src/save/misc.ts");
 ;// ./src/save/chapter.html.j2
 // Module
-var code = "<!DOCTYPE html>\n<html>\n  <head>\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n    <meta name=\"referrer\" content=\"same-origin\">\n    <meta name=\"generator\" content=\"https://github.com/404-novel-project/novel-downloader\">\n    <meta name=\"source\" content=\"{{ chapterUrl }}\">\n    <link href=\"style.css\" type=\"text/css\" rel=\"stylesheet\">\n    <title>{{ chapterName }}</title>\n  </head>\n  <body>\n    <div class=\"main\">\n      <h2>{{ chapterName }}</h2>\n      {{ outerHTML }}\n    </div>\n  <!-- <" + "script type=\"text/javascript\" src=\"web.js\"><" + "/script> -->\n  </body>\n</html>\n";
+var code = `<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="referrer" content="same-origin">
+    <meta name="generator" content="https://github.com/404-novel-project/novel-downloader">
+    <meta name="source" content="{{ chapterUrl }}">
+    <link href="style.css" type="text/css" rel="stylesheet">
+    <title>{{ chapterName }}</title>
+  </head>
+  <body>
+    <div class="main">
+      <h2>{{ chapterName }}</h2>
+      {{ outerHTML }}
+    </div>
+  <!-- ${"<" + "script"} type="text/javascript" src="web.js">${"<" + "/script"}> -->
+  </body>
+</html>
+`;
 // Exports
 /* harmony default export */ const chapter_html = (code);
 ;// ./src/save/index.html.j2
 // Module
-var index_html_code = "<!DOCTYPE html>\n<html>\n  <head>\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n    <meta name=\"referrer\" content=\"same-origin\">\n    <meta name=\"generator\" content=\"https://github.com/404-novel-project/novel-downloader\">\n    <meta name=\"date-creation\" content=\"{{ creationDate }}\">\n    <link href=\"style.css\" type=\"text/css\" rel=\"stylesheet\">\n    <link href=\"web.css\" type=\"text/css\" rel=\"stylesheet\">\n    <link href=\"toc.css\" type=\"text/css\" rel=\"stylesheet\">\n    <title>{{ bookname }}</title>\n  </head>\n  <body>\n    <div class=\"main\">\n      <h1>{{ bookname }}</h1>\n      <h3 class=\"author\">{{ author }}</h3>\n      <div class=\"info\">\n        {% if cover -%}\n        <img class=\"cover\" data-src-address=\"{{ cover.name }}\">\n        {%- endif %} \n        {% if introductionHTML -%}\n        <div>\n          <h3>简介</h3>\n          <div class=\"introduction\">{{ introductionHTML }}</div>\n        </div>\n        {%- endif %}\n      </div>\n      <div class=\"bookurl\">\n        <a href=\"{{ bookUrl }}\">打开原始网站</a>\n      </div>\n      <hr>\n      {% for sectionObj in sectionsObj -%}\n        <div id=\"section{{ sectionObj.sectionNumber }}\" class=\"section\">\n          {% if sectionObj.sectionName %}\n            <h2 class=\"section-label\">{{ sectionObj.sectionName }}</h2>\n          {% endif %}\n          {% for chapter in sectionObj.chpaters -%}\n          <div class=\"chapter\">\n              {% if not (chapter.contentHTML or chapter.status === Status.saved) -%}\n              <a class=\"disabled\" href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a>\n              {%- else -%}\n              <a href=\"{{ chapter.chapterHtmlFileName }}\">{{ chapter.chapterName }}</a>\n              {%- endif %}\n          </div>\n          {%- endfor %}\n        </div>\n      {%- endfor %} \n    </div>\n  </body>\n</html>";
+var index_html_code = `<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="referrer" content="same-origin">
+    <meta name="generator" content="https://github.com/404-novel-project/novel-downloader">
+    <meta name="date-creation" content="{{ creationDate }}">
+    <link href="style.css" type="text/css" rel="stylesheet">
+    <link href="web.css" type="text/css" rel="stylesheet">
+    <link href="toc.css" type="text/css" rel="stylesheet">
+    <title>{{ bookname }}</title>
+  </head>
+  <body>
+    <div class="main">
+      <h1>{{ bookname }}</h1>
+      <h3 class="author">{{ author }}</h3>
+      <div class="info">
+        {% if cover -%}
+        <img class="cover" data-src-address="{{ cover.name }}">
+        {%- endif %} 
+        {% if introductionHTML -%}
+        <div>
+          <h3>简介</h3>
+          <div class="introduction">{{ introductionHTML }}</div>
+        </div>
+        {%- endif %}
+      </div>
+      <div class="bookurl">
+        <a href="{{ bookUrl }}">打开原始网站</a>
+      </div>
+      <hr>
+      {% for sectionObj in sectionsObj -%}
+        <div id="section{{ sectionObj.sectionNumber }}" class="section">
+          {% if sectionObj.sectionName %}
+            <h2 class="section-label">{{ sectionObj.sectionName }}</h2>
+          {% endif %}
+          {% for chapter in sectionObj.chpaters -%}
+          <div class="chapter">
+              {% if not (chapter.contentHTML or chapter.status === Status.saved) -%}
+              <a class="disabled" href="{{ chapter.chapterHtmlFileName }}">{{ chapter.chapterName }}</a>
+              {%- else -%}
+              <a href="{{ chapter.chapterHtmlFileName }}">{{ chapter.chapterName }}</a>
+              {%- endif %}
+          </div>
+          {%- endfor %}
+        </div>
+      {%- endfor %} 
+    </div>
+  </body>
+</html>`;
 // Exports
 /* harmony default export */ const index_html = (index_html_code);
 ;// ./src/save/section.html.j2
 // Module
-var section_html_code = "<!DOCTYPE html>\n<html>\n  <head>\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n    <meta name=\"referrer\" content=\"same-origin\">\n    <meta name=\"generator\" content=\"https://github.com/404-novel-project/novel-downloader\">\n    <link href=\"style.css\" type=\"text/css\" rel=\"stylesheet\">\n    <title>{{ sectionName }}</title>\n  </head>\n  <body>\n    <div class=\"main\"><h1>{{ sectionName }}</h1></div>\n  </body>\n</html>\n";
+var section_html_code = `<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="referrer" content="same-origin">
+    <meta name="generator" content="https://github.com/404-novel-project/novel-downloader">
+    <link href="style.css" type="text/css" rel="stylesheet">
+    <title>{{ sectionName }}</title>
+  </head>
+  <body>
+    <div class="main"><h1>{{ sectionName }}</h1></div>
+  </body>
+</html>
+`;
 // Exports
 /* harmony default export */ const section_html = (section_html_code);
 ;// external "nunjucks"
@@ -33407,11 +32865,15 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         async function loadPixivimage({ dom, nid, textEmbeddedImages, }) {
             const pixivImages = dom.innerHTML.matchAll(/\[pixivimage:(\d+)]/g);
             for (const match of pixivImages) {
-                await mapperPixivImage(match);
+                if (match[1]) {
+                    await mapperPixivImage([match[0], match[1]]);
+                }
             }
             const uploadedImages = dom.innerHTML.matchAll(/\[uploadedimage:(\d+)]/g);
             for (const match of uploadedImages) {
-                mapperUploadedImage(match);
+                if (match[1]) {
+                    mapperUploadedImage([match[0], match[1]]);
+                }
             }
             return dom;
             async function mapperPixivImage([str, id]) {
@@ -38510,6 +37972,2415 @@ class Ttkan extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 
 /***/ }),
 
+/***/ "./src/rules/special/reprint/xiguashuwu.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  Xiguashuwu: () => (/* binding */ Xiguashuwu)
+});
+
+// NAMESPACE OBJECT: ./node_modules/@oovz/esearch-ocr/dist/eSearchOCR.es.js
+var eSearchOCR_es_namespaceObject = {};
+__webpack_require__.r(eSearchOCR_es_namespaceObject);
+__webpack_require__.d(eSearchOCR_es_namespaceObject, {
+  analyzeLayout: () => (_n),
+  det: () => (Fn),
+  init: () => (Ln),
+  initDet: () => (gn),
+  initDocDirCls: () => (mn),
+  initRec: () => (bn),
+  loadImg: () => (dn),
+  ocr: () => (Rn),
+  rec: () => (Yn),
+  rotateImg: () => (Gt),
+  setOCREnv: () => (hn)
+});
+
+// EXTERNAL MODULE: ./src/lib/cleanDOM.ts
+var cleanDOM = __webpack_require__("./src/lib/cleanDOM.ts");
+// EXTERNAL MODULE: ./src/lib/http.ts
+var http = __webpack_require__("./src/lib/http.ts");
+// EXTERNAL MODULE: ./src/lib/dom.ts
+var dom = __webpack_require__("./src/lib/dom.ts");
+// EXTERNAL MODULE: ./src/lib/rule.ts
+var rule = __webpack_require__("./src/lib/rule.ts");
+// EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
+var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
+// EXTERNAL MODULE: ./src/main/Chapter.ts
+var Chapter = __webpack_require__("./src/main/Chapter.ts");
+// EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
+var Book = __webpack_require__("./src/main/Book.ts");
+// EXTERNAL MODULE: ./src/rules.ts + 12 modules
+var rules = __webpack_require__("./src/rules.ts");
+// EXTERNAL MODULE: ./src/lib/attachments.ts + 1 modules
+var attachments = __webpack_require__("./src/lib/attachments.ts");
+// EXTERNAL MODULE: ./src/lib/GM.ts
+var GM = __webpack_require__("./src/lib/GM.ts");
+;// ./src/lib/decoders/FilenameDecoder.ts
+
+
+
+class FilenameDecoder {
+    remoteUrl;
+    cacheKey;
+    mappings = null;
+    loading = null;
+    constructor(domain) {
+        if (!domain) {
+            throw new Error("Domain name is required for FilenameDecoder initialization");
+        }
+        this.remoteUrl = `https://fastly.jsdelivr.net/gh/oovz/novel-downloader-image-to-text-mapping@master/filename-mappings/${domain}.json`;
+        this.cacheKey = `filename-mappings-${domain}`;
+        loglevel_default().debug(`FilenameDecoder initialized for domain: ${domain}`);
+    }
+    async decode(imageData) {
+        loglevel_default().warn("FilenameDecoder.decode() called with imageData - this decoder requires filename context from URL");
+        return null;
+    }
+    async decodeFromFilename(filename) {
+        try {
+            await this.ensureMappingsLoaded();
+            if (!this.mappings) {
+                loglevel_default().warn("Filename mappings not available for decoding");
+                return null;
+            }
+            const character = this.mappings.get(filename);
+            if (character) {
+                loglevel_default().debug(`Decoded character: ${character} for filename: ${filename}`);
+                return character;
+            }
+            else {
+                loglevel_default().debug(`No character mapping found for filename: ${filename}`);
+                return null;
+            }
+        }
+        catch (error) {
+            loglevel_default().error("Error in filename decoding:", error);
+            return null;
+        }
+    }
+    getMappingsCount() {
+        return this.mappings?.size ?? 0;
+    }
+    async clearCache() {
+        await (0,GM/* _GM_deleteValue */.JU)(this.cacheKey);
+        this.mappings = null;
+        this.loading = null;
+    }
+    async ensureMappingsLoaded() {
+        if (this.mappings) {
+            return;
+        }
+        if (this.loading) {
+            await this.loading;
+            return;
+        }
+        this.loading = this.loadMappings();
+        await this.loading;
+    }
+    async loadMappings() {
+        try {
+            const cached = await (0,GM/* _GM_getValue */.er)(this.cacheKey);
+            if (cached) {
+                const data = JSON.parse(cached);
+                this.mappings = new Map(Object.entries(data));
+                loglevel_default().debug(`Loaded ${this.mappings.size} filename mappings from cache`);
+                return;
+            }
+            await this.fetchRemoteMappings();
+        }
+        catch (error) {
+            loglevel_default().error("Failed to load filename mappings:", error);
+            throw error;
+        }
+    }
+    async fetchRemoteMappings() {
+        try {
+            loglevel_default().debug("Fetching filename mappings from remote");
+            const response = await (0,http/* ggetText */.bx)(this.remoteUrl);
+            if (!response) {
+                throw new Error("Empty response from remote URL");
+            }
+            const data = JSON.parse(response);
+            if (typeof data !== 'object' || !data) {
+                throw new Error("Invalid mapping data format");
+            }
+            this.mappings = new Map(Object.entries(data));
+            await (0,GM/* _GM_setValue */.mN)(this.cacheKey, JSON.stringify(data));
+            loglevel_default().debug(`Successfully loaded ${this.mappings.size} filename mappings from remote`);
+        }
+        catch (error) {
+            loglevel_default().error("Failed to fetch filename mappings:", error);
+            throw error;
+        }
+    }
+}
+
+;// ./src/lib/imageHasher.ts
+class ImageHasher {
+    hashSize;
+    constructor(hashSize = 8) {
+        this.hashSize = hashSize;
+    }
+    async hash(imageBlob) {
+        const grayscalePixels = await this.preprocessImage(imageBlob);
+        return this.calculateDHash(grayscalePixels);
+    }
+    static hammingDistance(hash1, hash2) {
+        if (hash1.length !== hash2.length) {
+            throw new Error("Hashes must be of equal length.");
+        }
+        const xorResult = BigInt(`0b${hash1}`) ^ BigInt(`0b${hash2}`);
+        return (xorResult.toString(2).match(/1/g) || []).length;
+    }
+    async preprocessImage(imageBlob) {
+        const image = await this.loadImageFromBlob(imageBlob);
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        if (!context)
+            throw new Error("Could not get 2D canvas context.");
+        const scaledWidth = this.hashSize + 1;
+        const scaledHeight = this.hashSize;
+        canvas.width = scaledWidth;
+        canvas.height = scaledHeight;
+        context.drawImage(image, 0, 0, scaledWidth, scaledHeight);
+        const imageData = context.getImageData(0, 0, scaledWidth, scaledHeight).data;
+        const grayscale = new Uint8ClampedArray(scaledWidth * scaledHeight);
+        for (let i = 0, j = 0; i < imageData.length; i += 4, j++) {
+            grayscale[j] =
+                0.299 * imageData[i] +
+                    0.587 * imageData[i + 1] +
+                    0.114 * imageData[i + 2];
+        }
+        return grayscale;
+    }
+    calculateDHash(pixels) {
+        let hash = "";
+        const width = this.hashSize + 1;
+        for (let y = 0; y < this.hashSize; y++) {
+            for (let x = 0; x < this.hashSize; x++) {
+                const left = pixels[y * width + x];
+                const right = pixels[y * width + x + 1];
+                hash += left < right ? "1" : "0";
+            }
+        }
+        return hash;
+    }
+    loadImageFromBlob(blob) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            const url = URL.createObjectURL(blob);
+            img.onload = () => {
+                URL.revokeObjectURL(url);
+                resolve(img);
+            };
+            img.onerror = (err) => {
+                URL.revokeObjectURL(url);
+                reject(new Error(`Failed to load image from blob`));
+            };
+            img.src = url;
+        });
+    }
+}
+/* harmony default export */ const imageHasher = (ImageHasher);
+
+;// ./src/lib/decoders/HashDecoder.ts
+
+
+
+
+class HashDecoder {
+    remoteUrl;
+    cacheKey;
+    learnedCacheKey;
+    mappings = null;
+    learnedMappings = null;
+    loading = null;
+    imageHasher;
+    constructor(domain) {
+        if (!domain) {
+            throw new Error("Domain name is required for HashDecoder initialization");
+        }
+        this.remoteUrl = `https://fastly.jsdelivr.net/gh/oovz/novel-downloader-image-to-text-mapping@master/hash-mappings/${domain}.json`;
+        this.cacheKey = `hash-mappings-${domain}`;
+        this.learnedCacheKey = `hash-mappings-learned-${domain}`;
+        this.imageHasher = new imageHasher();
+        this.loadLearnedMappings().catch(error => {
+            loglevel_default().error("Failed to initialize learned mappings:", error);
+        });
+        loglevel_default().debug(`HashDecoder initialized for domain: ${domain}`);
+    }
+    async decode(imageData) {
+        try {
+            await this.ensureMappingsLoaded();
+            const hash = await this.generateImageHash(imageData);
+            if (this.learnedMappings?.has(hash)) {
+                const text = this.learnedMappings.get(hash);
+                loglevel_default().debug(`Decoded text from learned mappings: ${text} for hash: ${hash}`);
+                return text;
+            }
+            if (this.mappings?.has(hash)) {
+                const text = this.mappings.get(hash);
+                loglevel_default().debug(`Decoded text from remote mappings: ${text} for hash: ${hash}`);
+                return text;
+            }
+            loglevel_default().debug(`No mapping found for hash: ${hash}`);
+            return null;
+        }
+        catch (error) {
+            loglevel_default().error("Error in hash decoding:", error);
+            return null;
+        }
+    }
+    async learnMapping(imageData, text) {
+        try {
+            const hash = await this.generateImageHash(imageData);
+            if (!this.learnedMappings) {
+                this.learnedMappings = new Map();
+            }
+            this.learnedMappings.set(hash, text);
+            await this.saveLearnedMappings();
+            loglevel_default().debug(`Learned new mapping: ${hash} -> ${text}`);
+        }
+        catch (error) {
+            loglevel_default().error("Error learning mapping:", error);
+        }
+    }
+    getMappingsCount() {
+        return {
+            remote: this.mappings?.size ?? 0,
+            learned: this.learnedMappings?.size ?? 0
+        };
+    }
+    async clearCache() {
+        await (0,GM/* _GM_deleteValue */.JU)(this.cacheKey);
+        this.mappings = null;
+        this.loading = null;
+    }
+    async clearLearnedMappings() {
+        await (0,GM/* _GM_deleteValue */.JU)(this.learnedCacheKey);
+        this.learnedMappings = new Map();
+    }
+    exportLearnedMappings() {
+        if (!this.learnedMappings) {
+            return {};
+        }
+        return Object.fromEntries(this.learnedMappings);
+    }
+    async importLearnedMappings(mappings) {
+        this.learnedMappings = new Map(Object.entries(mappings));
+        await this.saveLearnedMappings();
+        loglevel_default().debug(`Imported ${this.learnedMappings.size} learned mappings`);
+    }
+    async ensureMappingsLoaded() {
+        if (this.mappings) {
+            return;
+        }
+        if (this.loading) {
+            await this.loading;
+            return;
+        }
+        this.loading = this.loadMappings();
+        await this.loading;
+    }
+    async loadMappings() {
+        try {
+            const cached = await (0,GM/* _GM_getValue */.er)(this.cacheKey);
+            if (cached) {
+                const data = JSON.parse(cached);
+                this.mappings = new Map(Object.entries(data));
+                loglevel_default().debug(`Loaded ${this.mappings.size} hash mappings from cache`);
+                return;
+            }
+            await this.fetchRemoteMappings();
+        }
+        catch (error) {
+            loglevel_default().error("Failed to load hash mappings:", error);
+            throw error;
+        }
+    }
+    async fetchRemoteMappings() {
+        try {
+            loglevel_default().debug("Fetching hash mappings from remote");
+            const response = await (0,http/* ggetText */.bx)(this.remoteUrl);
+            if (!response) {
+                throw new Error("Empty response from remote URL");
+            }
+            const data = JSON.parse(response);
+            if (typeof data !== 'object' || !data) {
+                throw new Error("Invalid mapping data format");
+            }
+            this.mappings = new Map(Object.entries(data));
+            await (0,GM/* _GM_setValue */.mN)(this.cacheKey, JSON.stringify(data));
+            loglevel_default().debug(`Successfully loaded ${this.mappings.size} hash mappings from remote`);
+        }
+        catch (error) {
+            loglevel_default().error("Failed to fetch hash mappings:", error);
+            throw error;
+        }
+    }
+    async loadLearnedMappings() {
+        try {
+            const cached = await (0,GM/* _GM_getValue */.er)(this.learnedCacheKey);
+            if (cached) {
+                const data = JSON.parse(cached);
+                this.learnedMappings = new Map(Object.entries(data));
+                loglevel_default().debug(`Loaded ${this.learnedMappings.size} learned hash mappings from storage`);
+            }
+            else {
+                this.learnedMappings = new Map();
+            }
+        }
+        catch (error) {
+            loglevel_default().error("Failed to load learned mappings:", error);
+            this.learnedMappings = new Map();
+        }
+    }
+    async saveLearnedMappings() {
+        try {
+            if (this.learnedMappings) {
+                const data = Object.fromEntries(this.learnedMappings);
+                await (0,GM/* _GM_setValue */.mN)(this.learnedCacheKey, JSON.stringify(data));
+                loglevel_default().debug(`Saved ${this.learnedMappings.size} learned mappings to storage`);
+            }
+        }
+        catch (error) {
+            loglevel_default().error("Failed to save learned mappings:", error);
+        }
+    }
+    async generateImageHash(imageData) {
+        try {
+            const blob = new Blob([imageData]);
+            return await this.imageHasher.hash(blob);
+        }
+        catch (error) {
+            loglevel_default().error("Failed to generate image hash:", error);
+            let hash = 0;
+            for (let i = 0; i < Math.min(imageData.length, 1000); i++) {
+                hash = ((hash << 5) - hash + imageData[i]) & 0xffffffff;
+            }
+            return hash.toString(16);
+        }
+    }
+}
+
+;// ./node_modules/@oovz/esearch-ocr/dist/eSearchOCR.es.js
+var Kt = Object.defineProperty;
+var Qt = (t, e, o) => e in t ? Kt(t, e, { enumerable: !0, configurable: !0, writable: !0, value: o }) : t[e] = o;
+var yt = (t, e, o) => Qt(t, typeof e != "symbol" ? e + "" : e, o);
+let Rt = (t, e) => new OffscreenCanvas(t, e);
+function st(t, e) {
+  return Rt(t, e);
+}
+function Zt(t) {
+  Rt = t;
+}
+function Ot(t) {
+  return t > 0 ? Math.floor(t) : Math.ceil(t);
+}
+function J(t, e, o) {
+  return Math.max(e, Math.min(t, o));
+}
+function Mt(t, e, o, s, a = "high") {
+  return Jt(t, e, o, s, a).getImageData(0, 0, e, o);
+}
+function Jt(t, e, o, s, a = "high") {
+  const r = H(t), u = st(e, o).getContext("2d");
+  return u.imageSmoothingEnabled = a !== !1, a && (u.imageSmoothingQuality = a), s === "fill" ? u.scale(Math.min(e / t.width, 1), Math.min(o / t.height, 1)) : u.scale(e / t.width, o / t.height), u.drawImage(r, 0, 0), u;
+}
+function H(t, e, o) {
+  const s = st(e || t.width, o || t.height);
+  return s.getContext("2d").putImageData(t, 0, 0), s;
+}
+function kt(t, e, o) {
+  const s = t.data, a = [], r = [], i = [];
+  let u = 0, m = 0;
+  for (let h = 0; h < s.length; h += 4)
+    i[m] || (i[m] = []), r[m] || (r[m] = []), a[m] || (a[m] = []), a[m][u] = (s[h] / 255 - e[0]) / o[0], r[m][u] = (s[h + 1] / 255 - e[1]) / o[1], i[m][u] = (s[h + 2] / 255 - e[2]) / o[2], u++, u === t.width && (u = 0, m++);
+  return [i, r, a];
+}
+class Ft {
+  constructor(e) {
+    yt(this, "tl", []);
+    yt(this, "name");
+    this.name = e;
+  }
+  l(e) {
+    const o = performance.now();
+    this.tl.push({ t: e, n: o });
+    const s = [];
+    for (let r = 1; r < this.tl.length; r++) {
+      const i = this.tl[r].n - this.tl[r - 1].n, u = this.tl[r - 1].t, m = s.find((h) => h.n === u);
+      m ? (m.c++, m.d += i) : s.push({ d: i, n: u, c: 1 });
+    }
+    const a = [];
+    for (const r of s) {
+      const i = r.c > 1 ? `${r.n}x${r.c}` : r.n;
+      a.push(`${i} ${r.d}`);
+    }
+    a.push(this.tl.at(-1).t), console.log(`${this.name} ${s.map((r) => r.d).reduce((r, i) => r + i, 0)}ms: `, a.join(" "));
+  }
+}
+async function tn(t, e, o, s, a, r) {
+  const { transposedData: i, image: u } = nn(t, a, r), h = (await en(i, u, e, o))[0].data, l = h.reduce((y, x) => Math.max(y, x)), d = h.findIndex((y) => y === l);
+  return s[d];
+}
+function nn(t, e, o) {
+  const s = Mt(t, e, o);
+  return { transposedData: kt(s, [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]), image: s };
+}
+async function en(t, e, o, s) {
+  const a = t.flat(Number.POSITIVE_INFINITY), r = Float32Array.from(a), i = new o.Tensor("float32", r, [1, 3, e.height, e.width]), u = {};
+  u[s.inputNames[0]] = i;
+  const m = await s.run(u);
+  return Object.values(m);
+}
+function on(t) {
+  if (t.length === 0) throw new Error("Empty contour");
+  const e = sn([...t]);
+  let o = Number.POSITIVE_INFINITY;
+  const s = {
+    center: { x: 0, y: 0 },
+    size: { width: 0, height: 0 },
+    angle: 0
+  };
+  for (let a = 0; a < e.length; a++) {
+    const r = e[a], i = e[(a + 1) % e.length], u = { x: i.x - r.x, y: i.y - r.y }, m = Math.hypot(u.x, u.y), [h, l] = [u.x / m, u.y / m];
+    let d = Number.POSITIVE_INFINITY, y = Number.NEGATIVE_INFINITY, x = Number.POSITIVE_INFINITY, b = Number.NEGATIVE_INFINITY;
+    for (const I of e) {
+      const k = (I.x - r.x) * h + (I.y - r.y) * l;
+      d = Math.min(d, k), y = Math.max(y, k);
+      const N = -(I.x - r.x) * l + (I.y - r.y) * h;
+      x = Math.min(x, N), b = Math.max(b, N);
+    }
+    const p = (y - d) * (b - x);
+    if (p < o) {
+      o = p;
+      const I = (d + y) / 2, k = (x + b) / 2;
+      s.center = {
+        x: r.x + h * I - l * k,
+        y: r.y + l * I + h * k
+      }, s.size = {
+        width: y - d,
+        height: b - x
+      }, s.angle = Math.atan2(l, h) * (180 / Math.PI);
+    }
+  }
+  return s.size.width < s.size.height && ([s.size.width, s.size.height] = [s.size.height, s.size.width], s.angle += 90), s.angle = (s.angle % 180 + 180) % 180, s;
+}
+function sn(t) {
+  t.sort((s, a) => s.x - a.x || s.y - a.y);
+  const e = [];
+  for (const s of t) {
+    for (; e.length >= 2 && Vt(e[e.length - 2], e[e.length - 1], s) <= 0; )
+      e.pop();
+    e.push(s);
+  }
+  const o = [];
+  for (let s = t.length - 1; s >= 0; s--) {
+    const a = t[s];
+    for (; o.length >= 2 && Vt(o[o.length - 2], o[o.length - 1], a) <= 0; )
+      o.pop();
+    o.push(a);
+  }
+  return e.slice(0, -1).concat(o.slice(0, -1));
+}
+function Vt(t, e, o) {
+  return (e.x - t.x) * (o.y - t.y) - (e.y - t.y) * (o.x - t.x);
+}
+function cn(t, e, o = "CHAIN_APPROX_SIMPLE") {
+  const s = t.length, a = s > 0 ? t[0].length : 0, r = Array.from({ length: s }, () => new Array(a).fill(!1));
+  for (let i = 0; i < s; i++)
+    for (let u = 0; u < a; u++)
+      if (t[i][u] !== 0 && !r[i][u] && Yt(t, u, i)) {
+        const m = rn(t, r, u, i, o === "CHAIN_APPROX_SIMPLE");
+        e.push(m);
+      }
+}
+function Yt(t, e, o) {
+  return t[o][e] !== 0 && (o > 0 && t[o - 1][e] === 0 || o < t.length - 1 && t[o + 1][e] === 0 || e > 0 && t[o][e - 1] === 0 || e < t[0].length - 1 && t[o][e + 1] === 0);
+}
+function rn(t, e, o, s, a) {
+  const r = [];
+  let i = { x: o, y: s }, u = { x: o - 1, y: s };
+  const m = /* @__PURE__ */ new Map(), h = /* @__PURE__ */ new Map();
+  function l(p) {
+    return p.x + p.y * t[0].length;
+  }
+  function d(p) {
+    const I = Math.floor(p / t[0].length);
+    return { x: p % t[0].length, y: I };
+  }
+  function y(p, I) {
+    const k = l(p), N = l(I), T = It(I.x - p.x, I.y - p.y), P = It(p.x - I.x, p.y - I.y), z = m.get(k) ?? [], v = m.get(N) ?? [];
+    m.set(k, [...z, T]), m.set(N, [...v, P]);
+  }
+  function x(p) {
+    const I = l(i);
+    u = i, i = { x: i.x + ft[p].dx, y: i.y + ft[p].dy }, y(u, i);
+    const N = (h.get(I) ?? []).filter((T) => T !== p);
+    N.length > 0 ? h.set(I, N) : h.delete(I);
+  }
+  m.set(l(i), [It(-1, 0)]);
+  let b = 0;
+  do {
+    r.push(i), e[i.y][i.x] = !0;
+    const p = ln(t, m, i);
+    if (p.length === 0) {
+      if (h.size === 0)
+        break;
+      const [I, k] = Array.from(h.entries()).at(0), N = k[0];
+      i = d(I), x(N);
+    }
+    if (p.length >= 1) {
+      const I = l(i);
+      h.set(I, p);
+      const k = p[0];
+      x(k);
+    }
+    b++;
+  } while (b < 1e9);
+  return a ? an(r) : r;
+}
+const ft = [
+  { dx: 1, dy: 0 },
+  // Right
+  { dx: 1, dy: -1 },
+  // Top-Right
+  { dx: 0, dy: -1 },
+  // Top
+  { dx: -1, dy: -1 },
+  // Top-Left
+  { dx: -1, dy: 0 },
+  // Left
+  { dx: -1, dy: 1 },
+  // Bottom-Left
+  { dx: 0, dy: 1 },
+  // Bottom
+  { dx: 1, dy: 1 }
+  // Bottom-Right
+];
+function ln(t, e, o) {
+  function s(i) {
+    return i.x + i.y * t[0].length;
+  }
+  const a = e.get(s(o)) ?? [], r = [];
+  for (const [i, { dx: u, dy: m }] of ft.entries()) {
+    if (a.includes(i)) continue;
+    const h = o.x + u, l = o.y + m;
+    h >= 0 && h < t[0].length && l >= 0 && l < t.length && Yt(t, h, l) && r.push(i);
+  }
+  return r;
+}
+function It(t, e) {
+  const o = ft.findIndex(({ dx: s, dy: a }) => t === s && e === a);
+  return o === -1 ? 0 : o;
+}
+function an(t) {
+  if (t.length < 3) return [...t];
+  const e = [t[0]];
+  for (let o = 1; o < t.length - 1; o++) {
+    const s = e[e.length - 1], a = t[o], r = t[o + 1];
+    un(s, a, r) || e.push(a);
+  }
+  return e.push(t[t.length - 1]), e;
+}
+function un(t, e, o) {
+  return (e.x - t.x) * (o.y - e.y) === (e.y - t.y) * (o.x - e.x);
+}
+const G = new Ft("t"), F = new Ft("af_det");
+let L = !1, Ct = !1, q = null;
+function ot(t, e) {
+  var s;
+  const o = document.createElement("canvas");
+  o.width = t.width, o.height = t.height, o.getContext("2d").drawImage(t, 0, 0), e && (o.id = e);
+  try {
+    (s = document == null ? void 0 : document.body) == null || s.append(o);
+  } catch {
+  }
+}
+let ht = (t, e, o) => new ImageData(t, e, o);
+function O(...t) {
+  Ct && console.log(...t);
+}
+function fn(...t) {
+  Ct && console.log(t.map((e) => `%c${e}`).join(""), ...t.map((e) => `color: ${e}`));
+}
+async function Ln(t) {
+  hn(t);
+  const e = {
+    det: "det" in t ? t.det : {
+      input: t.detPath,
+      ratio: t.detRatio,
+      on: async (s) => {
+        t.onDet && t.onDet(s), t.onProgress && t.onProgress("det", 1, 1);
+      }
+    },
+    rec: "rec" in t ? t.rec : {
+      input: t.recPath,
+      decodeDic: t.dic,
+      imgh: t.imgh,
+      on: async (s, a, r) => {
+        t.onRec && t.onRec(s, a), t.onProgress && t.onProgress("rec", r, s + 1);
+      }
+    },
+    docCls: "rec" in t ? t.docCls : t.docClsPath ? {
+      input: t.docClsPath
+    } : void 0,
+    analyzeLayout: "rec" in t ? t.analyzeLayout : {
+      columnsTip: t.columnsTip,
+      docDirs: t.docDirs
+    },
+    ...t
+  }, o = await xn(e);
+  return q = o, o;
+}
+function hn(t) {
+  L = !!t.dev, Ct = L || !!t.log, L || (G.l = () => {
+  }, F.l = () => {
+  }), t.canvas && Zt(t.canvas), t.imageData && (ht = t.imageData);
+}
+async function dn(t) {
+  let e;
+  if (typeof window > "u") {
+    const o = t;
+    if (!o.data || !o.width || !o.height) throw new Error("invalid image data");
+    return o;
+  }
+  if (typeof t == "string" ? (e = new Image(), e.src = t, await new Promise((o) => {
+    e.onload = o;
+  })) : (t instanceof ImageData, e = t), e instanceof HTMLImageElement) {
+    const s = st(e.naturalWidth, e.naturalHeight).getContext("2d");
+    if (!s) throw new Error("canvas context is null");
+    s.drawImage(e, 0, 0), e = s.getImageData(0, 0, e.naturalWidth, e.naturalHeight);
+  }
+  if (e instanceof HTMLCanvasElement) {
+    const o = e.getContext("2d");
+    if (!o) throw new Error("canvas context is null");
+    e = o.getImageData(0, 0, e.width, e.height);
+  }
+  return e;
+}
+function Nt() {
+  try {
+    st(1, 1), ht(new Uint8ClampedArray(4), 1, 1);
+  } catch (t) {
+    throw console.log("nodejs need set canvas, please use setOCREnv to set canvas and imageData"), t;
+  }
+}
+async function Rn(t) {
+  if (!q) throw new Error("need init");
+  return q.ocr(t);
+}
+async function Fn(t) {
+  if (!q) throw new Error("need init");
+  return q.det(t);
+}
+async function Yn(t) {
+  if (!q) throw new Error("need init");
+  return q.rec(t);
+}
+async function xn(t) {
+  Nt();
+  const e = {
+    ort: t.ort,
+    ortOption: t.ortOption
+  }, o = t.docCls ? await mn({ ...t.docCls, ...e }) : void 0, s = await gn({ ...t.det, ...e }), a = await bn({ ...t.rec, ...e });
+  return {
+    ocr: async (r) => {
+      let i = await dn(r), u = 0;
+      o && (u = await o.docCls(i), O("dir", u), i = Gt(i, 360 - u));
+      const m = await s.det(i), h = await a.rec(m), l = _n(h, t.analyzeLayout);
+      return O(h, l), G.l("end"), { src: h, ...l, docDir: u };
+    },
+    det: s.det,
+    rec: a.rec
+  };
+}
+function St(t, e, o) {
+  return typeof e == "string" ? t.InferenceSession.create(e, o) : e instanceof ArrayBuffer || e instanceof SharedArrayBuffer ? t.InferenceSession.create(new Uint8Array(e), o) : t.InferenceSession.create(e, o);
+}
+async function mn(t) {
+  const e = await St(t.ort, t.input, t.ortOption);
+  return { docCls: async (s) => tn(s, t.ort, e, [0, 90, 180, 270], 224, 224) };
+}
+async function gn(t) {
+  Nt();
+  let e = 1;
+  const o = await St(t.ort, t.input, t.ortOption);
+  t.ratio !== void 0 && (e = t.ratio);
+  async function s(a) {
+    var x;
+    const r = a;
+    if (L) {
+      const b = H(r);
+      ot(b);
+    }
+    G.l("pre_det");
+    const { data: i, width: u, height: m } = In(r, e), { transposedData: h, image: l } = i;
+    G.l("det");
+    const d = await pn(h, l, o, t.ort);
+    G.l("aft_det");
+    const y = wn(
+      { data: d.data, width: d.dims[3], height: d.dims[2] },
+      u,
+      m,
+      r
+    );
+    return (x = t == null ? void 0 : t.on) == null || x.call(t, y), y;
+  }
+  return { det: s };
+}
+async function bn(t) {
+  var i;
+  Nt();
+  let e = 48;
+  const o = await St(t.ort, t.input, t.ortOption), s = t.decodeDic.split(/\r\n|\r|\n/) || [];
+  s.at(-1) === "" ? s[s.length - 1] = " " : s.push(" "), t.imgh && (e = t.imgh);
+  const a = ((i = t.optimize) == null ? void 0 : i.space) === void 0 ? !0 : t.optimize.space;
+  async function r(u) {
+    var l;
+    const m = [];
+    G.l("bf_rec");
+    const h = Pn(u, e);
+    for (const [d, y] of h.entries()) {
+      const { b: x, imgH: b, imgW: p } = y, I = await yn(x, b, p, o, t.ort), k = An(I, s, { opm: { space: a } })[0];
+      m.push({
+        text: k.text,
+        mean: k.mean,
+        box: u[d].box,
+        style: u[d].style
+      }), (l = t == null ? void 0 : t.on) == null || l.call(t, d, k, u.length);
+    }
+    return G.l("rec_end"), m.filter((d) => d.mean >= 0.5);
+  }
+  return { rec: r };
+}
+async function pn(t, e, o, s) {
+  const a = Float32Array.from(t.flat(3)), r = new s.Tensor("float32", a, [1, 3, e.height, e.width]), i = {};
+  return i[o.inputNames[0]] = r, (await o.run(i))[o.outputNames[0]];
+}
+async function yn(t, e, o, s, a) {
+  const r = Float32Array.from(t.flat(3)), i = new a.Tensor("float32", r, [1, 3, e, o]), u = {};
+  return u[s.inputNames[0]] = i, (await s.run(u))[s.outputNames[0]];
+}
+function In(t, e) {
+  const o = Math.max(Math.round(t.height * e / 32) * 32, 32), s = Math.max(Math.round(t.width * e / 32) * 32, 32);
+  if (L) {
+    const i = H(t);
+    ot(i);
+  }
+  const a = Mt(t, s, o, "fill"), r = kt(a, [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]);
+  if (O(a), L) {
+    const i = H(a);
+    ot(i);
+  }
+  return { data: { transposedData: r, image: a }, width: s, height: o };
+}
+function wn(t, e, o, s) {
+  F.l("");
+  const a = Math.min(s.width, e), r = Math.min(s.height, o), { data: i, width: u, height: m } = t, h = new Uint8Array(u * m);
+  for (let x = 0; x < i.length; x++) {
+    const b = i[x] > 0.3 ? 255 : 0;
+    h[x] = b;
+  }
+  if (L) {
+    const x = new Uint8ClampedArray(u * m * 4);
+    for (let I = 0; I < i.length; I++) {
+      const k = I * 4, N = i[I] > 0.3 ? 255 : 0;
+      x[k] = x[k + 1] = x[k + 2] = N, x[k + 3] = 255, h[I] = N;
+    }
+    const b = ht(x, u, m), p = H(b);
+    ot(p, "det_ru");
+  }
+  F.l("edge");
+  const l = [], d = [];
+  for (let x = 0; x < m; x++)
+    d.push(Array.from(h.slice(x * u, x * u + u)));
+  const y = [];
+  if (cn(d, y), L) {
+    const x = document.querySelector("#det_ru").getContext("2d");
+    for (const b of y) {
+      x.moveTo(b[0].x, b[0].y);
+      for (const p of b)
+        x.lineTo(p.x, p.y);
+      x.strokeStyle = "red", x.closePath(), x.stroke();
+    }
+  }
+  for (let x = 0; x < y.length; x++) {
+    F.l("get_box");
+    const b = 3, p = y[x], { points: I, sside: k } = Sn(p);
+    if (k < b) continue;
+    const N = Cn(I), T = N.points;
+    if (N.sside < b + 2)
+      continue;
+    const P = s.width / a, z = s.height / r;
+    for (let _ = 0; _ < T.length; _++)
+      T[_][0] *= P, T[_][1] *= z;
+    F.l("order");
+    const v = Bn(T);
+    for (const _ of v)
+      _[0] = J(Math.round(_[0]), 0, s.width), _[1] = J(Math.round(_[1]), 0, s.height);
+    const dt = Ot(Lt(v[0], v[1])), xt = Ot(Lt(v[0], v[3]));
+    if (dt <= 3 || xt <= 3) continue;
+    zn(T, "", "red", "det_ru"), F.l("crop");
+    const W = Tn(s, T);
+    F.l("match best");
+    const { bg: A, text: $ } = Dn(W), ct = En(T, W, $);
+    l.push({ box: ct, img: W, style: { bg: A, text: $ } });
+  }
+  return F.l("e"), O(l), l;
+}
+function Mn(t) {
+  let e = -1;
+  const o = t.length;
+  let s, a = t[o - 1], r = 0;
+  for (; ++e < o; )
+    s = a, a = t[e], r += s[1] * a[0] - s[0] * a[1];
+  return r / 2;
+}
+function kn(t) {
+  let e = -1;
+  const o = t.length;
+  let s = t[o - 1], a, r, i = s[0], u = s[1], m = 0;
+  for (; ++e < o; )
+    a = i, r = u, s = t[e], i = s[0], u = s[1], a -= i, r -= u, m += Math.hypot(a, r);
+  return m;
+}
+function Cn(t) {
+  const o = Math.abs(Mn(t)), s = kn(t), a = o * 1.5 / s, r = [];
+  for (const [h, l] of t.entries()) {
+    const d = t.at((h - 1) % 4), y = t.at((h + 1) % 4), x = l[0] - d[0], b = l[1] - d[1], p = Math.sqrt(x ** 2 + b ** 2), I = x / p * a, k = b / p * a, N = l[0] - y[0], T = l[1] - y[1], P = Math.sqrt(N ** 2 + T ** 2), z = N / P * a, v = T / P * a;
+    r.push([l[0] + I + z, l[1] + k + v]);
+  }
+  const i = [r[0][0] - r[1][0], r[0][1] - r[1][1]], u = [r[2][0] - r[1][0], r[2][1] - r[1][1]], m = i[0] * u[1] - i[1] * u[0];
+  return { points: r, sside: Math.abs(m) };
+}
+function Nn(t, e, o) {
+  const s = e.width, a = e.height, r = o * Math.PI / 180, i = Math.cos(r), u = Math.sin(r), m = t.x, h = t.y, l = s * 0.5, d = a * 0.5, y = [], x = m - l * i + d * u, b = h - l * u - d * i;
+  y.push([x, b]);
+  const p = m + l * i + d * u, I = h + l * u - d * i;
+  y.push([p, I]);
+  const k = m + l * i - d * u, N = h + l * u + d * i;
+  y.push([k, N]);
+  const T = m - l * i - d * u, P = h - l * u + d * i;
+  return y.push([T, P]), y;
+}
+function Sn(t) {
+  const o = on(t), s = Array.from(Nn(o.center, o.size, o.angle)).sort(
+    (l, d) => l[0] - d[0]
+  );
+  let a = 0, r = 1, i = 2, u = 3;
+  s[1][1] > s[0][1] ? (a = 0, u = 1) : (a = 1, u = 0), s[3][1] > s[2][1] ? (r = 2, i = 3) : (r = 3, i = 2);
+  const m = [s[a], s[r], s[i], s[u]], h = Math.min(o.size.height, o.size.width);
+  return { points: m, sside: h };
+}
+function Lt(t, e) {
+  return Math.sqrt((t[0] - e[0]) ** 2 + (t[1] - e[1]) ** 2);
+}
+function Bn(t) {
+  const e = [
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0]
+  ], o = t.map((r) => r[0] + r[1]);
+  e[0] = t[o.indexOf(Math.min(...o))], e[2] = t[o.indexOf(Math.max(...o))];
+  const s = t.filter((r) => r !== e[0] && r !== e[2]), a = s[1].map((r, i) => r - s[0][i]);
+  return e[1] = s[a.indexOf(Math.min(...a))], e[3] = s[a.indexOf(Math.max(...a))], e;
+}
+function Tn(t, e) {
+  const [o, s, a, r] = e.map((v) => ({ x: v[0], y: v[1] })), i = Math.sqrt((s.x - o.x) ** 2 + (s.y - o.y) ** 2), u = Math.sqrt((r.x - o.x) ** 2 + (r.y - o.y) ** 2), m = s.x - o.x, h = s.y - o.y, l = r.x - o.x, d = r.y - o.y, y = m * d - l * h;
+  if (y === 0) throw new Error("点共线，无法形成矩形");
+  const x = i * d / y, b = -l * i / y, p = -u * h / y, I = m * u / y, k = -x * o.x - b * o.y, N = -p * o.x - I * o.y, T = H(t), P = st(Math.ceil(i), Math.ceil(u)), z = P.getContext("2d");
+  return z.setTransform(x, p, b, I, k, N), z.drawImage(T, 0, 0), z.resetTransform(), z.getImageData(0, 0, P.width, P.height);
+}
+function Dn(t) {
+  var m, h;
+  const e = /* @__PURE__ */ new Map(), o = t.data;
+  for (let l = 0; l < o.length; l += 4) {
+    if (l / 4 % t.width > t.height * 4) continue;
+    const y = o[l], x = o[l + 1], b = o[l + 2], p = [y, x, b].join(",");
+    e.set(p, (e.get(p) || 0) + 1);
+  }
+  const s = vn(e, 20).map((l) => ({
+    el: l.el.split(",").map(Number),
+    count: l.count
+  })), a = ((m = s.at(0)) == null ? void 0 : m.el) || [255, 255, 255], r = ((h = s.at(1)) == null ? void 0 : h.el) || [0, 0, 0];
+  let i = r;
+  const u = 100;
+  if (at(r, a) < u) {
+    const l = s.slice(1).filter((d) => at(d.el, a) > 50);
+    l.length > 0 && (i = [0, 1, 2].map(
+      (d) => Math.round(jt(l.map((y) => [y.el[d], y.count])))
+    )), (l.length === 0 || at(i, a) < u) && (i = a.map((d) => 255 - d)), fn(`rgb(${i.join(",")})`);
+  }
+  return {
+    bg: a,
+    text: i,
+    textEdge: r
+  };
+}
+function at(t, e) {
+  const o = t, s = e;
+  return Math.sqrt((o[0] - s[0]) ** 2 + (o[1] - s[1]) ** 2 + (o[2] - s[2]) ** 2);
+}
+function vn(t, e = 1) {
+  let o = [];
+  return t.forEach((s, a) => {
+    o.length === 0 ? o.push({ el: a, count: s }) : (o.length < e ? o.push({ el: a, count: s }) : o.find((r) => r.count <= s) && o.push({ el: a, count: s }), o.sort((r, i) => i.count - r.count), o.length > e && (o = o.slice(0, e)));
+  }), o;
+}
+function En(t, e, o) {
+  let s = 0, a = e.height, r = 0, i = e.width;
+  function u(x) {
+    return at(x, o) < 200;
+  }
+  t: for (let x = s; x < e.height; x++)
+    for (let b = 0; b < e.width; b++) {
+      const p = lt(e, b, x);
+      if (u(p)) {
+        s = x;
+        break t;
+      }
+    }
+  t: for (let x = a - 1; x >= 0; x--)
+    for (let b = 0; b < e.width; b++) {
+      const p = lt(e, b, x);
+      if (u(p)) {
+        a = x;
+        break t;
+      }
+    }
+  t: for (let x = r; x < e.width; x++)
+    for (let b = s; b <= a; b++) {
+      const p = lt(e, x, b);
+      if (u(p)) {
+        r = x;
+        break t;
+      }
+    }
+  t: for (let x = i - 1; x >= 0; x--)
+    for (let b = s; b <= a; b++) {
+      const p = lt(e, x, b);
+      if (u(p)) {
+        i = x;
+        break t;
+      }
+    }
+  const m = J(s - 1, 0, 4), h = J(e.height - a - 1, 0, 4), l = J(r - 1, 0, 4), d = J(e.width - i - 1, 0, 4);
+  return [
+    [t[0][0] + l, t[0][1] + m],
+    [t[1][0] - d, t[1][1] + m],
+    [t[2][0] - d, t[2][1] - h],
+    [t[3][0] + l, t[3][1] - h]
+  ];
+}
+function lt(t, e, o) {
+  const s = (o * t.width + e) * 4;
+  return Array.from(t.data.slice(s, s + 4));
+}
+function Pn(t, e) {
+  const o = [];
+  function s(a) {
+    const r = Math.floor(e * (a.width / a.height)), i = Mt(a, r, e, void 0, !1);
+    return L && ot(H(i, r, e)), { data: i, w: r, h: e };
+  }
+  for (const a of t) {
+    let r = a.img;
+    r.width < r.height && (r = Gt(r, -90));
+    const i = s(r);
+    o.push({ b: kt(i.data, [0.5, 0.5, 0.5], [0.5, 0.5, 0.5]), imgH: i.h, imgW: i.w });
+  }
+  return O(o), o;
+}
+function An(t, e, o) {
+  const s = t.dims[2], a = [];
+  let r = t.dims[0] - 1;
+  function i(m) {
+    return e.at(m - 1) ?? "";
+  }
+  for (let m = 0; m < t.data.length; m += s * t.dims[1]) {
+    const h = [], l = [];
+    for (let d = m; d < m + s * t.dims[1]; d += s) {
+      const y = t.data.slice(d, d + s);
+      let x = Number.NEGATIVE_INFINITY, b = -1, p = Number.NEGATIVE_INFINITY, I = -1;
+      for (let k = 0; k < y.length; k++) {
+        const N = y[k];
+        N > x ? (p = x, x = N, b = k) : N > p && N < x && (p = N, I = k);
+      }
+      o.opm.space && b === 0 && i(I) === " " && p > 1e-3 && (x = p, b = I), l.push(x), h.push(b);
+    }
+    a[r] = u(h, l), r--;
+  }
+  function u(m, h) {
+    const l = [], d = [];
+    for (let b = 0; b < m.length; b++)
+      m[b] !== 0 && (b > 0 && m[b - 1] === m[b] || (l.push(i(m[b])), d.push(h[b])));
+    let y = "", x = 0;
+    if (l.length) {
+      y = l.join("").trim();
+      let b = 0;
+      for (const p of d)
+        b += p;
+      x = b / d.length;
+    }
+    return { text: y, mean: x };
+  }
+  return a;
+}
+function _n(t, e) {
+  var _t;
+  O(t);
+  const o = (e == null ? void 0 : e.docDirs) ?? [
+    { block: "tb", inline: "lr" },
+    { block: "rl", inline: "tb" }
+  ], s = { block: "tb", inline: "lr" }, a = {
+    inline: [1, 0],
+    block: [0, 1]
+  }, r = {
+    inline: [1, 0],
+    block: [0, 1]
+  };
+  if (t.length === 0)
+    return {
+      columns: [],
+      parragraphs: [],
+      readingDir: s,
+      angle: { reading: { inline: 0, block: 90 }, angle: 0 }
+    };
+  const i = [
+    {
+      box: [
+        [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
+        [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY],
+        [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
+        [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY]
+      ],
+      type: "none"
+    }
+  ], u = 0;
+  function m(n) {
+    const c = l.center(n);
+    for (let f = i.length - 1; f >= 0; f--) {
+      const w = i[f].box;
+      if (c[0] >= w[0][0] && c[0] <= w[1][0] && c[1] >= w[0][1] && c[1] <= w[3][1])
+        return f;
+    }
+    return u;
+  }
+  const h = {
+    center: (n, c) => [(n[0] + c[0]) / 2, (n[1] + c[1]) / 2],
+    disByV: (n, c, f) => Math.abs(f === "block" ? d.dotMup(n, r.block) - d.dotMup(c, r.block) : d.dotMup(n, r.inline) - d.dotMup(c, r.inline)),
+    compare: (n, c, f) => f === "block" ? d.dotMup(n, r.block) - d.dotMup(c, r.block) : d.dotMup(n, r.inline) - d.dotMup(c, r.inline),
+    toInline: (n) => d.dotMup(n, r.inline),
+    toBlock: (n) => d.dotMup(n, r.block)
+  }, l = {
+    inlineStart: (n) => h.center(n[0], n[3]),
+    inlineEnd: (n) => h.center(n[1], n[2]),
+    blockStart: (n) => h.center(n[0], n[1]),
+    blockEnd: (n) => h.center(n[2], n[3]),
+    inlineSize: (n) => n[1][0] - n[0][0],
+    blockSize: (n) => n[3][1] - n[0][1],
+    inlineStartDis: (n, c) => h.disByV(n[0], c[0], "inline"),
+    inlineEndDis: (n, c) => h.disByV(n[1], c[1], "inline"),
+    blockGap: (n, c) => h.disByV(n[0], c[3], "block"),
+    inlineCenter: (n) => (n[2][0] + n[0][0]) / 2,
+    blockCenter: (n) => (n[2][1] + n[0][1]) / 2,
+    inlineStartCenter: (n) => l.inlineStart(n),
+    center: (n) => h.center(n[0], n[2])
+  }, d = {
+    fromPonts: (n, c) => [n[0] - c[0], n[1] - c[1]],
+    dotMup: (n, c) => n[0] * c[0] + n[1] * c[1],
+    numMup: (n, c) => [n[0] * c, n[1] * c],
+    add: (n, c) => [n[0] + c[0], n[1] + c[1]]
+  };
+  function y(n) {
+    let c = 0, f = 0;
+    const g = [];
+    for (const [w, M] of n.entries()) {
+      const C = M > 180 ? M - 180 : M, B = C - 180, E = w === 0 ? C : Math.abs(B - c) < Math.abs(C - c) ? B : C;
+      g.push(E), c = (c * f + E) / (f + 1), f++;
+    }
+    return { av: c, l: g };
+  }
+  function x(n, c) {
+    return Math.abs(n - c) < 45 || Math.abs(n - (c - 180)) < 45 || Math.abs(n - 180 - c) < 45;
+  }
+  function b(n) {
+    n.sort((f, g) => f - g);
+    const c = Math.floor(n.length / 2);
+    return n.length % 2 === 0 ? (n[c - 1] + n[c]) / 2 : n[c];
+  }
+  function p(n) {
+    return n === "lr" || n === "rl" ? "x" : "y";
+  }
+  function I(n, c) {
+    let f = Number.POSITIVE_INFINITY, g = -1;
+    for (let w = 0; w < n.length; w++) {
+      const M = c(n[w]);
+      M < f && (f = M, g = w);
+    }
+    return n[g];
+  }
+  const k = {
+    lr: [1, 0],
+    rl: [-1, 0],
+    tb: [0, 1],
+    bt: [0, -1]
+  };
+  function N(n, c) {
+    const f = k[n.inline], g = k[n.block], w = k[c.inline], M = k[c.block], C = [d.dotMup(w, f), d.dotMup(w, g)], B = [d.dotMup(M, f), d.dotMup(M, g)];
+    return (E) => [d.dotMup(E, C), d.dotMup(E, B)];
+  }
+  function T(n, c) {
+    const f = N(n, c);
+    return {
+      b: (g) => {
+        for (const w of g) {
+          const [M, C] = f(w);
+          w[0] = M, w[1] = C;
+        }
+      },
+      p: f
+    };
+  }
+  function P(n) {
+    return (c) => {
+      const f = [
+        [0, 0],
+        [0, 0],
+        [0, 0],
+        [0, 0]
+      ];
+      for (let g = 0; g < n.length; g++)
+        f[g] = c[n[g]];
+      return f;
+    };
+  }
+  function z(n, c) {
+    return Math.sqrt((n[0] - c[0]) ** 2 + (n[1] - c[1]) ** 2);
+  }
+  function v(n) {
+    const c = n.flatMap((D) => D.map((S) => S)), f = Math.min(...c.map((D) => d.dotMup(D, r.inline))), g = Math.max(...c.map((D) => d.dotMup(D, r.inline))), w = Math.min(...c.map((D) => d.dotMup(D, r.block))), M = Math.max(...c.map((D) => d.dotMup(D, r.block))), C = d.add(d.numMup(r.inline, f), d.numMup(r.block, w)), B = d.numMup(r.inline, g - f), E = d.numMup(r.block, M - w);
+    return [C, d.add(C, B), d.add(d.add(C, B), E), d.add(C, E)];
+  }
+  function dt(n) {
+    let c = null, f = Number.POSITIVE_INFINITY;
+    for (const E in Y) {
+      const D = Y[E].src.at(-1);
+      if (!D) continue;
+      const S = z(n.box[0], D.box[0]);
+      S < f && (c = Number(E), f = S);
+    }
+    if (c === null) {
+      Y.push({ src: [n] });
+      return;
+    }
+    const g = Y[c].src.at(-1), w = l.inlineSize(n.box), M = l.inlineSize(g.box), C = Math.min(w, M), B = l.blockSize(n.box);
+    if (
+      // 左右至少有一边是相近的，中心距离要相近
+      // 行之间也不要离太远
+      !((l.inlineStartDis(n.box, g.box) < 3 * B || l.inlineEndDis(n.box, g.box) < 3 * B || h.disByV(l.center(n.box), l.center(g.box), "inline") < C * 0.4) && l.blockGap(n.box, g.box) < B * 1.1)
+    ) {
+      Y.push({ src: [n] });
+      return;
+    }
+    Y[c].src.push(n);
+  }
+  function xt(n) {
+    var w, M;
+    const c = new RegExp("\\p{Ideographic}", "u"), f = /[。，！？；：“”‘’《》、【】（）…—]/, g = {
+      box: v(n.map((C) => C.box)),
+      text: "",
+      mean: jt(n.map((C) => [C.mean, C.text.length])),
+      style: n[0].style
+    };
+    for (const C of n) {
+      const B = g.text.at(-1);
+      B && (!B.match(c) && !B.match(f) || !((w = C.text.at(0)) != null && w.match(c)) && !((M = C.text.at(0)) != null && M.match(f))) && (g.text += " "), g.text += C.text;
+    }
+    return g;
+  }
+  function W(n) {
+    n.sort((c, f) => {
+      const g = c.src.at(0) ? l.blockSize(c.src.at(0).box) : 2;
+      return h.disByV(l.blockStart(c.outerBox), l.blockStart(f.outerBox), "block") < g ? h.compare(l.inlineStart(c.outerBox), l.inlineStart(f.outerBox), "inline") : h.compare(l.blockStart(c.outerBox), l.blockStart(f.outerBox), "block");
+    });
+  }
+  if (e != null && e.columnsTip)
+    for (const n of e.columnsTip) i.push(structuredClone(n));
+  const A = {
+    inline: 0,
+    block: 90
+  }, $ = t.map((n) => {
+    const c = n.box, f = c[1][0] - c[0][0], g = c[3][1] - c[0][1];
+    let w = { x: 0, y: 0 };
+    if (f < g) {
+      const C = d.fromPonts(h.center(c[2], c[3]), h.center(c[0], c[1]));
+      w = { x: C[0], y: C[1] };
+    } else {
+      const C = d.fromPonts(h.center(c[1], c[2]), h.center(c[0], c[3]));
+      w = { x: C[0], y: C[1] };
+    }
+    return ut(Math.atan2(w.y, w.x) * (180 / Math.PI));
+  }), ct = y($), _ = $.filter((n) => x(n, ct.av)), Bt = b(_), Ht = b(_.map((n) => Math.abs(n - Bt))), Tt = _.filter((n) => Math.abs((n - Bt) / (Ht * 1.4826)) < 2), R = ut(y(Tt).av);
+  O("dir0", $, ct, _, Tt, R);
+  const X = ut(R + 90), qt = x(R, 0) ? "x" : "y", Wt = x(X, 90) ? "y" : "x", mt = o.find((n) => qt === p(n.inline) && Wt === p(n.block)) ?? o.at(0);
+  mt && (s.block = mt.block, s.inline = mt.inline);
+  const Dt = {
+    lr: 0,
+    rl: 180,
+    tb: 90,
+    bt: 270
+  };
+  A.inline = I(
+    [R, R - 360, R - 180, R + 180],
+    (n) => Math.abs(n - Dt[s.inline])
+  ), A.block = I(
+    [X, X - 360, X - 180, X + 180],
+    (n) => Math.abs(n - Dt[s.block])
+  ), a.inline = [Math.cos(A.inline * (Math.PI / 180)), Math.sin(A.inline * (Math.PI / 180))], a.block = [Math.cos(A.block * (Math.PI / 180)), Math.sin(A.block * (Math.PI / 180))], O("dir", s, A, a, R, X);
+  const vt = [
+    [s.inline[0], s.block[0]],
+    [s.inline[1], s.block[0]],
+    [s.inline[1], s.block[1]],
+    [s.inline[0], s.block[1]]
+  ].map(
+    ([n, c]) => ({
+      lt: 0,
+      rt: 1,
+      rb: 2,
+      lb: 3
+    })[n === "l" || n === "r" ? n + c : c + n]
+  ), rt = T({ inline: "lr", block: "tb" }, s), Et = P(vt), $t = t.map((n) => {
+    const c = Et(n.box);
+    return rt.b(c), {
+      ...n,
+      box: c
+    };
+  });
+  for (const n of i)
+    n.box = Et(n.box), rt.b(n.box);
+  r.inline = rt.p(a.inline), r.block = rt.p(a.block), O("相对坐标系", r);
+  const Xt = $t.sort((n, c) => h.compare(l.blockStart(n.box), l.blockStart(c.box), "block")), U = [];
+  for (const n of Xt) {
+    const c = m(n.box), f = (_t = U.at(-1)) == null ? void 0 : _t.line.at(-1);
+    if (!f) {
+      U.push({ line: [{ src: n, colId: c }] });
+      continue;
+    }
+    const g = l.center(n.box), w = l.center(f.src.box);
+    if (h.disByV(g, w, "block") < 0.5 * l.blockSize(n.box)) {
+      const M = U.at(-1);
+      M ? M.line.push({ src: n, colId: c }) : U.push({ line: [{ src: n, colId: c }] });
+    } else
+      U.push({ line: [{ src: n, colId: c }] });
+  }
+  const it = [];
+  for (const n of U) {
+    if (n.line.length === 1) {
+      it.push({ src: n.line[0].src, colId: n.line[0].colId });
+      continue;
+    }
+    const c = wt(n.line.map((g) => l.blockSize(g.src.box)));
+    n.line.sort((g, w) => h.compare(l.inlineStart(g.src.box), l.inlineStart(w.src.box), "inline"));
+    let f = n.line.at(0);
+    for (const g of n.line.slice(1)) {
+      const w = l.inlineEnd(f.src.box), M = l.inlineStart(g.src.box);
+      i[g.colId].type === "table" || g.colId !== f.colId || h.toInline(M) - h.toInline(w) > c ? (it.push({ ...f }), f = g) : (f.src.text += g.src.text, f.src.mean = (f.src.mean + g.src.mean) / 2, f.src.box = v([f.src.box, g.src.box]));
+    }
+    it.push({ ...f });
+  }
+  const Y = [], gt = [], tt = [];
+  for (const n of it)
+    if (n.colId === u)
+      gt.push(n);
+    else {
+      const c = tt.find((f) => f.colId === n.colId);
+      c ? c.src.push(n.src) : tt.push({ src: [n.src], type: i[n.colId].type, colId: n.colId });
+    }
+  gt.sort((n, c) => h.compare(l.blockStart(n.src.box), l.blockStart(c.src.box), "block"));
+  for (const n of gt)
+    dt(n.src);
+  const nt = [];
+  for (const [n, c] of Y.entries()) {
+    const f = c.src, g = v(f.map((B) => B.box)), w = l.blockCenter(g), M = l.inlineSize(g);
+    if (n === 0) {
+      nt.push({ smallCol: [{ src: f, outerBox: g, x: w, w: M }] });
+      continue;
+    }
+    const C = nt.find((B) => {
+      const E = B.smallCol.at(-1), D = l.blockSize(f.at(0).box);
+      return l.inlineStartDis(E.outerBox, g) < 3 * D && l.inlineEndDis(E.outerBox, g) < 3 * D && l.blockGap(g, E.outerBox) < D * 2.1;
+    });
+    C ? C.smallCol.push({ src: f, outerBox: g, x: w, w: M }) : nt.push({ smallCol: [{ src: f, outerBox: g, x: w, w: M }] });
+  }
+  for (const n of nt)
+    n.smallCol.sort((c, f) => h.compare(l.blockStart(c.outerBox), l.blockStart(f.outerBox), "block"));
+  for (const n of tt)
+    n.src.sort((c, f) => h.compare(l.blockStart(c.box), l.blockStart(f.box), "block"));
+  const bt = [];
+  for (const n of nt) {
+    const c = v(n.smallCol.map((g) => g.outerBox)), f = n.smallCol.flatMap((g) => g.src);
+    bt.push({ src: f, outerBox: c, type: "none" });
+  }
+  W(bt);
+  const et = [];
+  for (const n of bt) {
+    const c = et.at(-1);
+    if (!c) {
+      et.push(n);
+      continue;
+    }
+    if (c.type !== "none") {
+      et.push(n);
+      continue;
+    }
+    const f = c.outerBox, g = l.blockSize(n.src[0].box);
+    c.src.length === 1 && l.inlineStartDis(f, n.outerBox) < 3 * g || // 标题
+    n.src.length === 1 && l.inlineStartDis(f, n.outerBox) < 3 * g || // 末尾
+    l.inlineStartDis(f, n.outerBox) < 3 * g && l.inlineEndDis(f, n.outerBox) < 3 * g ? (c.src.push(...n.src), c.outerBox = v(c.src.map((w) => w.box))) : et.push(n);
+  }
+  let pt = !1;
+  const j = [];
+  for (const n of et) {
+    const c = j.at(-1), f = { ...n, reCal: !1 };
+    if (!c) {
+      j.push(f);
+      continue;
+    }
+    const g = l.blockSize(f.src.at(0).box);
+    h.compare(l.blockEnd(f.outerBox), l.blockEnd(c.outerBox), "block") < 0 && (l.inlineStartDis(c.outerBox, f.outerBox) < 3 * g || l.inlineEndDis(c.outerBox, f.outerBox) < 3 * g) ? (c.src.push(...f.src), c.reCal = !0, pt = !0) : j.push(f);
+  }
+  for (const n of j)
+    n.reCal && (n.src.sort((c, f) => h.compare(l.blockStart(c.box), l.blockStart(f.box), "block")), n.outerBox = v(n.src.map((c) => c.box)));
+  tt.length && (pt = !0);
+  for (const n of tt) {
+    const c = v(n.src.map((g) => g.box)), f = n.src;
+    j.push({ src: f, outerBox: c, type: n.type, reCal: !1 });
+  }
+  pt && W(j);
+  const Pt = T(s, { inline: "lr", block: "tb" }), At = j.map((n) => {
+    const c = n.src, f = [];
+    if (n.type === "auto" || n.type === "none") {
+      const M = {};
+      for (let S = 1; S < c.length; S++) {
+        const V = c[S - 1].box, Q = c[S].box, Z = h.disByV(l.center(Q), l.center(V), "block");
+        M[Z] || (M[Z] = 0), M[Z]++;
+      }
+      const C = wt(c.map((S) => l.blockSize(S.box))), B = [[]];
+      for (const S of Object.keys(M).map((V) => Number(V)).sort()) {
+        const V = B.at(-1), Q = V.at(-1);
+        Q !== void 0 ? Math.abs(Q - S) < C * 0.5 ? V.push(S) : B.push([]) : V.push(S);
+      }
+      const E = B.map((S) => wt(S)).sort((S, V) => S - V).at(0) || 0;
+      O("d", M, B, E), f.push([c[0]]);
+      let D = c[0];
+      for (let S = 1; S < c.length; S++) {
+        const V = d.add(
+          d.add(l.inlineStartCenter(D.box), d.numMup(r.block, E)),
+          d.numMup(r.inline, -l.inlineStartDis(D.box, n.outerBox))
+        ), Q = l.inlineStartCenter(c[S].box), Z = l.blockSize(c[S].box);
+        if (l.inlineEndDis(D.box, n.outerBox) > 2 * Z || z(V, Q) > Z * 0.5)
+          f.push([c[S]]);
+        else {
+          const zt = f.at(-1);
+          zt ? zt.push(c[S]) : f.push([c[S]]);
+        }
+        D = c[S];
+      }
+    } else (n.type === "table" || n.type === "raw" || n.type === "raw-blank") && f.push(c);
+    for (const M of c) Pt.b(M.box);
+    Pt.b(n.outerBox);
+    const g = [];
+    for (const [M, C] of vt.entries())
+      g[C] = M;
+    const w = P(g);
+    for (const M of c)
+      M.box = w(M.box);
+    return n.outerBox = w(n.outerBox), O(f), {
+      src: c,
+      outerBox: n.outerBox,
+      parragraphs: f.map((M) => ({ src: M, parse: xt(M) }))
+    };
+  }), Ut = At.flatMap((n) => n.parragraphs.map((c) => c.parse));
+  let K = 0;
+  return s.inline === "lr" && (K = A.inline), s.inline === "rl" && (K = A.inline - 180), s.block === "lr" && (K = A.block), s.block === "rl" && (K = A.block - 180), O("angle", K), {
+    columns: At,
+    parragraphs: Ut,
+    readingDir: s,
+    angle: { reading: A, angle: K }
+  };
+}
+function wt(t) {
+  return t.reduce((e, o) => e + o, 0) / t.length;
+}
+function jt(t) {
+  const e = t.map((s) => s[1]).reduce((s, a) => s + a, 0);
+  let o = 0;
+  for (const s of t)
+    o += s[0] * s[1] / e;
+  return o;
+}
+function ut(t) {
+  return (t % 360 + 360) % 360;
+}
+function Gt(t, e) {
+  const o = ut(e);
+  if (o === 0) return t;
+  if (![90, 180, 270].includes(o)) throw new Error("只支持90度的旋转");
+  const s = new Uint8ClampedArray(t.height * t.width * 4);
+  for (let i = 0; i < t.height; i++)
+    for (let u = 0; u < t.width; u++) {
+      const m = i * t.width + u, h = o === 90 ? u * t.height + (t.height - i - 1) : o === 180 ? t.width - u - 1 + (t.height - i - 1) * t.width : (t.width - u - 1) * t.height + i;
+      s.set(t.data.slice(m * 4, m * 4 + 4), h * 4);
+    }
+  const a = o === 90 || o === 270 ? t.height : t.width, r = o === 90 || o === 270 ? t.width : t.height;
+  return ht(s, a, r);
+}
+function zn(t, e = "", o, s, a) {
+  if (!L) return;
+  const i = document.querySelector(`#${s}`).getContext("2d");
+  i.beginPath(), i.strokeStyle = o, i.moveTo(t[0][0], t[0][1]), i.lineTo(t[1][0], t[1][1]), i.lineTo(t[2][0], t[2][1]), i.lineTo(t[3][0], t[3][1]), i.lineTo(t[0][0], t[0][1]), i.stroke(), i.strokeStyle = "black", i.strokeText(e, t[0][0], t[0][1]);
+}
+
+
+;// external "ort"
+const external_ort_namespaceObject = ort;
+;// external "zip"
+const external_zip_namespaceObject = zip;
+;// ./src/lib/decoders/OCRDecoder.ts
+
+
+
+
+
+
+class OCRDecoder {
+    modelLoaded = false;
+    loadingPromise = null;
+    ocrEngine = null;
+    modelCache = {};
+    ppocrDict = "";
+    cacheKey = "paddleocr_ch_models";
+    cacheVersion = "4.0.0";
+    cacheVersionKey = "paddleocr_ch_models_version";
+    zipUrl = "https://github.com/xushengfeng/eSearch-OCR/releases/download/4.0.0/ch.zip";
+    filesToExtract = ["ppocr_keys_v1.txt", "ppocr_det.onnx", "ppocr_rec.onnx"];
+    constructor() {
+    }
+    async decode(imageData) {
+        try {
+            await this.ensureModelLoaded();
+            if (!this.modelLoaded || !this.ocrEngine) {
+                throw new Error("PaddleOCR model not available for decoding");
+            }
+            const imageDataObj = await this.uint8ArrayToImageData(imageData);
+            if (!imageDataObj) {
+                throw new Error("Failed to convert image data for OCR");
+            }
+            const result = await this.ocrEngine.ocr(imageDataObj);
+            if (result && result.parragraphs && result.parragraphs.length > 0) {
+                let bestResult = result.parragraphs[0];
+                for (const paragraph of result.parragraphs) {
+                    if (paragraph.mean && paragraph.mean > (bestResult.mean || 0)) {
+                        bestResult = paragraph;
+                    }
+                }
+                const cleanText = bestResult.text
+                    .trim()
+                    .replace(/\s+/g, "")
+                    .replace(/[^\u4e00-\u9fff\u3400-\u4dbf\u3000-\u303f\uff00-\uffef]/g, "");
+                if (cleanText.length > 0) {
+                    const firstChar = cleanText.charAt(0);
+                    loglevel_default().debug(`OCR confidence: ${Math.round((bestResult.mean || 0) * 100)}%, extracted char: "${firstChar}"`);
+                    return firstChar;
+                }
+            }
+            loglevel_default().debug("No meaningful character found in OCR result");
+            return null;
+        }
+        catch (error) {
+            loglevel_default().error("Error in PaddleOCR decoding:", error);
+            throw error;
+        }
+    }
+    isAvailable() {
+        return this.modelLoaded && this.ocrEngine !== null;
+    }
+    getModelInfo() {
+        return {
+            name: "PaddleOCR",
+            version: this.cacheVersion,
+            loaded: this.modelLoaded
+        };
+    }
+    async close() {
+        this.ocrEngine = null;
+        this.modelLoaded = false;
+        this.loadingPromise = null;
+        loglevel_default().debug("PaddleOCR engine closed and cleaned up");
+    }
+    async clearModelCache() {
+        try {
+            await (0,GM/* _GM_setValue */.mN)(this.cacheKey, null);
+            await (0,GM/* _GM_setValue */.mN)(this.cacheVersionKey, null);
+            this.modelCache = {};
+            this.ppocrDict = "";
+            this.modelLoaded = false;
+            this.ocrEngine = null;
+            this.loadingPromise = null;
+            loglevel_default().debug("Cleared all OCR model cache data");
+        }
+        catch (error) {
+            loglevel_default().error("Failed to clear OCR model cache:", error);
+        }
+    }
+    async ensureModelLoaded() {
+        if (this.modelLoaded) {
+            return;
+        }
+        if (this.loadingPromise) {
+            await this.loadingPromise;
+            return;
+        }
+        this.loadingPromise = this.loadModel();
+        await this.loadingPromise;
+    }
+    async loadModel() {
+        try {
+            loglevel_default().debug("Loading PaddleOCR model...");
+            if (!eSearchOCR_es_namespaceObject || !external_ort_namespaceObject) {
+                throw new Error("PaddleOCR dependencies not loaded. Ensure esearch-ocr and onnxruntime-web are included via script tags.");
+            }
+            this.configureONNXRuntime();
+            await this.downloadAndCacheModels();
+            const dictContent = await this.loadPaddleOCRDict();
+            const detModel = this.modelCache["ppocr_det.onnx"];
+            const recModel = this.modelCache["ppocr_rec.onnx"];
+            if (!detModel || !recModel) {
+                throw new Error("Failed to download required PaddleOCR models");
+            }
+            loglevel_default().debug("Initializing PaddleOCR engine...");
+            this.ocrEngine = await Ln({
+                det: {
+                    input: await detModel.arrayBuffer(),
+                    ratio: 2.0,
+                },
+                rec: {
+                    input: await recModel.arrayBuffer(),
+                    decodeDic: dictContent,
+                    optimize: {
+                        space: false,
+                    },
+                },
+                dev: false,
+                ort: external_ort_namespaceObject,
+            });
+            this.modelLoaded = true;
+            loglevel_default().debug("PaddleOCR engine initialized successfully");
+        }
+        catch (error) {
+            loglevel_default().error("Failed to load PaddleOCR model:", error);
+            this.modelLoaded = false;
+            this.ocrEngine = null;
+            throw error;
+        }
+    }
+    configureONNXRuntime() {
+        try {
+            external_ort_namespaceObject.env.wasm.wasmPaths = "https://unpkg.com/onnxruntime-web@1.22.0/dist/";
+            external_ort_namespaceObject.env.wasm.numThreads = 1;
+            external_ort_namespaceObject.env.wasm.simd = true;
+            external_ort_namespaceObject.env.logLevel = "info";
+            loglevel_default().debug("ONNX Runtime Web configured with WASM paths:", external_ort_namespaceObject.env.wasm.wasmPaths);
+        }
+        catch (error) {
+            loglevel_default().warn("Failed to configure ONNX Runtime:", error);
+        }
+    }
+    async downloadAndCacheModels() {
+        try {
+            const storedVersion = await (0,GM/* _GM_getValue */.er)(this.cacheVersionKey, null);
+            const cachedModels = await (0,GM/* _GM_getValue */.er)(this.cacheKey, null);
+            if (storedVersion === this.cacheVersion && cachedModels) {
+                const parsedCache = JSON.parse(cachedModels);
+                for (const [filename, base64Data] of Object.entries(parsedCache)) {
+                    if (typeof base64Data === "string") {
+                        const binaryString = atob(base64Data);
+                        const bytes = new Uint8Array(binaryString.length);
+                        for (let i = 0; i < binaryString.length; i++) {
+                            bytes[i] = binaryString.charCodeAt(i);
+                        }
+                        this.modelCache[filename] = new Blob([bytes]);
+                    }
+                }
+                loglevel_default().debug("Loaded models from browser cache");
+                return;
+            }
+            else {
+                loglevel_default().debug(`Cache version mismatch, clearing old cache: ${storedVersion} vs ${this.cacheVersion}`);
+                await (0,GM/* _GM_setValue */.mN)(this.cacheKey, null);
+                await (0,GM/* _GM_setValue */.mN)(this.cacheVersionKey, null);
+                this.modelCache = {};
+                loglevel_default().debug("Cleared old model cache");
+            }
+        }
+        catch (error) {
+            loglevel_default().warn("Failed to load from cache, will download fresh:", error);
+        }
+        loglevel_default().debug("Downloading PaddleOCR models from GitHub...");
+        const cacheData = {};
+        try {
+            loglevel_default().debug(`Downloading from ${this.zipUrl}...`);
+            const response = await (0,http/* gfetch */._V)(this.zipUrl, {
+                responseType: "blob",
+                method: "GET"
+            });
+            if (response.status !== 200 || !response.response) {
+                throw new Error(`Failed to download ZIP: HTTP ${response.status} ${response.statusText}`);
+            }
+            const zipBlob = response.response;
+            loglevel_default().debug("Successfully downloaded zip file using gfetch");
+            loglevel_default().debug(`Downloaded ${zipBlob.size} bytes`);
+            await this.extractZipFiles(zipBlob, cacheData);
+            if (Object.keys(cacheData).length > 0) {
+                try {
+                    await (0,GM/* _GM_setValue */.mN)(this.cacheKey, JSON.stringify(cacheData));
+                    await (0,GM/* _GM_setValue */.mN)(this.cacheVersionKey, this.cacheVersion);
+                    loglevel_default().debug(`Cached ${Object.keys(cacheData).length} files successfully`);
+                }
+                catch (cacheError) {
+                    loglevel_default().warn("Failed to cache models (GM storage full?):", cacheError);
+                }
+            }
+        }
+        catch (error) {
+            loglevel_default().error("Failed to download models:", error);
+            throw error;
+        }
+    }
+    async extractZipFiles(zipBlob, cacheData) {
+        try {
+            loglevel_default().debug("Extracting files from zip...");
+            if (!external_zip_namespaceObject) {
+                throw new Error("zip.js library not available. Please include zip.js script in your Tampermonkey userscript.");
+            }
+            const zipReader = new external_zip_namespaceObject.ZipReader(new external_zip_namespaceObject.BlobReader(zipBlob));
+            const entries = await zipReader.getEntries();
+            loglevel_default().debug(`Found ${entries.length} entries in zip`);
+            for (const entry of entries) {
+                if (this.filesToExtract.includes(entry.filename)) {
+                    loglevel_default().debug(`Extracting ${entry.filename}...`);
+                    if (!entry.getData) {
+                        throw new Error(`getData method not available for ${entry.filename}`);
+                    }
+                    const blob = await entry.getData(new external_zip_namespaceObject.BlobWriter());
+                    this.modelCache[entry.filename] = blob;
+                    const arrayBuffer = await blob.arrayBuffer();
+                    const uint8Array = new Uint8Array(arrayBuffer);
+                    if (uint8Array.length > 50 * 1024 * 1024) {
+                        loglevel_default().warn(`File ${entry.filename} is very large (${(uint8Array.length / 1024 / 1024).toFixed(1)}MB), skipping GM storage cache`);
+                        continue;
+                    }
+                    try {
+                        const binaryString = this.uint8ArrayToBinaryString(uint8Array);
+                        cacheData[entry.filename] = btoa(binaryString);
+                    }
+                    catch (conversionError) {
+                        loglevel_default().warn(`Failed to convert ${entry.filename} to base64, skipping GM storage cache:`, conversionError);
+                    }
+                    loglevel_default().debug(`Extracted ${entry.filename} (${blob.size} bytes)`);
+                }
+            }
+            await zipReader.close();
+            loglevel_default().debug(`Successfully extracted ${Object.keys(cacheData).length} files from zip`);
+        }
+        catch (error) {
+            loglevel_default().error("Failed to extract zip files:", error);
+            throw error;
+        }
+    }
+    uint8ArrayToBinaryString(uint8Array) {
+        const chunkSize = 8192;
+        let binaryString = "";
+        for (let i = 0; i < uint8Array.length; i += chunkSize) {
+            const chunk = uint8Array.subarray(i, i + chunkSize);
+            binaryString += String.fromCharCode.apply(null, Array.from(chunk));
+        }
+        return binaryString;
+    }
+    async loadPaddleOCRDict() {
+        if (this.ppocrDict) {
+            return this.ppocrDict;
+        }
+        try {
+            await this.downloadAndCacheModels();
+            const dictBlob = this.modelCache["ppocr_keys_v1.txt"];
+            if (!dictBlob) {
+                throw new Error("Dictionary not found in cached models");
+            }
+            this.ppocrDict = await dictBlob.text();
+            loglevel_default().debug(`Loaded PaddleOCR dictionary from cache with ${this.ppocrDict.split("\n").length} entries`);
+            return this.ppocrDict;
+        }
+        catch (error) {
+            loglevel_default().error("Failed to load PaddleOCR dictionary from cache:", error);
+            throw error;
+        }
+    }
+    async uint8ArrayToImageData(uint8Array) {
+        try {
+            const blob = new Blob([uint8Array]);
+            const img = new Image();
+            const imageLoadPromise = new Promise((resolve, reject) => {
+                img.onload = () => resolve();
+                img.onerror = reject;
+            });
+            img.src = URL.createObjectURL(blob);
+            await imageLoadPromise;
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            if (!ctx) {
+                throw new Error("Cannot get canvas 2D context");
+            }
+            const scaleX = Math.max(4, Math.ceil(120 / img.width));
+            const scaleY = Math.max(4, Math.ceil(120 / img.height));
+            const scale = Math.max(scaleX, scaleY);
+            const scaledWidth = img.width * scale;
+            const scaledHeight = img.height * scale;
+            canvas.width = scaledWidth;
+            canvas.height = scaledHeight;
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, scaledWidth, scaledHeight);
+            ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
+            loglevel_default().debug(`Image scaled from ${img.width}x${img.height} to ${scaledWidth}x${scaledHeight} (${scale}x scale)`);
+            const imageData = ctx.getImageData(0, 0, scaledWidth, scaledHeight);
+            URL.revokeObjectURL(img.src);
+            return imageData;
+        }
+        catch (error) {
+            loglevel_default().error("Error converting Uint8Array to ImageData:", error);
+            return null;
+        }
+    }
+}
+
+;// ./src/lib/decoders/ImageCache.ts
+
+
+class ImageCache {
+    static instance = null;
+    cache = new Map();
+    maxCacheSize = 50;
+    accessOrder = [];
+    constructor() {
+    }
+    static getInstance() {
+        if (!ImageCache.instance) {
+            ImageCache.instance = new ImageCache();
+        }
+        return ImageCache.instance;
+    }
+    async getImageData(imageUrl) {
+        if (this.cache.has(imageUrl)) {
+            this.updateAccessOrder(imageUrl);
+            loglevel_default().debug(`Image cache hit for: ${imageUrl.substring(0, 50)}...`);
+            return this.cache.get(imageUrl);
+        }
+        try {
+            loglevel_default().debug(`Downloading image for cache: ${imageUrl.substring(0, 50)}...`);
+            const response = await (0,http/* gfetch */._V)(imageUrl, {
+                responseType: "arraybuffer",
+                method: "GET"
+            });
+            if (response.status !== 200 || !response.response) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            const uint8Array = new Uint8Array(response.response);
+            this.cacheImageData(imageUrl, uint8Array);
+            loglevel_default().debug(`Downloaded and cached image: ${uint8Array.length} bytes`);
+            return uint8Array;
+        }
+        catch (error) {
+            loglevel_default().error(`Failed to download image: ${imageUrl}`, error);
+            throw error;
+        }
+    }
+    cacheImageData(imageUrl, data) {
+        if (this.cache.size >= this.maxCacheSize) {
+            const lruUrl = this.accessOrder.shift();
+            if (lruUrl) {
+                this.cache.delete(lruUrl);
+                loglevel_default().debug(`Evicted LRU image from cache: ${lruUrl.substring(0, 50)}...`);
+            }
+        }
+        this.cache.set(imageUrl, data);
+        this.accessOrder.push(imageUrl);
+    }
+    updateAccessOrder(imageUrl) {
+        const index = this.accessOrder.indexOf(imageUrl);
+        if (index > -1) {
+            this.accessOrder.splice(index, 1);
+            this.accessOrder.push(imageUrl);
+        }
+    }
+    clearCache() {
+        this.cache.clear();
+        this.accessOrder.length = 0;
+        loglevel_default().debug("Cleared image cache");
+    }
+    getCacheStats() {
+        return {
+            size: this.cache.size,
+            maxSize: this.maxCacheSize,
+            urls: Array.from(this.cache.keys()).map(url => url.substring(0, 50) + "...")
+        };
+    }
+}
+
+// EXTERNAL MODULE: external "CryptoJS"
+var external_CryptoJS_ = __webpack_require__("crypto-js");
+;// ./src/rules/special/reprint/xiguashuwu.ts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class ImageTextDecoder {
+    filenameDecoder;
+    hashDecoder;
+    ocrDecoder;
+    mappingCache = {};
+    failedImages = [];
+    PLACEHOLDER_CHAR = "▢";
+    constructor() {
+        this.filenameDecoder = new FilenameDecoder("www.xiguashuwu.com");
+        this.hashDecoder = new HashDecoder("www.xiguashuwu.com");
+        this.ocrDecoder = new OCRDecoder();
+    }
+    async init() {
+        loglevel_default().debug("[XiguashuwuImageDecoder] Decoder initialized");
+    }
+    async close() {
+        this.mappingCache = {};
+        await this.ocrDecoder.close();
+        const imageCache = ImageCache.getInstance();
+        imageCache.clearCache();
+        if (this.failedImages.length > 0) {
+            loglevel_default().warn(`[XiguashuwuImageDecoder] ${this.failedImages.length} images failed to decode:`);
+            this.failedImages.forEach((url, index) => {
+                loglevel_default().warn(`  ${index + 1}. ${url}`);
+            });
+            loglevel_default().warn(`These images were replaced with placeholder character: "${this.PLACEHOLDER_CHAR}"`);
+        }
+        loglevel_default().debug("[XiguashuwuImageDecoder] Decoder closed and image cache cleared");
+    }
+    async decodeImage(imageUrl) {
+        if (this.mappingCache[imageUrl]) {
+            return this.mappingCache[imageUrl];
+        }
+        try {
+            const filename = this.getFilenameFromUrl(imageUrl);
+            const filenameChar = await this.filenameDecoder.decodeFromFilename(filename);
+            if (filenameChar) {
+                loglevel_default().debug(`[XiguashuwuImageDecoder] Filename match: ${filename} -> ${filenameChar}`);
+                this.mappingCache[imageUrl] = filenameChar;
+                return filenameChar;
+            }
+            const imageData = await this.downloadImageData(imageUrl);
+            const hashChar = await this.hashDecoder.decode(imageData);
+            if (hashChar) {
+                loglevel_default().debug(`[XiguashuwuImageDecoder] Hash match: ${filename} -> "${hashChar}"`);
+                this.mappingCache[imageUrl] = hashChar;
+                return hashChar;
+            }
+            const ocrChar = await this.ocrDecoder.decode(imageData);
+            if (ocrChar) {
+                loglevel_default().debug(`[XiguashuwuImageDecoder] OCR success: ${filename} (${imageUrl}) -> "${ocrChar}"`);
+                await this.hashDecoder.learnMapping(imageData, ocrChar);
+                this.mappingCache[imageUrl] = ocrChar;
+                return ocrChar;
+            }
+            loglevel_default().warn(`[XiguashuwuImageDecoder] All decoding methods failed for: ${imageUrl}`);
+            this.failedImages.push(imageUrl);
+            this.mappingCache[imageUrl] = this.PLACEHOLDER_CHAR;
+            return this.PLACEHOLDER_CHAR;
+        }
+        catch (error) {
+            loglevel_default().error(`[XiguashuwuImageDecoder] Error during decoding process for ${imageUrl}:`, error);
+            this.failedImages.push(imageUrl);
+            this.mappingCache[imageUrl] = this.PLACEHOLDER_CHAR;
+            return this.PLACEHOLDER_CHAR;
+        }
+    }
+    getFilenameFromUrl(url) {
+        return url.split("/").pop() || "";
+    }
+    async downloadImageData(imageUrl) {
+        const imageCache = ImageCache.getInstance();
+        return await imageCache.getImageData(imageUrl);
+    }
+    getFailedImages() {
+        return [...this.failedImages];
+    }
+    getFailedImagesCount() {
+        return this.failedImages.length;
+    }
+    getPlaceholderChar() {
+        return this.PLACEHOLDER_CHAR;
+    }
+}
+const decodeCustomBase64 = (encodedString) => {
+    const base64Map = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    let binary = "";
+    if (!encodedString)
+        return "";
+    for (let i = 0; i < encodedString.length; i++) {
+        if (encodedString.substr(i, 1) === "=") {
+            break;
+        }
+        const char = encodedString.charAt(i);
+        const mapIndex = base64Map.indexOf(char);
+        if (mapIndex === -1)
+            continue;
+        const c = mapIndex.toString(2);
+        const padding = {
+            1: "00000",
+            2: "0000",
+            3: "000",
+            4: "00",
+            5: "0",
+            6: "",
+        }[c.length] || "";
+        binary += padding + c;
+    }
+    let decodedString = "";
+    const binaryChunks = binary.match(/[0-1]{8}/g) || [];
+    for (const chunk of binaryChunks) {
+        decodedString += String.fromCharCode(parseInt(chunk, 2));
+    }
+    return decodedString;
+};
+const decryptContent = (content, key) => {
+    const key1 = external_CryptoJS_.MD5(key).toString();
+    const d = external_CryptoJS_.enc.Utf8.parse(key1.substring(0, 16));
+    const e = external_CryptoJS_.enc.Utf8.parse(key1.substring(16));
+    return external_CryptoJS_.AES.decrypt(content, e, {
+        iv: d,
+        padding: external_CryptoJS_.pad.Pkcs7,
+    }).toString(external_CryptoJS_.enc.Utf8);
+};
+class Xiguashuwu extends rules/* BaseRuleClass */.Q {
+    constructor() {
+        super();
+        this.attachmentMode = "naive";
+        this.nsfw = true;
+        this.charset = "utf-8";
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookname = document.querySelector("p.title")?.innerText.trim();
+        const author = document.querySelector("p.author > span > a")
+            ?.innerText ?? "";
+        const introDom = document.querySelector("#intro > p.BGsectionTwo-bottom");
+        const [introduction, introductionHTML] = await (0,rule/* introDomHandle */.HV)(introDom);
+        const additionalMetadate = {};
+        const coverUrl = document.querySelector(".BGsectionOne-top-left > img")?.src || null;
+        if (coverUrl) {
+            (0,attachments/* getAttachment */["if"])(coverUrl, this.attachmentMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => loglevel_default().error(error));
+        }
+        const chapterListLink = document.querySelector("div.BGsectionOne-bottom > ul > li:nth-of-type(2) > a");
+        if (!chapterListLink) {
+            throw new Error("Chapter list link not found");
+        }
+        const chapterListUrl = chapterListLink.href;
+        loglevel_default().debug(`[chapter]请求 ${chapterListUrl}`);
+        const chapterListDoc = await (0,http/* getHtmlDOM */.wA)(chapterListUrl, this.charset);
+        const chapterLinks = chapterListDoc.querySelectorAll("li.BCsectionTwo-top-chapter > a");
+        const chapters = [];
+        let chapterNumber = 0;
+        for (const aElem of Array.from(chapterLinks)) {
+            chapterNumber++;
+            const chapterName = aElem.innerText.trim();
+            const chapterUrl = aElem.href;
+            const isVIP = false;
+            const isPaid = false;
+            const chapter = new Chapter/* Chapter */.I({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP,
+                isPaid,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse.bind(this),
+                charset: this.charset,
+                options: {},
+            });
+            chapters.push(chapter);
+        }
+        return new Book/* Book */.E({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const decoder = new ImageTextDecoder();
+        await decoder.init();
+        try {
+            const contentRaw = await this.getContentFromMultiplePages(chapterUrl, charset, decoder);
+            if (contentRaw) {
+                const { dom, text, images } = await (0,cleanDOM/* cleanDOM */.an)(contentRaw, this.attachmentMode, { keepImageName: true });
+                const failedCount = decoder.getFailedImagesCount();
+                if (failedCount > 0) {
+                    loglevel_default().warn(`[Xiguashuwu] Chapter "${chapterName}" has ${failedCount} failed image(s) replaced with "${decoder.getPlaceholderChar()}"`);
+                }
+                return {
+                    chapterName,
+                    contentRaw: contentRaw,
+                    contentText: text,
+                    contentHTML: dom,
+                    contentImages: images,
+                    additionalMetadate: null,
+                };
+            }
+            else {
+                return {
+                    chapterName,
+                    contentRaw: null,
+                    contentText: null,
+                    contentHTML: null,
+                    contentImages: null,
+                    additionalMetadate: null,
+                };
+            }
+        }
+        finally {
+            await decoder.close();
+        }
+    }
+    async getContentFromMultiplePages(startUrl, charset, decoder) {
+        const content = document.createElement("div");
+        content.id = "C0NTENT";
+        let currentUrl = startUrl;
+        let pageNumber = 1;
+        const lastParagraphIndexes = [];
+        let totalParagraphs = 0;
+        while (currentUrl) {
+            loglevel_default().debug(`Processing page ${pageNumber}: ${currentUrl}`);
+            try {
+                const doc = await (0,http/* getHtmlDOM */.wA)(currentUrl, charset);
+                const pageContent = await this.processPageContent(doc, decoder, pageNumber);
+                if (pageContent) {
+                    const pageParaCount = pageContent.children.length;
+                    lastParagraphIndexes.push(totalParagraphs + pageParaCount - 1);
+                    totalParagraphs += pageParaCount;
+                    for (const child of Array.from(pageContent.children)) {
+                        content.appendChild(child.cloneNode(true));
+                    }
+                    loglevel_default().debug(`Page ${pageNumber} processed: ${pageParaCount} paragraphs, total: ${totalParagraphs}`);
+                }
+                currentUrl = this.getNextPageUrl(doc);
+                pageNumber++;
+                if (pageNumber > 50) {
+                    loglevel_default().warn("Too many pages detected, stopping to prevent infinite loop");
+                    break;
+                }
+            }
+            catch (error) {
+                loglevel_default().error(`Failed to process page ${pageNumber}: ${currentUrl}`, error);
+                break;
+            }
+        }
+        this.mergeParagraphsAcrossPages(content, lastParagraphIndexes);
+        return content.children.length > 0 ? content : null;
+    }
+    async processPageContent(doc, decoder, pageNumber) {
+        if (pageNumber === 1) {
+            const contentDiv = doc.querySelector("#C0NTENT");
+            loglevel_default().debug("Processing first page - using direct C0NTENT (no image processing)");
+            if (contentDiv) {
+                return await this.processFirstPageContent(contentDiv);
+            }
+            else {
+                throw new Error("First page missing C0NTENT element");
+            }
+        }
+        else if (pageNumber === 2) {
+            loglevel_default().debug("Processing second page - using nrid/codeurl method (with image processing)");
+            try {
+                const decryptedDiv = await this.decryptSecondPageContent(doc);
+                if (decryptedDiv) {
+                    return await this.processImages(decryptedDiv, decoder);
+                }
+                else {
+                    throw new Error("Second page decryption returned null");
+                }
+            }
+            catch (error) {
+                loglevel_default().error("Failed to decrypt second page content:", error);
+                throw error;
+            }
+        }
+        else {
+            loglevel_default().debug(`Processing page ${pageNumber} - using AES decryption (with image processing)`);
+            try {
+                const decryptedDiv = await this.decryptAESPageContent(doc);
+                if (decryptedDiv) {
+                    return await this.processImages(decryptedDiv, decoder);
+                }
+                else {
+                    throw new Error(`AES decryption returned null for page ${pageNumber}`);
+                }
+            }
+            catch (error) {
+                loglevel_default().error(`Failed to decrypt page ${pageNumber} content:`, error);
+                throw error;
+            }
+        }
+        // removed by dead control flow
+{}
+    }
+    async decryptSecondPageContent(doc) {
+        const scripts = doc.getElementsByTagName("script");
+        let nrid = null;
+        let codeurl = null;
+        const nridRegex = /var\s+nrid\s*=\s*['"]([^'"]+)['"]/;
+        const simpleCodeurlVarRegex = /var\s+codeurl\s*=\s*['"]?([0-9]+)['"]?/;
+        for (const script of Array.from(scripts)) {
+            const scriptContent = script.innerHTML;
+            if (!scriptContent)
+                continue;
+            if (!nrid) {
+                const nridMatch = scriptContent.match(nridRegex);
+                if (nridMatch) {
+                    nrid = nridMatch[1];
+                    loglevel_default().debug(`Found nrid: ${nrid}`);
+                }
+            }
+            if (!codeurl) {
+                const simpleMatch = scriptContent.match(simpleCodeurlVarRegex);
+                if (simpleMatch && simpleMatch[1]) {
+                    codeurl = simpleMatch[1];
+                    loglevel_default().debug(`Found simple codeurl: ${codeurl}`);
+                }
+            }
+            if (nrid && codeurl) {
+                break;
+            }
+        }
+        if (!nrid) {
+            throw new Error("Could not find nrid for second page");
+        }
+        if (!codeurl) {
+            throw new Error("Could not find codeurl for second page");
+        }
+        const contentBox = doc.getElementById(nrid);
+        if (!contentBox) {
+            throw new Error(`Could not find content container with ID: ${nrid}`);
+        }
+        const standardContentDiv = doc.createElement("div");
+        standardContentDiv.id = "C0NTENT";
+        const metaTag = doc.getElementsByTagName("meta")[7];
+        const rawContentFromMeta = metaTag.getAttribute("content");
+        if (!rawContentFromMeta) {
+            throw new Error("Could not find encrypted content in meta tags");
+        }
+        const unscrambledString = decodeCustomBase64(rawContentFromMeta);
+        if (!unscrambledString) {
+            throw new Error("Failed to decode custom Base64 content");
+        }
+        const orderFragments = unscrambledString.split(/[A-Z]+%/);
+        const orderedNode = [];
+        const UpWz = (m, i) => {
+            let k = Math.ceil((i + 1) % parseInt(codeurl, 10));
+            k = Math.ceil(parseInt(m, 10) - k);
+            return k;
+        };
+        for (let i = 0; i < orderFragments.length; i++) {
+            const k = UpWz(orderFragments[i], i);
+            orderedNode[k] = contentBox.childNodes[i];
+        }
+        orderedNode.forEach((node) => {
+            if (node) {
+                standardContentDiv.appendChild(node);
+            }
+        });
+        loglevel_default().debug("Successfully decrypted second page content using nrid/codeurl method");
+        return standardContentDiv;
+    }
+    async decryptAESPageContent(doc) {
+        const scripts = doc.getElementsByTagName("script");
+        let nrid = null;
+        let newconEncryptedContent = null;
+        let newconEncryptionKey = null;
+        const nridRegex = /var\s+nrid\s*=\s*['"]([^'"]+)['"]/;
+        const newcomRegex = /newcon\s*=\s*decodeURIComponent\("(?<content>[^"]+)"\).*?newcon\s*=\s*d\(newcon,\s*"(?<key>[^"]+)"\)/s;
+        for (const script of Array.from(scripts)) {
+            const scriptContent = script.innerHTML;
+            if (!scriptContent)
+                continue;
+            if (!newconEncryptedContent) {
+                const newcomMatch = scriptContent.match(newcomRegex);
+                if (newcomMatch && newcomMatch.groups) {
+                    newconEncryptedContent = decodeURIComponent(newcomMatch.groups.content);
+                    newconEncryptionKey = newcomMatch.groups.key;
+                    loglevel_default().debug(`Found AES encrypted content with key: ${newconEncryptionKey}`);
+                }
+            }
+            if (!nrid) {
+                const nridMatch = scriptContent.match(nridRegex);
+                if (nridMatch) {
+                    nrid = nridMatch[1];
+                    loglevel_default().debug(`Found nrid: ${nrid}`);
+                }
+            }
+            if (nrid && newconEncryptedContent && newconEncryptionKey) {
+                break;
+            }
+        }
+        if (!nrid) {
+            throw new Error("Could not find nrid for AES page");
+        }
+        if (!newconEncryptedContent || !newconEncryptionKey) {
+            throw new Error("Could not find AES encrypted content or key");
+        }
+        const standardContentDiv = doc.createElement("div");
+        standardContentDiv.id = "C0NTENT";
+        const decryptedContent = decryptContent(newconEncryptedContent, newconEncryptionKey);
+        if (!decryptedContent) {
+            throw new Error("AES decryption produced empty content");
+        }
+        standardContentDiv.innerHTML = decryptedContent;
+        loglevel_default().debug("Successfully decrypted AES page content");
+        return standardContentDiv;
+    }
+    async processImages(content, decoder) {
+        (0,dom.rm)("div.s_m", true, content);
+        const images = content.querySelectorAll("img.hz");
+        for (const img of Array.from(images)) {
+            try {
+                let imageUrl = img.src;
+                if (imageUrl.startsWith("http://")) {
+                    imageUrl = imageUrl.replace("http://", "https://");
+                }
+                const decodedText = await decoder.decodeImage(imageUrl);
+                const textNode = document.createTextNode(decodedText);
+                img.parentNode?.replaceChild(textNode, img);
+                if (decodedText === decoder.getPlaceholderChar()) {
+                    loglevel_default().debug(`Used placeholder for failed image: ${imageUrl.substring(0, 50)}...`);
+                }
+                else {
+                    loglevel_default().debug(`Decoded image: ${imageUrl.substring(0, 50)}...`);
+                }
+            }
+            catch (error) {
+                loglevel_default().error("Unexpected error during image processing:", img.src, error);
+                const textNode = document.createTextNode(decoder.getPlaceholderChar());
+                img.parentNode?.replaceChild(textNode, img);
+            }
+        }
+        return content;
+    }
+    getNextPageUrl(doc) {
+        const nextPageLink = doc.querySelector("section > ul > li[class*='-right'] > a");
+        if (nextPageLink && nextPageLink.innerText.includes("下一页")) {
+            const nextUrl = nextPageLink.href;
+            if (nextUrl.includes(".html")) {
+                loglevel_default().debug(`Found next page: ${nextUrl}`);
+                return nextUrl;
+            }
+        }
+        const possibleNextLinks = doc.querySelectorAll("a");
+        for (const link of Array.from(possibleNextLinks)) {
+            const linkText = link.innerText.trim();
+            if ((linkText.includes("下一页") ||
+                linkText.includes("下页") ||
+                linkText.includes("next") ||
+                linkText.match(/^下.*页$/)) &&
+                link.href.includes(".html")) {
+                const nextUrl = link.href;
+                loglevel_default().debug(`Found fallback next page: ${nextUrl}`);
+                return nextUrl;
+            }
+        }
+        loglevel_default().debug("No next page found");
+        return "";
+    }
+    mergeParagraphsAcrossPages(content, lastParagraphIndexes) {
+        if (lastParagraphIndexes.length <= 1)
+            return;
+        loglevel_default().debug(`Merging paragraphs across ${lastParagraphIndexes.length} pages`);
+        for (let i = lastParagraphIndexes.length - 2; i >= 0; i--) {
+            const currentPageLastIndex = lastParagraphIndexes[i];
+            let lastParagraph = null;
+            let nextParagraph = null;
+            for (let j = Math.min(currentPageLastIndex, content.children.length - 1); j >= 0; j--) {
+                const element = content.children[j];
+                if (element && element.textContent?.trim()) {
+                    lastParagraph = element;
+                    break;
+                }
+            }
+            const nextPageStartIndex = currentPageLastIndex + 1;
+            for (let j = nextPageStartIndex; j < content.children.length; j++) {
+                const element = content.children[j];
+                if (element && element.textContent?.trim()) {
+                    nextParagraph = element;
+                    break;
+                }
+            }
+            if (lastParagraph && nextParagraph && lastParagraph !== nextParagraph) {
+                const lastText = lastParagraph.textContent || "";
+                const nextText = nextParagraph.textContent || "";
+                lastParagraph.textContent = lastText + nextText;
+                const lineBreakCount = (nextParagraph.innerHTML.match(/<br\s*\/?>/gi) || []).length;
+                if (lineBreakCount > 0) {
+                    lastParagraph.textContent += "\r\n".repeat(lineBreakCount);
+                }
+                lastParagraph.textContent += "\r\n";
+                nextParagraph.remove();
+                loglevel_default().debug(`Merged paragraphs: "${lastText.substring(0, 30)}..." + "${nextText.substring(0, 30)}..." (with newline separator)`);
+            }
+        }
+    }
+    async processFirstPageContent(content) {
+        (0,dom.rm)("div.s_m", true, content);
+        loglevel_default().debug("First page processed without image decoding");
+        return content;
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/rules/special/reprint/xkzw.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -39883,6 +41754,69 @@ const yibige = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 
 /***/ }),
 
+/***/ "./src/save/main.css":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `h1 {
+  line-height: 130%;
+  text-align: center;
+  font-weight: bold;
+  font-size: xx-large;
+  margin-top: 3.2em;
+  margin-bottom: 3.3em;
+}
+
+h2 {
+  line-height: 130%;
+  text-align: center;
+  font-weight: bold;
+  font-size: x-large;
+  margin-top: 1.2em;
+  margin-bottom: 2.3em;
+}
+
+div {
+  margin: 0;
+  padding: 0;
+  text-align: justify;
+}
+
+p {
+  text-indent: 2em;
+  display: block;
+  line-height: 1.3em;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+}
+
+img {
+  vertical-align: text-bottom;
+  max-width: 90%;
+}
+
+.title {
+  margin-bottom: 0.7em;
+}
+`, ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
 /***/ "./src/save/misc.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -39921,6 +41855,196 @@ function getSectionsObj(chapters, chapterSort = (a, b) => a.chapterNumber - b.ch
         return chapterSort(aChapter, bChapter);
     }
 }
+
+
+/***/ }),
+
+/***/ "./src/save/sgc-toc.css":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `div.sgc-toc-title {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+div.sgc-toc-level-1 {
+  margin-left: 0em;
+}
+
+div.sgc-toc-level-2 {
+  margin-left: 2em;
+}
+
+div.sgc-toc-level-3 {
+  margin-left: 2em;
+}
+
+div.sgc-toc-level-4 {
+  margin-left: 2em;
+}
+
+div.sgc-toc-level-5 {
+  margin-left: 2em;
+}
+
+div.sgc-toc-level-6 {
+  margin-left: 2em;
+}
+`, ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./src/save/toc.css":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `img {
+  max-width: 100%;
+  max-height: 15em;
+}
+
+.introduction {
+  font-size: smaller;
+  max-height: 18em;
+  overflow-y: scroll;
+}
+
+.introduction p {
+  text-indent: 0;
+}
+
+.bookurl {
+  text-align: center;
+  font-size: smaller;
+  padding-top: 1em;
+  padding-bottom: 0.5em;
+  margin-top: 0.4em;
+}
+
+.bookurl > a {
+  color: gray;
+}
+
+.info h3 {
+  padding-left: 0.5em;
+  margin-top: -1.2em;
+  margin-bottom: 0.5em;
+}
+
+.section {
+  margin-top: 1.5em;
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+}
+
+.section > h2:first-child {
+  grid-column-end: span 3;
+}
+
+.section > .chapter {
+  padding-bottom: 0.3em;
+  text-align: center;
+}
+
+.main > h1 {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+a.disabled {
+  pointer-events: none;
+  cursor: default;
+  color: gray;
+}
+
+.author::before {
+  content: "作者：";
+}
+
+.author {
+  text-align: center;
+  margin-top: -3em;
+  margin-bottom: 3em;
+}
+`, ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./src/save/web.css":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `body {
+  background-color: #f0f0f2;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+    "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+div.main {
+  width: 900px;
+  margin: 5em auto;
+  padding: 2em;
+  background-color: #fdfdff;
+  border-radius: 0.5em;
+  box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, 0.02);
+}
+
+@media (max-width: 700px) {
+  div.main {
+    margin: 0 auto;
+    width: auto;
+  }
+}
+`, ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
 
 /***/ }),
@@ -40016,6 +42140,496 @@ async function getCustomEnableSaveToArchiveOrg() {
 
 /***/ }),
 
+/***/ "./src/ui/ChapterList.less":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `:root {
+  --good-chapter-color: #41b883;
+  --bad-chapter-color: #e73838;
+  --warning-chapter-color: #ff9900;
+}
+div.chapter-list-loading {
+  padding-top: 5em;
+  padding-bottom: 5em;
+  text-align: center;
+}
+div.chapter-list {
+  max-height: 200px;
+  overflow-y: scroll;
+}
+div.chapter-list .section {
+  margin-top: 1.5em;
+  display: grid;
+  grid-template-columns: 32% 32% 32%;
+}
+div.chapter-list .section > h3:first-child {
+  grid-column-end: span 3;
+  text-align: center;
+}
+div.chapter-list .section > div.chapter {
+  text-align: center;
+  padding-top: 0.5em;
+  padding-bottom: 0.3em;
+  padding-left: 23px;
+  padding-right: 20px;
+  border: 1px solid #d9d9d9;
+  border-radius: 5px;
+  margin-left: 10px;
+  margin-top: 5px;
+  margin-right: 0;
+  margin-bottom: 0;
+}
+div.chapter-list .section a.disabled {
+  pointer-events: none;
+  cursor: default;
+}
+div.chapter-list .section a {
+  text-decoration: none;
+}
+div.chapter-list div.chapter.good {
+  background: var(--good-chapter-color);
+}
+div.chapter-list div.chapter.bad {
+  background: var(--bad-chapter-color);
+}
+div.chapter-list div.chapter.good.warning {
+  background: var(--warning-chapter-color);
+}
+div.chapter-list div.chapter.bad a,
+div.chapter-list div.chapter.good a {
+  color: white;
+  font-size: 0.9em;
+}
+.nd-setting-body span.good {
+  color: var(--good-chapter-color);
+}
+.nd-setting-body span.bad {
+  color: var(--bad-chapter-color);
+}
+.nd-setting-body span.warning {
+  color: var(--warning-chapter-color);
+}
+`, ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./src/ui/FilterTab.css":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.filter-setting {
+  padding-top: 0.4em;
+  padding-bottom: 0.8em;
+  text-align: center;
+}
+
+.filter-input + .filter-setter {
+  margin-top: 1em;
+}
+
+.filter-description {
+  font-size: larger;
+  color: cornflowerblue;
+}
+`, ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./src/ui/TestUI.less":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `#test-page-div {
+  max-height: 300px;
+  overflow-y: scroll;
+}
+#test-page-div table {
+  text-align: center;
+}
+#test-page-div td {
+  all: revert;
+  padding-top: 0.3em;
+}
+#test-page-div td > img {
+  max-height: 15em;
+}
+#test-page-div tr > td:nth-child(1) {
+  font-weight: bold;
+  min-width: 7em;
+}
+#test-page-div tr > td:nth-child(2) div,
+#test-page-div tr > td:nth-child(2) p {
+  text-align: left;
+}
+#test-page-div hr {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+#test-page-div h2 {
+  text-align: center;
+  margin-bottom: 1.3em;
+}
+#test-page-div h4 {
+  text-align: center;
+}
+#test-page-div .chapter p {
+  line-height: 1.4;
+}
+#test-page-div .chapter img {
+  max-width: 95%;
+}
+#test-page-div .preview-chapter-setting {
+  text-align: center;
+  margin-bottom: 1em;
+}
+#test-page-div .preview-chapter-setting button {
+  cursor: pointer;
+  margin-left: 0.5em;
+  padding: 0px 10px;
+}
+#test-page-div .preview-chapter-setting button:disabled {
+  cursor: not-allowed;
+}
+#test-page-div .loading-spinner {
+  text-align: center;
+  margin: 1em 0;
+}
+#test-page-div .loading-spinner .spinner {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  border-top-color: #000;
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 0.5em;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+`, ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./src/ui/button.less":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.button-div {
+  position: fixed;
+  top: 15%;
+  right: 5%;
+  z-index: 10000;
+}
+.button-div button {
+  border-style: none;
+  text-align: center;
+  vertical-align: baseline;
+  background-color: rgba(128, 128, 128, 0.2);
+  padding: 3px;
+  border-radius: 12px;
+  min-width: auto;
+  min-height: auto;
+}
+.button-div img.start,
+.button-div img.jump {
+  height: 2em;
+}
+.button-div img.setting {
+  height: 1em;
+}
+`, ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./src/ui/dialog.css":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.overlay {
+  visibility: hidden;
+  opacity: 0;
+  z-index: 100000;
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  height: 200%;
+  width: 200%;
+  background-color: black;
+}
+
+.overlay.open {
+  opacity: 0.8;
+  visibility: visible;
+  transition: opacity 0.2s ease-in;
+}
+
+.overlay:not(.open) {
+  transition: visibility 0.2s step-end, opacity 0.2s ease-in;
+}
+
+.out {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 100001;
+}
+
+.dialog {
+  width: 720px;
+  max-height: 70%;
+  display: none;
+  opacity: 0;
+  z-index: 100100;
+  position: fixed;
+  margin: 0;
+  padding: 0;
+}
+
+.dialog.open {
+  opacity: 1;
+  display: block;
+  transition: opacity 0.2s ease-in;
+}
+
+.dialog > * {
+  box-sizing: border-box;
+}
+
+.dialog > .titlebar {
+  background-color: white;
+  min-height: 24px;
+  position: relative;
+}
+
+.dialog-title {
+  padding: 10px;
+  text-transform: uppercase;
+  background: #ff7bac;
+  color: #ffffff;
+  margin: 0;
+  font-size: 1.5em;
+  text-align: center;
+}
+
+.dialog-close {
+  background: #ff7bac;
+  color: #ffffff;
+
+  font-style: normal;
+  font-weight: 400;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  user-select: none;
+
+  cursor: pointer;
+  font-size: 120%;
+  margin: 0;
+  padding: 0;
+  width: 3.6em;
+  height: 92%;
+  border: 1px solid transparent;
+  transition-duration: 0.2s;
+  display: block;
+
+  position: absolute;
+  right: 0;
+  top: 0;
+  white-space: nowrap;
+}
+
+.dialog > .body {
+  background-color: white;
+  border: 1px solid rgb(255 125 175 / 80%);
+  text-align: left;
+
+  line-height: 1.5;
+  padding: 1em;
+
+  overflow: auto;
+  min-width: 280px;
+
+  height: calc(100% - 2.1em);
+  max-height: 900px;
+}
+`, ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./src/ui/progress.css":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `#nd-progress {
+  position: fixed;
+  bottom: 8%;
+  right: 3%;
+  z-index: 2147483647;
+  border-style: none;
+  text-align: center;
+  vertical-align: baseline;
+  background-color: rgba(210, 210, 210, 0.2);
+  padding: 6px;
+  border-radius: 12px;
+}
+
+#chapter-progress {
+  --color: green;
+  --position: 0%;
+  width: 200px;
+  height: 10px;
+  border-radius: 30px;
+  background-color: #ccc;
+  background-image: radial-gradient(
+      closest-side circle at var(--position),
+      var(--color),
+      var(--color) 100%,
+      transparent
+    ),
+    linear-gradient(var(--color), var(--color));
+  background-image: -webkit-radial-gradient(
+      var(--position),
+      circle closest-side,
+      var(--color),
+      var(--color) 100%,
+      transparent
+    ),
+    -webkit-linear-gradient(var(--color), var(--color));
+  background-size: 100%, var(--position);
+  background-repeat: no-repeat;
+}
+
+#zip-progress {
+  --color: yellow;
+  --position: 0%;
+  width: 200px;
+  height: 10px;
+  border-radius: 30px;
+  background-color: #ccc;
+  background-image: radial-gradient(
+      closest-side circle at var(--position),
+      var(--color),
+      var(--color) 100%,
+      transparent
+    ),
+    linear-gradient(var(--color), var(--color));
+  background-image: -webkit-radial-gradient(
+      var(--position),
+      circle closest-side,
+      var(--color),
+      var(--color) 100%,
+      transparent
+    ),
+    -webkit-linear-gradient(var(--color), var(--color));
+  background-size: 100%, var(--position);
+  background-repeat: no-repeat;
+  margin-top: 5px;
+}
+`, ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
 /***/ "./src/ui/progress.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -40036,7 +42650,12 @@ var dom = __webpack_require__("./src/lib/dom.ts");
 var progress = __webpack_require__("./src/ui/progress.css");
 ;// ./src/ui/progress.html
 // Module
-var code = "<div>\n  <div v-if=\"ntProgressSeen\" id=\"nd-progress\">\n    <div v-if=\"chapterProgressSeen\" id=\"chapter-progress\" v-bind:style=\"{'--position': chapterPercent+'%'}\" v-bind:title=\"chapterProgressTitle\"></div>\n  </div>\n</div>\n";
+var code = `<div>
+  <div v-if="ntProgressSeen" id="nd-progress">
+    <div v-if="chapterProgressSeen" id="chapter-progress" v-bind:style="{'--position': chapterPercent+'%'}" v-bind:title="chapterProgressTitle"></div>
+  </div>
+</div>
+`;
 // Exports
 /* harmony default export */ const ui_progress = (code);
 ;// ./src/ui/progress.ts
@@ -40084,6 +42703,110 @@ const vm = (0,external_Vue_.createApp)({
 
 /***/ }),
 
+/***/ "./src/ui/setting.less":
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.nd-setting-body {
+  background: #e0e0e0;
+  padding: 1em;
+  border-top-right-radius: 3px;
+}
+.nd-setting-body hr {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+.nd-setting-body input[type="checkbox"],
+.nd-setting-body input[type="radio"],
+.nd-setting-body input[type="text"] {
+  position: static;
+  opacity: 1;
+  margin: auto;
+  padding: initial;
+  appearance: revert !important;
+  -webkit-appearance: revert !important;
+  all: revert;
+}
+dialog-ui .tab-button {
+  padding: 6px 10px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background: #f0f0f0;
+  margin-bottom: -1px;
+  margin-right: -1px;
+  color: black;
+  line-height: normal;
+  display: inline-block;
+  text-align: center;
+  font-weight: bold;
+  max-width: 9em;
+  box-sizing: initial;
+}
+dialog-ui .tab-button:hover {
+  background: #e0e0e0;
+}
+dialog-ui .tab-button.active {
+  background: #e0e0e0;
+}
+dialog-ui #nd-setting-tab-1 input + label {
+  all: revert;
+}
+dialog-ui #nd-setting-tab-2 select {
+  all: revert;
+}
+.nd-setting-footer {
+  background: #e0e0e0;
+  padding-bottom: 0.7em;
+  text-align: center;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+.nd-setting-footer > button {
+  all: revert;
+}
+/* 日志页面 */
+#novel-downloader-log {
+  max-height: 300px;
+  overflow: scroll;
+}
+/* 彩色斜纹 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */
+.hr-twill-colorful {
+  all: revert;
+  border: 0;
+  padding: 3px;
+  background: linear-gradient(135deg, red, orange, green, blue, purple);
+  --mask-image: repeating-linear-gradient(135deg, #000 0px, #000 1px, transparent 1px, transparent 6px);
+  -webkit-mask-image: var(--mask-image);
+  mask-image: var(--mask-image);
+}
+/* 两头虚 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */
+.hr-edge-weak {
+  all: revert;
+  border: 0;
+  padding-top: 1px;
+  background: linear-gradient(to right, transparent, #d0d0d5, transparent);
+}
+`, ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
 /***/ "crypto-js":
 /***/ ((module) => {
 
@@ -40097,186 +42820,6 @@ module.exports = CryptoJS;
 
 "use strict";
 module.exports = Vue;
-
-/***/ }),
-
-/***/ "./node_modules/p-limit/index.js":
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  A: () => (/* binding */ pLimit)
-});
-
-;// ./node_modules/p-limit/node_modules/yocto-queue/index.js
-/*
-How it works:
-`this.#head` is an instance of `Node` which keeps track of its current value and nests another instance of `Node` that keeps the value that comes after it. When a value is provided to `.enqueue()`, the code needs to iterate through `this.#head`, going deeper and deeper to find the last value. However, iterating through every single item is slow. This problem is solved by saving a reference to the last value as `this.#tail` so that it can reference it to add a new value.
-*/
-
-class Node {
-	value;
-	next;
-
-	constructor(value) {
-		this.value = value;
-	}
-}
-
-class Queue {
-	#head;
-	#tail;
-	#size;
-
-	constructor() {
-		this.clear();
-	}
-
-	enqueue(value) {
-		const node = new Node(value);
-
-		if (this.#head) {
-			this.#tail.next = node;
-			this.#tail = node;
-		} else {
-			this.#head = node;
-			this.#tail = node;
-		}
-
-		this.#size++;
-	}
-
-	dequeue() {
-		const current = this.#head;
-		if (!current) {
-			return;
-		}
-
-		this.#head = this.#head.next;
-		this.#size--;
-		return current.value;
-	}
-
-	clear() {
-		this.#head = undefined;
-		this.#tail = undefined;
-		this.#size = 0;
-	}
-
-	get size() {
-		return this.#size;
-	}
-
-	* [Symbol.iterator]() {
-		let current = this.#head;
-
-		while (current) {
-			yield current.value;
-			current = current.next;
-		}
-	}
-}
-
-;// ./node_modules/p-limit/async-hooks-stub.js
-const AsyncResource = {
-	bind(fn, _type, thisArg) {
-		return fn.bind(thisArg);
-	},
-};
-
-class AsyncLocalStorage {
-	getStore() {
-		return undefined;
-	}
-
-	run(_store, callback) {
-		return callback();
-	}
-}
-
-;// ./node_modules/p-limit/index.js
-
-
-
-function pLimit(concurrency) {
-	if (!((Number.isInteger(concurrency) || concurrency === Number.POSITIVE_INFINITY) && concurrency > 0)) {
-		throw new TypeError('Expected `concurrency` to be a number from 1 and up');
-	}
-
-	const queue = new Queue();
-	let activeCount = 0;
-
-	const next = () => {
-		activeCount--;
-
-		if (queue.size > 0) {
-			queue.dequeue()();
-		}
-	};
-
-	const run = async (function_, resolve, arguments_) => {
-		activeCount++;
-
-		const result = (async () => function_(...arguments_))();
-
-		resolve(result);
-
-		try {
-			await result;
-		} catch {}
-
-		next();
-	};
-
-	const enqueue = (function_, resolve, arguments_) => {
-		queue.enqueue(
-			AsyncResource.bind(run.bind(undefined, function_, resolve, arguments_)),
-		);
-
-		(async () => {
-			// This function needs to wait until the next microtask before comparing
-			// `activeCount` to `concurrency`, because `activeCount` is updated asynchronously
-			// when the run function is dequeued and called. The comparison in the if-statement
-			// needs to happen asynchronously as well to get an up-to-date value for `activeCount`.
-			await Promise.resolve();
-
-			if (activeCount < concurrency && queue.size > 0) {
-				queue.dequeue()();
-			}
-		})();
-	};
-
-	const generator = (function_, ...arguments_) => new Promise(resolve => {
-		enqueue(function_, resolve, arguments_);
-	});
-
-	Object.defineProperties(generator, {
-		activeCount: {
-			get: () => activeCount,
-		},
-		pendingCount: {
-			get: () => queue.size,
-		},
-		clearQueue: {
-			value() {
-				queue.clear();
-			},
-		},
-	});
-
-	return generator;
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/mime-db/db.json":
-/***/ ((module) => {
-
-"use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"application/1d-interleaved-parityfec":{"source":"iana"},"application/3gpdash-qoe-report+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/3gpp-ims+xml":{"source":"iana","compressible":true},"application/3gpphal+json":{"source":"iana","compressible":true},"application/3gpphalforms+json":{"source":"iana","compressible":true},"application/a2l":{"source":"iana"},"application/ace+cbor":{"source":"iana"},"application/activemessage":{"source":"iana"},"application/activity+json":{"source":"iana","compressible":true},"application/alto-costmap+json":{"source":"iana","compressible":true},"application/alto-costmapfilter+json":{"source":"iana","compressible":true},"application/alto-directory+json":{"source":"iana","compressible":true},"application/alto-endpointcost+json":{"source":"iana","compressible":true},"application/alto-endpointcostparams+json":{"source":"iana","compressible":true},"application/alto-endpointprop+json":{"source":"iana","compressible":true},"application/alto-endpointpropparams+json":{"source":"iana","compressible":true},"application/alto-error+json":{"source":"iana","compressible":true},"application/alto-networkmap+json":{"source":"iana","compressible":true},"application/alto-networkmapfilter+json":{"source":"iana","compressible":true},"application/alto-updatestreamcontrol+json":{"source":"iana","compressible":true},"application/alto-updatestreamparams+json":{"source":"iana","compressible":true},"application/aml":{"source":"iana"},"application/andrew-inset":{"source":"iana","extensions":["ez"]},"application/applefile":{"source":"iana"},"application/applixware":{"source":"apache","extensions":["aw"]},"application/at+jwt":{"source":"iana"},"application/atf":{"source":"iana"},"application/atfx":{"source":"iana"},"application/atom+xml":{"source":"iana","compressible":true,"extensions":["atom"]},"application/atomcat+xml":{"source":"iana","compressible":true,"extensions":["atomcat"]},"application/atomdeleted+xml":{"source":"iana","compressible":true,"extensions":["atomdeleted"]},"application/atomicmail":{"source":"iana"},"application/atomsvc+xml":{"source":"iana","compressible":true,"extensions":["atomsvc"]},"application/atsc-dwd+xml":{"source":"iana","compressible":true,"extensions":["dwd"]},"application/atsc-dynamic-event-message":{"source":"iana"},"application/atsc-held+xml":{"source":"iana","compressible":true,"extensions":["held"]},"application/atsc-rdt+json":{"source":"iana","compressible":true},"application/atsc-rsat+xml":{"source":"iana","compressible":true,"extensions":["rsat"]},"application/atxml":{"source":"iana"},"application/auth-policy+xml":{"source":"iana","compressible":true},"application/bacnet-xdd+zip":{"source":"iana","compressible":false},"application/batch-smtp":{"source":"iana"},"application/bdoc":{"compressible":false,"extensions":["bdoc"]},"application/beep+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/calendar+json":{"source":"iana","compressible":true},"application/calendar+xml":{"source":"iana","compressible":true,"extensions":["xcs"]},"application/call-completion":{"source":"iana"},"application/cals-1840":{"source":"iana"},"application/captive+json":{"source":"iana","compressible":true},"application/cbor":{"source":"iana"},"application/cbor-seq":{"source":"iana"},"application/cccex":{"source":"iana"},"application/ccmp+xml":{"source":"iana","compressible":true},"application/ccxml+xml":{"source":"iana","compressible":true,"extensions":["ccxml"]},"application/cdfx+xml":{"source":"iana","compressible":true,"extensions":["cdfx"]},"application/cdmi-capability":{"source":"iana","extensions":["cdmia"]},"application/cdmi-container":{"source":"iana","extensions":["cdmic"]},"application/cdmi-domain":{"source":"iana","extensions":["cdmid"]},"application/cdmi-object":{"source":"iana","extensions":["cdmio"]},"application/cdmi-queue":{"source":"iana","extensions":["cdmiq"]},"application/cdni":{"source":"iana"},"application/cea":{"source":"iana"},"application/cea-2018+xml":{"source":"iana","compressible":true},"application/cellml+xml":{"source":"iana","compressible":true},"application/cfw":{"source":"iana"},"application/city+json":{"source":"iana","compressible":true},"application/clr":{"source":"iana"},"application/clue+xml":{"source":"iana","compressible":true},"application/clue_info+xml":{"source":"iana","compressible":true},"application/cms":{"source":"iana"},"application/cnrp+xml":{"source":"iana","compressible":true},"application/coap-group+json":{"source":"iana","compressible":true},"application/coap-payload":{"source":"iana"},"application/commonground":{"source":"iana"},"application/conference-info+xml":{"source":"iana","compressible":true},"application/cose":{"source":"iana"},"application/cose-key":{"source":"iana"},"application/cose-key-set":{"source":"iana"},"application/cpl+xml":{"source":"iana","compressible":true,"extensions":["cpl"]},"application/csrattrs":{"source":"iana"},"application/csta+xml":{"source":"iana","compressible":true},"application/cstadata+xml":{"source":"iana","compressible":true},"application/csvm+json":{"source":"iana","compressible":true},"application/cu-seeme":{"source":"apache","extensions":["cu"]},"application/cwt":{"source":"iana"},"application/cybercash":{"source":"iana"},"application/dart":{"compressible":true},"application/dash+xml":{"source":"iana","compressible":true,"extensions":["mpd"]},"application/dash-patch+xml":{"source":"iana","compressible":true,"extensions":["mpp"]},"application/dashdelta":{"source":"iana"},"application/davmount+xml":{"source":"iana","compressible":true,"extensions":["davmount"]},"application/dca-rft":{"source":"iana"},"application/dcd":{"source":"iana"},"application/dec-dx":{"source":"iana"},"application/dialog-info+xml":{"source":"iana","compressible":true},"application/dicom":{"source":"iana"},"application/dicom+json":{"source":"iana","compressible":true},"application/dicom+xml":{"source":"iana","compressible":true},"application/dii":{"source":"iana"},"application/dit":{"source":"iana"},"application/dns":{"source":"iana"},"application/dns+json":{"source":"iana","compressible":true},"application/dns-message":{"source":"iana"},"application/docbook+xml":{"source":"apache","compressible":true,"extensions":["dbk"]},"application/dots+cbor":{"source":"iana"},"application/dskpp+xml":{"source":"iana","compressible":true},"application/dssc+der":{"source":"iana","extensions":["dssc"]},"application/dssc+xml":{"source":"iana","compressible":true,"extensions":["xdssc"]},"application/dvcs":{"source":"iana"},"application/ecmascript":{"source":"iana","compressible":true,"extensions":["es","ecma"]},"application/edi-consent":{"source":"iana"},"application/edi-x12":{"source":"iana","compressible":false},"application/edifact":{"source":"iana","compressible":false},"application/efi":{"source":"iana"},"application/elm+json":{"source":"iana","charset":"UTF-8","compressible":true},"application/elm+xml":{"source":"iana","compressible":true},"application/emergencycalldata.cap+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/emergencycalldata.comment+xml":{"source":"iana","compressible":true},"application/emergencycalldata.control+xml":{"source":"iana","compressible":true},"application/emergencycalldata.deviceinfo+xml":{"source":"iana","compressible":true},"application/emergencycalldata.ecall.msd":{"source":"iana"},"application/emergencycalldata.providerinfo+xml":{"source":"iana","compressible":true},"application/emergencycalldata.serviceinfo+xml":{"source":"iana","compressible":true},"application/emergencycalldata.subscriberinfo+xml":{"source":"iana","compressible":true},"application/emergencycalldata.veds+xml":{"source":"iana","compressible":true},"application/emma+xml":{"source":"iana","compressible":true,"extensions":["emma"]},"application/emotionml+xml":{"source":"iana","compressible":true,"extensions":["emotionml"]},"application/encaprtp":{"source":"iana"},"application/epp+xml":{"source":"iana","compressible":true},"application/epub+zip":{"source":"iana","compressible":false,"extensions":["epub"]},"application/eshop":{"source":"iana"},"application/exi":{"source":"iana","extensions":["exi"]},"application/expect-ct-report+json":{"source":"iana","compressible":true},"application/express":{"source":"iana","extensions":["exp"]},"application/fastinfoset":{"source":"iana"},"application/fastsoap":{"source":"iana"},"application/fdt+xml":{"source":"iana","compressible":true,"extensions":["fdt"]},"application/fhir+json":{"source":"iana","charset":"UTF-8","compressible":true},"application/fhir+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/fido.trusted-apps+json":{"compressible":true},"application/fits":{"source":"iana"},"application/flexfec":{"source":"iana"},"application/font-sfnt":{"source":"iana"},"application/font-tdpfr":{"source":"iana","extensions":["pfr"]},"application/font-woff":{"source":"iana","compressible":false},"application/framework-attributes+xml":{"source":"iana","compressible":true},"application/geo+json":{"source":"iana","compressible":true,"extensions":["geojson"]},"application/geo+json-seq":{"source":"iana"},"application/geopackage+sqlite3":{"source":"iana"},"application/geoxacml+xml":{"source":"iana","compressible":true},"application/gltf-buffer":{"source":"iana"},"application/gml+xml":{"source":"iana","compressible":true,"extensions":["gml"]},"application/gpx+xml":{"source":"apache","compressible":true,"extensions":["gpx"]},"application/gxf":{"source":"apache","extensions":["gxf"]},"application/gzip":{"source":"iana","compressible":false,"extensions":["gz"]},"application/h224":{"source":"iana"},"application/held+xml":{"source":"iana","compressible":true},"application/hjson":{"extensions":["hjson"]},"application/http":{"source":"iana"},"application/hyperstudio":{"source":"iana","extensions":["stk"]},"application/ibe-key-request+xml":{"source":"iana","compressible":true},"application/ibe-pkg-reply+xml":{"source":"iana","compressible":true},"application/ibe-pp-data":{"source":"iana"},"application/iges":{"source":"iana"},"application/im-iscomposing+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/index":{"source":"iana"},"application/index.cmd":{"source":"iana"},"application/index.obj":{"source":"iana"},"application/index.response":{"source":"iana"},"application/index.vnd":{"source":"iana"},"application/inkml+xml":{"source":"iana","compressible":true,"extensions":["ink","inkml"]},"application/iotp":{"source":"iana"},"application/ipfix":{"source":"iana","extensions":["ipfix"]},"application/ipp":{"source":"iana"},"application/isup":{"source":"iana"},"application/its+xml":{"source":"iana","compressible":true,"extensions":["its"]},"application/java-archive":{"source":"apache","compressible":false,"extensions":["jar","war","ear"]},"application/java-serialized-object":{"source":"apache","compressible":false,"extensions":["ser"]},"application/java-vm":{"source":"apache","compressible":false,"extensions":["class"]},"application/javascript":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["js","mjs"]},"application/jf2feed+json":{"source":"iana","compressible":true},"application/jose":{"source":"iana"},"application/jose+json":{"source":"iana","compressible":true},"application/jrd+json":{"source":"iana","compressible":true},"application/jscalendar+json":{"source":"iana","compressible":true},"application/json":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["json","map"]},"application/json-patch+json":{"source":"iana","compressible":true},"application/json-seq":{"source":"iana"},"application/json5":{"extensions":["json5"]},"application/jsonml+json":{"source":"apache","compressible":true,"extensions":["jsonml"]},"application/jwk+json":{"source":"iana","compressible":true},"application/jwk-set+json":{"source":"iana","compressible":true},"application/jwt":{"source":"iana"},"application/kpml-request+xml":{"source":"iana","compressible":true},"application/kpml-response+xml":{"source":"iana","compressible":true},"application/ld+json":{"source":"iana","compressible":true,"extensions":["jsonld"]},"application/lgr+xml":{"source":"iana","compressible":true,"extensions":["lgr"]},"application/link-format":{"source":"iana"},"application/load-control+xml":{"source":"iana","compressible":true},"application/lost+xml":{"source":"iana","compressible":true,"extensions":["lostxml"]},"application/lostsync+xml":{"source":"iana","compressible":true},"application/lpf+zip":{"source":"iana","compressible":false},"application/lxf":{"source":"iana"},"application/mac-binhex40":{"source":"iana","extensions":["hqx"]},"application/mac-compactpro":{"source":"apache","extensions":["cpt"]},"application/macwriteii":{"source":"iana"},"application/mads+xml":{"source":"iana","compressible":true,"extensions":["mads"]},"application/manifest+json":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["webmanifest"]},"application/marc":{"source":"iana","extensions":["mrc"]},"application/marcxml+xml":{"source":"iana","compressible":true,"extensions":["mrcx"]},"application/mathematica":{"source":"iana","extensions":["ma","nb","mb"]},"application/mathml+xml":{"source":"iana","compressible":true,"extensions":["mathml"]},"application/mathml-content+xml":{"source":"iana","compressible":true},"application/mathml-presentation+xml":{"source":"iana","compressible":true},"application/mbms-associated-procedure-description+xml":{"source":"iana","compressible":true},"application/mbms-deregister+xml":{"source":"iana","compressible":true},"application/mbms-envelope+xml":{"source":"iana","compressible":true},"application/mbms-msk+xml":{"source":"iana","compressible":true},"application/mbms-msk-response+xml":{"source":"iana","compressible":true},"application/mbms-protection-description+xml":{"source":"iana","compressible":true},"application/mbms-reception-report+xml":{"source":"iana","compressible":true},"application/mbms-register+xml":{"source":"iana","compressible":true},"application/mbms-register-response+xml":{"source":"iana","compressible":true},"application/mbms-schedule+xml":{"source":"iana","compressible":true},"application/mbms-user-service-description+xml":{"source":"iana","compressible":true},"application/mbox":{"source":"iana","extensions":["mbox"]},"application/media-policy-dataset+xml":{"source":"iana","compressible":true,"extensions":["mpf"]},"application/media_control+xml":{"source":"iana","compressible":true},"application/mediaservercontrol+xml":{"source":"iana","compressible":true,"extensions":["mscml"]},"application/merge-patch+json":{"source":"iana","compressible":true},"application/metalink+xml":{"source":"apache","compressible":true,"extensions":["metalink"]},"application/metalink4+xml":{"source":"iana","compressible":true,"extensions":["meta4"]},"application/mets+xml":{"source":"iana","compressible":true,"extensions":["mets"]},"application/mf4":{"source":"iana"},"application/mikey":{"source":"iana"},"application/mipc":{"source":"iana"},"application/missing-blocks+cbor-seq":{"source":"iana"},"application/mmt-aei+xml":{"source":"iana","compressible":true,"extensions":["maei"]},"application/mmt-usd+xml":{"source":"iana","compressible":true,"extensions":["musd"]},"application/mods+xml":{"source":"iana","compressible":true,"extensions":["mods"]},"application/moss-keys":{"source":"iana"},"application/moss-signature":{"source":"iana"},"application/mosskey-data":{"source":"iana"},"application/mosskey-request":{"source":"iana"},"application/mp21":{"source":"iana","extensions":["m21","mp21"]},"application/mp4":{"source":"iana","extensions":["mp4s","m4p"]},"application/mpeg4-generic":{"source":"iana"},"application/mpeg4-iod":{"source":"iana"},"application/mpeg4-iod-xmt":{"source":"iana"},"application/mrb-consumer+xml":{"source":"iana","compressible":true},"application/mrb-publish+xml":{"source":"iana","compressible":true},"application/msc-ivr+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/msc-mixer+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/msword":{"source":"iana","compressible":false,"extensions":["doc","dot"]},"application/mud+json":{"source":"iana","compressible":true},"application/multipart-core":{"source":"iana"},"application/mxf":{"source":"iana","extensions":["mxf"]},"application/n-quads":{"source":"iana","extensions":["nq"]},"application/n-triples":{"source":"iana","extensions":["nt"]},"application/nasdata":{"source":"iana"},"application/news-checkgroups":{"source":"iana","charset":"US-ASCII"},"application/news-groupinfo":{"source":"iana","charset":"US-ASCII"},"application/news-transmission":{"source":"iana"},"application/nlsml+xml":{"source":"iana","compressible":true},"application/node":{"source":"iana","extensions":["cjs"]},"application/nss":{"source":"iana"},"application/oauth-authz-req+jwt":{"source":"iana"},"application/oblivious-dns-message":{"source":"iana"},"application/ocsp-request":{"source":"iana"},"application/ocsp-response":{"source":"iana"},"application/octet-stream":{"source":"iana","compressible":false,"extensions":["bin","dms","lrf","mar","so","dist","distz","pkg","bpk","dump","elc","deploy","exe","dll","deb","dmg","iso","img","msi","msp","msm","buffer"]},"application/oda":{"source":"iana","extensions":["oda"]},"application/odm+xml":{"source":"iana","compressible":true},"application/odx":{"source":"iana"},"application/oebps-package+xml":{"source":"iana","compressible":true,"extensions":["opf"]},"application/ogg":{"source":"iana","compressible":false,"extensions":["ogx"]},"application/omdoc+xml":{"source":"apache","compressible":true,"extensions":["omdoc"]},"application/onenote":{"source":"apache","extensions":["onetoc","onetoc2","onetmp","onepkg"]},"application/opc-nodeset+xml":{"source":"iana","compressible":true},"application/oscore":{"source":"iana"},"application/oxps":{"source":"iana","extensions":["oxps"]},"application/p21":{"source":"iana"},"application/p21+zip":{"source":"iana","compressible":false},"application/p2p-overlay+xml":{"source":"iana","compressible":true,"extensions":["relo"]},"application/parityfec":{"source":"iana"},"application/passport":{"source":"iana"},"application/patch-ops-error+xml":{"source":"iana","compressible":true,"extensions":["xer"]},"application/pdf":{"source":"iana","compressible":false,"extensions":["pdf"]},"application/pdx":{"source":"iana"},"application/pem-certificate-chain":{"source":"iana"},"application/pgp-encrypted":{"source":"iana","compressible":false,"extensions":["pgp"]},"application/pgp-keys":{"source":"iana","extensions":["asc"]},"application/pgp-signature":{"source":"iana","extensions":["asc","sig"]},"application/pics-rules":{"source":"apache","extensions":["prf"]},"application/pidf+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/pidf-diff+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/pkcs10":{"source":"iana","extensions":["p10"]},"application/pkcs12":{"source":"iana"},"application/pkcs7-mime":{"source":"iana","extensions":["p7m","p7c"]},"application/pkcs7-signature":{"source":"iana","extensions":["p7s"]},"application/pkcs8":{"source":"iana","extensions":["p8"]},"application/pkcs8-encrypted":{"source":"iana"},"application/pkix-attr-cert":{"source":"iana","extensions":["ac"]},"application/pkix-cert":{"source":"iana","extensions":["cer"]},"application/pkix-crl":{"source":"iana","extensions":["crl"]},"application/pkix-pkipath":{"source":"iana","extensions":["pkipath"]},"application/pkixcmp":{"source":"iana","extensions":["pki"]},"application/pls+xml":{"source":"iana","compressible":true,"extensions":["pls"]},"application/poc-settings+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/postscript":{"source":"iana","compressible":true,"extensions":["ai","eps","ps"]},"application/ppsp-tracker+json":{"source":"iana","compressible":true},"application/problem+json":{"source":"iana","compressible":true},"application/problem+xml":{"source":"iana","compressible":true},"application/provenance+xml":{"source":"iana","compressible":true,"extensions":["provx"]},"application/prs.alvestrand.titrax-sheet":{"source":"iana"},"application/prs.cww":{"source":"iana","extensions":["cww"]},"application/prs.cyn":{"source":"iana","charset":"7-BIT"},"application/prs.hpub+zip":{"source":"iana","compressible":false},"application/prs.nprend":{"source":"iana"},"application/prs.plucker":{"source":"iana"},"application/prs.rdf-xml-crypt":{"source":"iana"},"application/prs.xsf+xml":{"source":"iana","compressible":true},"application/pskc+xml":{"source":"iana","compressible":true,"extensions":["pskcxml"]},"application/pvd+json":{"source":"iana","compressible":true},"application/qsig":{"source":"iana"},"application/raml+yaml":{"compressible":true,"extensions":["raml"]},"application/raptorfec":{"source":"iana"},"application/rdap+json":{"source":"iana","compressible":true},"application/rdf+xml":{"source":"iana","compressible":true,"extensions":["rdf","owl"]},"application/reginfo+xml":{"source":"iana","compressible":true,"extensions":["rif"]},"application/relax-ng-compact-syntax":{"source":"iana","extensions":["rnc"]},"application/remote-printing":{"source":"iana"},"application/reputon+json":{"source":"iana","compressible":true},"application/resource-lists+xml":{"source":"iana","compressible":true,"extensions":["rl"]},"application/resource-lists-diff+xml":{"source":"iana","compressible":true,"extensions":["rld"]},"application/rfc+xml":{"source":"iana","compressible":true},"application/riscos":{"source":"iana"},"application/rlmi+xml":{"source":"iana","compressible":true},"application/rls-services+xml":{"source":"iana","compressible":true,"extensions":["rs"]},"application/route-apd+xml":{"source":"iana","compressible":true,"extensions":["rapd"]},"application/route-s-tsid+xml":{"source":"iana","compressible":true,"extensions":["sls"]},"application/route-usd+xml":{"source":"iana","compressible":true,"extensions":["rusd"]},"application/rpki-ghostbusters":{"source":"iana","extensions":["gbr"]},"application/rpki-manifest":{"source":"iana","extensions":["mft"]},"application/rpki-publication":{"source":"iana"},"application/rpki-roa":{"source":"iana","extensions":["roa"]},"application/rpki-updown":{"source":"iana"},"application/rsd+xml":{"source":"apache","compressible":true,"extensions":["rsd"]},"application/rss+xml":{"source":"apache","compressible":true,"extensions":["rss"]},"application/rtf":{"source":"iana","compressible":true,"extensions":["rtf"]},"application/rtploopback":{"source":"iana"},"application/rtx":{"source":"iana"},"application/samlassertion+xml":{"source":"iana","compressible":true},"application/samlmetadata+xml":{"source":"iana","compressible":true},"application/sarif+json":{"source":"iana","compressible":true},"application/sarif-external-properties+json":{"source":"iana","compressible":true},"application/sbe":{"source":"iana"},"application/sbml+xml":{"source":"iana","compressible":true,"extensions":["sbml"]},"application/scaip+xml":{"source":"iana","compressible":true},"application/scim+json":{"source":"iana","compressible":true},"application/scvp-cv-request":{"source":"iana","extensions":["scq"]},"application/scvp-cv-response":{"source":"iana","extensions":["scs"]},"application/scvp-vp-request":{"source":"iana","extensions":["spq"]},"application/scvp-vp-response":{"source":"iana","extensions":["spp"]},"application/sdp":{"source":"iana","extensions":["sdp"]},"application/secevent+jwt":{"source":"iana"},"application/senml+cbor":{"source":"iana"},"application/senml+json":{"source":"iana","compressible":true},"application/senml+xml":{"source":"iana","compressible":true,"extensions":["senmlx"]},"application/senml-etch+cbor":{"source":"iana"},"application/senml-etch+json":{"source":"iana","compressible":true},"application/senml-exi":{"source":"iana"},"application/sensml+cbor":{"source":"iana"},"application/sensml+json":{"source":"iana","compressible":true},"application/sensml+xml":{"source":"iana","compressible":true,"extensions":["sensmlx"]},"application/sensml-exi":{"source":"iana"},"application/sep+xml":{"source":"iana","compressible":true},"application/sep-exi":{"source":"iana"},"application/session-info":{"source":"iana"},"application/set-payment":{"source":"iana"},"application/set-payment-initiation":{"source":"iana","extensions":["setpay"]},"application/set-registration":{"source":"iana"},"application/set-registration-initiation":{"source":"iana","extensions":["setreg"]},"application/sgml":{"source":"iana"},"application/sgml-open-catalog":{"source":"iana"},"application/shf+xml":{"source":"iana","compressible":true,"extensions":["shf"]},"application/sieve":{"source":"iana","extensions":["siv","sieve"]},"application/simple-filter+xml":{"source":"iana","compressible":true},"application/simple-message-summary":{"source":"iana"},"application/simplesymbolcontainer":{"source":"iana"},"application/sipc":{"source":"iana"},"application/slate":{"source":"iana"},"application/smil":{"source":"iana"},"application/smil+xml":{"source":"iana","compressible":true,"extensions":["smi","smil"]},"application/smpte336m":{"source":"iana"},"application/soap+fastinfoset":{"source":"iana"},"application/soap+xml":{"source":"iana","compressible":true},"application/sparql-query":{"source":"iana","extensions":["rq"]},"application/sparql-results+xml":{"source":"iana","compressible":true,"extensions":["srx"]},"application/spdx+json":{"source":"iana","compressible":true},"application/spirits-event+xml":{"source":"iana","compressible":true},"application/sql":{"source":"iana"},"application/srgs":{"source":"iana","extensions":["gram"]},"application/srgs+xml":{"source":"iana","compressible":true,"extensions":["grxml"]},"application/sru+xml":{"source":"iana","compressible":true,"extensions":["sru"]},"application/ssdl+xml":{"source":"apache","compressible":true,"extensions":["ssdl"]},"application/ssml+xml":{"source":"iana","compressible":true,"extensions":["ssml"]},"application/stix+json":{"source":"iana","compressible":true},"application/swid+xml":{"source":"iana","compressible":true,"extensions":["swidtag"]},"application/tamp-apex-update":{"source":"iana"},"application/tamp-apex-update-confirm":{"source":"iana"},"application/tamp-community-update":{"source":"iana"},"application/tamp-community-update-confirm":{"source":"iana"},"application/tamp-error":{"source":"iana"},"application/tamp-sequence-adjust":{"source":"iana"},"application/tamp-sequence-adjust-confirm":{"source":"iana"},"application/tamp-status-query":{"source":"iana"},"application/tamp-status-response":{"source":"iana"},"application/tamp-update":{"source":"iana"},"application/tamp-update-confirm":{"source":"iana"},"application/tar":{"compressible":true},"application/taxii+json":{"source":"iana","compressible":true},"application/td+json":{"source":"iana","compressible":true},"application/tei+xml":{"source":"iana","compressible":true,"extensions":["tei","teicorpus"]},"application/tetra_isi":{"source":"iana"},"application/thraud+xml":{"source":"iana","compressible":true,"extensions":["tfi"]},"application/timestamp-query":{"source":"iana"},"application/timestamp-reply":{"source":"iana"},"application/timestamped-data":{"source":"iana","extensions":["tsd"]},"application/tlsrpt+gzip":{"source":"iana"},"application/tlsrpt+json":{"source":"iana","compressible":true},"application/tnauthlist":{"source":"iana"},"application/token-introspection+jwt":{"source":"iana"},"application/toml":{"compressible":true,"extensions":["toml"]},"application/trickle-ice-sdpfrag":{"source":"iana"},"application/trig":{"source":"iana","extensions":["trig"]},"application/ttml+xml":{"source":"iana","compressible":true,"extensions":["ttml"]},"application/tve-trigger":{"source":"iana"},"application/tzif":{"source":"iana"},"application/tzif-leap":{"source":"iana"},"application/ubjson":{"compressible":false,"extensions":["ubj"]},"application/ulpfec":{"source":"iana"},"application/urc-grpsheet+xml":{"source":"iana","compressible":true},"application/urc-ressheet+xml":{"source":"iana","compressible":true,"extensions":["rsheet"]},"application/urc-targetdesc+xml":{"source":"iana","compressible":true,"extensions":["td"]},"application/urc-uisocketdesc+xml":{"source":"iana","compressible":true},"application/vcard+json":{"source":"iana","compressible":true},"application/vcard+xml":{"source":"iana","compressible":true},"application/vemmi":{"source":"iana"},"application/vividence.scriptfile":{"source":"apache"},"application/vnd.1000minds.decision-model+xml":{"source":"iana","compressible":true,"extensions":["1km"]},"application/vnd.3gpp-prose+xml":{"source":"iana","compressible":true},"application/vnd.3gpp-prose-pc3ch+xml":{"source":"iana","compressible":true},"application/vnd.3gpp-v2x-local-service-information":{"source":"iana"},"application/vnd.3gpp.5gnas":{"source":"iana"},"application/vnd.3gpp.access-transfer-events+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.bsf+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.gmop+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.gtpc":{"source":"iana"},"application/vnd.3gpp.interworking-data":{"source":"iana"},"application/vnd.3gpp.lpp":{"source":"iana"},"application/vnd.3gpp.mc-signalling-ear":{"source":"iana"},"application/vnd.3gpp.mcdata-affiliation-command+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-payload":{"source":"iana"},"application/vnd.3gpp.mcdata-service-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-signalling":{"source":"iana"},"application/vnd.3gpp.mcdata-ue-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-user-profile+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-affiliation-command+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-floor-request+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-location-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-mbms-usage-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-service-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-signed+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-ue-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-ue-init-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-user-profile+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-affiliation-command+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-affiliation-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-location-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-mbms-usage-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-service-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-transmission-request+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-ue-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-user-profile+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mid-call+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.ngap":{"source":"iana"},"application/vnd.3gpp.pfcp":{"source":"iana"},"application/vnd.3gpp.pic-bw-large":{"source":"iana","extensions":["plb"]},"application/vnd.3gpp.pic-bw-small":{"source":"iana","extensions":["psb"]},"application/vnd.3gpp.pic-bw-var":{"source":"iana","extensions":["pvb"]},"application/vnd.3gpp.s1ap":{"source":"iana"},"application/vnd.3gpp.sms":{"source":"iana"},"application/vnd.3gpp.sms+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.srvcc-ext+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.srvcc-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.state-and-event-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.ussd+xml":{"source":"iana","compressible":true},"application/vnd.3gpp2.bcmcsinfo+xml":{"source":"iana","compressible":true},"application/vnd.3gpp2.sms":{"source":"iana"},"application/vnd.3gpp2.tcap":{"source":"iana","extensions":["tcap"]},"application/vnd.3lightssoftware.imagescal":{"source":"iana"},"application/vnd.3m.post-it-notes":{"source":"iana","extensions":["pwn"]},"application/vnd.accpac.simply.aso":{"source":"iana","extensions":["aso"]},"application/vnd.accpac.simply.imp":{"source":"iana","extensions":["imp"]},"application/vnd.acucobol":{"source":"iana","extensions":["acu"]},"application/vnd.acucorp":{"source":"iana","extensions":["atc","acutc"]},"application/vnd.adobe.air-application-installer-package+zip":{"source":"apache","compressible":false,"extensions":["air"]},"application/vnd.adobe.flash.movie":{"source":"iana"},"application/vnd.adobe.formscentral.fcdt":{"source":"iana","extensions":["fcdt"]},"application/vnd.adobe.fxp":{"source":"iana","extensions":["fxp","fxpl"]},"application/vnd.adobe.partial-upload":{"source":"iana"},"application/vnd.adobe.xdp+xml":{"source":"iana","compressible":true,"extensions":["xdp"]},"application/vnd.adobe.xfdf":{"source":"iana","extensions":["xfdf"]},"application/vnd.aether.imp":{"source":"iana"},"application/vnd.afpc.afplinedata":{"source":"iana"},"application/vnd.afpc.afplinedata-pagedef":{"source":"iana"},"application/vnd.afpc.cmoca-cmresource":{"source":"iana"},"application/vnd.afpc.foca-charset":{"source":"iana"},"application/vnd.afpc.foca-codedfont":{"source":"iana"},"application/vnd.afpc.foca-codepage":{"source":"iana"},"application/vnd.afpc.modca":{"source":"iana"},"application/vnd.afpc.modca-cmtable":{"source":"iana"},"application/vnd.afpc.modca-formdef":{"source":"iana"},"application/vnd.afpc.modca-mediummap":{"source":"iana"},"application/vnd.afpc.modca-objectcontainer":{"source":"iana"},"application/vnd.afpc.modca-overlay":{"source":"iana"},"application/vnd.afpc.modca-pagesegment":{"source":"iana"},"application/vnd.age":{"source":"iana","extensions":["age"]},"application/vnd.ah-barcode":{"source":"iana"},"application/vnd.ahead.space":{"source":"iana","extensions":["ahead"]},"application/vnd.airzip.filesecure.azf":{"source":"iana","extensions":["azf"]},"application/vnd.airzip.filesecure.azs":{"source":"iana","extensions":["azs"]},"application/vnd.amadeus+json":{"source":"iana","compressible":true},"application/vnd.amazon.ebook":{"source":"apache","extensions":["azw"]},"application/vnd.amazon.mobi8-ebook":{"source":"iana"},"application/vnd.americandynamics.acc":{"source":"iana","extensions":["acc"]},"application/vnd.amiga.ami":{"source":"iana","extensions":["ami"]},"application/vnd.amundsen.maze+xml":{"source":"iana","compressible":true},"application/vnd.android.ota":{"source":"iana"},"application/vnd.android.package-archive":{"source":"apache","compressible":false,"extensions":["apk"]},"application/vnd.anki":{"source":"iana"},"application/vnd.anser-web-certificate-issue-initiation":{"source":"iana","extensions":["cii"]},"application/vnd.anser-web-funds-transfer-initiation":{"source":"apache","extensions":["fti"]},"application/vnd.antix.game-component":{"source":"iana","extensions":["atx"]},"application/vnd.apache.arrow.file":{"source":"iana"},"application/vnd.apache.arrow.stream":{"source":"iana"},"application/vnd.apache.thrift.binary":{"source":"iana"},"application/vnd.apache.thrift.compact":{"source":"iana"},"application/vnd.apache.thrift.json":{"source":"iana"},"application/vnd.api+json":{"source":"iana","compressible":true},"application/vnd.aplextor.warrp+json":{"source":"iana","compressible":true},"application/vnd.apothekende.reservation+json":{"source":"iana","compressible":true},"application/vnd.apple.installer+xml":{"source":"iana","compressible":true,"extensions":["mpkg"]},"application/vnd.apple.keynote":{"source":"iana","extensions":["key"]},"application/vnd.apple.mpegurl":{"source":"iana","extensions":["m3u8"]},"application/vnd.apple.numbers":{"source":"iana","extensions":["numbers"]},"application/vnd.apple.pages":{"source":"iana","extensions":["pages"]},"application/vnd.apple.pkpass":{"compressible":false,"extensions":["pkpass"]},"application/vnd.arastra.swi":{"source":"iana"},"application/vnd.aristanetworks.swi":{"source":"iana","extensions":["swi"]},"application/vnd.artisan+json":{"source":"iana","compressible":true},"application/vnd.artsquare":{"source":"iana"},"application/vnd.astraea-software.iota":{"source":"iana","extensions":["iota"]},"application/vnd.audiograph":{"source":"iana","extensions":["aep"]},"application/vnd.autopackage":{"source":"iana"},"application/vnd.avalon+json":{"source":"iana","compressible":true},"application/vnd.avistar+xml":{"source":"iana","compressible":true},"application/vnd.balsamiq.bmml+xml":{"source":"iana","compressible":true,"extensions":["bmml"]},"application/vnd.balsamiq.bmpr":{"source":"iana"},"application/vnd.banana-accounting":{"source":"iana"},"application/vnd.bbf.usp.error":{"source":"iana"},"application/vnd.bbf.usp.msg":{"source":"iana"},"application/vnd.bbf.usp.msg+json":{"source":"iana","compressible":true},"application/vnd.bekitzur-stech+json":{"source":"iana","compressible":true},"application/vnd.bint.med-content":{"source":"iana"},"application/vnd.biopax.rdf+xml":{"source":"iana","compressible":true},"application/vnd.blink-idb-value-wrapper":{"source":"iana"},"application/vnd.blueice.multipass":{"source":"iana","extensions":["mpm"]},"application/vnd.bluetooth.ep.oob":{"source":"iana"},"application/vnd.bluetooth.le.oob":{"source":"iana"},"application/vnd.bmi":{"source":"iana","extensions":["bmi"]},"application/vnd.bpf":{"source":"iana"},"application/vnd.bpf3":{"source":"iana"},"application/vnd.businessobjects":{"source":"iana","extensions":["rep"]},"application/vnd.byu.uapi+json":{"source":"iana","compressible":true},"application/vnd.cab-jscript":{"source":"iana"},"application/vnd.canon-cpdl":{"source":"iana"},"application/vnd.canon-lips":{"source":"iana"},"application/vnd.capasystems-pg+json":{"source":"iana","compressible":true},"application/vnd.cendio.thinlinc.clientconf":{"source":"iana"},"application/vnd.century-systems.tcp_stream":{"source":"iana"},"application/vnd.chemdraw+xml":{"source":"iana","compressible":true,"extensions":["cdxml"]},"application/vnd.chess-pgn":{"source":"iana"},"application/vnd.chipnuts.karaoke-mmd":{"source":"iana","extensions":["mmd"]},"application/vnd.ciedi":{"source":"iana"},"application/vnd.cinderella":{"source":"iana","extensions":["cdy"]},"application/vnd.cirpack.isdn-ext":{"source":"iana"},"application/vnd.citationstyles.style+xml":{"source":"iana","compressible":true,"extensions":["csl"]},"application/vnd.claymore":{"source":"iana","extensions":["cla"]},"application/vnd.cloanto.rp9":{"source":"iana","extensions":["rp9"]},"application/vnd.clonk.c4group":{"source":"iana","extensions":["c4g","c4d","c4f","c4p","c4u"]},"application/vnd.cluetrust.cartomobile-config":{"source":"iana","extensions":["c11amc"]},"application/vnd.cluetrust.cartomobile-config-pkg":{"source":"iana","extensions":["c11amz"]},"application/vnd.coffeescript":{"source":"iana"},"application/vnd.collabio.xodocuments.document":{"source":"iana"},"application/vnd.collabio.xodocuments.document-template":{"source":"iana"},"application/vnd.collabio.xodocuments.presentation":{"source":"iana"},"application/vnd.collabio.xodocuments.presentation-template":{"source":"iana"},"application/vnd.collabio.xodocuments.spreadsheet":{"source":"iana"},"application/vnd.collabio.xodocuments.spreadsheet-template":{"source":"iana"},"application/vnd.collection+json":{"source":"iana","compressible":true},"application/vnd.collection.doc+json":{"source":"iana","compressible":true},"application/vnd.collection.next+json":{"source":"iana","compressible":true},"application/vnd.comicbook+zip":{"source":"iana","compressible":false},"application/vnd.comicbook-rar":{"source":"iana"},"application/vnd.commerce-battelle":{"source":"iana"},"application/vnd.commonspace":{"source":"iana","extensions":["csp"]},"application/vnd.contact.cmsg":{"source":"iana","extensions":["cdbcmsg"]},"application/vnd.coreos.ignition+json":{"source":"iana","compressible":true},"application/vnd.cosmocaller":{"source":"iana","extensions":["cmc"]},"application/vnd.crick.clicker":{"source":"iana","extensions":["clkx"]},"application/vnd.crick.clicker.keyboard":{"source":"iana","extensions":["clkk"]},"application/vnd.crick.clicker.palette":{"source":"iana","extensions":["clkp"]},"application/vnd.crick.clicker.template":{"source":"iana","extensions":["clkt"]},"application/vnd.crick.clicker.wordbank":{"source":"iana","extensions":["clkw"]},"application/vnd.criticaltools.wbs+xml":{"source":"iana","compressible":true,"extensions":["wbs"]},"application/vnd.cryptii.pipe+json":{"source":"iana","compressible":true},"application/vnd.crypto-shade-file":{"source":"iana"},"application/vnd.cryptomator.encrypted":{"source":"iana"},"application/vnd.cryptomator.vault":{"source":"iana"},"application/vnd.ctc-posml":{"source":"iana","extensions":["pml"]},"application/vnd.ctct.ws+xml":{"source":"iana","compressible":true},"application/vnd.cups-pdf":{"source":"iana"},"application/vnd.cups-postscript":{"source":"iana"},"application/vnd.cups-ppd":{"source":"iana","extensions":["ppd"]},"application/vnd.cups-raster":{"source":"iana"},"application/vnd.cups-raw":{"source":"iana"},"application/vnd.curl":{"source":"iana"},"application/vnd.curl.car":{"source":"apache","extensions":["car"]},"application/vnd.curl.pcurl":{"source":"apache","extensions":["pcurl"]},"application/vnd.cyan.dean.root+xml":{"source":"iana","compressible":true},"application/vnd.cybank":{"source":"iana"},"application/vnd.cyclonedx+json":{"source":"iana","compressible":true},"application/vnd.cyclonedx+xml":{"source":"iana","compressible":true},"application/vnd.d2l.coursepackage1p0+zip":{"source":"iana","compressible":false},"application/vnd.d3m-dataset":{"source":"iana"},"application/vnd.d3m-problem":{"source":"iana"},"application/vnd.dart":{"source":"iana","compressible":true,"extensions":["dart"]},"application/vnd.data-vision.rdz":{"source":"iana","extensions":["rdz"]},"application/vnd.datapackage+json":{"source":"iana","compressible":true},"application/vnd.dataresource+json":{"source":"iana","compressible":true},"application/vnd.dbf":{"source":"iana","extensions":["dbf"]},"application/vnd.debian.binary-package":{"source":"iana"},"application/vnd.dece.data":{"source":"iana","extensions":["uvf","uvvf","uvd","uvvd"]},"application/vnd.dece.ttml+xml":{"source":"iana","compressible":true,"extensions":["uvt","uvvt"]},"application/vnd.dece.unspecified":{"source":"iana","extensions":["uvx","uvvx"]},"application/vnd.dece.zip":{"source":"iana","extensions":["uvz","uvvz"]},"application/vnd.denovo.fcselayout-link":{"source":"iana","extensions":["fe_launch"]},"application/vnd.desmume.movie":{"source":"iana"},"application/vnd.dir-bi.plate-dl-nosuffix":{"source":"iana"},"application/vnd.dm.delegation+xml":{"source":"iana","compressible":true},"application/vnd.dna":{"source":"iana","extensions":["dna"]},"application/vnd.document+json":{"source":"iana","compressible":true},"application/vnd.dolby.mlp":{"source":"apache","extensions":["mlp"]},"application/vnd.dolby.mobile.1":{"source":"iana"},"application/vnd.dolby.mobile.2":{"source":"iana"},"application/vnd.doremir.scorecloud-binary-document":{"source":"iana"},"application/vnd.dpgraph":{"source":"iana","extensions":["dpg"]},"application/vnd.dreamfactory":{"source":"iana","extensions":["dfac"]},"application/vnd.drive+json":{"source":"iana","compressible":true},"application/vnd.ds-keypoint":{"source":"apache","extensions":["kpxx"]},"application/vnd.dtg.local":{"source":"iana"},"application/vnd.dtg.local.flash":{"source":"iana"},"application/vnd.dtg.local.html":{"source":"iana"},"application/vnd.dvb.ait":{"source":"iana","extensions":["ait"]},"application/vnd.dvb.dvbisl+xml":{"source":"iana","compressible":true},"application/vnd.dvb.dvbj":{"source":"iana"},"application/vnd.dvb.esgcontainer":{"source":"iana"},"application/vnd.dvb.ipdcdftnotifaccess":{"source":"iana"},"application/vnd.dvb.ipdcesgaccess":{"source":"iana"},"application/vnd.dvb.ipdcesgaccess2":{"source":"iana"},"application/vnd.dvb.ipdcesgpdd":{"source":"iana"},"application/vnd.dvb.ipdcroaming":{"source":"iana"},"application/vnd.dvb.iptv.alfec-base":{"source":"iana"},"application/vnd.dvb.iptv.alfec-enhancement":{"source":"iana"},"application/vnd.dvb.notif-aggregate-root+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-container+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-generic+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-ia-msglist+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-ia-registration-request+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-ia-registration-response+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-init+xml":{"source":"iana","compressible":true},"application/vnd.dvb.pfr":{"source":"iana"},"application/vnd.dvb.service":{"source":"iana","extensions":["svc"]},"application/vnd.dxr":{"source":"iana"},"application/vnd.dynageo":{"source":"iana","extensions":["geo"]},"application/vnd.dzr":{"source":"iana"},"application/vnd.easykaraoke.cdgdownload":{"source":"iana"},"application/vnd.ecdis-update":{"source":"iana"},"application/vnd.ecip.rlp":{"source":"iana"},"application/vnd.eclipse.ditto+json":{"source":"iana","compressible":true},"application/vnd.ecowin.chart":{"source":"iana","extensions":["mag"]},"application/vnd.ecowin.filerequest":{"source":"iana"},"application/vnd.ecowin.fileupdate":{"source":"iana"},"application/vnd.ecowin.series":{"source":"iana"},"application/vnd.ecowin.seriesrequest":{"source":"iana"},"application/vnd.ecowin.seriesupdate":{"source":"iana"},"application/vnd.efi.img":{"source":"iana"},"application/vnd.efi.iso":{"source":"iana"},"application/vnd.emclient.accessrequest+xml":{"source":"iana","compressible":true},"application/vnd.enliven":{"source":"iana","extensions":["nml"]},"application/vnd.enphase.envoy":{"source":"iana"},"application/vnd.eprints.data+xml":{"source":"iana","compressible":true},"application/vnd.epson.esf":{"source":"iana","extensions":["esf"]},"application/vnd.epson.msf":{"source":"iana","extensions":["msf"]},"application/vnd.epson.quickanime":{"source":"iana","extensions":["qam"]},"application/vnd.epson.salt":{"source":"iana","extensions":["slt"]},"application/vnd.epson.ssf":{"source":"iana","extensions":["ssf"]},"application/vnd.ericsson.quickcall":{"source":"iana"},"application/vnd.espass-espass+zip":{"source":"iana","compressible":false},"application/vnd.eszigno3+xml":{"source":"iana","compressible":true,"extensions":["es3","et3"]},"application/vnd.etsi.aoc+xml":{"source":"iana","compressible":true},"application/vnd.etsi.asic-e+zip":{"source":"iana","compressible":false},"application/vnd.etsi.asic-s+zip":{"source":"iana","compressible":false},"application/vnd.etsi.cug+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvcommand+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvdiscovery+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvprofile+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvsad-bc+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvsad-cod+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvsad-npvr+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvservice+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvsync+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvueprofile+xml":{"source":"iana","compressible":true},"application/vnd.etsi.mcid+xml":{"source":"iana","compressible":true},"application/vnd.etsi.mheg5":{"source":"iana"},"application/vnd.etsi.overload-control-policy-dataset+xml":{"source":"iana","compressible":true},"application/vnd.etsi.pstn+xml":{"source":"iana","compressible":true},"application/vnd.etsi.sci+xml":{"source":"iana","compressible":true},"application/vnd.etsi.simservs+xml":{"source":"iana","compressible":true},"application/vnd.etsi.timestamp-token":{"source":"iana"},"application/vnd.etsi.tsl+xml":{"source":"iana","compressible":true},"application/vnd.etsi.tsl.der":{"source":"iana"},"application/vnd.eu.kasparian.car+json":{"source":"iana","compressible":true},"application/vnd.eudora.data":{"source":"iana"},"application/vnd.evolv.ecig.profile":{"source":"iana"},"application/vnd.evolv.ecig.settings":{"source":"iana"},"application/vnd.evolv.ecig.theme":{"source":"iana"},"application/vnd.exstream-empower+zip":{"source":"iana","compressible":false},"application/vnd.exstream-package":{"source":"iana"},"application/vnd.ezpix-album":{"source":"iana","extensions":["ez2"]},"application/vnd.ezpix-package":{"source":"iana","extensions":["ez3"]},"application/vnd.f-secure.mobile":{"source":"iana"},"application/vnd.familysearch.gedcom+zip":{"source":"iana","compressible":false},"application/vnd.fastcopy-disk-image":{"source":"iana"},"application/vnd.fdf":{"source":"iana","extensions":["fdf"]},"application/vnd.fdsn.mseed":{"source":"iana","extensions":["mseed"]},"application/vnd.fdsn.seed":{"source":"iana","extensions":["seed","dataless"]},"application/vnd.ffsns":{"source":"iana"},"application/vnd.ficlab.flb+zip":{"source":"iana","compressible":false},"application/vnd.filmit.zfc":{"source":"iana"},"application/vnd.fints":{"source":"iana"},"application/vnd.firemonkeys.cloudcell":{"source":"iana"},"application/vnd.flographit":{"source":"iana","extensions":["gph"]},"application/vnd.fluxtime.clip":{"source":"iana","extensions":["ftc"]},"application/vnd.font-fontforge-sfd":{"source":"iana"},"application/vnd.framemaker":{"source":"iana","extensions":["fm","frame","maker","book"]},"application/vnd.frogans.fnc":{"source":"iana","extensions":["fnc"]},"application/vnd.frogans.ltf":{"source":"iana","extensions":["ltf"]},"application/vnd.fsc.weblaunch":{"source":"iana","extensions":["fsc"]},"application/vnd.fujifilm.fb.docuworks":{"source":"iana"},"application/vnd.fujifilm.fb.docuworks.binder":{"source":"iana"},"application/vnd.fujifilm.fb.docuworks.container":{"source":"iana"},"application/vnd.fujifilm.fb.jfi+xml":{"source":"iana","compressible":true},"application/vnd.fujitsu.oasys":{"source":"iana","extensions":["oas"]},"application/vnd.fujitsu.oasys2":{"source":"iana","extensions":["oa2"]},"application/vnd.fujitsu.oasys3":{"source":"iana","extensions":["oa3"]},"application/vnd.fujitsu.oasysgp":{"source":"iana","extensions":["fg5"]},"application/vnd.fujitsu.oasysprs":{"source":"iana","extensions":["bh2"]},"application/vnd.fujixerox.art-ex":{"source":"iana"},"application/vnd.fujixerox.art4":{"source":"iana"},"application/vnd.fujixerox.ddd":{"source":"iana","extensions":["ddd"]},"application/vnd.fujixerox.docuworks":{"source":"iana","extensions":["xdw"]},"application/vnd.fujixerox.docuworks.binder":{"source":"iana","extensions":["xbd"]},"application/vnd.fujixerox.docuworks.container":{"source":"iana"},"application/vnd.fujixerox.hbpl":{"source":"iana"},"application/vnd.fut-misnet":{"source":"iana"},"application/vnd.futoin+cbor":{"source":"iana"},"application/vnd.futoin+json":{"source":"iana","compressible":true},"application/vnd.fuzzysheet":{"source":"iana","extensions":["fzs"]},"application/vnd.genomatix.tuxedo":{"source":"iana","extensions":["txd"]},"application/vnd.gentics.grd+json":{"source":"iana","compressible":true},"application/vnd.geo+json":{"source":"iana","compressible":true},"application/vnd.geocube+xml":{"source":"iana","compressible":true},"application/vnd.geogebra.file":{"source":"iana","extensions":["ggb"]},"application/vnd.geogebra.slides":{"source":"iana"},"application/vnd.geogebra.tool":{"source":"iana","extensions":["ggt"]},"application/vnd.geometry-explorer":{"source":"iana","extensions":["gex","gre"]},"application/vnd.geonext":{"source":"iana","extensions":["gxt"]},"application/vnd.geoplan":{"source":"iana","extensions":["g2w"]},"application/vnd.geospace":{"source":"iana","extensions":["g3w"]},"application/vnd.gerber":{"source":"iana"},"application/vnd.globalplatform.card-content-mgt":{"source":"iana"},"application/vnd.globalplatform.card-content-mgt-response":{"source":"iana"},"application/vnd.gmx":{"source":"iana","extensions":["gmx"]},"application/vnd.google-apps.document":{"compressible":false,"extensions":["gdoc"]},"application/vnd.google-apps.presentation":{"compressible":false,"extensions":["gslides"]},"application/vnd.google-apps.spreadsheet":{"compressible":false,"extensions":["gsheet"]},"application/vnd.google-earth.kml+xml":{"source":"iana","compressible":true,"extensions":["kml"]},"application/vnd.google-earth.kmz":{"source":"iana","compressible":false,"extensions":["kmz"]},"application/vnd.gov.sk.e-form+xml":{"source":"iana","compressible":true},"application/vnd.gov.sk.e-form+zip":{"source":"iana","compressible":false},"application/vnd.gov.sk.xmldatacontainer+xml":{"source":"iana","compressible":true},"application/vnd.grafeq":{"source":"iana","extensions":["gqf","gqs"]},"application/vnd.gridmp":{"source":"iana"},"application/vnd.groove-account":{"source":"iana","extensions":["gac"]},"application/vnd.groove-help":{"source":"iana","extensions":["ghf"]},"application/vnd.groove-identity-message":{"source":"iana","extensions":["gim"]},"application/vnd.groove-injector":{"source":"iana","extensions":["grv"]},"application/vnd.groove-tool-message":{"source":"iana","extensions":["gtm"]},"application/vnd.groove-tool-template":{"source":"iana","extensions":["tpl"]},"application/vnd.groove-vcard":{"source":"iana","extensions":["vcg"]},"application/vnd.hal+json":{"source":"iana","compressible":true},"application/vnd.hal+xml":{"source":"iana","compressible":true,"extensions":["hal"]},"application/vnd.handheld-entertainment+xml":{"source":"iana","compressible":true,"extensions":["zmm"]},"application/vnd.hbci":{"source":"iana","extensions":["hbci"]},"application/vnd.hc+json":{"source":"iana","compressible":true},"application/vnd.hcl-bireports":{"source":"iana"},"application/vnd.hdt":{"source":"iana"},"application/vnd.heroku+json":{"source":"iana","compressible":true},"application/vnd.hhe.lesson-player":{"source":"iana","extensions":["les"]},"application/vnd.hl7cda+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.hl7v2+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.hp-hpgl":{"source":"iana","extensions":["hpgl"]},"application/vnd.hp-hpid":{"source":"iana","extensions":["hpid"]},"application/vnd.hp-hps":{"source":"iana","extensions":["hps"]},"application/vnd.hp-jlyt":{"source":"iana","extensions":["jlt"]},"application/vnd.hp-pcl":{"source":"iana","extensions":["pcl"]},"application/vnd.hp-pclxl":{"source":"iana","extensions":["pclxl"]},"application/vnd.httphone":{"source":"iana"},"application/vnd.hydrostatix.sof-data":{"source":"iana","extensions":["sfd-hdstx"]},"application/vnd.hyper+json":{"source":"iana","compressible":true},"application/vnd.hyper-item+json":{"source":"iana","compressible":true},"application/vnd.hyperdrive+json":{"source":"iana","compressible":true},"application/vnd.hzn-3d-crossword":{"source":"iana"},"application/vnd.ibm.afplinedata":{"source":"iana"},"application/vnd.ibm.electronic-media":{"source":"iana"},"application/vnd.ibm.minipay":{"source":"iana","extensions":["mpy"]},"application/vnd.ibm.modcap":{"source":"iana","extensions":["afp","listafp","list3820"]},"application/vnd.ibm.rights-management":{"source":"iana","extensions":["irm"]},"application/vnd.ibm.secure-container":{"source":"iana","extensions":["sc"]},"application/vnd.iccprofile":{"source":"iana","extensions":["icc","icm"]},"application/vnd.ieee.1905":{"source":"iana"},"application/vnd.igloader":{"source":"iana","extensions":["igl"]},"application/vnd.imagemeter.folder+zip":{"source":"iana","compressible":false},"application/vnd.imagemeter.image+zip":{"source":"iana","compressible":false},"application/vnd.immervision-ivp":{"source":"iana","extensions":["ivp"]},"application/vnd.immervision-ivu":{"source":"iana","extensions":["ivu"]},"application/vnd.ims.imsccv1p1":{"source":"iana"},"application/vnd.ims.imsccv1p2":{"source":"iana"},"application/vnd.ims.imsccv1p3":{"source":"iana"},"application/vnd.ims.lis.v2.result+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolconsumerprofile+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolproxy+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolproxy.id+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolsettings+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolsettings.simple+json":{"source":"iana","compressible":true},"application/vnd.informedcontrol.rms+xml":{"source":"iana","compressible":true},"application/vnd.informix-visionary":{"source":"iana"},"application/vnd.infotech.project":{"source":"iana"},"application/vnd.infotech.project+xml":{"source":"iana","compressible":true},"application/vnd.innopath.wamp.notification":{"source":"iana"},"application/vnd.insors.igm":{"source":"iana","extensions":["igm"]},"application/vnd.intercon.formnet":{"source":"iana","extensions":["xpw","xpx"]},"application/vnd.intergeo":{"source":"iana","extensions":["i2g"]},"application/vnd.intertrust.digibox":{"source":"iana"},"application/vnd.intertrust.nncp":{"source":"iana"},"application/vnd.intu.qbo":{"source":"iana","extensions":["qbo"]},"application/vnd.intu.qfx":{"source":"iana","extensions":["qfx"]},"application/vnd.iptc.g2.catalogitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.conceptitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.knowledgeitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.newsitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.newsmessage+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.packageitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.planningitem+xml":{"source":"iana","compressible":true},"application/vnd.ipunplugged.rcprofile":{"source":"iana","extensions":["rcprofile"]},"application/vnd.irepository.package+xml":{"source":"iana","compressible":true,"extensions":["irp"]},"application/vnd.is-xpr":{"source":"iana","extensions":["xpr"]},"application/vnd.isac.fcs":{"source":"iana","extensions":["fcs"]},"application/vnd.iso11783-10+zip":{"source":"iana","compressible":false},"application/vnd.jam":{"source":"iana","extensions":["jam"]},"application/vnd.japannet-directory-service":{"source":"iana"},"application/vnd.japannet-jpnstore-wakeup":{"source":"iana"},"application/vnd.japannet-payment-wakeup":{"source":"iana"},"application/vnd.japannet-registration":{"source":"iana"},"application/vnd.japannet-registration-wakeup":{"source":"iana"},"application/vnd.japannet-setstore-wakeup":{"source":"iana"},"application/vnd.japannet-verification":{"source":"iana"},"application/vnd.japannet-verification-wakeup":{"source":"iana"},"application/vnd.jcp.javame.midlet-rms":{"source":"iana","extensions":["rms"]},"application/vnd.jisp":{"source":"iana","extensions":["jisp"]},"application/vnd.joost.joda-archive":{"source":"iana","extensions":["joda"]},"application/vnd.jsk.isdn-ngn":{"source":"iana"},"application/vnd.kahootz":{"source":"iana","extensions":["ktz","ktr"]},"application/vnd.kde.karbon":{"source":"iana","extensions":["karbon"]},"application/vnd.kde.kchart":{"source":"iana","extensions":["chrt"]},"application/vnd.kde.kformula":{"source":"iana","extensions":["kfo"]},"application/vnd.kde.kivio":{"source":"iana","extensions":["flw"]},"application/vnd.kde.kontour":{"source":"iana","extensions":["kon"]},"application/vnd.kde.kpresenter":{"source":"iana","extensions":["kpr","kpt"]},"application/vnd.kde.kspread":{"source":"iana","extensions":["ksp"]},"application/vnd.kde.kword":{"source":"iana","extensions":["kwd","kwt"]},"application/vnd.kenameaapp":{"source":"iana","extensions":["htke"]},"application/vnd.kidspiration":{"source":"iana","extensions":["kia"]},"application/vnd.kinar":{"source":"iana","extensions":["kne","knp"]},"application/vnd.koan":{"source":"iana","extensions":["skp","skd","skt","skm"]},"application/vnd.kodak-descriptor":{"source":"iana","extensions":["sse"]},"application/vnd.las":{"source":"iana"},"application/vnd.las.las+json":{"source":"iana","compressible":true},"application/vnd.las.las+xml":{"source":"iana","compressible":true,"extensions":["lasxml"]},"application/vnd.laszip":{"source":"iana"},"application/vnd.leap+json":{"source":"iana","compressible":true},"application/vnd.liberty-request+xml":{"source":"iana","compressible":true},"application/vnd.llamagraphics.life-balance.desktop":{"source":"iana","extensions":["lbd"]},"application/vnd.llamagraphics.life-balance.exchange+xml":{"source":"iana","compressible":true,"extensions":["lbe"]},"application/vnd.logipipe.circuit+zip":{"source":"iana","compressible":false},"application/vnd.loom":{"source":"iana"},"application/vnd.lotus-1-2-3":{"source":"iana","extensions":["123"]},"application/vnd.lotus-approach":{"source":"iana","extensions":["apr"]},"application/vnd.lotus-freelance":{"source":"iana","extensions":["pre"]},"application/vnd.lotus-notes":{"source":"iana","extensions":["nsf"]},"application/vnd.lotus-organizer":{"source":"iana","extensions":["org"]},"application/vnd.lotus-screencam":{"source":"iana","extensions":["scm"]},"application/vnd.lotus-wordpro":{"source":"iana","extensions":["lwp"]},"application/vnd.macports.portpkg":{"source":"iana","extensions":["portpkg"]},"application/vnd.mapbox-vector-tile":{"source":"iana","extensions":["mvt"]},"application/vnd.marlin.drm.actiontoken+xml":{"source":"iana","compressible":true},"application/vnd.marlin.drm.conftoken+xml":{"source":"iana","compressible":true},"application/vnd.marlin.drm.license+xml":{"source":"iana","compressible":true},"application/vnd.marlin.drm.mdcf":{"source":"iana"},"application/vnd.mason+json":{"source":"iana","compressible":true},"application/vnd.maxar.archive.3tz+zip":{"source":"iana","compressible":false},"application/vnd.maxmind.maxmind-db":{"source":"iana"},"application/vnd.mcd":{"source":"iana","extensions":["mcd"]},"application/vnd.medcalcdata":{"source":"iana","extensions":["mc1"]},"application/vnd.mediastation.cdkey":{"source":"iana","extensions":["cdkey"]},"application/vnd.meridian-slingshot":{"source":"iana"},"application/vnd.mfer":{"source":"iana","extensions":["mwf"]},"application/vnd.mfmp":{"source":"iana","extensions":["mfm"]},"application/vnd.micro+json":{"source":"iana","compressible":true},"application/vnd.micrografx.flo":{"source":"iana","extensions":["flo"]},"application/vnd.micrografx.igx":{"source":"iana","extensions":["igx"]},"application/vnd.microsoft.portable-executable":{"source":"iana"},"application/vnd.microsoft.windows.thumbnail-cache":{"source":"iana"},"application/vnd.miele+json":{"source":"iana","compressible":true},"application/vnd.mif":{"source":"iana","extensions":["mif"]},"application/vnd.minisoft-hp3000-save":{"source":"iana"},"application/vnd.mitsubishi.misty-guard.trustweb":{"source":"iana"},"application/vnd.mobius.daf":{"source":"iana","extensions":["daf"]},"application/vnd.mobius.dis":{"source":"iana","extensions":["dis"]},"application/vnd.mobius.mbk":{"source":"iana","extensions":["mbk"]},"application/vnd.mobius.mqy":{"source":"iana","extensions":["mqy"]},"application/vnd.mobius.msl":{"source":"iana","extensions":["msl"]},"application/vnd.mobius.plc":{"source":"iana","extensions":["plc"]},"application/vnd.mobius.txf":{"source":"iana","extensions":["txf"]},"application/vnd.mophun.application":{"source":"iana","extensions":["mpn"]},"application/vnd.mophun.certificate":{"source":"iana","extensions":["mpc"]},"application/vnd.motorola.flexsuite":{"source":"iana"},"application/vnd.motorola.flexsuite.adsi":{"source":"iana"},"application/vnd.motorola.flexsuite.fis":{"source":"iana"},"application/vnd.motorola.flexsuite.gotap":{"source":"iana"},"application/vnd.motorola.flexsuite.kmr":{"source":"iana"},"application/vnd.motorola.flexsuite.ttc":{"source":"iana"},"application/vnd.motorola.flexsuite.wem":{"source":"iana"},"application/vnd.motorola.iprm":{"source":"iana"},"application/vnd.mozilla.xul+xml":{"source":"iana","compressible":true,"extensions":["xul"]},"application/vnd.ms-3mfdocument":{"source":"iana"},"application/vnd.ms-artgalry":{"source":"iana","extensions":["cil"]},"application/vnd.ms-asf":{"source":"iana"},"application/vnd.ms-cab-compressed":{"source":"iana","extensions":["cab"]},"application/vnd.ms-color.iccprofile":{"source":"apache"},"application/vnd.ms-excel":{"source":"iana","compressible":false,"extensions":["xls","xlm","xla","xlc","xlt","xlw"]},"application/vnd.ms-excel.addin.macroenabled.12":{"source":"iana","extensions":["xlam"]},"application/vnd.ms-excel.sheet.binary.macroenabled.12":{"source":"iana","extensions":["xlsb"]},"application/vnd.ms-excel.sheet.macroenabled.12":{"source":"iana","extensions":["xlsm"]},"application/vnd.ms-excel.template.macroenabled.12":{"source":"iana","extensions":["xltm"]},"application/vnd.ms-fontobject":{"source":"iana","compressible":true,"extensions":["eot"]},"application/vnd.ms-htmlhelp":{"source":"iana","extensions":["chm"]},"application/vnd.ms-ims":{"source":"iana","extensions":["ims"]},"application/vnd.ms-lrm":{"source":"iana","extensions":["lrm"]},"application/vnd.ms-office.activex+xml":{"source":"iana","compressible":true},"application/vnd.ms-officetheme":{"source":"iana","extensions":["thmx"]},"application/vnd.ms-opentype":{"source":"apache","compressible":true},"application/vnd.ms-outlook":{"compressible":false,"extensions":["msg"]},"application/vnd.ms-package.obfuscated-opentype":{"source":"apache"},"application/vnd.ms-pki.seccat":{"source":"apache","extensions":["cat"]},"application/vnd.ms-pki.stl":{"source":"apache","extensions":["stl"]},"application/vnd.ms-playready.initiator+xml":{"source":"iana","compressible":true},"application/vnd.ms-powerpoint":{"source":"iana","compressible":false,"extensions":["ppt","pps","pot"]},"application/vnd.ms-powerpoint.addin.macroenabled.12":{"source":"iana","extensions":["ppam"]},"application/vnd.ms-powerpoint.presentation.macroenabled.12":{"source":"iana","extensions":["pptm"]},"application/vnd.ms-powerpoint.slide.macroenabled.12":{"source":"iana","extensions":["sldm"]},"application/vnd.ms-powerpoint.slideshow.macroenabled.12":{"source":"iana","extensions":["ppsm"]},"application/vnd.ms-powerpoint.template.macroenabled.12":{"source":"iana","extensions":["potm"]},"application/vnd.ms-printdevicecapabilities+xml":{"source":"iana","compressible":true},"application/vnd.ms-printing.printticket+xml":{"source":"apache","compressible":true},"application/vnd.ms-printschematicket+xml":{"source":"iana","compressible":true},"application/vnd.ms-project":{"source":"iana","extensions":["mpp","mpt"]},"application/vnd.ms-tnef":{"source":"iana"},"application/vnd.ms-windows.devicepairing":{"source":"iana"},"application/vnd.ms-windows.nwprinting.oob":{"source":"iana"},"application/vnd.ms-windows.printerpairing":{"source":"iana"},"application/vnd.ms-windows.wsd.oob":{"source":"iana"},"application/vnd.ms-wmdrm.lic-chlg-req":{"source":"iana"},"application/vnd.ms-wmdrm.lic-resp":{"source":"iana"},"application/vnd.ms-wmdrm.meter-chlg-req":{"source":"iana"},"application/vnd.ms-wmdrm.meter-resp":{"source":"iana"},"application/vnd.ms-word.document.macroenabled.12":{"source":"iana","extensions":["docm"]},"application/vnd.ms-word.template.macroenabled.12":{"source":"iana","extensions":["dotm"]},"application/vnd.ms-works":{"source":"iana","extensions":["wps","wks","wcm","wdb"]},"application/vnd.ms-wpl":{"source":"iana","extensions":["wpl"]},"application/vnd.ms-xpsdocument":{"source":"iana","compressible":false,"extensions":["xps"]},"application/vnd.msa-disk-image":{"source":"iana"},"application/vnd.mseq":{"source":"iana","extensions":["mseq"]},"application/vnd.msign":{"source":"iana"},"application/vnd.multiad.creator":{"source":"iana"},"application/vnd.multiad.creator.cif":{"source":"iana"},"application/vnd.music-niff":{"source":"iana"},"application/vnd.musician":{"source":"iana","extensions":["mus"]},"application/vnd.muvee.style":{"source":"iana","extensions":["msty"]},"application/vnd.mynfc":{"source":"iana","extensions":["taglet"]},"application/vnd.nacamar.ybrid+json":{"source":"iana","compressible":true},"application/vnd.ncd.control":{"source":"iana"},"application/vnd.ncd.reference":{"source":"iana"},"application/vnd.nearst.inv+json":{"source":"iana","compressible":true},"application/vnd.nebumind.line":{"source":"iana"},"application/vnd.nervana":{"source":"iana"},"application/vnd.netfpx":{"source":"iana"},"application/vnd.neurolanguage.nlu":{"source":"iana","extensions":["nlu"]},"application/vnd.nimn":{"source":"iana"},"application/vnd.nintendo.nitro.rom":{"source":"iana"},"application/vnd.nintendo.snes.rom":{"source":"iana"},"application/vnd.nitf":{"source":"iana","extensions":["ntf","nitf"]},"application/vnd.noblenet-directory":{"source":"iana","extensions":["nnd"]},"application/vnd.noblenet-sealer":{"source":"iana","extensions":["nns"]},"application/vnd.noblenet-web":{"source":"iana","extensions":["nnw"]},"application/vnd.nokia.catalogs":{"source":"iana"},"application/vnd.nokia.conml+wbxml":{"source":"iana"},"application/vnd.nokia.conml+xml":{"source":"iana","compressible":true},"application/vnd.nokia.iptv.config+xml":{"source":"iana","compressible":true},"application/vnd.nokia.isds-radio-presets":{"source":"iana"},"application/vnd.nokia.landmark+wbxml":{"source":"iana"},"application/vnd.nokia.landmark+xml":{"source":"iana","compressible":true},"application/vnd.nokia.landmarkcollection+xml":{"source":"iana","compressible":true},"application/vnd.nokia.n-gage.ac+xml":{"source":"iana","compressible":true,"extensions":["ac"]},"application/vnd.nokia.n-gage.data":{"source":"iana","extensions":["ngdat"]},"application/vnd.nokia.n-gage.symbian.install":{"source":"iana","extensions":["n-gage"]},"application/vnd.nokia.ncd":{"source":"iana"},"application/vnd.nokia.pcd+wbxml":{"source":"iana"},"application/vnd.nokia.pcd+xml":{"source":"iana","compressible":true},"application/vnd.nokia.radio-preset":{"source":"iana","extensions":["rpst"]},"application/vnd.nokia.radio-presets":{"source":"iana","extensions":["rpss"]},"application/vnd.novadigm.edm":{"source":"iana","extensions":["edm"]},"application/vnd.novadigm.edx":{"source":"iana","extensions":["edx"]},"application/vnd.novadigm.ext":{"source":"iana","extensions":["ext"]},"application/vnd.ntt-local.content-share":{"source":"iana"},"application/vnd.ntt-local.file-transfer":{"source":"iana"},"application/vnd.ntt-local.ogw_remote-access":{"source":"iana"},"application/vnd.ntt-local.sip-ta_remote":{"source":"iana"},"application/vnd.ntt-local.sip-ta_tcp_stream":{"source":"iana"},"application/vnd.oasis.opendocument.chart":{"source":"iana","extensions":["odc"]},"application/vnd.oasis.opendocument.chart-template":{"source":"iana","extensions":["otc"]},"application/vnd.oasis.opendocument.database":{"source":"iana","extensions":["odb"]},"application/vnd.oasis.opendocument.formula":{"source":"iana","extensions":["odf"]},"application/vnd.oasis.opendocument.formula-template":{"source":"iana","extensions":["odft"]},"application/vnd.oasis.opendocument.graphics":{"source":"iana","compressible":false,"extensions":["odg"]},"application/vnd.oasis.opendocument.graphics-template":{"source":"iana","extensions":["otg"]},"application/vnd.oasis.opendocument.image":{"source":"iana","extensions":["odi"]},"application/vnd.oasis.opendocument.image-template":{"source":"iana","extensions":["oti"]},"application/vnd.oasis.opendocument.presentation":{"source":"iana","compressible":false,"extensions":["odp"]},"application/vnd.oasis.opendocument.presentation-template":{"source":"iana","extensions":["otp"]},"application/vnd.oasis.opendocument.spreadsheet":{"source":"iana","compressible":false,"extensions":["ods"]},"application/vnd.oasis.opendocument.spreadsheet-template":{"source":"iana","extensions":["ots"]},"application/vnd.oasis.opendocument.text":{"source":"iana","compressible":false,"extensions":["odt"]},"application/vnd.oasis.opendocument.text-master":{"source":"iana","extensions":["odm"]},"application/vnd.oasis.opendocument.text-template":{"source":"iana","extensions":["ott"]},"application/vnd.oasis.opendocument.text-web":{"source":"iana","extensions":["oth"]},"application/vnd.obn":{"source":"iana"},"application/vnd.ocf+cbor":{"source":"iana"},"application/vnd.oci.image.manifest.v1+json":{"source":"iana","compressible":true},"application/vnd.oftn.l10n+json":{"source":"iana","compressible":true},"application/vnd.oipf.contentaccessdownload+xml":{"source":"iana","compressible":true},"application/vnd.oipf.contentaccessstreaming+xml":{"source":"iana","compressible":true},"application/vnd.oipf.cspg-hexbinary":{"source":"iana"},"application/vnd.oipf.dae.svg+xml":{"source":"iana","compressible":true},"application/vnd.oipf.dae.xhtml+xml":{"source":"iana","compressible":true},"application/vnd.oipf.mippvcontrolmessage+xml":{"source":"iana","compressible":true},"application/vnd.oipf.pae.gem":{"source":"iana"},"application/vnd.oipf.spdiscovery+xml":{"source":"iana","compressible":true},"application/vnd.oipf.spdlist+xml":{"source":"iana","compressible":true},"application/vnd.oipf.ueprofile+xml":{"source":"iana","compressible":true},"application/vnd.oipf.userprofile+xml":{"source":"iana","compressible":true},"application/vnd.olpc-sugar":{"source":"iana","extensions":["xo"]},"application/vnd.oma-scws-config":{"source":"iana"},"application/vnd.oma-scws-http-request":{"source":"iana"},"application/vnd.oma-scws-http-response":{"source":"iana"},"application/vnd.oma.bcast.associated-procedure-parameter+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.drm-trigger+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.imd+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.ltkm":{"source":"iana"},"application/vnd.oma.bcast.notification+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.provisioningtrigger":{"source":"iana"},"application/vnd.oma.bcast.sgboot":{"source":"iana"},"application/vnd.oma.bcast.sgdd+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.sgdu":{"source":"iana"},"application/vnd.oma.bcast.simple-symbol-container":{"source":"iana"},"application/vnd.oma.bcast.smartcard-trigger+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.sprov+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.stkm":{"source":"iana"},"application/vnd.oma.cab-address-book+xml":{"source":"iana","compressible":true},"application/vnd.oma.cab-feature-handler+xml":{"source":"iana","compressible":true},"application/vnd.oma.cab-pcc+xml":{"source":"iana","compressible":true},"application/vnd.oma.cab-subs-invite+xml":{"source":"iana","compressible":true},"application/vnd.oma.cab-user-prefs+xml":{"source":"iana","compressible":true},"application/vnd.oma.dcd":{"source":"iana"},"application/vnd.oma.dcdc":{"source":"iana"},"application/vnd.oma.dd2+xml":{"source":"iana","compressible":true,"extensions":["dd2"]},"application/vnd.oma.drm.risd+xml":{"source":"iana","compressible":true},"application/vnd.oma.group-usage-list+xml":{"source":"iana","compressible":true},"application/vnd.oma.lwm2m+cbor":{"source":"iana"},"application/vnd.oma.lwm2m+json":{"source":"iana","compressible":true},"application/vnd.oma.lwm2m+tlv":{"source":"iana"},"application/vnd.oma.pal+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.detailed-progress-report+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.final-report+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.groups+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.invocation-descriptor+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.optimized-progress-report+xml":{"source":"iana","compressible":true},"application/vnd.oma.push":{"source":"iana"},"application/vnd.oma.scidm.messages+xml":{"source":"iana","compressible":true},"application/vnd.oma.xcap-directory+xml":{"source":"iana","compressible":true},"application/vnd.omads-email+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.omads-file+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.omads-folder+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.omaloc-supl-init":{"source":"iana"},"application/vnd.onepager":{"source":"iana"},"application/vnd.onepagertamp":{"source":"iana"},"application/vnd.onepagertamx":{"source":"iana"},"application/vnd.onepagertat":{"source":"iana"},"application/vnd.onepagertatp":{"source":"iana"},"application/vnd.onepagertatx":{"source":"iana"},"application/vnd.openblox.game+xml":{"source":"iana","compressible":true,"extensions":["obgx"]},"application/vnd.openblox.game-binary":{"source":"iana"},"application/vnd.openeye.oeb":{"source":"iana"},"application/vnd.openofficeorg.extension":{"source":"apache","extensions":["oxt"]},"application/vnd.openstreetmap.data+xml":{"source":"iana","compressible":true,"extensions":["osm"]},"application/vnd.opentimestamps.ots":{"source":"iana"},"application/vnd.openxmlformats-officedocument.custom-properties+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.customxmlproperties+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawing+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.chart+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.chartshapes+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.diagramcolors+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.diagramdata+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.diagramlayout+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.diagramstyle+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.extended-properties+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.commentauthors+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.comments+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.handoutmaster+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.notesmaster+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.notesslide+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.presentation":{"source":"iana","compressible":false,"extensions":["pptx"]},"application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.presprops+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slide":{"source":"iana","extensions":["sldx"]},"application/vnd.openxmlformats-officedocument.presentationml.slide+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slidelayout+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slidemaster+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slideshow":{"source":"iana","extensions":["ppsx"]},"application/vnd.openxmlformats-officedocument.presentationml.slideshow.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slideupdateinfo+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.tablestyles+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.tags+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.template":{"source":"iana","extensions":["potx"]},"application/vnd.openxmlformats-officedocument.presentationml.template.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.viewprops+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.calcchain+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.connections+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.dialogsheet+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.externallink+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.pivotcachedefinition+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.pivotcacherecords+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.pivottable+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.querytable+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.revisionheaders+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.revisionlog+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.sharedstrings+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":{"source":"iana","compressible":false,"extensions":["xlsx"]},"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.sheetmetadata+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.tablesinglecells+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.template":{"source":"iana","extensions":["xltx"]},"application/vnd.openxmlformats-officedocument.spreadsheetml.template.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.usernames+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.volatiledependencies+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.theme+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.themeoverride+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.vmldrawing":{"source":"iana"},"application/vnd.openxmlformats-officedocument.wordprocessingml.comments+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.document":{"source":"iana","compressible":false,"extensions":["docx"]},"application/vnd.openxmlformats-officedocument.wordprocessingml.document.glossary+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.endnotes+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.fonttable+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.footnotes+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.template":{"source":"iana","extensions":["dotx"]},"application/vnd.openxmlformats-officedocument.wordprocessingml.template.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.websettings+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-package.core-properties+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-package.digital-signature-xmlsignature+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-package.relationships+xml":{"source":"iana","compressible":true},"application/vnd.oracle.resource+json":{"source":"iana","compressible":true},"application/vnd.orange.indata":{"source":"iana"},"application/vnd.osa.netdeploy":{"source":"iana"},"application/vnd.osgeo.mapguide.package":{"source":"iana","extensions":["mgp"]},"application/vnd.osgi.bundle":{"source":"iana"},"application/vnd.osgi.dp":{"source":"iana","extensions":["dp"]},"application/vnd.osgi.subsystem":{"source":"iana","extensions":["esa"]},"application/vnd.otps.ct-kip+xml":{"source":"iana","compressible":true},"application/vnd.oxli.countgraph":{"source":"iana"},"application/vnd.pagerduty+json":{"source":"iana","compressible":true},"application/vnd.palm":{"source":"iana","extensions":["pdb","pqa","oprc"]},"application/vnd.panoply":{"source":"iana"},"application/vnd.paos.xml":{"source":"iana"},"application/vnd.patentdive":{"source":"iana"},"application/vnd.patientecommsdoc":{"source":"iana"},"application/vnd.pawaafile":{"source":"iana","extensions":["paw"]},"application/vnd.pcos":{"source":"iana"},"application/vnd.pg.format":{"source":"iana","extensions":["str"]},"application/vnd.pg.osasli":{"source":"iana","extensions":["ei6"]},"application/vnd.piaccess.application-licence":{"source":"iana"},"application/vnd.picsel":{"source":"iana","extensions":["efif"]},"application/vnd.pmi.widget":{"source":"iana","extensions":["wg"]},"application/vnd.poc.group-advertisement+xml":{"source":"iana","compressible":true},"application/vnd.pocketlearn":{"source":"iana","extensions":["plf"]},"application/vnd.powerbuilder6":{"source":"iana","extensions":["pbd"]},"application/vnd.powerbuilder6-s":{"source":"iana"},"application/vnd.powerbuilder7":{"source":"iana"},"application/vnd.powerbuilder7-s":{"source":"iana"},"application/vnd.powerbuilder75":{"source":"iana"},"application/vnd.powerbuilder75-s":{"source":"iana"},"application/vnd.preminet":{"source":"iana"},"application/vnd.previewsystems.box":{"source":"iana","extensions":["box"]},"application/vnd.proteus.magazine":{"source":"iana","extensions":["mgz"]},"application/vnd.psfs":{"source":"iana"},"application/vnd.publishare-delta-tree":{"source":"iana","extensions":["qps"]},"application/vnd.pvi.ptid1":{"source":"iana","extensions":["ptid"]},"application/vnd.pwg-multiplexed":{"source":"iana"},"application/vnd.pwg-xhtml-print+xml":{"source":"iana","compressible":true},"application/vnd.qualcomm.brew-app-res":{"source":"iana"},"application/vnd.quarantainenet":{"source":"iana"},"application/vnd.quark.quarkxpress":{"source":"iana","extensions":["qxd","qxt","qwd","qwt","qxl","qxb"]},"application/vnd.quobject-quoxdocument":{"source":"iana"},"application/vnd.radisys.moml+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit-conf+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit-conn+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit-dialog+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit-stream+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-conf+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-base+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-fax-detect+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-fax-sendrecv+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-group+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-speech+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-transform+xml":{"source":"iana","compressible":true},"application/vnd.rainstor.data":{"source":"iana"},"application/vnd.rapid":{"source":"iana"},"application/vnd.rar":{"source":"iana","extensions":["rar"]},"application/vnd.realvnc.bed":{"source":"iana","extensions":["bed"]},"application/vnd.recordare.musicxml":{"source":"iana","extensions":["mxl"]},"application/vnd.recordare.musicxml+xml":{"source":"iana","compressible":true,"extensions":["musicxml"]},"application/vnd.renlearn.rlprint":{"source":"iana"},"application/vnd.resilient.logic":{"source":"iana"},"application/vnd.restful+json":{"source":"iana","compressible":true},"application/vnd.rig.cryptonote":{"source":"iana","extensions":["cryptonote"]},"application/vnd.rim.cod":{"source":"apache","extensions":["cod"]},"application/vnd.rn-realmedia":{"source":"apache","extensions":["rm"]},"application/vnd.rn-realmedia-vbr":{"source":"apache","extensions":["rmvb"]},"application/vnd.route66.link66+xml":{"source":"iana","compressible":true,"extensions":["link66"]},"application/vnd.rs-274x":{"source":"iana"},"application/vnd.ruckus.download":{"source":"iana"},"application/vnd.s3sms":{"source":"iana"},"application/vnd.sailingtracker.track":{"source":"iana","extensions":["st"]},"application/vnd.sar":{"source":"iana"},"application/vnd.sbm.cid":{"source":"iana"},"application/vnd.sbm.mid2":{"source":"iana"},"application/vnd.scribus":{"source":"iana"},"application/vnd.sealed.3df":{"source":"iana"},"application/vnd.sealed.csf":{"source":"iana"},"application/vnd.sealed.doc":{"source":"iana"},"application/vnd.sealed.eml":{"source":"iana"},"application/vnd.sealed.mht":{"source":"iana"},"application/vnd.sealed.net":{"source":"iana"},"application/vnd.sealed.ppt":{"source":"iana"},"application/vnd.sealed.tiff":{"source":"iana"},"application/vnd.sealed.xls":{"source":"iana"},"application/vnd.sealedmedia.softseal.html":{"source":"iana"},"application/vnd.sealedmedia.softseal.pdf":{"source":"iana"},"application/vnd.seemail":{"source":"iana","extensions":["see"]},"application/vnd.seis+json":{"source":"iana","compressible":true},"application/vnd.sema":{"source":"iana","extensions":["sema"]},"application/vnd.semd":{"source":"iana","extensions":["semd"]},"application/vnd.semf":{"source":"iana","extensions":["semf"]},"application/vnd.shade-save-file":{"source":"iana"},"application/vnd.shana.informed.formdata":{"source":"iana","extensions":["ifm"]},"application/vnd.shana.informed.formtemplate":{"source":"iana","extensions":["itp"]},"application/vnd.shana.informed.interchange":{"source":"iana","extensions":["iif"]},"application/vnd.shana.informed.package":{"source":"iana","extensions":["ipk"]},"application/vnd.shootproof+json":{"source":"iana","compressible":true},"application/vnd.shopkick+json":{"source":"iana","compressible":true},"application/vnd.shp":{"source":"iana"},"application/vnd.shx":{"source":"iana"},"application/vnd.sigrok.session":{"source":"iana"},"application/vnd.simtech-mindmapper":{"source":"iana","extensions":["twd","twds"]},"application/vnd.siren+json":{"source":"iana","compressible":true},"application/vnd.smaf":{"source":"iana","extensions":["mmf"]},"application/vnd.smart.notebook":{"source":"iana"},"application/vnd.smart.teacher":{"source":"iana","extensions":["teacher"]},"application/vnd.snesdev-page-table":{"source":"iana"},"application/vnd.software602.filler.form+xml":{"source":"iana","compressible":true,"extensions":["fo"]},"application/vnd.software602.filler.form-xml-zip":{"source":"iana"},"application/vnd.solent.sdkm+xml":{"source":"iana","compressible":true,"extensions":["sdkm","sdkd"]},"application/vnd.spotfire.dxp":{"source":"iana","extensions":["dxp"]},"application/vnd.spotfire.sfs":{"source":"iana","extensions":["sfs"]},"application/vnd.sqlite3":{"source":"iana"},"application/vnd.sss-cod":{"source":"iana"},"application/vnd.sss-dtf":{"source":"iana"},"application/vnd.sss-ntf":{"source":"iana"},"application/vnd.stardivision.calc":{"source":"apache","extensions":["sdc"]},"application/vnd.stardivision.draw":{"source":"apache","extensions":["sda"]},"application/vnd.stardivision.impress":{"source":"apache","extensions":["sdd"]},"application/vnd.stardivision.math":{"source":"apache","extensions":["smf"]},"application/vnd.stardivision.writer":{"source":"apache","extensions":["sdw","vor"]},"application/vnd.stardivision.writer-global":{"source":"apache","extensions":["sgl"]},"application/vnd.stepmania.package":{"source":"iana","extensions":["smzip"]},"application/vnd.stepmania.stepchart":{"source":"iana","extensions":["sm"]},"application/vnd.street-stream":{"source":"iana"},"application/vnd.sun.wadl+xml":{"source":"iana","compressible":true,"extensions":["wadl"]},"application/vnd.sun.xml.calc":{"source":"apache","extensions":["sxc"]},"application/vnd.sun.xml.calc.template":{"source":"apache","extensions":["stc"]},"application/vnd.sun.xml.draw":{"source":"apache","extensions":["sxd"]},"application/vnd.sun.xml.draw.template":{"source":"apache","extensions":["std"]},"application/vnd.sun.xml.impress":{"source":"apache","extensions":["sxi"]},"application/vnd.sun.xml.impress.template":{"source":"apache","extensions":["sti"]},"application/vnd.sun.xml.math":{"source":"apache","extensions":["sxm"]},"application/vnd.sun.xml.writer":{"source":"apache","extensions":["sxw"]},"application/vnd.sun.xml.writer.global":{"source":"apache","extensions":["sxg"]},"application/vnd.sun.xml.writer.template":{"source":"apache","extensions":["stw"]},"application/vnd.sus-calendar":{"source":"iana","extensions":["sus","susp"]},"application/vnd.svd":{"source":"iana","extensions":["svd"]},"application/vnd.swiftview-ics":{"source":"iana"},"application/vnd.sycle+xml":{"source":"iana","compressible":true},"application/vnd.syft+json":{"source":"iana","compressible":true},"application/vnd.symbian.install":{"source":"apache","extensions":["sis","sisx"]},"application/vnd.syncml+xml":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["xsm"]},"application/vnd.syncml.dm+wbxml":{"source":"iana","charset":"UTF-8","extensions":["bdm"]},"application/vnd.syncml.dm+xml":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["xdm"]},"application/vnd.syncml.dm.notification":{"source":"iana"},"application/vnd.syncml.dmddf+wbxml":{"source":"iana"},"application/vnd.syncml.dmddf+xml":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["ddf"]},"application/vnd.syncml.dmtnds+wbxml":{"source":"iana"},"application/vnd.syncml.dmtnds+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.syncml.ds.notification":{"source":"iana"},"application/vnd.tableschema+json":{"source":"iana","compressible":true},"application/vnd.tao.intent-module-archive":{"source":"iana","extensions":["tao"]},"application/vnd.tcpdump.pcap":{"source":"iana","extensions":["pcap","cap","dmp"]},"application/vnd.think-cell.ppttc+json":{"source":"iana","compressible":true},"application/vnd.tmd.mediaflex.api+xml":{"source":"iana","compressible":true},"application/vnd.tml":{"source":"iana"},"application/vnd.tmobile-livetv":{"source":"iana","extensions":["tmo"]},"application/vnd.tri.onesource":{"source":"iana"},"application/vnd.trid.tpt":{"source":"iana","extensions":["tpt"]},"application/vnd.triscape.mxs":{"source":"iana","extensions":["mxs"]},"application/vnd.trueapp":{"source":"iana","extensions":["tra"]},"application/vnd.truedoc":{"source":"iana"},"application/vnd.ubisoft.webplayer":{"source":"iana"},"application/vnd.ufdl":{"source":"iana","extensions":["ufd","ufdl"]},"application/vnd.uiq.theme":{"source":"iana","extensions":["utz"]},"application/vnd.umajin":{"source":"iana","extensions":["umj"]},"application/vnd.unity":{"source":"iana","extensions":["unityweb"]},"application/vnd.uoml+xml":{"source":"iana","compressible":true,"extensions":["uoml"]},"application/vnd.uplanet.alert":{"source":"iana"},"application/vnd.uplanet.alert-wbxml":{"source":"iana"},"application/vnd.uplanet.bearer-choice":{"source":"iana"},"application/vnd.uplanet.bearer-choice-wbxml":{"source":"iana"},"application/vnd.uplanet.cacheop":{"source":"iana"},"application/vnd.uplanet.cacheop-wbxml":{"source":"iana"},"application/vnd.uplanet.channel":{"source":"iana"},"application/vnd.uplanet.channel-wbxml":{"source":"iana"},"application/vnd.uplanet.list":{"source":"iana"},"application/vnd.uplanet.list-wbxml":{"source":"iana"},"application/vnd.uplanet.listcmd":{"source":"iana"},"application/vnd.uplanet.listcmd-wbxml":{"source":"iana"},"application/vnd.uplanet.signal":{"source":"iana"},"application/vnd.uri-map":{"source":"iana"},"application/vnd.valve.source.material":{"source":"iana"},"application/vnd.vcx":{"source":"iana","extensions":["vcx"]},"application/vnd.vd-study":{"source":"iana"},"application/vnd.vectorworks":{"source":"iana"},"application/vnd.vel+json":{"source":"iana","compressible":true},"application/vnd.verimatrix.vcas":{"source":"iana"},"application/vnd.veritone.aion+json":{"source":"iana","compressible":true},"application/vnd.veryant.thin":{"source":"iana"},"application/vnd.ves.encrypted":{"source":"iana"},"application/vnd.vidsoft.vidconference":{"source":"iana"},"application/vnd.visio":{"source":"iana","extensions":["vsd","vst","vss","vsw"]},"application/vnd.visionary":{"source":"iana","extensions":["vis"]},"application/vnd.vividence.scriptfile":{"source":"iana"},"application/vnd.vsf":{"source":"iana","extensions":["vsf"]},"application/vnd.wap.sic":{"source":"iana"},"application/vnd.wap.slc":{"source":"iana"},"application/vnd.wap.wbxml":{"source":"iana","charset":"UTF-8","extensions":["wbxml"]},"application/vnd.wap.wmlc":{"source":"iana","extensions":["wmlc"]},"application/vnd.wap.wmlscriptc":{"source":"iana","extensions":["wmlsc"]},"application/vnd.webturbo":{"source":"iana","extensions":["wtb"]},"application/vnd.wfa.dpp":{"source":"iana"},"application/vnd.wfa.p2p":{"source":"iana"},"application/vnd.wfa.wsc":{"source":"iana"},"application/vnd.windows.devicepairing":{"source":"iana"},"application/vnd.wmc":{"source":"iana"},"application/vnd.wmf.bootstrap":{"source":"iana"},"application/vnd.wolfram.mathematica":{"source":"iana"},"application/vnd.wolfram.mathematica.package":{"source":"iana"},"application/vnd.wolfram.player":{"source":"iana","extensions":["nbp"]},"application/vnd.wordperfect":{"source":"iana","extensions":["wpd"]},"application/vnd.wqd":{"source":"iana","extensions":["wqd"]},"application/vnd.wrq-hp3000-labelled":{"source":"iana"},"application/vnd.wt.stf":{"source":"iana","extensions":["stf"]},"application/vnd.wv.csp+wbxml":{"source":"iana"},"application/vnd.wv.csp+xml":{"source":"iana","compressible":true},"application/vnd.wv.ssp+xml":{"source":"iana","compressible":true},"application/vnd.xacml+json":{"source":"iana","compressible":true},"application/vnd.xara":{"source":"iana","extensions":["xar"]},"application/vnd.xfdl":{"source":"iana","extensions":["xfdl"]},"application/vnd.xfdl.webform":{"source":"iana"},"application/vnd.xmi+xml":{"source":"iana","compressible":true},"application/vnd.xmpie.cpkg":{"source":"iana"},"application/vnd.xmpie.dpkg":{"source":"iana"},"application/vnd.xmpie.plan":{"source":"iana"},"application/vnd.xmpie.ppkg":{"source":"iana"},"application/vnd.xmpie.xlim":{"source":"iana"},"application/vnd.yamaha.hv-dic":{"source":"iana","extensions":["hvd"]},"application/vnd.yamaha.hv-script":{"source":"iana","extensions":["hvs"]},"application/vnd.yamaha.hv-voice":{"source":"iana","extensions":["hvp"]},"application/vnd.yamaha.openscoreformat":{"source":"iana","extensions":["osf"]},"application/vnd.yamaha.openscoreformat.osfpvg+xml":{"source":"iana","compressible":true,"extensions":["osfpvg"]},"application/vnd.yamaha.remote-setup":{"source":"iana"},"application/vnd.yamaha.smaf-audio":{"source":"iana","extensions":["saf"]},"application/vnd.yamaha.smaf-phrase":{"source":"iana","extensions":["spf"]},"application/vnd.yamaha.through-ngn":{"source":"iana"},"application/vnd.yamaha.tunnel-udpencap":{"source":"iana"},"application/vnd.yaoweme":{"source":"iana"},"application/vnd.yellowriver-custom-menu":{"source":"iana","extensions":["cmp"]},"application/vnd.youtube.yt":{"source":"iana"},"application/vnd.zul":{"source":"iana","extensions":["zir","zirz"]},"application/vnd.zzazz.deck+xml":{"source":"iana","compressible":true,"extensions":["zaz"]},"application/voicexml+xml":{"source":"iana","compressible":true,"extensions":["vxml"]},"application/voucher-cms+json":{"source":"iana","compressible":true},"application/vq-rtcpxr":{"source":"iana"},"application/wasm":{"source":"iana","compressible":true,"extensions":["wasm"]},"application/watcherinfo+xml":{"source":"iana","compressible":true,"extensions":["wif"]},"application/webpush-options+json":{"source":"iana","compressible":true},"application/whoispp-query":{"source":"iana"},"application/whoispp-response":{"source":"iana"},"application/widget":{"source":"iana","extensions":["wgt"]},"application/winhlp":{"source":"apache","extensions":["hlp"]},"application/wita":{"source":"iana"},"application/wordperfect5.1":{"source":"iana"},"application/wsdl+xml":{"source":"iana","compressible":true,"extensions":["wsdl"]},"application/wspolicy+xml":{"source":"iana","compressible":true,"extensions":["wspolicy"]},"application/x-7z-compressed":{"source":"apache","compressible":false,"extensions":["7z"]},"application/x-abiword":{"source":"apache","extensions":["abw"]},"application/x-ace-compressed":{"source":"apache","extensions":["ace"]},"application/x-amf":{"source":"apache"},"application/x-apple-diskimage":{"source":"apache","extensions":["dmg"]},"application/x-arj":{"compressible":false,"extensions":["arj"]},"application/x-authorware-bin":{"source":"apache","extensions":["aab","x32","u32","vox"]},"application/x-authorware-map":{"source":"apache","extensions":["aam"]},"application/x-authorware-seg":{"source":"apache","extensions":["aas"]},"application/x-bcpio":{"source":"apache","extensions":["bcpio"]},"application/x-bdoc":{"compressible":false,"extensions":["bdoc"]},"application/x-bittorrent":{"source":"apache","extensions":["torrent"]},"application/x-blorb":{"source":"apache","extensions":["blb","blorb"]},"application/x-bzip":{"source":"apache","compressible":false,"extensions":["bz"]},"application/x-bzip2":{"source":"apache","compressible":false,"extensions":["bz2","boz"]},"application/x-cbr":{"source":"apache","extensions":["cbr","cba","cbt","cbz","cb7"]},"application/x-cdlink":{"source":"apache","extensions":["vcd"]},"application/x-cfs-compressed":{"source":"apache","extensions":["cfs"]},"application/x-chat":{"source":"apache","extensions":["chat"]},"application/x-chess-pgn":{"source":"apache","extensions":["pgn"]},"application/x-chrome-extension":{"extensions":["crx"]},"application/x-cocoa":{"source":"nginx","extensions":["cco"]},"application/x-compress":{"source":"apache"},"application/x-conference":{"source":"apache","extensions":["nsc"]},"application/x-cpio":{"source":"apache","extensions":["cpio"]},"application/x-csh":{"source":"apache","extensions":["csh"]},"application/x-deb":{"compressible":false},"application/x-debian-package":{"source":"apache","extensions":["deb","udeb"]},"application/x-dgc-compressed":{"source":"apache","extensions":["dgc"]},"application/x-director":{"source":"apache","extensions":["dir","dcr","dxr","cst","cct","cxt","w3d","fgd","swa"]},"application/x-doom":{"source":"apache","extensions":["wad"]},"application/x-dtbncx+xml":{"source":"apache","compressible":true,"extensions":["ncx"]},"application/x-dtbook+xml":{"source":"apache","compressible":true,"extensions":["dtb"]},"application/x-dtbresource+xml":{"source":"apache","compressible":true,"extensions":["res"]},"application/x-dvi":{"source":"apache","compressible":false,"extensions":["dvi"]},"application/x-envoy":{"source":"apache","extensions":["evy"]},"application/x-eva":{"source":"apache","extensions":["eva"]},"application/x-font-bdf":{"source":"apache","extensions":["bdf"]},"application/x-font-dos":{"source":"apache"},"application/x-font-framemaker":{"source":"apache"},"application/x-font-ghostscript":{"source":"apache","extensions":["gsf"]},"application/x-font-libgrx":{"source":"apache"},"application/x-font-linux-psf":{"source":"apache","extensions":["psf"]},"application/x-font-pcf":{"source":"apache","extensions":["pcf"]},"application/x-font-snf":{"source":"apache","extensions":["snf"]},"application/x-font-speedo":{"source":"apache"},"application/x-font-sunos-news":{"source":"apache"},"application/x-font-type1":{"source":"apache","extensions":["pfa","pfb","pfm","afm"]},"application/x-font-vfont":{"source":"apache"},"application/x-freearc":{"source":"apache","extensions":["arc"]},"application/x-futuresplash":{"source":"apache","extensions":["spl"]},"application/x-gca-compressed":{"source":"apache","extensions":["gca"]},"application/x-glulx":{"source":"apache","extensions":["ulx"]},"application/x-gnumeric":{"source":"apache","extensions":["gnumeric"]},"application/x-gramps-xml":{"source":"apache","extensions":["gramps"]},"application/x-gtar":{"source":"apache","extensions":["gtar"]},"application/x-gzip":{"source":"apache"},"application/x-hdf":{"source":"apache","extensions":["hdf"]},"application/x-httpd-php":{"compressible":true,"extensions":["php"]},"application/x-install-instructions":{"source":"apache","extensions":["install"]},"application/x-iso9660-image":{"source":"apache","extensions":["iso"]},"application/x-iwork-keynote-sffkey":{"extensions":["key"]},"application/x-iwork-numbers-sffnumbers":{"extensions":["numbers"]},"application/x-iwork-pages-sffpages":{"extensions":["pages"]},"application/x-java-archive-diff":{"source":"nginx","extensions":["jardiff"]},"application/x-java-jnlp-file":{"source":"apache","compressible":false,"extensions":["jnlp"]},"application/x-javascript":{"compressible":true},"application/x-keepass2":{"extensions":["kdbx"]},"application/x-latex":{"source":"apache","compressible":false,"extensions":["latex"]},"application/x-lua-bytecode":{"extensions":["luac"]},"application/x-lzh-compressed":{"source":"apache","extensions":["lzh","lha"]},"application/x-makeself":{"source":"nginx","extensions":["run"]},"application/x-mie":{"source":"apache","extensions":["mie"]},"application/x-mobipocket-ebook":{"source":"apache","extensions":["prc","mobi"]},"application/x-mpegurl":{"compressible":false},"application/x-ms-application":{"source":"apache","extensions":["application"]},"application/x-ms-shortcut":{"source":"apache","extensions":["lnk"]},"application/x-ms-wmd":{"source":"apache","extensions":["wmd"]},"application/x-ms-wmz":{"source":"apache","extensions":["wmz"]},"application/x-ms-xbap":{"source":"apache","extensions":["xbap"]},"application/x-msaccess":{"source":"apache","extensions":["mdb"]},"application/x-msbinder":{"source":"apache","extensions":["obd"]},"application/x-mscardfile":{"source":"apache","extensions":["crd"]},"application/x-msclip":{"source":"apache","extensions":["clp"]},"application/x-msdos-program":{"extensions":["exe"]},"application/x-msdownload":{"source":"apache","extensions":["exe","dll","com","bat","msi"]},"application/x-msmediaview":{"source":"apache","extensions":["mvb","m13","m14"]},"application/x-msmetafile":{"source":"apache","extensions":["wmf","wmz","emf","emz"]},"application/x-msmoney":{"source":"apache","extensions":["mny"]},"application/x-mspublisher":{"source":"apache","extensions":["pub"]},"application/x-msschedule":{"source":"apache","extensions":["scd"]},"application/x-msterminal":{"source":"apache","extensions":["trm"]},"application/x-mswrite":{"source":"apache","extensions":["wri"]},"application/x-netcdf":{"source":"apache","extensions":["nc","cdf"]},"application/x-ns-proxy-autoconfig":{"compressible":true,"extensions":["pac"]},"application/x-nzb":{"source":"apache","extensions":["nzb"]},"application/x-perl":{"source":"nginx","extensions":["pl","pm"]},"application/x-pilot":{"source":"nginx","extensions":["prc","pdb"]},"application/x-pkcs12":{"source":"apache","compressible":false,"extensions":["p12","pfx"]},"application/x-pkcs7-certificates":{"source":"apache","extensions":["p7b","spc"]},"application/x-pkcs7-certreqresp":{"source":"apache","extensions":["p7r"]},"application/x-pki-message":{"source":"iana"},"application/x-rar-compressed":{"source":"apache","compressible":false,"extensions":["rar"]},"application/x-redhat-package-manager":{"source":"nginx","extensions":["rpm"]},"application/x-research-info-systems":{"source":"apache","extensions":["ris"]},"application/x-sea":{"source":"nginx","extensions":["sea"]},"application/x-sh":{"source":"apache","compressible":true,"extensions":["sh"]},"application/x-shar":{"source":"apache","extensions":["shar"]},"application/x-shockwave-flash":{"source":"apache","compressible":false,"extensions":["swf"]},"application/x-silverlight-app":{"source":"apache","extensions":["xap"]},"application/x-sql":{"source":"apache","extensions":["sql"]},"application/x-stuffit":{"source":"apache","compressible":false,"extensions":["sit"]},"application/x-stuffitx":{"source":"apache","extensions":["sitx"]},"application/x-subrip":{"source":"apache","extensions":["srt"]},"application/x-sv4cpio":{"source":"apache","extensions":["sv4cpio"]},"application/x-sv4crc":{"source":"apache","extensions":["sv4crc"]},"application/x-t3vm-image":{"source":"apache","extensions":["t3"]},"application/x-tads":{"source":"apache","extensions":["gam"]},"application/x-tar":{"source":"apache","compressible":true,"extensions":["tar"]},"application/x-tcl":{"source":"apache","extensions":["tcl","tk"]},"application/x-tex":{"source":"apache","extensions":["tex"]},"application/x-tex-tfm":{"source":"apache","extensions":["tfm"]},"application/x-texinfo":{"source":"apache","extensions":["texinfo","texi"]},"application/x-tgif":{"source":"apache","extensions":["obj"]},"application/x-ustar":{"source":"apache","extensions":["ustar"]},"application/x-virtualbox-hdd":{"compressible":true,"extensions":["hdd"]},"application/x-virtualbox-ova":{"compressible":true,"extensions":["ova"]},"application/x-virtualbox-ovf":{"compressible":true,"extensions":["ovf"]},"application/x-virtualbox-vbox":{"compressible":true,"extensions":["vbox"]},"application/x-virtualbox-vbox-extpack":{"compressible":false,"extensions":["vbox-extpack"]},"application/x-virtualbox-vdi":{"compressible":true,"extensions":["vdi"]},"application/x-virtualbox-vhd":{"compressible":true,"extensions":["vhd"]},"application/x-virtualbox-vmdk":{"compressible":true,"extensions":["vmdk"]},"application/x-wais-source":{"source":"apache","extensions":["src"]},"application/x-web-app-manifest+json":{"compressible":true,"extensions":["webapp"]},"application/x-www-form-urlencoded":{"source":"iana","compressible":true},"application/x-x509-ca-cert":{"source":"iana","extensions":["der","crt","pem"]},"application/x-x509-ca-ra-cert":{"source":"iana"},"application/x-x509-next-ca-cert":{"source":"iana"},"application/x-xfig":{"source":"apache","extensions":["fig"]},"application/x-xliff+xml":{"source":"apache","compressible":true,"extensions":["xlf"]},"application/x-xpinstall":{"source":"apache","compressible":false,"extensions":["xpi"]},"application/x-xz":{"source":"apache","extensions":["xz"]},"application/x-zmachine":{"source":"apache","extensions":["z1","z2","z3","z4","z5","z6","z7","z8"]},"application/x400-bp":{"source":"iana"},"application/xacml+xml":{"source":"iana","compressible":true},"application/xaml+xml":{"source":"apache","compressible":true,"extensions":["xaml"]},"application/xcap-att+xml":{"source":"iana","compressible":true,"extensions":["xav"]},"application/xcap-caps+xml":{"source":"iana","compressible":true,"extensions":["xca"]},"application/xcap-diff+xml":{"source":"iana","compressible":true,"extensions":["xdf"]},"application/xcap-el+xml":{"source":"iana","compressible":true,"extensions":["xel"]},"application/xcap-error+xml":{"source":"iana","compressible":true},"application/xcap-ns+xml":{"source":"iana","compressible":true,"extensions":["xns"]},"application/xcon-conference-info+xml":{"source":"iana","compressible":true},"application/xcon-conference-info-diff+xml":{"source":"iana","compressible":true},"application/xenc+xml":{"source":"iana","compressible":true,"extensions":["xenc"]},"application/xhtml+xml":{"source":"iana","compressible":true,"extensions":["xhtml","xht"]},"application/xhtml-voice+xml":{"source":"apache","compressible":true},"application/xliff+xml":{"source":"iana","compressible":true,"extensions":["xlf"]},"application/xml":{"source":"iana","compressible":true,"extensions":["xml","xsl","xsd","rng"]},"application/xml-dtd":{"source":"iana","compressible":true,"extensions":["dtd"]},"application/xml-external-parsed-entity":{"source":"iana"},"application/xml-patch+xml":{"source":"iana","compressible":true},"application/xmpp+xml":{"source":"iana","compressible":true},"application/xop+xml":{"source":"iana","compressible":true,"extensions":["xop"]},"application/xproc+xml":{"source":"apache","compressible":true,"extensions":["xpl"]},"application/xslt+xml":{"source":"iana","compressible":true,"extensions":["xsl","xslt"]},"application/xspf+xml":{"source":"apache","compressible":true,"extensions":["xspf"]},"application/xv+xml":{"source":"iana","compressible":true,"extensions":["mxml","xhvml","xvml","xvm"]},"application/yang":{"source":"iana","extensions":["yang"]},"application/yang-data+json":{"source":"iana","compressible":true},"application/yang-data+xml":{"source":"iana","compressible":true},"application/yang-patch+json":{"source":"iana","compressible":true},"application/yang-patch+xml":{"source":"iana","compressible":true},"application/yin+xml":{"source":"iana","compressible":true,"extensions":["yin"]},"application/zip":{"source":"iana","compressible":false,"extensions":["zip"]},"application/zlib":{"source":"iana"},"application/zstd":{"source":"iana"},"audio/1d-interleaved-parityfec":{"source":"iana"},"audio/32kadpcm":{"source":"iana"},"audio/3gpp":{"source":"iana","compressible":false,"extensions":["3gpp"]},"audio/3gpp2":{"source":"iana"},"audio/aac":{"source":"iana"},"audio/ac3":{"source":"iana"},"audio/adpcm":{"source":"apache","extensions":["adp"]},"audio/amr":{"source":"iana","extensions":["amr"]},"audio/amr-wb":{"source":"iana"},"audio/amr-wb+":{"source":"iana"},"audio/aptx":{"source":"iana"},"audio/asc":{"source":"iana"},"audio/atrac-advanced-lossless":{"source":"iana"},"audio/atrac-x":{"source":"iana"},"audio/atrac3":{"source":"iana"},"audio/basic":{"source":"iana","compressible":false,"extensions":["au","snd"]},"audio/bv16":{"source":"iana"},"audio/bv32":{"source":"iana"},"audio/clearmode":{"source":"iana"},"audio/cn":{"source":"iana"},"audio/dat12":{"source":"iana"},"audio/dls":{"source":"iana"},"audio/dsr-es201108":{"source":"iana"},"audio/dsr-es202050":{"source":"iana"},"audio/dsr-es202211":{"source":"iana"},"audio/dsr-es202212":{"source":"iana"},"audio/dv":{"source":"iana"},"audio/dvi4":{"source":"iana"},"audio/eac3":{"source":"iana"},"audio/encaprtp":{"source":"iana"},"audio/evrc":{"source":"iana"},"audio/evrc-qcp":{"source":"iana"},"audio/evrc0":{"source":"iana"},"audio/evrc1":{"source":"iana"},"audio/evrcb":{"source":"iana"},"audio/evrcb0":{"source":"iana"},"audio/evrcb1":{"source":"iana"},"audio/evrcnw":{"source":"iana"},"audio/evrcnw0":{"source":"iana"},"audio/evrcnw1":{"source":"iana"},"audio/evrcwb":{"source":"iana"},"audio/evrcwb0":{"source":"iana"},"audio/evrcwb1":{"source":"iana"},"audio/evs":{"source":"iana"},"audio/flexfec":{"source":"iana"},"audio/fwdred":{"source":"iana"},"audio/g711-0":{"source":"iana"},"audio/g719":{"source":"iana"},"audio/g722":{"source":"iana"},"audio/g7221":{"source":"iana"},"audio/g723":{"source":"iana"},"audio/g726-16":{"source":"iana"},"audio/g726-24":{"source":"iana"},"audio/g726-32":{"source":"iana"},"audio/g726-40":{"source":"iana"},"audio/g728":{"source":"iana"},"audio/g729":{"source":"iana"},"audio/g7291":{"source":"iana"},"audio/g729d":{"source":"iana"},"audio/g729e":{"source":"iana"},"audio/gsm":{"source":"iana"},"audio/gsm-efr":{"source":"iana"},"audio/gsm-hr-08":{"source":"iana"},"audio/ilbc":{"source":"iana"},"audio/ip-mr_v2.5":{"source":"iana"},"audio/isac":{"source":"apache"},"audio/l16":{"source":"iana"},"audio/l20":{"source":"iana"},"audio/l24":{"source":"iana","compressible":false},"audio/l8":{"source":"iana"},"audio/lpc":{"source":"iana"},"audio/melp":{"source":"iana"},"audio/melp1200":{"source":"iana"},"audio/melp2400":{"source":"iana"},"audio/melp600":{"source":"iana"},"audio/mhas":{"source":"iana"},"audio/midi":{"source":"apache","extensions":["mid","midi","kar","rmi"]},"audio/mobile-xmf":{"source":"iana","extensions":["mxmf"]},"audio/mp3":{"compressible":false,"extensions":["mp3"]},"audio/mp4":{"source":"iana","compressible":false,"extensions":["m4a","mp4a"]},"audio/mp4a-latm":{"source":"iana"},"audio/mpa":{"source":"iana"},"audio/mpa-robust":{"source":"iana"},"audio/mpeg":{"source":"iana","compressible":false,"extensions":["mpga","mp2","mp2a","mp3","m2a","m3a"]},"audio/mpeg4-generic":{"source":"iana"},"audio/musepack":{"source":"apache"},"audio/ogg":{"source":"iana","compressible":false,"extensions":["oga","ogg","spx","opus"]},"audio/opus":{"source":"iana"},"audio/parityfec":{"source":"iana"},"audio/pcma":{"source":"iana"},"audio/pcma-wb":{"source":"iana"},"audio/pcmu":{"source":"iana"},"audio/pcmu-wb":{"source":"iana"},"audio/prs.sid":{"source":"iana"},"audio/qcelp":{"source":"iana"},"audio/raptorfec":{"source":"iana"},"audio/red":{"source":"iana"},"audio/rtp-enc-aescm128":{"source":"iana"},"audio/rtp-midi":{"source":"iana"},"audio/rtploopback":{"source":"iana"},"audio/rtx":{"source":"iana"},"audio/s3m":{"source":"apache","extensions":["s3m"]},"audio/scip":{"source":"iana"},"audio/silk":{"source":"apache","extensions":["sil"]},"audio/smv":{"source":"iana"},"audio/smv-qcp":{"source":"iana"},"audio/smv0":{"source":"iana"},"audio/sofa":{"source":"iana"},"audio/sp-midi":{"source":"iana"},"audio/speex":{"source":"iana"},"audio/t140c":{"source":"iana"},"audio/t38":{"source":"iana"},"audio/telephone-event":{"source":"iana"},"audio/tetra_acelp":{"source":"iana"},"audio/tetra_acelp_bb":{"source":"iana"},"audio/tone":{"source":"iana"},"audio/tsvcis":{"source":"iana"},"audio/uemclip":{"source":"iana"},"audio/ulpfec":{"source":"iana"},"audio/usac":{"source":"iana"},"audio/vdvi":{"source":"iana"},"audio/vmr-wb":{"source":"iana"},"audio/vnd.3gpp.iufp":{"source":"iana"},"audio/vnd.4sb":{"source":"iana"},"audio/vnd.audiokoz":{"source":"iana"},"audio/vnd.celp":{"source":"iana"},"audio/vnd.cisco.nse":{"source":"iana"},"audio/vnd.cmles.radio-events":{"source":"iana"},"audio/vnd.cns.anp1":{"source":"iana"},"audio/vnd.cns.inf1":{"source":"iana"},"audio/vnd.dece.audio":{"source":"iana","extensions":["uva","uvva"]},"audio/vnd.digital-winds":{"source":"iana","extensions":["eol"]},"audio/vnd.dlna.adts":{"source":"iana"},"audio/vnd.dolby.heaac.1":{"source":"iana"},"audio/vnd.dolby.heaac.2":{"source":"iana"},"audio/vnd.dolby.mlp":{"source":"iana"},"audio/vnd.dolby.mps":{"source":"iana"},"audio/vnd.dolby.pl2":{"source":"iana"},"audio/vnd.dolby.pl2x":{"source":"iana"},"audio/vnd.dolby.pl2z":{"source":"iana"},"audio/vnd.dolby.pulse.1":{"source":"iana"},"audio/vnd.dra":{"source":"iana","extensions":["dra"]},"audio/vnd.dts":{"source":"iana","extensions":["dts"]},"audio/vnd.dts.hd":{"source":"iana","extensions":["dtshd"]},"audio/vnd.dts.uhd":{"source":"iana"},"audio/vnd.dvb.file":{"source":"iana"},"audio/vnd.everad.plj":{"source":"iana"},"audio/vnd.hns.audio":{"source":"iana"},"audio/vnd.lucent.voice":{"source":"iana","extensions":["lvp"]},"audio/vnd.ms-playready.media.pya":{"source":"iana","extensions":["pya"]},"audio/vnd.nokia.mobile-xmf":{"source":"iana"},"audio/vnd.nortel.vbk":{"source":"iana"},"audio/vnd.nuera.ecelp4800":{"source":"iana","extensions":["ecelp4800"]},"audio/vnd.nuera.ecelp7470":{"source":"iana","extensions":["ecelp7470"]},"audio/vnd.nuera.ecelp9600":{"source":"iana","extensions":["ecelp9600"]},"audio/vnd.octel.sbc":{"source":"iana"},"audio/vnd.presonus.multitrack":{"source":"iana"},"audio/vnd.qcelp":{"source":"iana"},"audio/vnd.rhetorex.32kadpcm":{"source":"iana"},"audio/vnd.rip":{"source":"iana","extensions":["rip"]},"audio/vnd.rn-realaudio":{"compressible":false},"audio/vnd.sealedmedia.softseal.mpeg":{"source":"iana"},"audio/vnd.vmx.cvsd":{"source":"iana"},"audio/vnd.wave":{"compressible":false},"audio/vorbis":{"source":"iana","compressible":false},"audio/vorbis-config":{"source":"iana"},"audio/wav":{"compressible":false,"extensions":["wav"]},"audio/wave":{"compressible":false,"extensions":["wav"]},"audio/webm":{"source":"apache","compressible":false,"extensions":["weba"]},"audio/x-aac":{"source":"apache","compressible":false,"extensions":["aac"]},"audio/x-aiff":{"source":"apache","extensions":["aif","aiff","aifc"]},"audio/x-caf":{"source":"apache","compressible":false,"extensions":["caf"]},"audio/x-flac":{"source":"apache","extensions":["flac"]},"audio/x-m4a":{"source":"nginx","extensions":["m4a"]},"audio/x-matroska":{"source":"apache","extensions":["mka"]},"audio/x-mpegurl":{"source":"apache","extensions":["m3u"]},"audio/x-ms-wax":{"source":"apache","extensions":["wax"]},"audio/x-ms-wma":{"source":"apache","extensions":["wma"]},"audio/x-pn-realaudio":{"source":"apache","extensions":["ram","ra"]},"audio/x-pn-realaudio-plugin":{"source":"apache","extensions":["rmp"]},"audio/x-realaudio":{"source":"nginx","extensions":["ra"]},"audio/x-tta":{"source":"apache"},"audio/x-wav":{"source":"apache","extensions":["wav"]},"audio/xm":{"source":"apache","extensions":["xm"]},"chemical/x-cdx":{"source":"apache","extensions":["cdx"]},"chemical/x-cif":{"source":"apache","extensions":["cif"]},"chemical/x-cmdf":{"source":"apache","extensions":["cmdf"]},"chemical/x-cml":{"source":"apache","extensions":["cml"]},"chemical/x-csml":{"source":"apache","extensions":["csml"]},"chemical/x-pdb":{"source":"apache"},"chemical/x-xyz":{"source":"apache","extensions":["xyz"]},"font/collection":{"source":"iana","extensions":["ttc"]},"font/otf":{"source":"iana","compressible":true,"extensions":["otf"]},"font/sfnt":{"source":"iana"},"font/ttf":{"source":"iana","compressible":true,"extensions":["ttf"]},"font/woff":{"source":"iana","extensions":["woff"]},"font/woff2":{"source":"iana","extensions":["woff2"]},"image/aces":{"source":"iana","extensions":["exr"]},"image/apng":{"compressible":false,"extensions":["apng"]},"image/avci":{"source":"iana","extensions":["avci"]},"image/avcs":{"source":"iana","extensions":["avcs"]},"image/avif":{"source":"iana","compressible":false,"extensions":["avif"]},"image/bmp":{"source":"iana","compressible":true,"extensions":["bmp"]},"image/cgm":{"source":"iana","extensions":["cgm"]},"image/dicom-rle":{"source":"iana","extensions":["drle"]},"image/emf":{"source":"iana","extensions":["emf"]},"image/fits":{"source":"iana","extensions":["fits"]},"image/g3fax":{"source":"iana","extensions":["g3"]},"image/gif":{"source":"iana","compressible":false,"extensions":["gif"]},"image/heic":{"source":"iana","extensions":["heic"]},"image/heic-sequence":{"source":"iana","extensions":["heics"]},"image/heif":{"source":"iana","extensions":["heif"]},"image/heif-sequence":{"source":"iana","extensions":["heifs"]},"image/hej2k":{"source":"iana","extensions":["hej2"]},"image/hsj2":{"source":"iana","extensions":["hsj2"]},"image/ief":{"source":"iana","extensions":["ief"]},"image/jls":{"source":"iana","extensions":["jls"]},"image/jp2":{"source":"iana","compressible":false,"extensions":["jp2","jpg2"]},"image/jpeg":{"source":"iana","compressible":false,"extensions":["jpeg","jpg","jpe"]},"image/jph":{"source":"iana","extensions":["jph"]},"image/jphc":{"source":"iana","extensions":["jhc"]},"image/jpm":{"source":"iana","compressible":false,"extensions":["jpm"]},"image/jpx":{"source":"iana","compressible":false,"extensions":["jpx","jpf"]},"image/jxr":{"source":"iana","extensions":["jxr"]},"image/jxra":{"source":"iana","extensions":["jxra"]},"image/jxrs":{"source":"iana","extensions":["jxrs"]},"image/jxs":{"source":"iana","extensions":["jxs"]},"image/jxsc":{"source":"iana","extensions":["jxsc"]},"image/jxsi":{"source":"iana","extensions":["jxsi"]},"image/jxss":{"source":"iana","extensions":["jxss"]},"image/ktx":{"source":"iana","extensions":["ktx"]},"image/ktx2":{"source":"iana","extensions":["ktx2"]},"image/naplps":{"source":"iana"},"image/pjpeg":{"compressible":false},"image/png":{"source":"iana","compressible":false,"extensions":["png"]},"image/prs.btif":{"source":"iana","extensions":["btif"]},"image/prs.pti":{"source":"iana","extensions":["pti"]},"image/pwg-raster":{"source":"iana"},"image/sgi":{"source":"apache","extensions":["sgi"]},"image/svg+xml":{"source":"iana","compressible":true,"extensions":["svg","svgz"]},"image/t38":{"source":"iana","extensions":["t38"]},"image/tiff":{"source":"iana","compressible":false,"extensions":["tif","tiff"]},"image/tiff-fx":{"source":"iana","extensions":["tfx"]},"image/vnd.adobe.photoshop":{"source":"iana","compressible":true,"extensions":["psd"]},"image/vnd.airzip.accelerator.azv":{"source":"iana","extensions":["azv"]},"image/vnd.cns.inf2":{"source":"iana"},"image/vnd.dece.graphic":{"source":"iana","extensions":["uvi","uvvi","uvg","uvvg"]},"image/vnd.djvu":{"source":"iana","extensions":["djvu","djv"]},"image/vnd.dvb.subtitle":{"source":"iana","extensions":["sub"]},"image/vnd.dwg":{"source":"iana","extensions":["dwg"]},"image/vnd.dxf":{"source":"iana","extensions":["dxf"]},"image/vnd.fastbidsheet":{"source":"iana","extensions":["fbs"]},"image/vnd.fpx":{"source":"iana","extensions":["fpx"]},"image/vnd.fst":{"source":"iana","extensions":["fst"]},"image/vnd.fujixerox.edmics-mmr":{"source":"iana","extensions":["mmr"]},"image/vnd.fujixerox.edmics-rlc":{"source":"iana","extensions":["rlc"]},"image/vnd.globalgraphics.pgb":{"source":"iana"},"image/vnd.microsoft.icon":{"source":"iana","compressible":true,"extensions":["ico"]},"image/vnd.mix":{"source":"iana"},"image/vnd.mozilla.apng":{"source":"iana"},"image/vnd.ms-dds":{"compressible":true,"extensions":["dds"]},"image/vnd.ms-modi":{"source":"iana","extensions":["mdi"]},"image/vnd.ms-photo":{"source":"apache","extensions":["wdp"]},"image/vnd.net-fpx":{"source":"iana","extensions":["npx"]},"image/vnd.pco.b16":{"source":"iana","extensions":["b16"]},"image/vnd.radiance":{"source":"iana"},"image/vnd.sealed.png":{"source":"iana"},"image/vnd.sealedmedia.softseal.gif":{"source":"iana"},"image/vnd.sealedmedia.softseal.jpg":{"source":"iana"},"image/vnd.svf":{"source":"iana"},"image/vnd.tencent.tap":{"source":"iana","extensions":["tap"]},"image/vnd.valve.source.texture":{"source":"iana","extensions":["vtf"]},"image/vnd.wap.wbmp":{"source":"iana","extensions":["wbmp"]},"image/vnd.xiff":{"source":"iana","extensions":["xif"]},"image/vnd.zbrush.pcx":{"source":"iana","extensions":["pcx"]},"image/webp":{"source":"apache","extensions":["webp"]},"image/wmf":{"source":"iana","extensions":["wmf"]},"image/x-3ds":{"source":"apache","extensions":["3ds"]},"image/x-cmu-raster":{"source":"apache","extensions":["ras"]},"image/x-cmx":{"source":"apache","extensions":["cmx"]},"image/x-freehand":{"source":"apache","extensions":["fh","fhc","fh4","fh5","fh7"]},"image/x-icon":{"source":"apache","compressible":true,"extensions":["ico"]},"image/x-jng":{"source":"nginx","extensions":["jng"]},"image/x-mrsid-image":{"source":"apache","extensions":["sid"]},"image/x-ms-bmp":{"source":"nginx","compressible":true,"extensions":["bmp"]},"image/x-pcx":{"source":"apache","extensions":["pcx"]},"image/x-pict":{"source":"apache","extensions":["pic","pct"]},"image/x-portable-anymap":{"source":"apache","extensions":["pnm"]},"image/x-portable-bitmap":{"source":"apache","extensions":["pbm"]},"image/x-portable-graymap":{"source":"apache","extensions":["pgm"]},"image/x-portable-pixmap":{"source":"apache","extensions":["ppm"]},"image/x-rgb":{"source":"apache","extensions":["rgb"]},"image/x-tga":{"source":"apache","extensions":["tga"]},"image/x-xbitmap":{"source":"apache","extensions":["xbm"]},"image/x-xcf":{"compressible":false},"image/x-xpixmap":{"source":"apache","extensions":["xpm"]},"image/x-xwindowdump":{"source":"apache","extensions":["xwd"]},"message/cpim":{"source":"iana"},"message/delivery-status":{"source":"iana"},"message/disposition-notification":{"source":"iana","extensions":["disposition-notification"]},"message/external-body":{"source":"iana"},"message/feedback-report":{"source":"iana"},"message/global":{"source":"iana","extensions":["u8msg"]},"message/global-delivery-status":{"source":"iana","extensions":["u8dsn"]},"message/global-disposition-notification":{"source":"iana","extensions":["u8mdn"]},"message/global-headers":{"source":"iana","extensions":["u8hdr"]},"message/http":{"source":"iana","compressible":false},"message/imdn+xml":{"source":"iana","compressible":true},"message/news":{"source":"iana"},"message/partial":{"source":"iana","compressible":false},"message/rfc822":{"source":"iana","compressible":true,"extensions":["eml","mime"]},"message/s-http":{"source":"iana"},"message/sip":{"source":"iana"},"message/sipfrag":{"source":"iana"},"message/tracking-status":{"source":"iana"},"message/vnd.si.simp":{"source":"iana"},"message/vnd.wfa.wsc":{"source":"iana","extensions":["wsc"]},"model/3mf":{"source":"iana","extensions":["3mf"]},"model/e57":{"source":"iana"},"model/gltf+json":{"source":"iana","compressible":true,"extensions":["gltf"]},"model/gltf-binary":{"source":"iana","compressible":true,"extensions":["glb"]},"model/iges":{"source":"iana","compressible":false,"extensions":["igs","iges"]},"model/mesh":{"source":"iana","compressible":false,"extensions":["msh","mesh","silo"]},"model/mtl":{"source":"iana","extensions":["mtl"]},"model/obj":{"source":"iana","extensions":["obj"]},"model/step":{"source":"iana"},"model/step+xml":{"source":"iana","compressible":true,"extensions":["stpx"]},"model/step+zip":{"source":"iana","compressible":false,"extensions":["stpz"]},"model/step-xml+zip":{"source":"iana","compressible":false,"extensions":["stpxz"]},"model/stl":{"source":"iana","extensions":["stl"]},"model/vnd.collada+xml":{"source":"iana","compressible":true,"extensions":["dae"]},"model/vnd.dwf":{"source":"iana","extensions":["dwf"]},"model/vnd.flatland.3dml":{"source":"iana"},"model/vnd.gdl":{"source":"iana","extensions":["gdl"]},"model/vnd.gs-gdl":{"source":"apache"},"model/vnd.gs.gdl":{"source":"iana"},"model/vnd.gtw":{"source":"iana","extensions":["gtw"]},"model/vnd.moml+xml":{"source":"iana","compressible":true},"model/vnd.mts":{"source":"iana","extensions":["mts"]},"model/vnd.opengex":{"source":"iana","extensions":["ogex"]},"model/vnd.parasolid.transmit.binary":{"source":"iana","extensions":["x_b"]},"model/vnd.parasolid.transmit.text":{"source":"iana","extensions":["x_t"]},"model/vnd.pytha.pyox":{"source":"iana"},"model/vnd.rosette.annotated-data-model":{"source":"iana"},"model/vnd.sap.vds":{"source":"iana","extensions":["vds"]},"model/vnd.usdz+zip":{"source":"iana","compressible":false,"extensions":["usdz"]},"model/vnd.valve.source.compiled-map":{"source":"iana","extensions":["bsp"]},"model/vnd.vtu":{"source":"iana","extensions":["vtu"]},"model/vrml":{"source":"iana","compressible":false,"extensions":["wrl","vrml"]},"model/x3d+binary":{"source":"apache","compressible":false,"extensions":["x3db","x3dbz"]},"model/x3d+fastinfoset":{"source":"iana","extensions":["x3db"]},"model/x3d+vrml":{"source":"apache","compressible":false,"extensions":["x3dv","x3dvz"]},"model/x3d+xml":{"source":"iana","compressible":true,"extensions":["x3d","x3dz"]},"model/x3d-vrml":{"source":"iana","extensions":["x3dv"]},"multipart/alternative":{"source":"iana","compressible":false},"multipart/appledouble":{"source":"iana"},"multipart/byteranges":{"source":"iana"},"multipart/digest":{"source":"iana"},"multipart/encrypted":{"source":"iana","compressible":false},"multipart/form-data":{"source":"iana","compressible":false},"multipart/header-set":{"source":"iana"},"multipart/mixed":{"source":"iana"},"multipart/multilingual":{"source":"iana"},"multipart/parallel":{"source":"iana"},"multipart/related":{"source":"iana","compressible":false},"multipart/report":{"source":"iana"},"multipart/signed":{"source":"iana","compressible":false},"multipart/vnd.bint.med-plus":{"source":"iana"},"multipart/voice-message":{"source":"iana"},"multipart/x-mixed-replace":{"source":"iana"},"text/1d-interleaved-parityfec":{"source":"iana"},"text/cache-manifest":{"source":"iana","compressible":true,"extensions":["appcache","manifest"]},"text/calendar":{"source":"iana","extensions":["ics","ifb"]},"text/calender":{"compressible":true},"text/cmd":{"compressible":true},"text/coffeescript":{"extensions":["coffee","litcoffee"]},"text/cql":{"source":"iana"},"text/cql-expression":{"source":"iana"},"text/cql-identifier":{"source":"iana"},"text/css":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["css"]},"text/csv":{"source":"iana","compressible":true,"extensions":["csv"]},"text/csv-schema":{"source":"iana"},"text/directory":{"source":"iana"},"text/dns":{"source":"iana"},"text/ecmascript":{"source":"iana"},"text/encaprtp":{"source":"iana"},"text/enriched":{"source":"iana"},"text/fhirpath":{"source":"iana"},"text/flexfec":{"source":"iana"},"text/fwdred":{"source":"iana"},"text/gff3":{"source":"iana"},"text/grammar-ref-list":{"source":"iana"},"text/html":{"source":"iana","compressible":true,"extensions":["html","htm","shtml"]},"text/jade":{"extensions":["jade"]},"text/javascript":{"source":"iana","compressible":true},"text/jcr-cnd":{"source":"iana"},"text/jsx":{"compressible":true,"extensions":["jsx"]},"text/less":{"compressible":true,"extensions":["less"]},"text/markdown":{"source":"iana","compressible":true,"extensions":["markdown","md"]},"text/mathml":{"source":"nginx","extensions":["mml"]},"text/mdx":{"compressible":true,"extensions":["mdx"]},"text/mizar":{"source":"iana"},"text/n3":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["n3"]},"text/parameters":{"source":"iana","charset":"UTF-8"},"text/parityfec":{"source":"iana"},"text/plain":{"source":"iana","compressible":true,"extensions":["txt","text","conf","def","list","log","in","ini"]},"text/provenance-notation":{"source":"iana","charset":"UTF-8"},"text/prs.fallenstein.rst":{"source":"iana"},"text/prs.lines.tag":{"source":"iana","extensions":["dsc"]},"text/prs.prop.logic":{"source":"iana"},"text/raptorfec":{"source":"iana"},"text/red":{"source":"iana"},"text/rfc822-headers":{"source":"iana"},"text/richtext":{"source":"iana","compressible":true,"extensions":["rtx"]},"text/rtf":{"source":"iana","compressible":true,"extensions":["rtf"]},"text/rtp-enc-aescm128":{"source":"iana"},"text/rtploopback":{"source":"iana"},"text/rtx":{"source":"iana"},"text/sgml":{"source":"iana","extensions":["sgml","sgm"]},"text/shaclc":{"source":"iana"},"text/shex":{"source":"iana","extensions":["shex"]},"text/slim":{"extensions":["slim","slm"]},"text/spdx":{"source":"iana","extensions":["spdx"]},"text/strings":{"source":"iana"},"text/stylus":{"extensions":["stylus","styl"]},"text/t140":{"source":"iana"},"text/tab-separated-values":{"source":"iana","compressible":true,"extensions":["tsv"]},"text/troff":{"source":"iana","extensions":["t","tr","roff","man","me","ms"]},"text/turtle":{"source":"iana","charset":"UTF-8","extensions":["ttl"]},"text/ulpfec":{"source":"iana"},"text/uri-list":{"source":"iana","compressible":true,"extensions":["uri","uris","urls"]},"text/vcard":{"source":"iana","compressible":true,"extensions":["vcard"]},"text/vnd.a":{"source":"iana"},"text/vnd.abc":{"source":"iana"},"text/vnd.ascii-art":{"source":"iana"},"text/vnd.curl":{"source":"iana","extensions":["curl"]},"text/vnd.curl.dcurl":{"source":"apache","extensions":["dcurl"]},"text/vnd.curl.mcurl":{"source":"apache","extensions":["mcurl"]},"text/vnd.curl.scurl":{"source":"apache","extensions":["scurl"]},"text/vnd.debian.copyright":{"source":"iana","charset":"UTF-8"},"text/vnd.dmclientscript":{"source":"iana"},"text/vnd.dvb.subtitle":{"source":"iana","extensions":["sub"]},"text/vnd.esmertec.theme-descriptor":{"source":"iana","charset":"UTF-8"},"text/vnd.familysearch.gedcom":{"source":"iana","extensions":["ged"]},"text/vnd.ficlab.flt":{"source":"iana"},"text/vnd.fly":{"source":"iana","extensions":["fly"]},"text/vnd.fmi.flexstor":{"source":"iana","extensions":["flx"]},"text/vnd.gml":{"source":"iana"},"text/vnd.graphviz":{"source":"iana","extensions":["gv"]},"text/vnd.hans":{"source":"iana"},"text/vnd.hgl":{"source":"iana"},"text/vnd.in3d.3dml":{"source":"iana","extensions":["3dml"]},"text/vnd.in3d.spot":{"source":"iana","extensions":["spot"]},"text/vnd.iptc.newsml":{"source":"iana"},"text/vnd.iptc.nitf":{"source":"iana"},"text/vnd.latex-z":{"source":"iana"},"text/vnd.motorola.reflex":{"source":"iana"},"text/vnd.ms-mediapackage":{"source":"iana"},"text/vnd.net2phone.commcenter.command":{"source":"iana"},"text/vnd.radisys.msml-basic-layout":{"source":"iana"},"text/vnd.senx.warpscript":{"source":"iana"},"text/vnd.si.uricatalogue":{"source":"iana"},"text/vnd.sosi":{"source":"iana"},"text/vnd.sun.j2me.app-descriptor":{"source":"iana","charset":"UTF-8","extensions":["jad"]},"text/vnd.trolltech.linguist":{"source":"iana","charset":"UTF-8"},"text/vnd.wap.si":{"source":"iana"},"text/vnd.wap.sl":{"source":"iana"},"text/vnd.wap.wml":{"source":"iana","extensions":["wml"]},"text/vnd.wap.wmlscript":{"source":"iana","extensions":["wmls"]},"text/vtt":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["vtt"]},"text/x-asm":{"source":"apache","extensions":["s","asm"]},"text/x-c":{"source":"apache","extensions":["c","cc","cxx","cpp","h","hh","dic"]},"text/x-component":{"source":"nginx","extensions":["htc"]},"text/x-fortran":{"source":"apache","extensions":["f","for","f77","f90"]},"text/x-gwt-rpc":{"compressible":true},"text/x-handlebars-template":{"extensions":["hbs"]},"text/x-java-source":{"source":"apache","extensions":["java"]},"text/x-jquery-tmpl":{"compressible":true},"text/x-lua":{"extensions":["lua"]},"text/x-markdown":{"compressible":true,"extensions":["mkd"]},"text/x-nfo":{"source":"apache","extensions":["nfo"]},"text/x-opml":{"source":"apache","extensions":["opml"]},"text/x-org":{"compressible":true,"extensions":["org"]},"text/x-pascal":{"source":"apache","extensions":["p","pas"]},"text/x-processing":{"compressible":true,"extensions":["pde"]},"text/x-sass":{"extensions":["sass"]},"text/x-scss":{"extensions":["scss"]},"text/x-setext":{"source":"apache","extensions":["etx"]},"text/x-sfv":{"source":"apache","extensions":["sfv"]},"text/x-suse-ymp":{"compressible":true,"extensions":["ymp"]},"text/x-uuencode":{"source":"apache","extensions":["uu"]},"text/x-vcalendar":{"source":"apache","extensions":["vcs"]},"text/x-vcard":{"source":"apache","extensions":["vcf"]},"text/xml":{"source":"iana","compressible":true,"extensions":["xml"]},"text/xml-external-parsed-entity":{"source":"iana"},"text/yaml":{"compressible":true,"extensions":["yaml","yml"]},"video/1d-interleaved-parityfec":{"source":"iana"},"video/3gpp":{"source":"iana","extensions":["3gp","3gpp"]},"video/3gpp-tt":{"source":"iana"},"video/3gpp2":{"source":"iana","extensions":["3g2"]},"video/av1":{"source":"iana"},"video/bmpeg":{"source":"iana"},"video/bt656":{"source":"iana"},"video/celb":{"source":"iana"},"video/dv":{"source":"iana"},"video/encaprtp":{"source":"iana"},"video/ffv1":{"source":"iana"},"video/flexfec":{"source":"iana"},"video/h261":{"source":"iana","extensions":["h261"]},"video/h263":{"source":"iana","extensions":["h263"]},"video/h263-1998":{"source":"iana"},"video/h263-2000":{"source":"iana"},"video/h264":{"source":"iana","extensions":["h264"]},"video/h264-rcdo":{"source":"iana"},"video/h264-svc":{"source":"iana"},"video/h265":{"source":"iana"},"video/iso.segment":{"source":"iana","extensions":["m4s"]},"video/jpeg":{"source":"iana","extensions":["jpgv"]},"video/jpeg2000":{"source":"iana"},"video/jpm":{"source":"apache","extensions":["jpm","jpgm"]},"video/jxsv":{"source":"iana"},"video/mj2":{"source":"iana","extensions":["mj2","mjp2"]},"video/mp1s":{"source":"iana"},"video/mp2p":{"source":"iana"},"video/mp2t":{"source":"iana","extensions":["ts"]},"video/mp4":{"source":"iana","compressible":false,"extensions":["mp4","mp4v","mpg4"]},"video/mp4v-es":{"source":"iana"},"video/mpeg":{"source":"iana","compressible":false,"extensions":["mpeg","mpg","mpe","m1v","m2v"]},"video/mpeg4-generic":{"source":"iana"},"video/mpv":{"source":"iana"},"video/nv":{"source":"iana"},"video/ogg":{"source":"iana","compressible":false,"extensions":["ogv"]},"video/parityfec":{"source":"iana"},"video/pointer":{"source":"iana"},"video/quicktime":{"source":"iana","compressible":false,"extensions":["qt","mov"]},"video/raptorfec":{"source":"iana"},"video/raw":{"source":"iana"},"video/rtp-enc-aescm128":{"source":"iana"},"video/rtploopback":{"source":"iana"},"video/rtx":{"source":"iana"},"video/scip":{"source":"iana"},"video/smpte291":{"source":"iana"},"video/smpte292m":{"source":"iana"},"video/ulpfec":{"source":"iana"},"video/vc1":{"source":"iana"},"video/vc2":{"source":"iana"},"video/vnd.cctv":{"source":"iana"},"video/vnd.dece.hd":{"source":"iana","extensions":["uvh","uvvh"]},"video/vnd.dece.mobile":{"source":"iana","extensions":["uvm","uvvm"]},"video/vnd.dece.mp4":{"source":"iana"},"video/vnd.dece.pd":{"source":"iana","extensions":["uvp","uvvp"]},"video/vnd.dece.sd":{"source":"iana","extensions":["uvs","uvvs"]},"video/vnd.dece.video":{"source":"iana","extensions":["uvv","uvvv"]},"video/vnd.directv.mpeg":{"source":"iana"},"video/vnd.directv.mpeg-tts":{"source":"iana"},"video/vnd.dlna.mpeg-tts":{"source":"iana"},"video/vnd.dvb.file":{"source":"iana","extensions":["dvb"]},"video/vnd.fvt":{"source":"iana","extensions":["fvt"]},"video/vnd.hns.video":{"source":"iana"},"video/vnd.iptvforum.1dparityfec-1010":{"source":"iana"},"video/vnd.iptvforum.1dparityfec-2005":{"source":"iana"},"video/vnd.iptvforum.2dparityfec-1010":{"source":"iana"},"video/vnd.iptvforum.2dparityfec-2005":{"source":"iana"},"video/vnd.iptvforum.ttsavc":{"source":"iana"},"video/vnd.iptvforum.ttsmpeg2":{"source":"iana"},"video/vnd.motorola.video":{"source":"iana"},"video/vnd.motorola.videop":{"source":"iana"},"video/vnd.mpegurl":{"source":"iana","extensions":["mxu","m4u"]},"video/vnd.ms-playready.media.pyv":{"source":"iana","extensions":["pyv"]},"video/vnd.nokia.interleaved-multimedia":{"source":"iana"},"video/vnd.nokia.mp4vr":{"source":"iana"},"video/vnd.nokia.videovoip":{"source":"iana"},"video/vnd.objectvideo":{"source":"iana"},"video/vnd.radgamettools.bink":{"source":"iana"},"video/vnd.radgamettools.smacker":{"source":"iana"},"video/vnd.sealed.mpeg1":{"source":"iana"},"video/vnd.sealed.mpeg4":{"source":"iana"},"video/vnd.sealed.swf":{"source":"iana"},"video/vnd.sealedmedia.softseal.mov":{"source":"iana"},"video/vnd.uvvu.mp4":{"source":"iana","extensions":["uvu","uvvu"]},"video/vnd.vivo":{"source":"iana","extensions":["viv"]},"video/vnd.youtube.yt":{"source":"iana"},"video/vp8":{"source":"iana"},"video/vp9":{"source":"iana"},"video/webm":{"source":"apache","compressible":false,"extensions":["webm"]},"video/x-f4v":{"source":"apache","extensions":["f4v"]},"video/x-fli":{"source":"apache","extensions":["fli"]},"video/x-flv":{"source":"apache","compressible":false,"extensions":["flv"]},"video/x-m4v":{"source":"apache","extensions":["m4v"]},"video/x-matroska":{"source":"apache","compressible":false,"extensions":["mkv","mk3d","mks"]},"video/x-mng":{"source":"apache","extensions":["mng"]},"video/x-ms-asf":{"source":"apache","extensions":["asf","asx"]},"video/x-ms-vob":{"source":"apache","extensions":["vob"]},"video/x-ms-wm":{"source":"apache","extensions":["wm"]},"video/x-ms-wmv":{"source":"apache","compressible":false,"extensions":["wmv"]},"video/x-ms-wmx":{"source":"apache","extensions":["wmx"]},"video/x-ms-wvx":{"source":"apache","extensions":["wvx"]},"video/x-msvideo":{"source":"apache","extensions":["avi"]},"video/x-sgi-movie":{"source":"apache","extensions":["movie"]},"video/x-smv":{"source":"apache","extensions":["smv"]},"x-conference/x-cooltalk":{"source":"apache","extensions":["ice"]},"x-shader/x-fragment":{"compressible":true},"x-shader/x-vertex":{"compressible":true}}');
 
 /***/ })
 
@@ -40430,7 +42973,7 @@ module.exports = /*#__PURE__*/JSON.parse('{"application/1d-interleaved-parityfec
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+// This entry needs to be wrapped in an IIFE because it needs to be in strict mode.
 (() => {
 "use strict";
 
@@ -41418,6 +43961,11 @@ async function getRule() {
             ruleClass = Mangguoshufang;
             break;
         }
+        case "www.xiguashuwu.com": {
+            const { Xiguashuwu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/xiguashuwu.ts"));
+            ruleClass = Xiguashuwu;
+            break;
+        }
         default: {
             throw new Error("Not Found Rule!");
         }
@@ -41925,7 +44473,24 @@ function getUI() {
 
 ;// ./src/ui/button.html
 // Module
-var code = "<div id=\"button-div\" class=\"button-div\">\n  <div v-if=\"uiObj.type !== 'error'\">\n    <div v-if=\"uiObj.type === 'jump'\" class=\"jump\">\n      <button class=\"jump\">\n        <img alt=\"jump\" class=\"jump\" v-bind:src=\"imgJump\" v-on:click=\"jumpButtonClick\">\n      </button>\n    </div>\n    <div v-if=\"uiObj.type === 'download'\" class=\"download\">\n      <button class=\"start\">\n        <img alt=\"start\" class=\"start\" v-bind:src=\"imgStart\" v-on:click=\"startButtonClick\">\n      </button>\n      <button v-if=\"isSettingSeen\" class=\"setting\">\n        <img alt=\"setting\" class=\"setting\" v-bind:src=\"imgSetting\" v-on:click=\"settingButtonClick\">\n      </button>\n    </div>\n  </div>\n</div>\n";
+var code = `<div id="button-div" class="button-div">
+  <div v-if="uiObj.type !== 'error'">
+    <div v-if="uiObj.type === 'jump'" class="jump">
+      <button class="jump">
+        <img alt="jump" class="jump" v-bind:src="imgJump" v-on:click="jumpButtonClick">
+      </button>
+    </div>
+    <div v-if="uiObj.type === 'download'" class="download">
+      <button class="start">
+        <img alt="start" class="start" v-bind:src="imgStart" v-on:click="startButtonClick">
+      </button>
+      <button v-if="isSettingSeen" class="setting">
+        <img alt="setting" class="setting" v-bind:src="imgSetting" v-on:click="settingButtonClick">
+      </button>
+    </div>
+  </div>
+</div>
+`;
 // Exports
 /* harmony default export */ const ui_button = (code);
 // EXTERNAL MODULE: ./src/ui/button.less
@@ -41964,7 +44529,31 @@ var main = __webpack_require__("./src/main/main.ts");
 var save_misc = __webpack_require__("./src/save/misc.ts");
 ;// ./src/ui/ChapterList.html
 // Module
-var ChapterList_code = "<div>\n  <div v-if=\"loading\">\n    <div class=\"chapter-list-loading\">\n      <h2 v-if=\"failed\">加载章节失败！</h2>\n      <h2 v-else>正在载入章节列表中，请耐心等待……</h2>\n    </div>\n  </div>\n  <div v-else class=\"chapter-list\" style=\"display: block;position: relative;\">\n    <div v-for=\"sectionObj in sectionsObj\" v-show=\"isSectionSeen(sectionObj)\" v-bind:key=\"sectionObj.sectionNumber\" class=\"section\">\n      <h3 v-if=\"sectionObj.sectionName\" class=\"section-label\">\n        {{ sectionObj.sectionName }}\n      </h3>\n      <div v-for=\"chapter in sectionObj.chpaters\" v-show=\"isChapterSeen(chapter)\" v-bind:key=\"chapter.chapterNumber\" class=\"chapter\" v-bind:class=\"{\n              good: this.filter(chapter),\n              bad: !this.filter(chapter),\n              warning: this.warningFilter(chapter)\n            }\" v-bind:title=\"chapter.chapterNumber\">\n        <a rel=\"noopener noreferrer\" target=\"_blank\" v-bind:class=\"{\n                disabled: this.isChapterDisabled(chapter),\n              }\" v-bind:href=\"chapter.chapterUrl\">{{ chapter.chapterName }}</a>\n      </div>\n    </div>\n  </div>\n</div>\n";
+var ChapterList_code = `<div>
+  <div v-if="loading">
+    <div class="chapter-list-loading">
+      <h2 v-if="failed">加载章节失败！</h2>
+      <h2 v-else>正在载入章节列表中，请耐心等待……</h2>
+    </div>
+  </div>
+  <div v-else class="chapter-list" style="display: block;position: relative;">
+    <div v-for="sectionObj in sectionsObj" v-show="isSectionSeen(sectionObj)" v-bind:key="sectionObj.sectionNumber" class="section">
+      <h3 v-if="sectionObj.sectionName" class="section-label">
+        {{ sectionObj.sectionName }}
+      </h3>
+      <div v-for="chapter in sectionObj.chpaters" v-show="isChapterSeen(chapter)" v-bind:key="chapter.chapterNumber" class="chapter" v-bind:class="{
+              good: this.filter(chapter),
+              bad: !this.filter(chapter),
+              warning: this.warningFilter(chapter)
+            }" v-bind:title="chapter.chapterNumber">
+        <a rel="noopener noreferrer" target="_blank" v-bind:class="{
+                disabled: this.isChapterDisabled(chapter),
+              }" v-bind:href="chapter.chapterUrl">{{ chapter.chapterName }}</a>
+      </div>
+    </div>
+  </div>
+</div>
+`;
 // Exports
 /* harmony default export */ const ChapterList = (ChapterList_code);
 // EXTERNAL MODULE: ./src/ui/ChapterList.less
@@ -42062,7 +44651,33 @@ const style = (0,dom/* createStyle */._r)(ui_ChapterList/* default */.A);
 var FilterTab = __webpack_require__("./src/ui/FilterTab.css");
 ;// ./src/ui/FilterTab.html
 // Module
-var FilterTab_code = "<div>\n  <div class=\"filter-setting\">\n    <div v-if=\"filterType !== 'null'\" class=\"filter-input\">\n      <p>请输入过滤的条件：<input v-model=\"arg\" type=\"text\"></p>\n    </div>\n    <div class=\"filter-setter\">\n      <div>\n        <span>当前过滤方法：</span>\n        <select v-model=\"filterType\">\n          <option v-for=\"filterOption in filterOptionList\" v-bind:value=\"filterOption[0]\">\n            {{ filterOption[1][\"abbreviation\"] }}\n          </option>\n        </select>\n      </div>\n      <input id=\"hiddenBad\" v-model=\"hiddenBad\" type=\"checkbox\">\n      <label for=\"hiddenBad\">只显示符合条件章节</label>\n      <div class=\"filter-description\" v-html=\"filterDescription\"></div>\n      <div v-if=\"false\">\n        <span class=\"good\"></span>\n        <span class=\"warning\"></span>\n        <span class=\"bad\"></span>\n      </div>\n    </div>\n  </div>\n  <chapter-list>\n</div>\n";
+var FilterTab_code = `<div>
+  <div class="filter-setting">
+    <div v-if="filterType !== 'null'" class="filter-input">
+      <p>请输入过滤的条件：<input v-model="arg" type="text"></p>
+    </div>
+    <div class="filter-setter">
+      <div>
+        <span>当前过滤方法：</span>
+        <select v-model="filterType">
+          <option v-for="filterOption in filterOptionList" v-bind:value="filterOption[0]">
+            {{ filterOption[1]["abbreviation"] }}
+          </option>
+        </select>
+      </div>
+      <input id="hiddenBad" v-model="hiddenBad" type="checkbox">
+      <label for="hiddenBad">只显示符合条件章节</label>
+      <div class="filter-description" v-html="filterDescription"></div>
+      <div v-if="false">
+        <span class="good"></span>
+        <span class="warning"></span>
+        <span class="bad"></span>
+      </div>
+    </div>
+  </div>
+  <chapter-list>
+</div>
+`;
 // Exports
 /* harmony default export */ const ui_FilterTab = (FilterTab_code);
 ;// ./src/ui/FilterTab.ts
@@ -42242,7 +44857,84 @@ var src_log = __webpack_require__("./src/log.ts");
 
 ;// ./src/ui/setting.html
 // Module
-var setting_code = "<div>\n  <dialog-ui v-if=\"openStatus === 'true'\" dialog-title=\"设置\" v-bind:status=\"openStatus\" v-on:dialogclose=\"closeSetting\">\n    <div id=\"nd-setting\" class=\"nd-setting\">\n      <div class=\"nd-setting-tab\">\n        <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-1'}]\" v-on:click=\"setting.currentTab = 'tab-1'\">\n          基本设置\n        </button>\n        <button v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-2'}]\" v-on:click=\"setting.currentTab = 'tab-2'\">\n          自定义筛选条件\n        </button>\n        <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-3'}]\" v-on:click=\"setting.currentTab = 'tab-3'\">\n          抓取测试\n        </button>\n        <button v-if=\"setting.enableTestPage\" v-bind:class=\"['tab-button', { active: setting.currentTab === 'tab-4'}]\" v-on:click=\"setting.currentTab = 'tab-4'\">\n          日志\n        </button>\n      </div>\n      <div class=\"nd-setting-body\">\n        <div v-show=\"setting.currentTab === 'tab-1'\" id=\"nd-setting-tab-1\" class=\"tab-page\">\n          <div>\n            <input id=\"debug\" v-model=\"setting.enableDebug\" type=\"checkbox\">\n            <label for=\"debug\">启用调试模式。（输出更详细日志）</label>\n            <input id=\"txtDownload\" v-model=\"setting.TxtDownload\" type=\"checkbox\">\n            <label for=\"txtDownload\">下载Txt文件</label>\n            <input id=\"EpubDownload\" v-model=\"setting.EpubDownload\" type=\"checkbox\">\n            <label for=\"EpubDownload\">下载Epub文件</label>\n            <input id=\"test-page\" v-model=\"setting.enableTestPage\" type=\"checkbox\">\n            <label for=\"test-page\">启用测试视图</label>\n          </div>\n          <hr class=\"hr-twill-colorful\">\n          <div>\n            <h3>自定义下载参数</h3>\n            <table style=\"border:0px\">\n              <tr>\n                <th>\n                <input id=\"customDownload\" v-model=\"setting.customDownload\" type=\"checkbox\">\n                <label for=\"customDownload\">启用自定义下载设置</label></th>\n                <th>\n                <input id=\"downloadConcurrency\" v-model=\"setting.concurrencyLimit\" type=\"number\">\n                <label for=\"downloadConcurrency\">并行下载线程数</label></th>\n              </tr><th>\n                <input id=\"downloadSleeptime\" v-model=\"setting.sleepTime\" type=\"number\">\n                <label for=\"downloadSleeptime\">下载间隔</label>\n                </th><th>\n                <input id=\"downloadMaxsleeptime\" v-model=\"setting.maxSleepTime\" type=\"number\">\n                <label for=\"downloadMaxsleeptime\">最大下载间隔</label>\n                </th>\n              </table>\n          </div>\n          <hr class=\"hr-twill-colorful\">\n          <div>\n            <h3>自定义保存参数</h3>\n            <ul>\n              <li v-for=\"item of saveOptions\">\n                <input v-bind:id=\"item.key\" v-model=\"setting.chooseSaveOption\" type=\"radio\" v-bind:value=\"item.key\">\n                <label v-bind:for=\"item.key\">{{ item.value }}</label>\n              </li>\n            </ul>\n          </div>\n        </div>\n        <div v-show=\"setting.currentTab === 'tab-2'\" id=\"nd-setting-tab-2\" class=\"tab-page\">\n          <filter-tab v-on:filterupdate=\"saveFilter\">\n        </div>\n        <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-3'\" id=\"nd-setting-tab-3\" class=\"tab-page\">\n          <test-ui></test-ui>\n        </div>\n        <div v-if=\"setting.enableTestPage\" v-show=\"setting.currentTab === 'tab-4'\" id=\"nd-setting-tab-4\" class=\"tab-page\">\n          <log-ui></log-ui>\n        </div>\n      </div>\n      <div class=\"nd-setting-footer\">\n        <button v-on:click=\"closeAndSaveSetting\">Save</button>\n        <button v-on:click=\"closeSetting\">Cancel</button>\n      </div>\n    </div>\n  </dialog-ui>\n</div>\n";
+var setting_code = `<div>
+  <dialog-ui v-if="openStatus === 'true'" dialog-title="设置" v-bind:status="openStatus" v-on:dialogclose="closeSetting">
+    <div id="nd-setting" class="nd-setting">
+      <div class="nd-setting-tab">
+        <button v-bind:class="['tab-button', { active: setting.currentTab === 'tab-1'}]" v-on:click="setting.currentTab = 'tab-1'">
+          基本设置
+        </button>
+        <button v-bind:class="['tab-button', { active: setting.currentTab === 'tab-2'}]" v-on:click="setting.currentTab = 'tab-2'">
+          自定义筛选条件
+        </button>
+        <button v-if="setting.enableTestPage" v-bind:class="['tab-button', { active: setting.currentTab === 'tab-3'}]" v-on:click="setting.currentTab = 'tab-3'">
+          抓取测试
+        </button>
+        <button v-if="setting.enableTestPage" v-bind:class="['tab-button', { active: setting.currentTab === 'tab-4'}]" v-on:click="setting.currentTab = 'tab-4'">
+          日志
+        </button>
+      </div>
+      <div class="nd-setting-body">
+        <div v-show="setting.currentTab === 'tab-1'" id="nd-setting-tab-1" class="tab-page">
+          <div>
+            <input id="debug" v-model="setting.enableDebug" type="checkbox">
+            <label for="debug">启用调试模式。（输出更详细日志）</label>
+            <input id="txtDownload" v-model="setting.TxtDownload" type="checkbox">
+            <label for="txtDownload">下载Txt文件</label>
+            <input id="EpubDownload" v-model="setting.EpubDownload" type="checkbox">
+            <label for="EpubDownload">下载Epub文件</label>
+            <input id="test-page" v-model="setting.enableTestPage" type="checkbox">
+            <label for="test-page">启用测试视图</label>
+          </div>
+          <hr class="hr-twill-colorful">
+          <div>
+            <h3>自定义下载参数</h3>
+            <table style="border:0px">
+              <tr>
+                <th>
+                <input id="customDownload" v-model="setting.customDownload" type="checkbox">
+                <label for="customDownload">启用自定义下载设置</label></th>
+                <th>
+                <input id="downloadConcurrency" v-model="setting.concurrencyLimit" type="number">
+                <label for="downloadConcurrency">并行下载线程数</label></th>
+              </tr><th>
+                <input id="downloadSleeptime" v-model="setting.sleepTime" type="number">
+                <label for="downloadSleeptime">下载间隔</label>
+                </th><th>
+                <input id="downloadMaxsleeptime" v-model="setting.maxSleepTime" type="number">
+                <label for="downloadMaxsleeptime">最大下载间隔</label>
+                </th>
+              </table>
+          </div>
+          <hr class="hr-twill-colorful">
+          <div>
+            <h3>自定义保存参数</h3>
+            <ul>
+              <li v-for="item of saveOptions">
+                <input v-bind:id="item.key" v-model="setting.chooseSaveOption" type="radio" v-bind:value="item.key">
+                <label v-bind:for="item.key">{{ item.value }}</label>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div v-show="setting.currentTab === 'tab-2'" id="nd-setting-tab-2" class="tab-page">
+          <filter-tab v-on:filterupdate="saveFilter">
+        </div>
+        <div v-if="setting.enableTestPage" v-show="setting.currentTab === 'tab-3'" id="nd-setting-tab-3" class="tab-page">
+          <test-ui></test-ui>
+        </div>
+        <div v-if="setting.enableTestPage" v-show="setting.currentTab === 'tab-4'" id="nd-setting-tab-4" class="tab-page">
+          <log-ui></log-ui>
+        </div>
+      </div>
+      <div class="nd-setting-footer">
+        <button v-on:click="closeAndSaveSetting">Save</button>
+        <button v-on:click="closeSetting">Cancel</button>
+      </div>
+    </div>
+  </dialog-ui>
+</div>
+`;
 // Exports
 /* harmony default export */ const setting = (setting_code);
 // EXTERNAL MODULE: ./src/ui/setting.less
@@ -42251,7 +44943,41 @@ var ui_setting = __webpack_require__("./src/ui/setting.less");
 var attachments = __webpack_require__("./src/lib/attachments.ts");
 ;// ./src/ui/TestUI.html
 // Module
-var TestUI_code = "<div>\n  <div id=\"test-page-div\">\n    <h2>元数据</h2>\n    <table>\n      <tbody>\n        <tr v-for=\"(value, key) in metaData\">\n          <td>{{ key }}</td>\n          <td v-html=\"getData(key, value)\"></td>\n        </tr>\n      </tbody>\n    </table>\n    <hr class=\"hr-edge-weak\">\n    <h2>章节测试</h2>\n    <div class=\"preview-chapter-setting\">\n      <label for=\"chapterNumber\">预览章节序号：</label>\n      <input id=\"chapterNumber\" v-model=\"chapterNumber\" type=\"text\">\n      <button @click=\"previewChapter\" type=\"button\" :disabled=\"isLoading\">预览</button>\n    </div>\n    <div v-if=\"isLoading\" class=\"loading-spinner\">\n      <div class=\"spinner\"></div>\n      <p>正在加载章节中...</p>\n    </div>\n    <div v-else-if=\"this.isSeenChapter(chapter)\">\n      <h4>\n        <a rel=\"noopener noreferrer\" target=\"_blank\" v-bind:href=\"chapter.chapterUrl\">{{ chapter.chapterName }}</a>\n      </h4>\n      <div class=\"chapter\" v-html=\"getChapterHtml(chapter)\"></div>\n    </div>\n    <div v-else>\n      <p v-if=\"this.isChapterFailed(chapter)\">章节加载失败！</p>\n      <p v-else>请输入章节序号并点击预览</p>\n    </div>\n  </div>\n</div>\n";
+var TestUI_code = `<div>
+  <div id="test-page-div">
+    <h2>元数据</h2>
+    <table>
+      <tbody>
+        <tr v-for="(value, key) in metaData">
+          <td>{{ key }}</td>
+          <td v-html="getData(key, value)"></td>
+        </tr>
+      </tbody>
+    </table>
+    <hr class="hr-edge-weak">
+    <h2>章节测试</h2>
+    <div class="preview-chapter-setting">
+      <label for="chapterNumber">预览章节序号：</label>
+      <input id="chapterNumber" v-model="chapterNumber" type="text">
+      <button @click="previewChapter" type="button" :disabled="isLoading">预览</button>
+    </div>
+    <div v-if="isLoading" class="loading-spinner">
+      <div class="spinner"></div>
+      <p>正在加载章节中...</p>
+    </div>
+    <div v-else-if="this.isSeenChapter(chapter)">
+      <h4>
+        <a rel="noopener noreferrer" target="_blank" v-bind:href="chapter.chapterUrl">{{ chapter.chapterName }}</a>
+      </h4>
+      <div class="chapter" v-html="getChapterHtml(chapter)"></div>
+    </div>
+    <div v-else>
+      <p v-if="this.isChapterFailed(chapter)">章节加载失败！</p>
+      <p v-else>请输入章节序号并点击预览</p>
+    </div>
+  </div>
+</div>
+`;
 // Exports
 /* harmony default export */ const TestUI = (TestUI_code);
 // EXTERNAL MODULE: ./src/ui/TestUI.less
@@ -42710,7 +45436,19 @@ const button_vm = (0,external_Vue_.createApp)({
 var dialog = __webpack_require__("./src/ui/dialog.css");
 ;// ./src/ui/dialog.html
 // Module
-var dialog_code = "<div v-if=\"myPrivateStatus\" class=\"overlay\" v-bind:class=\"{ open: myPrivateStatus }\"></div>\n<div v-if=\"myPrivateStatus\" class=\"out\">\n  <div id=\"dialog\" class=\"dialog\" v-bind:class=\"{ open: myPrivateStatus }\">\n    <div class=\"titlebar\">\n      <h1 class=\"dialog-title\">{{ dialogTitle }}</h1>\n      <button class=\"dialog-close\" v-on:click=\"dialogClose\">❌</button>\n    </div>\n    <div class=\"body\">\n      <slot></slot>\n    </div>\n  </div>\n</div>\n";
+var dialog_code = `<div v-if="myPrivateStatus" class="overlay" v-bind:class="{ open: myPrivateStatus }"></div>
+<div v-if="myPrivateStatus" class="out">
+  <div id="dialog" class="dialog" v-bind:class="{ open: myPrivateStatus }">
+    <div class="titlebar">
+      <h1 class="dialog-title">{{ dialogTitle }}</h1>
+      <button class="dialog-close" v-on:click="dialogClose">❌</button>
+    </div>
+    <div class="body">
+      <slot></slot>
+    </div>
+  </div>
+</div>
+`;
 // Exports
 /* harmony default export */ const ui_dialog = (dialog_code);
 ;// ./src/ui/dialog.ts

@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1194
+// @version        5.2.1195
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -67,6 +67,7 @@
 // @exclude        *://m.xszj.org/b/*/cs/*
 // @exclude        *://m.bixiange.me/*/*/*.html
 // @exclude        *://www.fxshu.top/*/*_*.html
+// @exclude        *://www.xiguashuwu.com/book/*/*.html
 // @match          *://101kanshu.com/book/*.html
 // @match          *://www.sudugu.com/*
 // @match          *://www.po18.tw/books/*
@@ -320,6 +321,7 @@
 // @match          *://www.52shuku.vip/*/*.html
 // @match          *://mangguoshufang.com/*/*/info.html
 // @match          *://m.bixiange.me/*/*/
+// @match          *://www.xiguashuwu.com/book/*/
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
@@ -328,6 +330,7 @@
 // @connect        self
 // @connect        bilibili.com
 // @connect        lightnovel.us
+// @connect        www.fxshu.top
 // @connect        qidian.com
 // @connect        yuewen.com
 // @connect        kuangxiangit.com
@@ -425,10 +428,14 @@
 // @license        AGPL-3.0-or-later
 // @namespace      https://blog.bgme.me
 // @noframes
-// @require        https://unpkg.com/crypto-js@4.1.1/crypto-js.js#sha512-NQVmLzNy4Lr5QTrmXvq/WzTMUnRHmv7nyIT/M6LyGPBS+TIeRxZ+YQaqWxjpRpvRMQSuYPQURZz/+pLi81xXeA==
-// @require        https://unpkg.com/fflate@0.8.0/umd/index.js#sha512-3yw8GlXXje/3cAJoUioEOZlQkRQptqZLsWUL2KUUkvsiTMpnuXPAn6ESSAeQVLnY+2VrTHOADFMTElWqjKG/Yg==
+// @require        https://unpkg.com/crypto-js@4.2.0/crypto-js.js#sha512-XRbFQ+ZhXm1gOO0z66M5IEMivMr+rXWYM9DrNkqgpGQ29XY7/E9PVov++wzIXa2Lt4Zv2gLDi3f1UKFlL60HFQ==
+// @require        https://unpkg.com/fflate@0.8.2/umd/index.js#sha512-8l6PLZDUdQBuIjsM0vEKUCup9KP+EsB6NlvUtFrDneI1JoIvIJGmxIoiq0qnA31BeKdAwYcTk0TQg71AX9HgRA==
 // @require        https://unpkg.com/nunjucks@3.2.4/browser/nunjucks.min.js#sha512-YvU0oaPCJSOIFni9rIOthOs5GgtU5kNZMKQG/Nt33t/H9g/1+TK7KJuMsCZS6v4O3+x253OZlTzPryrUtxxORw==
-// @require        https://unpkg.com/vue@3.3.4/dist/vue.global.prod.js#sha512-7cmvZh1K81vCevOl9YPcvR6lCFgxol/biMYQ+YwsCiQFePxFrMVbJaHGUlu01/2EhNxKzKRpztUhWrwLyKCfiQ==
+// @require        https://unpkg.com/vue@3.3.13/dist/vue.global.prod.js#sha512-BR1xH5zlomzRP22mtARVL6Ubbk6oYFfbrFhpVI12zsJtaXfSRIHkxjpKYi38WZ6ZoBF68KKDm33shrPIMPSPQw==
+// @require        https://unpkg.com/onnxruntime-web@1.22.0/dist/ort.min.js#sha512-at7pWj/BAyQT89+V/9BiuAa/WeHjsf87fLwrcgD+uzlgsvM8/kgKOgHV/xxzcWiB98XvSTezWc0bgKjCqZwjGw==
+// @require        https://unpkg.com/@oovz/esearch-ocr/dist/eSearchOCR.umd.js#sha512-UvCk39TnG39qAlff1bfsl3J5s8TrKVkNN14cyf2cDmnON+VOWZvHxYmFIvbw/GRmLz0M2CLs/oaVDdwuG5WS7Q==
+// @require        https://unpkg.com/@techstark/opencv-js@4.11.0-release.1/dist/opencv.js#sha512-6Rb1LoaC9dHPLtrQhND5lLcLe2u3hh92yKTvIRQkMSj2A1EDhK0O4aptnEXAuKQcKtKZwACDoQnrrEKCFt5WdA==
+// @require        https://unpkg.com/@zip.js/zip.js@2.7.62/dist/zip.min.js#sha512-8UoMtmTLe5v6bghaGcKYJYJU2exs8FAlqNRC1qKK5QQMNguOzSS4qwhnz6e112swDTVHNCYd9M+rsjkWr9QP3Q==
 // @require        http://webpack.localhost:11944/bundle-greasyfork.user.js
 // @run-at         document-start
 // ==/UserScript==
