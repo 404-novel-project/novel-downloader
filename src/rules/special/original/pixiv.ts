@@ -215,14 +215,18 @@ export class Pixiv extends BaseRuleClass {
       // https://www.pixiv.net/novel/show.php?id=19452298
       const pixivImages = dom.innerHTML.matchAll(/\[pixivimage:(\d+)]/g);
       for (const match of pixivImages) {
-        await mapperPixivImage(match as [string, string]);
+        if (match[1]) {
+          await mapperPixivImage([match[0], match[1]]);
+        }
       }
 
       // uploadedimage
       // https://www.pixiv.net/novel/show.php?id=18384581
       const uploadedImages = dom.innerHTML.matchAll(/\[uploadedimage:(\d+)]/g);
       for (const match of uploadedImages) {
-        mapperUploadedImage(match as [string, string]);
+        if (match[1]) {
+          mapperUploadedImage([match[0], match[1]]);
+        }
       }
       return dom;
 
