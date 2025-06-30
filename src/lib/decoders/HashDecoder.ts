@@ -1,5 +1,5 @@
 import { log } from "../../log";
-import { ggetText } from "../http";
+import { gfetchWithETag } from "../http";
 import { _GM_setValue, _GM_getValue, _GM_deleteValue } from "../GM";
 import ImageHasher from "../imageHasher";
 
@@ -11,6 +11,7 @@ import ImageHasher from "../imageHasher";
 export class HashDecoder {
   private readonly remoteUrl: string;
   private readonly cacheKey: string;
+  private readonly etagCacheKey: string;
   private readonly learnedCacheKey: string;
   
   private mappings: Map<string, string> | null = null;
@@ -26,6 +27,7 @@ export class HashDecoder {
     // Construct site-specific URLs and cache keys
     this.remoteUrl = `https://fastly.jsdelivr.net/gh/oovz/novel-downloader-image-to-text-mapping@master/hash-mappings/${domain}.json`;
     this.cacheKey = `hash-mappings-${domain}`;
+    this.etagCacheKey = `hash-mappings-${domain}-etag`;
     this.learnedCacheKey = `hash-mappings-learned-${domain}`;
     
     this.imageHasher = new ImageHasher();
@@ -38,6 +40,7 @@ export class HashDecoder {
 
   /**
    * Decode image to text using hash-based mapping
+   * Server mappings take precedence over learned mappings
    */
   async decode(imageData: Uint8Array): Promise<string | null> {
     try {
@@ -45,16 +48,17 @@ export class HashDecoder {
       
       const hash = await this.generateImageHash(imageData);
       
-      // Try learned mappings first
-      if (this.learnedMappings?.has(hash)) {
-        const text = this.learnedMappings.get(hash)!;
-        log.debug(`Decoded text from learned mappings: ${text} for hash: ${hash}`);
+      // Try server mappings first (authoritative)
+      if (this.mappings?.has(hash)) {
+        const text = this.mappings.get(hash)!;
+        log.debug(`Decoded text from server mappings: ${text} for hash: ${hash}`);
         return text;
       }
       
-      if (this.mappings?.has(hash)) {
-        const text = this.mappings.get(hash)!;
-        log.debug(`Decoded text from remote mappings: ${text} for hash: ${hash}`);
+      // Try learned mappings as fallback
+      if (this.learnedMappings?.has(hash)) {
+        const text = this.learnedMappings.get(hash)!;
+        log.debug(`Decoded text from learned mappings: ${text} for hash: ${hash}`);
         return text;
       }
       
@@ -101,6 +105,7 @@ export class HashDecoder {
    */
   async clearCache(): Promise<void> {
     await _GM_deleteValue(this.cacheKey);
+    await _GM_deleteValue(this.etagCacheKey);
     this.mappings = null;
     this.loading = null;
   }
@@ -172,18 +177,25 @@ export class HashDecoder {
   }
 
   /**
-   * Fetch mappings from remote URL using ggetText for CORS bypass
+   * Fetch mappings from remote URL using fetchWithETag for cache validation
    */
   private async fetchRemoteMappings(): Promise<void> {
     try {
-      log.debug("Fetching hash mappings from remote");
+      log.debug("Fetching hash mappings from remote with ETag validation");
       
-      const response = await ggetText(this.remoteUrl);
-      if (!response) {
-        throw new Error("Empty response from remote URL");
+      // Get current ETag if available
+      const currentETag = await _GM_getValue(this.etagCacheKey) as string | null;
+      
+      const response = await gfetchWithETag(this.remoteUrl, this.cacheKey, currentETag);
+      
+      // If content is from cache (304 response), we're done
+      if (response.fromCache) {
+        log.debug(`Hash mappings unchanged (ETag: ${response.etag})`);
+        return;
       }
       
-      const data = JSON.parse(response);
+      // Parse new content
+      const data = JSON.parse(response.content);
       
       if (typeof data !== 'object' || !data) {
         throw new Error("Invalid mapping data format");
@@ -191,8 +203,12 @@ export class HashDecoder {
 
       this.mappings = new Map(Object.entries(data));
       
-      // Cache the successful result permanently
+      // Cache the successful result and ETag
       await _GM_setValue(this.cacheKey, JSON.stringify(data));
+      if (response.etag) {
+        await _GM_setValue(this.etagCacheKey, response.etag);
+        log.debug(`Stored new ETag: ${response.etag}`);
+      }
       
       log.debug(`Successfully loaded ${this.mappings.size} hash mappings from remote`);
     } catch (error) {
