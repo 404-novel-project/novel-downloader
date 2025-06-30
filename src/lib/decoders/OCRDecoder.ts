@@ -6,6 +6,14 @@ import * as ort from "onnxruntime-web";
 import { unzipSync } from "fflate";
 
 /**
+ * OCR result containing extracted text and confidence score
+ */
+export interface OCRResult {
+  text: string;        // Extracted character
+  confidence: number;  // Confidence score 0.0-1.0
+}
+
+/**
  * OCR decoder for extracting text from images using PaddleOCR
  * Models are downloaded from GitHub releases and cached permanently in GM storage
  */
@@ -29,7 +37,7 @@ export class OCRDecoder {
   /**
    * Decode image to text using PaddleOCR
    */
-  async decode(imageData: Uint8Array): Promise<string | null> {
+  async decode(imageData: Uint8Array): Promise<OCRResult | null> {
     try {
       await this.ensureModelLoaded();
       
@@ -55,6 +63,9 @@ export class OCRDecoder {
           }
         }
 
+        // Extract confidence value
+        const confidence = bestResult.mean || 0;
+
         // Clean up the OCR result for single character extraction
         const cleanText = bestResult.text
           .trim()
@@ -63,8 +74,11 @@ export class OCRDecoder {
 
         if (cleanText.length > 0) {
           const firstChar = cleanText.charAt(0);
-          log.debug(`OCR confidence: ${Math.round((bestResult.mean || 0) * 100)}%, extracted char: "${firstChar}"`);
-          return firstChar;
+          log.debug(`OCR result: confidence=${Math.round(confidence * 100)}%, text="${firstChar}"`);
+          return {
+            text: firstChar,
+            confidence: confidence
+          };
         }
       }
 
