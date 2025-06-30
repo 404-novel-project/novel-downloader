@@ -91,7 +91,14 @@ class ImageTextDecoder {
         log.debug(`[XiguashuwuImageDecoder] OCR success: ${filename} (${imageUrl}) -> "${ocrChar}"`);
         
         // Learn the successful OCR result for future use
-        await this.hashDecoder.learnMapping(imageData, ocrChar);
+        try {
+          await this.hashDecoder.learnMapping(imageData, ocrChar);
+          await this.filenameDecoder.learnMapping(filename, ocrChar);
+          log.debug(`[XiguashuwuImageDecoder] Learned both hash and filename mappings for: ${filename} -> "${ocrChar}"`);
+        } catch (learningError) {
+          log.warn(`[XiguashuwuImageDecoder] Failed to learn mappings for ${filename}:`, learningError);
+        }
+        
         this.mappingCache[imageUrl] = ocrChar;
         return ocrChar;
       }
