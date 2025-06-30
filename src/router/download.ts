@@ -35,7 +35,7 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Lcread;
       break;
     }
-    case "www.lightnovel.us": {
+    case "www.lightnovel.fun": {
       const { Lightnovel } = await import("../rules/special/reprint/lightnovel");
       ruleClass = Lightnovel;
       break;
