@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1195
+// @version        5.2.1196
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -86,8 +86,8 @@
 // @match          *://book.sfacg.com/Novel/*/MainIndex/
 // @match          *://book.sfacg.com/Novel/*/
 // @match          *://m.sfacg.com/b/*/
-// @match          *://www.lightnovel.us/cn/series/*
-// @match          *://www.lightnovel.us/cn/detail/*
+// @match          *://www.lightnovel.fun/cn/series/*
+// @match          *://www.lightnovel.fun/cn/detail/*
 // @match          *://lcread.com/bookpage/*/index.html
 // @match          *://www.lcread.com/bookpage/*/index.html
 // @match          *://book.qidian.com/info/*
@@ -329,7 +329,7 @@
 // @compatible     Safari 13.1+
 // @connect        self
 // @connect        bilibili.com
-// @connect        lightnovel.us
+// @connect        lightnovel.fun
 // @connect        www.fxshu.top
 // @connect        qidian.com
 // @connect        yuewen.com
@@ -37504,7 +37504,7 @@ class Lightnovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
                 for (const i of aElem) {
                     chapterNumber++;
                     const chapterName = i.title;
-                    const chapterUrl = `https://www.lightnovel.us/cn/detail/${i.aid}`;
+                    const chapterUrl = `https://www.lightnovel.fun/cn/detail/${i.aid}`;
                     const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_1__/* .Chapter */ .I({
                         bookUrl,
                         bookname,
@@ -43232,7 +43232,7 @@ async function getRule() {
             ruleClass = Lcread;
             break;
         }
-        case "www.lightnovel.us": {
+        case "www.lightnovel.fun": {
             const { Lightnovel } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/lightnovel.ts"));
             ruleClass = Lightnovel;
             break;
