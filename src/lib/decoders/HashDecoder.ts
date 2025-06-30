@@ -2,30 +2,35 @@ import { log } from "../../log";
 import { ggetText } from "../http";
 import { _GM_setValue, _GM_getValue, _GM_deleteValue } from "../GM";
 import ImageHasher from "../imageHasher";
+import { SessionMappingCache } from "../SessionMappingCache";
+import { GmWindow } from "../../global";
 
 /**
  * Hash decoder for converting images to text using hash-based mappings with learning capability
- * Remote mappings are cached permanently until manually cleared via Tampermonkey settings
+ * Uses session-based caching - mappings are downloaded once per book download and cached in memory only
  * Site-specific mappings are fetched based on domain name
  */
 export class HashDecoder {
+  private readonly domain: string;
   private readonly remoteUrl: string;
-  private readonly cacheKey: string;
   private readonly learnedCacheKey: string;
+  private readonly sessionId: string;
   
   private mappings: Map<string, string> | null = null;
   private learnedMappings: Map<string, string> | null = null;
   private loading: Promise<void> | null = null;
   private imageHasher: ImageHasher;
 
-  constructor(domain: string) {
+  constructor(domain: string, sessionId?: string) {
     if (!domain) {
       throw new Error("Domain name is required for HashDecoder initialization");
     }
     
+    this.domain = domain;
+    this.sessionId = sessionId || (window as GmWindow).workerId;
+    
     // Construct site-specific URLs and cache keys
     this.remoteUrl = `https://fastly.jsdelivr.net/gh/oovz/novel-downloader-image-to-text-mapping@master/hash-mappings/${domain}.json`;
-    this.cacheKey = `hash-mappings-${domain}`;
     this.learnedCacheKey = `hash-mappings-learned-${domain}`;
     
     this.imageHasher = new ImageHasher();
@@ -33,7 +38,7 @@ export class HashDecoder {
       log.error("Failed to initialize learned mappings:", error);
     });
     
-    log.debug(`HashDecoder initialized for domain: ${domain}`);
+    log.debug(`HashDecoder initialized for domain: ${domain}, session: ${this.sessionId}`);
   }
 
   /**
@@ -45,16 +50,17 @@ export class HashDecoder {
       
       const hash = await this.generateImageHash(imageData);
       
-      // Try learned mappings first
-      if (this.learnedMappings?.has(hash)) {
-        const text = this.learnedMappings.get(hash)!;
-        log.debug(`Decoded text from learned mappings: ${text} for hash: ${hash}`);
+      // Try server mappings first (highest priority)
+      if (this.mappings?.has(hash)) {
+        const text = this.mappings.get(hash)!;
+        log.debug(`Decoded text from server mappings: ${text} for hash: ${hash}`);
         return text;
       }
       
-      if (this.mappings?.has(hash)) {
-        const text = this.mappings.get(hash)!;
-        log.debug(`Decoded text from remote mappings: ${text} for hash: ${hash}`);
+      // Try learned mappings as fallback
+      if (this.learnedMappings?.has(hash)) {
+        const text = this.learnedMappings.get(hash)!;
+        log.debug(`Decoded text from learned mappings: ${text} for hash: ${hash}`);
         return text;
       }
       
@@ -98,9 +104,13 @@ export class HashDecoder {
 
   /**
    * Clear cached mappings (for testing or updates)
+   * Note: Session-based mappings are automatically cleared when the session ends
    */
   async clearCache(): Promise<void> {
-    await _GM_deleteValue(this.cacheKey);
+    // Clear session cache for this domain
+    const sessionCache = SessionMappingCache.getInstance();
+    sessionCache.clearSession(this.sessionId);
+    
     this.mappings = null;
     this.loading = null;
   }
@@ -150,21 +160,19 @@ export class HashDecoder {
   }
 
   /**
-   * Load mappings from cache or fetch from remote
+   * Load mappings from session cache or fetch from remote
    */
   private async loadMappings(): Promise<void> {
     try {
-      // Try to load from cache first
-      const cached = await _GM_getValue(this.cacheKey);
-      if (cached) {
-        const data = JSON.parse(cached as string);
-        this.mappings = new Map(Object.entries(data));
-        log.debug(`Loaded ${this.mappings.size} hash mappings from cache`);
-        return;
-      }
-
-      // Fetch from remote
-      await this.fetchRemoteMappings();
+      const sessionCache = SessionMappingCache.getInstance();
+      
+      this.mappings = await sessionCache.getMappingsWithLoading(
+        this.sessionId,
+        this.domain,
+        () => this.fetchRemoteMappings()
+      );
+      
+      log.debug(`Loaded ${this.mappings.size} hash mappings for session ${this.sessionId}`);
     } catch (error) {
       log.error("Failed to load hash mappings:", error);
       throw error; // Fail fast - no fallback empty map
@@ -174,7 +182,7 @@ export class HashDecoder {
   /**
    * Fetch mappings from remote URL using ggetText for CORS bypass
    */
-  private async fetchRemoteMappings(): Promise<void> {
+  private async fetchRemoteMappings(): Promise<Map<string, string>> {
     try {
       log.debug("Fetching hash mappings from remote");
       
@@ -189,12 +197,17 @@ export class HashDecoder {
         throw new Error("Invalid mapping data format");
       }
 
-      this.mappings = new Map(Object.entries(data));
+      const mappings = new Map<string, string>();
+      for (const [key, value] of Object.entries(data)) {
+        if (typeof value === 'string') {
+          mappings.set(key, value);
+        } else {
+          log.warn(`Skipping invalid mapping entry: ${key} -> ${value} (not a string)`);
+        }
+      }
       
-      // Cache the successful result permanently
-      await _GM_setValue(this.cacheKey, JSON.stringify(data));
-      
-      log.debug(`Successfully loaded ${this.mappings.size} hash mappings from remote`);
+      log.debug(`Successfully loaded ${mappings.size} hash mappings from remote`);
+      return mappings;
     } catch (error) {
       log.error("Failed to fetch hash mappings:", error);
       throw error;

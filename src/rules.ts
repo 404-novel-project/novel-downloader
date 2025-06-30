@@ -8,6 +8,7 @@ import { Chapter, ChapterAdditionalMetadate } from "./main/Chapter";
 import { Book, saveType } from "./main/Book";
 import { SaveBook } from "./save/save";
 import { SaveOptions, saveOptionsValidate } from "./save/options";
+import { SessionMappingCache } from "./lib/SessionMappingCache";
 import {
   customDownload,
   concurrencyLimit,
@@ -99,6 +100,12 @@ export abstract class BaseRuleClass {
     log.info(`[run]下载开始`);
     const self = this;
 
+    // Initialize session-based mapping cache
+    const sessionCache = SessionMappingCache.getInstance();
+    const sessionId = (window as GmWindow).workerId;
+    sessionCache.initializeSession(sessionId);
+    log.debug(`[run] Initialized session mapping cache for session: ${sessionId}`);
+
     try {
       await self.preHook();
       await initBook();
@@ -117,6 +124,10 @@ export abstract class BaseRuleClass {
       return self.book;
     } catch (error) {
       self.catchError(error as Error);
+    } finally {
+      // Always clean up session cache, even on errors
+      sessionCache.clearSession(sessionId);
+      log.debug(`[run] Cleaned up session mapping cache for session: ${sessionId}`);
     }
     function initDownload() {
       if (customDownload.value) {
