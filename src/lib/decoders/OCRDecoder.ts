@@ -16,7 +16,6 @@ export class OCRDecoder {
   private modelCache: { [key: string]: Blob } = {};
   private ppocrDict: string = "";
 
-  // Cache configuration matching the .bak implementation
   private readonly cacheKey = "paddleocr_ch_models";
   private readonly cacheVersion = "4.0.0";
   private readonly cacheVersionKey = "paddleocr_ch_models_version";
@@ -226,7 +225,7 @@ export class OCRDecoder {
   }
 
   /**
-   * Download and cache PaddleOCR models from GitHub (following .bak implementation)
+   * Download and cache PaddleOCR models from GitHub
    */
   private async downloadAndCacheModels(): Promise<void> {
     try {
@@ -307,7 +306,7 @@ export class OCRDecoder {
   }
 
   /**
-   * Extract files from zip blob using zip.js (following .bak implementation)
+   * Extract files from zip blob using zip.js
    */
   private async extractZipFiles(
     zipBlob: Blob,

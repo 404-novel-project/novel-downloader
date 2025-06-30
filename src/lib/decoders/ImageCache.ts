@@ -29,7 +29,6 @@ export class ImageCache {
    * Get image data from cache or download if not cached
    */
   async getImageData(imageUrl: string): Promise<Uint8Array> {
-    // Check cache first
     if (this.cache.has(imageUrl)) {
       // Update access order for LRU
       this.updateAccessOrder(imageUrl);
@@ -37,7 +36,7 @@ export class ImageCache {
       return this.cache.get(imageUrl)!;
     }
 
-    // Download image data using gfetch (CORS-safe, no attachment system)
+    // Download image data using gfetch
     try {
       log.debug(`Downloading image for cache: ${imageUrl.substring(0, 50)}...`);
       
@@ -50,10 +49,8 @@ export class ImageCache {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      // Convert ArrayBuffer to Uint8Array
       const uint8Array = new Uint8Array(response.response as ArrayBuffer);
       
-      // Cache the result
       this.cacheImageData(imageUrl, uint8Array);
       
       log.debug(`Downloaded and cached image: ${uint8Array.length} bytes`);

@@ -43,17 +43,15 @@ export class HashDecoder {
     try {
       await this.ensureMappingsLoaded();
       
-      // Generate hash from image data
       const hash = await this.generateImageHash(imageData);
       
-      // Try learned mappings first (they take priority)
+      // Try learned mappings first
       if (this.learnedMappings?.has(hash)) {
         const text = this.learnedMappings.get(hash)!;
         log.debug(`Decoded text from learned mappings: ${text} for hash: ${hash}`);
         return text;
       }
       
-      // Then try remote mappings
       if (this.mappings?.has(hash)) {
         const text = this.mappings.get(hash)!;
         log.debug(`Decoded text from remote mappings: ${text} for hash: ${hash}`);
