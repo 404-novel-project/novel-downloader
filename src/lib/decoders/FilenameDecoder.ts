@@ -1,5 +1,5 @@
 import { log } from "../../log";
-import { gfetchWithETag } from "../http";
+import { ggetText } from "../http";
 import { _GM_setValue, _GM_getValue, _GM_deleteValue } from "../GM";
 
 /**
@@ -10,7 +10,6 @@ import { _GM_setValue, _GM_getValue, _GM_deleteValue } from "../GM";
 export class FilenameDecoder {
   private readonly remoteUrl: string;
   private readonly cacheKey: string;
-  private readonly etagCacheKey: string;
   private readonly learnedCacheKey: string;
   
   private mappings: Map<string, string> | null = null;
@@ -25,7 +24,6 @@ export class FilenameDecoder {
     // Construct site-specific URLs and cache keys
     this.remoteUrl = `https://fastly.jsdelivr.net/gh/oovz/novel-downloader-image-to-text-mapping@master/filename-mappings/${domain}.json`;
     this.cacheKey = `filename-mappings-${domain}`;
-    this.etagCacheKey = `filename-mappings-${domain}-etag`;
     this.learnedCacheKey = `filename-mappings-learned-${domain}`;
     
     this.loadLearnedMappings().catch(error => {
@@ -46,23 +44,22 @@ export class FilenameDecoder {
 
   /**
    * Decode full filename (including extension) to character using filename-based mapping
-   * Server mappings take precedence over learned mappings
    */
   async decodeFromFilename(filename: string): Promise<string | null> {
     try {
       await this.ensureMappingsLoaded();
       
-      // Try server mappings first (authoritative)
-      if (this.mappings?.has(filename)) {
-        const character = this.mappings.get(filename)!;
-        log.debug(`Decoded character from server mappings: ${character} for filename: ${filename}`);
-        return character;
-      }
-      
-      // Try learned mappings as fallback
+      // Try learned mappings first (highest priority)
       if (this.learnedMappings?.has(filename)) {
         const character = this.learnedMappings.get(filename)!;
         log.debug(`Decoded character from learned mappings: ${character} for filename: ${filename}`);
+        return character;
+      }
+      
+      // Try remote mappings
+      if (this.mappings?.has(filename)) {
+        const character = this.mappings.get(filename)!;
+        log.debug(`Decoded character from remote mappings: ${character} for filename: ${filename}`);
         return character;
       }
       
@@ -89,7 +86,6 @@ export class FilenameDecoder {
    */
   async clearCache(): Promise<void> {
     await _GM_deleteValue(this.cacheKey);
-    await _GM_deleteValue(this.etagCacheKey);
     this.mappings = null;
     this.loading = null;
   }
@@ -134,25 +130,18 @@ export class FilenameDecoder {
   }
 
   /**
-   * Fetch mappings from remote URL using fetchWithETag for cache validation
+   * Fetch mappings from remote URL using ggetText for CORS bypass
    */
   private async fetchRemoteMappings(): Promise<void> {
     try {
-      log.debug("Fetching filename mappings from remote with ETag validation");
+      log.debug("Fetching filename mappings from remote");
       
-      // Get current ETag if available
-      const currentETag = await _GM_getValue(this.etagCacheKey) as string | null;
-      
-      const response = await gfetchWithETag(this.remoteUrl, this.cacheKey, currentETag);
-      
-      // If content is from cache (304 response), we're done
-      if (response.fromCache) {
-        log.debug(`Filename mappings unchanged (ETag: ${response.etag})`);
-        return;
+      const response = await ggetText(this.remoteUrl);
+      if (!response) {
+        throw new Error("Empty response from remote URL");
       }
       
-      // Parse new content
-      const data = JSON.parse(response.content);
+      const data = JSON.parse(response);
       
       if (typeof data !== 'object' || !data) {
         throw new Error("Invalid mapping data format");
@@ -160,12 +149,8 @@ export class FilenameDecoder {
 
       this.mappings = new Map(Object.entries(data));
       
-      // Cache the successful result and ETag
+      // Cache the successful result permanently
       await _GM_setValue(this.cacheKey, JSON.stringify(data));
-      if (response.etag) {
-        await _GM_setValue(this.etagCacheKey, response.etag);
-        log.debug(`Stored new ETag: ${response.etag}`);
-      }
       
       log.debug(`Successfully loaded ${this.mappings.size} filename mappings from remote`);
     } catch (error) {

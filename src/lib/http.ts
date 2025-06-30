@@ -2,7 +2,7 @@
 
 import { log } from "../log";
 import { retryLimit } from "../setting";
-import { _GM_xmlhttpRequest, _GM_getValue } from "./GM";
+import { _GM_xmlhttpRequest } from "./GM";
 import { deepcopy, sleep } from "./misc";
 
 globalThis.fetch = new Proxy(globalThis.fetch, {
@@ -421,112 +421,4 @@ export async function getFrameContentConditionWithWindow(
   }) as Promise<HTMLIFrameElement | null>;
   document.body.appendChild(frame);
   return promise;
-}
-
-/**
- * Parse ETag from response headers string
- * Handles various ETag formats: quoted, unquoted, with/without W/ prefix
- */
-export function parseETagFromHeaders(responseHeaders: string): string | null {
-  if (!responseHeaders) {
-    return null;
-  }
-
-  // Look for ETag header (case-insensitive)
-  const etagMatch = responseHeaders.match(/^etag:\s*(.+)$/im);
-  if (!etagMatch) {
-    return null;
-  }
-
-  let etag = etagMatch[1].trim();
-  
-  // Remove quotes if present
-  if (etag.startsWith('"') && etag.endsWith('"')) {
-    etag = etag.slice(1, -1);
-  }
-  
-  // Remove W/ prefix if present (weak ETag)
-  if (etag.startsWith('W/')) {
-    etag = etag.slice(2).trim();
-    // Remove quotes after W/ prefix
-    if (etag.startsWith('"') && etag.endsWith('"')) {
-      etag = etag.slice(1, -1);
-    }
-  }
-  
-  return etag || null;
-}
-
-/**
- * ETag-enabled fetch response
- */
-export interface ETagResponse {
-  content: string;
-  etag: string | null;
-  fromCache: boolean;
-}
-
-/**
- * Fetch content with ETag-based conditional requests
- * Handles cache validation using If-None-Match header
- */
-export async function gfetchWithETag(
-  url: string,
-  cacheKey: string,
-  currentETag?: string | null
-): Promise<ETagResponse> {
-  try {
-    // Prepare conditional request headers
-    const headers: Record<string, string> = {};
-    if (currentETag) {
-      headers['If-None-Match'] = `"${currentETag}"`;
-    }
-
-    log.debug(`[ETag] Fetching with ETag validation: ${url}`);
-    if (currentETag) {
-      log.debug(`[ETag] Sending If-None-Match: "${currentETag}"`);
-    }
-
-    const response = await gfetch(url, {
-      method: "GET",
-      headers
-    });
-
-    // Handle 304 Not Modified - content hasn't changed
-    if (response.status === 304) {
-      log.debug(`[ETag] Content not modified (304), using cached data`);
-      
-      // Load cached content
-      const cachedContent = await _GM_getValue(cacheKey);
-      if (!cachedContent) {
-        throw new Error("304 response but no cached content found");
-      }
-      
-      const cachedData = JSON.parse(cachedContent as string);
-      return {
-        content: JSON.stringify(cachedData),
-        etag: currentETag || null,
-        fromCache: true
-      };
-    }
-
-    // Handle successful response
-    if (response.status >= 200 && response.status <= 299) {
-      const content = response.responseText;
-      const newETag = parseETagFromHeaders(response.responseHeaders || "");
-      
-      log.debug(`[ETag] Successful fetch, new ETag: ${newETag || 'none'}`);
-      
-      return {
-        content,
-        etag: newETag,
-        fromCache: false
-      };
-    }
-
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-  } catch (error) {
-    log.error(`[ETag] Fetch failed for ${url}:`, error);
-    throw error;
-  }
 }
