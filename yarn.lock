@@ -1341,13 +1341,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@zip.js/zip.js@npm:^2.7.62":
-  version: 2.7.62
-  resolution: "@zip.js/zip.js@npm:2.7.62"
-  checksum: b6727e17c99e7463e90566ad663cf1a618c6f8b8967da3895820810f8d22e7925f1deb8a1a93263320327aaf656fdf8a8c53deea31cdd2590544c595488b77d9
-  languageName: node
-  linkType: hard
-
 "a-sync-waterfall@npm:^1.0.0":
   version: 1.0.1
   resolution: "a-sync-waterfall@npm:1.0.1"
@@ -4896,7 +4889,6 @@ __metadata:
     "@types/tampermonkey": ^5.0.2
     "@typescript-eslint/eslint-plugin": ^7.1.1
     "@typescript-eslint/parser": ^7.1.1
-    "@zip.js/zip.js": ^2.7.62
     crypto-js: ^4.2.0
     css-loader: ^6.10.0
     css-tree: ^2.3.1

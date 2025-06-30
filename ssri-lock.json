@@ -4,7 +4,6 @@
   "https://unpkg.com/nunjucks@3.2.4/browser/nunjucks.min.js": "sha512-YvU0oaPCJSOIFni9rIOthOs5GgtU5kNZMKQG/Nt33t/H9g/1+TK7KJuMsCZS6v4O3+x253OZlTzPryrUtxxORw==",
   "https://unpkg.com/onnxruntime-web@1.22.0/dist/ort.min.js": "sha512-at7pWj/BAyQT89+V/9BiuAa/WeHjsf87fLwrcgD+uzlgsvM8/kgKOgHV/xxzcWiB98XvSTezWc0bgKjCqZwjGw==",
   "https://unpkg.com/vue@3.3.13/dist/vue.global.prod.js": "sha512-BR1xH5zlomzRP22mtARVL6Ubbk6oYFfbrFhpVI12zsJtaXfSRIHkxjpKYi38WZ6ZoBF68KKDm33shrPIMPSPQw==",
-  "https://unpkg.com/@zip.js/zip.js@2.7.62/dist/zip.min.js": "sha512-8UoMtmTLe5v6bghaGcKYJYJU2exs8FAlqNRC1qKK5QQMNguOzSS4qwhnz6e112swDTVHNCYd9M+rsjkWr9QP3Q==",
   "https://docs.opencv.org/4.11.0/opencv.js": "sha512-14gQss/UbJD93BJGs5ZCbrFvv9p3RHdfxsPNHgTP0tYA8ihl2zzsinO11KSycinPkYQQLt4Zpor/pwpqNo9f8w==",
   "https://unpkg.com/@oovz/esearch-ocr/dist/eSearchOCR.umd.js": "sha512-UvCk39TnG39qAlff1bfsl3J5s8TrKVkNN14cyf2cDmnON+VOWZvHxYmFIvbw/GRmLz0M2CLs/oaVDdwuG5WS7Q==",
   "https://unpkg.com/@techstark/opencv-js@4.11.0-release.1/dist/opencv.js": "sha512-6Rb1LoaC9dHPLtrQhND5lLcLe2u3hh92yKTvIRQkMSj2A1EDhK0O4aptnEXAuKQcKtKZwACDoQnrrEKCFt5WdA=="

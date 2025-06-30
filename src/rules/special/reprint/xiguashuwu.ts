@@ -9,7 +9,7 @@ import { BaseRuleClass } from "../../../rules";
 import { getAttachment } from "../../../lib/attachments";
 import { FilenameDecoder } from "../../../lib/decoders/FilenameDecoder";
 import { HashDecoder } from "../../../lib/decoders/HashDecoder";
-import { OCRDecoder } from "../../../lib/decoders/OCRDecoder";
+import { OCRDecoder, OCRResult } from "../../../lib/decoders/OCRDecoder";
 import { ImageCache } from "../../../lib/decoders/ImageCache";
 import * as CryptoJS from "crypto-js";
 
@@ -86,14 +86,25 @@ class ImageTextDecoder {
       }
 
       // Step 3: Try OCR as final method (slowest, most accurate)
-      const ocrChar = await this.ocrDecoder.decode(imageData);
-      if (ocrChar) {
-        log.debug(`[XiguashuwuImageDecoder] OCR success: ${filename} (${imageUrl}) -> "${ocrChar}"`);
+      const ocrResult = await this.ocrDecoder.decode(imageData);
+      if (ocrResult && ocrResult.confidence >= 0.90) {
+        const ocrChar = ocrResult.text;
+        log.debug(`[XiguashuwuImageDecoder] OCR success: ${filename} (${imageUrl}) -> "${ocrChar}" (confidence: ${Math.round(ocrResult.confidence * 100)}%)`);
         
         // Learn the successful OCR result for future use
-        await this.hashDecoder.learnMapping(imageData, ocrChar);
+        try {
+          await this.hashDecoder.learnMapping(imageData, ocrChar);
+          await this.filenameDecoder.learnMapping(filename, ocrChar);
+          log.debug(`[XiguashuwuImageDecoder] Learned both hash and filename mappings for: ${filename} -> "${ocrChar}"`);
+        } catch (learningError) {
+          log.warn(`[XiguashuwuImageDecoder] Failed to learn mappings for ${filename}:`, learningError);
+        }
+        
         this.mappingCache[imageUrl] = ocrChar;
         return ocrChar;
+      } else if (ocrResult) {
+        // OCR returned result but confidence too low
+        log.error(`[XiguashuwuImageDecoder] OCR confidence too low: ${Math.round(ocrResult.confidence * 100)}% < 90% for ${filename}`);
       }
 
       // All methods failed - use placeholder and track failed image
