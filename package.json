@@ -57,7 +57,6 @@
   "dependencies": {
     "@mozilla/readability": "^0.6.0",
     "@oovz/esearch-ocr": "^8.4.4",
-    "@zip.js/zip.js": "^2.7.62",
     "crypto-js": "^4.2.0",
     "css-tree": "^2.3.1",
     "fflate": "^0.8.2",

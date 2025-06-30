@@ -66,8 +66,7 @@ export default {
     nunjucks: "nunjucks",
     vue: "Vue",
     "esearch-ocr": "eSearchOCR",
-    "onnxruntime-web": "ort",
-    "@zip.js/zip.js": "zip"
+    "onnxruntime-web": "ort"
   },
   devServer: {
     server: "http",

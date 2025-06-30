@@ -3,7 +3,7 @@ import { gfetch } from "../http";
 import { _GM_setValue, _GM_getValue } from "../GM";
 import * as eSearchOCR from "@oovz/esearch-ocr";
 import * as ort from "onnxruntime-web";
-import * as zip from "@zip.js/zip.js";
+import { unzipSync } from "fflate";
 
 /**
  * OCR decoder for extracting text from images using PaddleOCR
@@ -284,7 +284,7 @@ export class OCRDecoder {
       log.debug("Successfully downloaded zip file using gfetch");
       log.debug(`Downloaded ${zipBlob.size} bytes`);
 
-      // Extract files from the zip using zip.js
+      // Extract files from the zip using fflate
       await this.extractZipFiles(zipBlob, cacheData);
 
       // Cache whatever we managed to download
@@ -306,7 +306,7 @@ export class OCRDecoder {
   }
 
   /**
-   * Extract files from zip blob using zip.js
+   * Extract files from zip blob using fflate
    */
   private async extractZipFiles(
     zipBlob: Blob,
@@ -315,65 +315,50 @@ export class OCRDecoder {
     try {
       log.debug("Extracting files from zip...");
 
-      // Check if zip.js is available
-      if (!zip) {
-        throw new Error(
-          "zip.js library not available. Please include zip.js script in your Tampermonkey userscript."
+      // Convert blob to Uint8Array for fflate processing
+      const zipArrayBuffer = await zipBlob.arrayBuffer();
+      const zipData = new Uint8Array(zipArrayBuffer);
+
+      // Extract files using fflate with file filtering
+      const extracted = unzipSync(zipData, {
+        filter: (file) => this.filesToExtract.includes(file.name)
+      });
+
+      log.debug(`Found ${Object.keys(extracted).length} matching files in zip`);
+
+      for (const [filename, fileData] of Object.entries(extracted)) {
+        log.debug(`Processing ${filename}...`);
+
+        // Create blob from extracted file data
+        const blob = new Blob([fileData]);
+        this.modelCache[filename] = blob;
+
+        // Check file size before processing
+        if (fileData.length > 50 * 1024 * 1024) {
+          // 50MB limit
+          log.warn(
+            `File ${filename} is very large (${(fileData.length / 1024 / 1024).toFixed(1)}MB), skipping GM storage cache`
+          );
+          // Store in memory cache only for very large files
+          continue;
+        }
+
+        try {
+          // Use chunked conversion to avoid stack overflow for large files
+          const binaryString = this.uint8ArrayToBinaryString(fileData);
+          cacheData[filename] = btoa(binaryString);
+        } catch (conversionError) {
+          log.warn(
+            `Failed to convert ${filename} to base64, skipping GM storage cache:`,
+            conversionError
+          );
+          // Continue without caching this file
+        }
+
+        log.debug(
+          `Extracted ${filename} (${blob.size} bytes)`
         );
       }
-
-      // Create a BlobReader to read the zip file
-      const zipReader = new zip.ZipReader(new zip.BlobReader(zipBlob));
-
-      // Get all entries from the zip
-      const entries = await zipReader.getEntries();
-      log.debug(`Found ${entries.length} entries in zip`);
-
-      for (const entry of entries) {
-        if (this.filesToExtract.includes(entry.filename)) {
-          log.debug(`Extracting ${entry.filename}...`);
-
-          // Extract the file data as a Blob
-          if (!entry.getData) {
-            throw new Error(`getData method not available for ${entry.filename}`);
-          }
-          const blob = await entry.getData(new zip.BlobWriter());
-          this.modelCache[entry.filename] = blob;
-
-          // Convert to base64 for GM storage using chunked approach for large files
-          const arrayBuffer = await blob.arrayBuffer();
-          const uint8Array = new Uint8Array(arrayBuffer);
-
-          // Check file size before processing
-          if (uint8Array.length > 50 * 1024 * 1024) {
-            // 50MB limit
-            log.warn(
-              `File ${entry.filename} is very large (${(uint8Array.length / 1024 / 1024).toFixed(1)}MB), skipping GM storage cache`
-            );
-            // Store in memory cache only for very large files
-            continue;
-          }
-
-          try {
-            // Use chunked conversion to avoid stack overflow for large files
-            const binaryString = this.uint8ArrayToBinaryString(uint8Array);
-            cacheData[entry.filename] = btoa(binaryString);
-          } catch (conversionError) {
-            log.warn(
-              `Failed to convert ${entry.filename} to base64, skipping GM storage cache:`,
-              conversionError
-            );
-            // Continue without caching this file
-          }
-
-          log.debug(
-            `Extracted ${entry.filename} (${blob.size} bytes)`
-          );
-        }
-      }
-
-      // Close the zip reader
-      await zipReader.close();
 
       log.debug(
         `Successfully extracted ${Object.keys(cacheData).length} files from zip`
