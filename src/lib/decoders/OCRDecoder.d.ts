@@ -1,3 +1,7 @@
+export interface OCRResult {
+    text: string;
+    confidence: number;
+}
 export declare class OCRDecoder {
     private modelLoaded;
     private loadingPromise;
@@ -10,7 +14,7 @@ export declare class OCRDecoder {
     private readonly zipUrl;
     private readonly filesToExtract;
     constructor();
-    decode(imageData: Uint8Array): Promise<string | null>;
+    decode(imageData: Uint8Array): Promise<OCRResult | null>;
     isAvailable(): boolean;
     getModelInfo(): {
         name: string;

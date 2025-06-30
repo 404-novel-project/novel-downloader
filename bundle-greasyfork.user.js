@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1196
+// @version        5.2.1197
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -68,6 +68,7 @@
 // @exclude        *://m.bixiange.me/*/*/*.html
 // @exclude        *://www.fxshu.top/*/*_*.html
 // @exclude        *://www.xiguashuwu.com/book/*/*.html
+// @exclude        *://www.xiguashuwu.com/book/*/catalog/
 // @match          *://101kanshu.com/book/*.html
 // @match          *://www.sudugu.com/*
 // @match          *://www.po18.tw/books/*
@@ -436,7 +437,6 @@
 // @require        https://unpkg.com/onnxruntime-web@1.22.0/dist/ort.min.js#sha512-at7pWj/BAyQT89+V/9BiuAa/WeHjsf87fLwrcgD+uzlgsvM8/kgKOgHV/xxzcWiB98XvSTezWc0bgKjCqZwjGw==
 // @require        https://unpkg.com/@oovz/esearch-ocr/dist/eSearchOCR.umd.js#sha512-UvCk39TnG39qAlff1bfsl3J5s8TrKVkNN14cyf2cDmnON+VOWZvHxYmFIvbw/GRmLz0M2CLs/oaVDdwuG5WS7Q==
 // @require        https://unpkg.com/@techstark/opencv-js@4.11.0-release.1/dist/opencv.js#sha512-6Rb1LoaC9dHPLtrQhND5lLcLe2u3hh92yKTvIRQkMSj2A1EDhK0O4aptnEXAuKQcKtKZwACDoQnrrEKCFt5WdA==
-// @require        https://unpkg.com/@zip.js/zip.js@2.7.62/dist/zip.min.js#sha512-8UoMtmTLe5v6bghaGcKYJYJU2exs8FAlqNRC1qKK5QQMNguOzSS4qwhnz6e112swDTVHNCYd9M+rsjkWr9QP3Q==
 // @run-at         document-start
 // @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.meta.js
 // ==/UserScript==
@@ -7276,6 +7276,113 @@ async function _GM_deleteValue(name) {
 
 /***/ }),
 
+/***/ "./src/lib/SessionMappingCache.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   j: () => (/* binding */ SessionMappingCache)
+/* harmony export */ });
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
+
+class SessionMappingCache {
+    static instance = null;
+    cache = new Map();
+    activeSessions = new Set();
+    constructor() {
+    }
+    static getInstance() {
+        if (!SessionMappingCache.instance) {
+            SessionMappingCache.instance = new SessionMappingCache();
+        }
+        return SessionMappingCache.instance;
+    }
+    initializeSession(sessionId) {
+        this.activeSessions.add(sessionId);
+        _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`[SessionMappingCache] Initialized session: ${sessionId}`);
+    }
+    clearSession(sessionId) {
+        const keysToDelete = [];
+        for (const key of this.cache.keys()) {
+            if (key.startsWith(`${sessionId}-`)) {
+                keysToDelete.push(key);
+            }
+        }
+        for (const key of keysToDelete) {
+            this.cache.delete(key);
+        }
+        this.activeSessions.delete(sessionId);
+        _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`[SessionMappingCache] Cleared session: ${sessionId} (removed ${keysToDelete.length} cache entries)`);
+    }
+    isSessionActive(sessionId) {
+        return this.activeSessions.has(sessionId);
+    }
+    async getMappingsWithLoading(sessionId, domain, fetchFn) {
+        const key = this.getKey(sessionId, domain);
+        let state = this.cache.get(key);
+        if (!state) {
+            state = { mappings: null, loading: null };
+            this.cache.set(key, state);
+        }
+        if (state.mappings) {
+            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`[SessionMappingCache] Using cached mappings for ${key}`);
+            return state.mappings;
+        }
+        if (state.loading) {
+            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`[SessionMappingCache] Waiting for in-progress download for ${key}`);
+            return await state.loading;
+        }
+        _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`[SessionMappingCache] Starting download for ${key}`);
+        state.loading = fetchFn();
+        try {
+            state.mappings = await state.loading;
+            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`[SessionMappingCache] Successfully cached ${state.mappings.size} mappings for ${key}`);
+            return state.mappings;
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_0___default().error(`[SessionMappingCache] Failed to download mappings for ${key}:`, error);
+            this.cache.delete(key);
+            throw error;
+        }
+        finally {
+            state.loading = null;
+        }
+    }
+    hasMappings(sessionId, domain) {
+        const key = this.getKey(sessionId, domain);
+        const state = this.cache.get(key);
+        return state?.mappings !== null && state?.mappings !== undefined;
+    }
+    getActiveSessions() {
+        return Array.from(this.activeSessions);
+    }
+    clearAllSessions() {
+        this.cache.clear();
+        this.activeSessions.clear();
+        _log__WEBPACK_IMPORTED_MODULE_0___default().debug("[SessionMappingCache] Cleared all sessions and mappings");
+    }
+    getCacheStats() {
+        let totalMappings = 0;
+        for (const state of this.cache.values()) {
+            if (state.mappings) {
+                totalMappings += state.mappings.size;
+            }
+        }
+        return {
+            activeSessions: this.activeSessions.size,
+            cachedDomains: this.cache.size,
+            totalMappings
+        };
+    }
+    getKey(sessionId, domain) {
+        return `${sessionId}-${domain}`;
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/lib/attachments.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -10142,8 +10249,8 @@ var sgc_toc = __webpack_require__("./src/save/sgc-toc.css");
 var web = __webpack_require__("./src/save/web.css");
 // EXTERNAL MODULE: ./src/lib/GM.ts
 var GM = __webpack_require__("./src/lib/GM.ts");
-;// external "fflate"
-const external_fflate_namespaceObject = fflate;
+// EXTERNAL MODULE: external "fflate"
+var external_fflate_ = __webpack_require__("fflate");
 // EXTERNAL MODULE: ./node_modules/streamsaver/StreamSaver.js
 var StreamSaver = __webpack_require__("./node_modules/streamsaver/StreamSaver.js");
 var StreamSaver_default = /*#__PURE__*/__webpack_require__.n(StreamSaver);
@@ -10181,7 +10288,7 @@ class FflateZip {
             writer =
                 fileStream.getWriter();
         }
-        this.savedZip = new external_fflate_namespaceObject.Zip((err, dat, final) => {
+        this.savedZip = new external_fflate_.Zip((err, dat, final) => {
             if (err) {
                 loglevel_default().error(err);
                 loglevel_default().trace(err);
@@ -10229,13 +10336,13 @@ class FflateZip {
         const chunk = new Uint8Array(buffer);
         if (!((0,misc/* mimetyepToCompressible */.OH)((0,misc/* extensionToMimetype */.dB)(filename.split(".").slice(-1)[0])) || (0,misc/* mimetyepToCompressible */.OH)(fileBlob.type)) ||
             nocompress) {
-            const nonStreamingFile = new external_fflate_namespaceObject.ZipPassThrough(filename);
+            const nonStreamingFile = new external_fflate_.ZipPassThrough(filename);
             this.savedZip.add(nonStreamingFile);
             nonStreamingFile.push(chunk, true);
             this.zcount++;
         }
         else {
-            const nonStreamingFile = new external_fflate_namespaceObject.AsyncZipDeflate(filename, {
+            const nonStreamingFile = new external_fflate_.AsyncZipDeflate(filename, {
                 level: 9,
             });
             this.savedZip.add(nonStreamingFile);
@@ -11189,6 +11296,8 @@ class SaveBook {
     }
 }
 
+// EXTERNAL MODULE: ./src/lib/SessionMappingCache.ts
+var SessionMappingCache = __webpack_require__("./src/lib/SessionMappingCache.ts");
 ;// ./src/stat.ts
 
 
@@ -11260,6 +11369,7 @@ var progress = __webpack_require__("./src/ui/progress.ts");
 
 
 
+
 class BaseRuleClass {
     attachmentMode = "TM";
     charset = document.characterSet;
@@ -11301,6 +11411,10 @@ class BaseRuleClass {
     async run() {
         loglevel_default().info(`[run]下载开始`);
         const self = this;
+        const sessionCache = SessionMappingCache/* SessionMappingCache */.j.getInstance();
+        const sessionId = window.workerId;
+        sessionCache.initializeSession(sessionId);
+        loglevel_default().debug(`[run] Initialized session mapping cache for session: ${sessionId}`);
         try {
             await self.preHook();
             await initBook();
@@ -11321,6 +11435,10 @@ class BaseRuleClass {
         }
         catch (error) {
             self.catchError(error);
+        }
+        finally {
+            sessionCache.clearSession(sessionId);
+            loglevel_default().debug(`[run] Cleaned up session mapping cache for session: ${sessionId}`);
         }
         function initDownload() {
             if (setting/* customDownload */.WZ.value) {
@@ -18197,7 +18315,7 @@ var Attachment = __webpack_require__("./src/main/Attachment.ts");
 var Chapter = __webpack_require__("./src/main/Chapter.ts");
 // EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
 var Book = __webpack_require__("./src/main/Book.ts");
-// EXTERNAL MODULE: ./src/rules.ts + 12 modules
+// EXTERNAL MODULE: ./src/rules.ts + 11 modules
 var rules = __webpack_require__("./src/rules.ts");
 // EXTERNAL MODULE: ./src/setting.ts
 var setting = __webpack_require__("./src/setting.ts");
@@ -36475,7 +36593,7 @@ var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
 var Chapter = __webpack_require__("./src/main/Chapter.ts");
 // EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
 var Book = __webpack_require__("./src/main/Book.ts");
-// EXTERNAL MODULE: ./src/rules.ts + 12 modules
+// EXTERNAL MODULE: ./src/rules.ts + 11 modules
 var rules = __webpack_require__("./src/rules.ts");
 ;// ./src/rules/lib/haitangtxtImageDecode.ts
 function replaceHaitangtxtImage(inputText) {
@@ -38014,28 +38132,39 @@ var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
 var Chapter = __webpack_require__("./src/main/Chapter.ts");
 // EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
 var Book = __webpack_require__("./src/main/Book.ts");
-// EXTERNAL MODULE: ./src/rules.ts + 12 modules
+// EXTERNAL MODULE: ./src/rules.ts + 11 modules
 var rules = __webpack_require__("./src/rules.ts");
 // EXTERNAL MODULE: ./src/lib/attachments.ts + 1 modules
 var attachments = __webpack_require__("./src/lib/attachments.ts");
 // EXTERNAL MODULE: ./src/lib/GM.ts
 var GM = __webpack_require__("./src/lib/GM.ts");
+// EXTERNAL MODULE: ./src/lib/SessionMappingCache.ts
+var SessionMappingCache = __webpack_require__("./src/lib/SessionMappingCache.ts");
 ;// ./src/lib/decoders/FilenameDecoder.ts
 
 
 
+
 class FilenameDecoder {
+    domain;
     remoteUrl;
-    cacheKey;
+    learnedCacheKey;
+    sessionId;
     mappings = null;
+    learnedMappings = null;
     loading = null;
-    constructor(domain) {
+    constructor(domain, sessionId) {
         if (!domain) {
             throw new Error("Domain name is required for FilenameDecoder initialization");
         }
+        this.domain = domain;
+        this.sessionId = sessionId || window.workerId;
         this.remoteUrl = `https://fastly.jsdelivr.net/gh/oovz/novel-downloader-image-to-text-mapping@master/filename-mappings/${domain}.json`;
-        this.cacheKey = `filename-mappings-${domain}`;
-        loglevel_default().debug(`FilenameDecoder initialized for domain: ${domain}`);
+        this.learnedCacheKey = `filename-mappings-learned-${domain}`;
+        this.loadLearnedMappings().catch(error => {
+            loglevel_default().error("Failed to initialize learned mappings:", error);
+        });
+        loglevel_default().debug(`FilenameDecoder initialized for domain: ${domain}, session: ${this.sessionId}`);
     }
     async decode(imageData) {
         loglevel_default().warn("FilenameDecoder.decode() called with imageData - this decoder requires filename context from URL");
@@ -38044,19 +38173,18 @@ class FilenameDecoder {
     async decodeFromFilename(filename) {
         try {
             await this.ensureMappingsLoaded();
-            if (!this.mappings) {
-                loglevel_default().warn("Filename mappings not available for decoding");
-                return null;
-            }
-            const character = this.mappings.get(filename);
-            if (character) {
-                loglevel_default().debug(`Decoded character: ${character} for filename: ${filename}`);
+            if (this.mappings?.has(filename)) {
+                const character = this.mappings.get(filename);
+                loglevel_default().debug(`Decoded character from server mappings: ${character} for filename: ${filename}`);
                 return character;
             }
-            else {
-                loglevel_default().debug(`No character mapping found for filename: ${filename}`);
-                return null;
+            if (this.learnedMappings?.has(filename)) {
+                const character = this.learnedMappings.get(filename);
+                loglevel_default().debug(`Decoded character from learned mappings: ${character} for filename: ${filename}`);
+                return character;
             }
+            loglevel_default().debug(`No character mapping found for filename: ${filename}`);
+            return null;
         }
         catch (error) {
             loglevel_default().error("Error in filename decoding:", error);
@@ -38064,10 +38192,14 @@ class FilenameDecoder {
         }
     }
     getMappingsCount() {
-        return this.mappings?.size ?? 0;
+        return {
+            remote: this.mappings?.size ?? 0,
+            learned: this.learnedMappings?.size ?? 0
+        };
     }
     async clearCache() {
-        await (0,GM/* _GM_deleteValue */.JU)(this.cacheKey);
+        const sessionCache = SessionMappingCache/* SessionMappingCache */.j.getInstance();
+        sessionCache.clearSession(this.sessionId);
         this.mappings = null;
         this.loading = null;
     }
@@ -38084,14 +38216,9 @@ class FilenameDecoder {
     }
     async loadMappings() {
         try {
-            const cached = await (0,GM/* _GM_getValue */.er)(this.cacheKey);
-            if (cached) {
-                const data = JSON.parse(cached);
-                this.mappings = new Map(Object.entries(data));
-                loglevel_default().debug(`Loaded ${this.mappings.size} filename mappings from cache`);
-                return;
-            }
-            await this.fetchRemoteMappings();
+            const sessionCache = SessionMappingCache/* SessionMappingCache */.j.getInstance();
+            this.mappings = await sessionCache.getMappingsWithLoading(this.sessionId, this.domain, () => this.fetchRemoteMappings());
+            loglevel_default().debug(`Loaded ${this.mappings.size} filename mappings for session ${this.sessionId}`);
         }
         catch (error) {
             loglevel_default().error("Failed to load filename mappings:", error);
@@ -38109,13 +38236,79 @@ class FilenameDecoder {
             if (typeof data !== 'object' || !data) {
                 throw new Error("Invalid mapping data format");
             }
-            this.mappings = new Map(Object.entries(data));
-            await (0,GM/* _GM_setValue */.mN)(this.cacheKey, JSON.stringify(data));
-            loglevel_default().debug(`Successfully loaded ${this.mappings.size} filename mappings from remote`);
+            const mappings = new Map();
+            for (const [key, value] of Object.entries(data)) {
+                if (typeof value === 'string') {
+                    mappings.set(key, value);
+                }
+                else {
+                    loglevel_default().warn(`Skipping invalid mapping entry: ${key} -> ${value} (not a string)`);
+                }
+            }
+            loglevel_default().debug(`Successfully loaded ${mappings.size} filename mappings from remote`);
+            return mappings;
         }
         catch (error) {
             loglevel_default().error("Failed to fetch filename mappings:", error);
             throw error;
+        }
+    }
+    async loadLearnedMappings() {
+        try {
+            const cached = await (0,GM/* _GM_getValue */.er)(this.learnedCacheKey);
+            if (cached) {
+                const data = JSON.parse(cached);
+                this.learnedMappings = new Map(Object.entries(data));
+                loglevel_default().debug(`Loaded ${this.learnedMappings.size} learned filename mappings from cache`);
+            }
+            else {
+                this.learnedMappings = new Map();
+            }
+        }
+        catch (error) {
+            loglevel_default().error("Failed to load learned filename mappings:", error);
+            this.learnedMappings = new Map();
+        }
+    }
+    async learnMapping(filename, character) {
+        try {
+            if (!this.learnedMappings) {
+                this.learnedMappings = new Map();
+            }
+            this.learnedMappings.set(filename, character);
+            await this.saveLearnedMappings();
+            loglevel_default().debug(`Learned new filename mapping: ${filename} -> ${character}`);
+        }
+        catch (error) {
+            loglevel_default().error("Error learning filename mapping:", error);
+        }
+    }
+    async clearLearnedMappings() {
+        await (0,GM/* _GM_deleteValue */.JU)(this.learnedCacheKey);
+        this.learnedMappings = new Map();
+        loglevel_default().debug("Cleared all learned filename mappings");
+    }
+    exportLearnedMappings() {
+        if (!this.learnedMappings) {
+            return {};
+        }
+        return Object.fromEntries(this.learnedMappings);
+    }
+    async importLearnedMappings(mappings) {
+        this.learnedMappings = new Map(Object.entries(mappings));
+        await this.saveLearnedMappings();
+        loglevel_default().debug(`Imported ${this.learnedMappings.size} learned filename mappings`);
+    }
+    async saveLearnedMappings() {
+        try {
+            if (this.learnedMappings) {
+                const data = Object.fromEntries(this.learnedMappings);
+                await (0,GM/* _GM_setValue */.mN)(this.learnedCacheKey, JSON.stringify(data));
+                loglevel_default().debug(`Saved ${this.learnedMappings.size} learned filename mappings to storage`);
+            }
+        }
+        catch (error) {
+            loglevel_default().error("Failed to save learned filename mappings:", error);
         }
     }
 }
@@ -38193,39 +38386,42 @@ class ImageHasher {
 
 
 
+
 class HashDecoder {
+    domain;
     remoteUrl;
-    cacheKey;
     learnedCacheKey;
+    sessionId;
     mappings = null;
     learnedMappings = null;
     loading = null;
     imageHasher;
-    constructor(domain) {
+    constructor(domain, sessionId) {
         if (!domain) {
             throw new Error("Domain name is required for HashDecoder initialization");
         }
+        this.domain = domain;
+        this.sessionId = sessionId || window.workerId;
         this.remoteUrl = `https://fastly.jsdelivr.net/gh/oovz/novel-downloader-image-to-text-mapping@master/hash-mappings/${domain}.json`;
-        this.cacheKey = `hash-mappings-${domain}`;
         this.learnedCacheKey = `hash-mappings-learned-${domain}`;
         this.imageHasher = new imageHasher();
         this.loadLearnedMappings().catch(error => {
             loglevel_default().error("Failed to initialize learned mappings:", error);
         });
-        loglevel_default().debug(`HashDecoder initialized for domain: ${domain}`);
+        loglevel_default().debug(`HashDecoder initialized for domain: ${domain}, session: ${this.sessionId}`);
     }
     async decode(imageData) {
         try {
             await this.ensureMappingsLoaded();
             const hash = await this.generateImageHash(imageData);
+            if (this.mappings?.has(hash)) {
+                const text = this.mappings.get(hash);
+                loglevel_default().debug(`Decoded text from server mappings: ${text} for hash: ${hash}`);
+                return text;
+            }
             if (this.learnedMappings?.has(hash)) {
                 const text = this.learnedMappings.get(hash);
                 loglevel_default().debug(`Decoded text from learned mappings: ${text} for hash: ${hash}`);
-                return text;
-            }
-            if (this.mappings?.has(hash)) {
-                const text = this.mappings.get(hash);
-                loglevel_default().debug(`Decoded text from remote mappings: ${text} for hash: ${hash}`);
                 return text;
             }
             loglevel_default().debug(`No mapping found for hash: ${hash}`);
@@ -38257,7 +38453,8 @@ class HashDecoder {
         };
     }
     async clearCache() {
-        await (0,GM/* _GM_deleteValue */.JU)(this.cacheKey);
+        const sessionCache = SessionMappingCache/* SessionMappingCache */.j.getInstance();
+        sessionCache.clearSession(this.sessionId);
         this.mappings = null;
         this.loading = null;
     }
@@ -38289,14 +38486,9 @@ class HashDecoder {
     }
     async loadMappings() {
         try {
-            const cached = await (0,GM/* _GM_getValue */.er)(this.cacheKey);
-            if (cached) {
-                const data = JSON.parse(cached);
-                this.mappings = new Map(Object.entries(data));
-                loglevel_default().debug(`Loaded ${this.mappings.size} hash mappings from cache`);
-                return;
-            }
-            await this.fetchRemoteMappings();
+            const sessionCache = SessionMappingCache/* SessionMappingCache */.j.getInstance();
+            this.mappings = await sessionCache.getMappingsWithLoading(this.sessionId, this.domain, () => this.fetchRemoteMappings());
+            loglevel_default().debug(`Loaded ${this.mappings.size} hash mappings for session ${this.sessionId}`);
         }
         catch (error) {
             loglevel_default().error("Failed to load hash mappings:", error);
@@ -38314,9 +38506,17 @@ class HashDecoder {
             if (typeof data !== 'object' || !data) {
                 throw new Error("Invalid mapping data format");
             }
-            this.mappings = new Map(Object.entries(data));
-            await (0,GM/* _GM_setValue */.mN)(this.cacheKey, JSON.stringify(data));
-            loglevel_default().debug(`Successfully loaded ${this.mappings.size} hash mappings from remote`);
+            const mappings = new Map();
+            for (const [key, value] of Object.entries(data)) {
+                if (typeof value === 'string') {
+                    mappings.set(key, value);
+                }
+                else {
+                    loglevel_default().warn(`Skipping invalid mapping entry: ${key} -> ${value} (not a string)`);
+                }
+            }
+            loglevel_default().debug(`Successfully loaded ${mappings.size} hash mappings from remote`);
+            return mappings;
         }
         catch (error) {
             loglevel_default().error("Failed to fetch hash mappings:", error);
@@ -39452,8 +39652,8 @@ function zn(t, e = "", o, s, a) {
 
 ;// external "ort"
 const external_ort_namespaceObject = ort;
-;// external "zip"
-const external_zip_namespaceObject = zip;
+// EXTERNAL MODULE: external "fflate"
+var external_fflate_ = __webpack_require__("fflate");
 ;// ./src/lib/decoders/OCRDecoder.ts
 
 
@@ -39492,14 +39692,18 @@ class OCRDecoder {
                         bestResult = paragraph;
                     }
                 }
+                const confidence = bestResult.mean || 0;
                 const cleanText = bestResult.text
                     .trim()
                     .replace(/\s+/g, "")
                     .replace(/[^\u4e00-\u9fff\u3400-\u4dbf\u3000-\u303f\uff00-\uffef]/g, "");
                 if (cleanText.length > 0) {
                     const firstChar = cleanText.charAt(0);
-                    loglevel_default().debug(`OCR confidence: ${Math.round((bestResult.mean || 0) * 100)}%, extracted char: "${firstChar}"`);
-                    return firstChar;
+                    loglevel_default().debug(`OCR result: confidence=${Math.round(confidence * 100)}%, text="${firstChar}"`);
+                    return {
+                        text: firstChar,
+                        confidence: confidence
+                    };
                 }
             }
             loglevel_default().debug("No meaningful character found in OCR result");
@@ -39668,37 +39872,29 @@ class OCRDecoder {
     async extractZipFiles(zipBlob, cacheData) {
         try {
             loglevel_default().debug("Extracting files from zip...");
-            if (!external_zip_namespaceObject) {
-                throw new Error("zip.js library not available. Please include zip.js script in your Tampermonkey userscript.");
-            }
-            const zipReader = new external_zip_namespaceObject.ZipReader(new external_zip_namespaceObject.BlobReader(zipBlob));
-            const entries = await zipReader.getEntries();
-            loglevel_default().debug(`Found ${entries.length} entries in zip`);
-            for (const entry of entries) {
-                if (this.filesToExtract.includes(entry.filename)) {
-                    loglevel_default().debug(`Extracting ${entry.filename}...`);
-                    if (!entry.getData) {
-                        throw new Error(`getData method not available for ${entry.filename}`);
-                    }
-                    const blob = await entry.getData(new external_zip_namespaceObject.BlobWriter());
-                    this.modelCache[entry.filename] = blob;
-                    const arrayBuffer = await blob.arrayBuffer();
-                    const uint8Array = new Uint8Array(arrayBuffer);
-                    if (uint8Array.length > 50 * 1024 * 1024) {
-                        loglevel_default().warn(`File ${entry.filename} is very large (${(uint8Array.length / 1024 / 1024).toFixed(1)}MB), skipping GM storage cache`);
-                        continue;
-                    }
-                    try {
-                        const binaryString = this.uint8ArrayToBinaryString(uint8Array);
-                        cacheData[entry.filename] = btoa(binaryString);
-                    }
-                    catch (conversionError) {
-                        loglevel_default().warn(`Failed to convert ${entry.filename} to base64, skipping GM storage cache:`, conversionError);
-                    }
-                    loglevel_default().debug(`Extracted ${entry.filename} (${blob.size} bytes)`);
+            const zipArrayBuffer = await zipBlob.arrayBuffer();
+            const zipData = new Uint8Array(zipArrayBuffer);
+            const extracted = (0,external_fflate_.unzipSync)(zipData, {
+                filter: (file) => this.filesToExtract.includes(file.name)
+            });
+            loglevel_default().debug(`Found ${Object.keys(extracted).length} matching files in zip`);
+            for (const [filename, fileData] of Object.entries(extracted)) {
+                loglevel_default().debug(`Processing ${filename}...`);
+                const blob = new Blob([fileData]);
+                this.modelCache[filename] = blob;
+                if (fileData.length > 50 * 1024 * 1024) {
+                    loglevel_default().warn(`File ${filename} is very large (${(fileData.length / 1024 / 1024).toFixed(1)}MB), skipping GM storage cache`);
+                    continue;
                 }
+                try {
+                    const binaryString = this.uint8ArrayToBinaryString(fileData);
+                    cacheData[filename] = btoa(binaryString);
+                }
+                catch (conversionError) {
+                    loglevel_default().warn(`Failed to convert ${filename} to base64, skipping GM storage cache:`, conversionError);
+                }
+                loglevel_default().debug(`Extracted ${filename} (${blob.size} bytes)`);
             }
-            await zipReader.close();
             loglevel_default().debug(`Successfully extracted ${Object.keys(cacheData).length} files from zip`);
         }
         catch (error) {
@@ -39909,12 +40105,23 @@ class ImageTextDecoder {
                 this.mappingCache[imageUrl] = hashChar;
                 return hashChar;
             }
-            const ocrChar = await this.ocrDecoder.decode(imageData);
-            if (ocrChar) {
-                loglevel_default().debug(`[XiguashuwuImageDecoder] OCR success: ${filename} (${imageUrl}) -> "${ocrChar}"`);
-                await this.hashDecoder.learnMapping(imageData, ocrChar);
+            const ocrResult = await this.ocrDecoder.decode(imageData);
+            if (ocrResult && ocrResult.confidence >= 0.90) {
+                const ocrChar = ocrResult.text;
+                loglevel_default().debug(`[XiguashuwuImageDecoder] OCR success: ${filename} (${imageUrl}) -> "${ocrChar}" (confidence: ${Math.round(ocrResult.confidence * 100)}%)`);
+                try {
+                    await this.hashDecoder.learnMapping(imageData, ocrChar);
+                    await this.filenameDecoder.learnMapping(filename, ocrChar);
+                    loglevel_default().debug(`[XiguashuwuImageDecoder] Learned both hash and filename mappings for: ${filename} -> "${ocrChar}"`);
+                }
+                catch (learningError) {
+                    loglevel_default().warn(`[XiguashuwuImageDecoder] Failed to learn mappings for ${filename}:`, learningError);
+                }
                 this.mappingCache[imageUrl] = ocrChar;
                 return ocrChar;
+            }
+            else if (ocrResult) {
+                loglevel_default().error(`[XiguashuwuImageDecoder] OCR confidence too low: ${Math.round(ocrResult.confidence * 100)}% < 90% for ${filename}`);
             }
             loglevel_default().warn(`[XiguashuwuImageDecoder] All decoding methods failed for: ${imageUrl}`);
             this.failedImages.push(imageUrl);
@@ -42812,6 +43019,14 @@ dialog-ui #nd-setting-tab-2 select {
 
 "use strict";
 module.exports = CryptoJS;
+
+/***/ }),
+
+/***/ "fflate":
+/***/ ((module) => {
+
+"use strict";
+module.exports = fflate;
 
 /***/ }),
 

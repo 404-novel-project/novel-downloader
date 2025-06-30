@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1196
+// @version        5.2.1197
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -68,6 +68,7 @@
 // @exclude        *://m.bixiange.me/*/*/*.html
 // @exclude        *://www.fxshu.top/*/*_*.html
 // @exclude        *://www.xiguashuwu.com/book/*/*.html
+// @exclude        *://www.xiguashuwu.com/book/*/catalog/
 // @match          *://101kanshu.com/book/*.html
 // @match          *://www.sudugu.com/*
 // @match          *://www.po18.tw/books/*
@@ -435,7 +436,6 @@
 // @require        https://unpkg.com/onnxruntime-web@1.22.0/dist/ort.min.js#sha512-at7pWj/BAyQT89+V/9BiuAa/WeHjsf87fLwrcgD+uzlgsvM8/kgKOgHV/xxzcWiB98XvSTezWc0bgKjCqZwjGw==
 // @require        https://unpkg.com/@oovz/esearch-ocr/dist/eSearchOCR.umd.js#sha512-UvCk39TnG39qAlff1bfsl3J5s8TrKVkNN14cyf2cDmnON+VOWZvHxYmFIvbw/GRmLz0M2CLs/oaVDdwuG5WS7Q==
 // @require        https://unpkg.com/@techstark/opencv-js@4.11.0-release.1/dist/opencv.js#sha512-6Rb1LoaC9dHPLtrQhND5lLcLe2u3hh92yKTvIRQkMSj2A1EDhK0O4aptnEXAuKQcKtKZwACDoQnrrEKCFt5WdA==
-// @require        https://unpkg.com/@zip.js/zip.js@2.7.62/dist/zip.min.js#sha512-8UoMtmTLe5v6bghaGcKYJYJU2exs8FAlqNRC1qKK5QQMNguOzSS4qwhnz6e112swDTVHNCYd9M+rsjkWr9QP3Q==
 // @require        http://webpack.localhost:11944/bundle-greasyfork.user.js
 // @run-at         document-start
 // ==/UserScript==
