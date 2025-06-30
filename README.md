@@ -184,6 +184,7 @@ EPUB 文件请使用相应阅读器阅读。
 | [全本同人小说](https://www.qbtr.cc/)               | ✅       | ❎       |                                                                                          |
 | [鬼大爷网](https://b.guidaye.com/)               | ✅       | ❎       |                                                                                          |
 | [69阅读](https://www.69yuedu.net/)                 | ✅       | ❎       |                                                                                          |
+| [西瓜书屋](https://www.xiguashuwu.com/)            | ✅       | ❎       | 部分文字会被图片替换，通过文件名映射、哈希映射、OCR识别三层解码。首次使用需下载PaddleOCR模型。 |
 
 </details>
 
@@ -193,6 +194,18 @@ EPUB 文件请使用相应阅读器阅读。
 - `GM_info`/`GM.info`： 获取并输出脚本运行环境。
 - `GM_xmlhttpRequest`/`GM.xmlHttpRequest`：用于跨域 HTTP 请求。
 - `GM_setValue`/`GM.setValue`、`GM_getValue`/`GM.getValue`、`GM_deleteValue`/`GM.deleteValue`： 用于统计模块，本地统计运行次数。
+
+## OCR 图像文字识别
+
+一些网站（比如西瓜书屋）为了防止文本被抓取，会把文字替换成图片。这个脚本针对这种情况做了专门的处理，采用了一套三步解码方案：
+
+1. **文件名映射**：首先尝试根据图片文件名直接匹配对应的文字，这是最快的方法。
+2. **哈希映射**：如果文件名匹配不到，就下载图片并计算哈希值来匹配，速度也比较快。
+> [!NOTE]
+> 文件名和哈希映射的匹配表会自动从(https://github.com/oovz/novel-downloader-image-to-text-mapping)获取并保存在 Tampermonkey 的本地存储中。
+3. **OCR识别**：前两种方法都失败时，才会使用OCR（光学字符识别）来识别图片中的文字，这是最准确但也最慢的方法。注意，OCR识别也不能保证100%准确率。
+> [!NOTE]
+> OCR功能使用的是PaddleOCR中文识别模型，模型文件会从GitHub自动下载并保存在Tampermonkey本地存储中。
 
 ## 字体匹配表
 
