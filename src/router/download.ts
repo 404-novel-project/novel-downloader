@@ -434,6 +434,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = bixiange();
       break;
     }
+    case "www.rmkbr.com": {
+      const { yiqushuzhai } = await import("../rules/onePage/yiqushuzhai");
+      ruleClass = yiqushuzhai();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage Start */
