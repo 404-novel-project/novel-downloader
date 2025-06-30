@@ -49,9 +49,9 @@ export class Lightnovel extends BaseRuleClass {
                 for (const i of aElem) {
                     /**
                         aid: 1092541
-                        banner: "https://static.lightnovel.us/default_article_cover_h.png"
+                        banner: "https://static.lightnovel.fun/default_article_cover_h.png"
                         comments: 0
-                        cover: "https://static.lightnovel.us/default_article_cover_v.png"
+                        cover: "https://static.lightnovel.fun/default_article_cover_v.png"
                         cover_type: 1
                         empty: 1
                         hits: 69601
@@ -62,7 +62,7 @@ export class Lightnovel extends BaseRuleClass {
                     */
                     chapterNumber++;
                     const chapterName = (i as any).title;
-                    const chapterUrl = `https://www.lightnovel.us/cn/detail/${(i as any).aid}`;
+                    const chapterUrl = `https://www.lightnovel.fun/cn/detail/${(i as any).aid}`;
                     
                     const chapter = new Chapter({
                         bookUrl,
