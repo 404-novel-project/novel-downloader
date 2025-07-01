@@ -276,7 +276,8 @@
     "*://mangguoshufang.com/*/*/info.html",
     "*://m.bixiange.me/*/*/",
     "*://www.xiguashuwu.com/book/*/",
-    "*://www.rmkbr.com/*/*/"
+    "*://www.rmkbr.com/*/*/",
+    "*://www.fdhxs.com/*/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -340,7 +341,8 @@
     "*://www.fxshu.top/*/*_*.html",
     "*://www.xiguashuwu.com/book/*/*.html",
     "*://www.xiguashuwu.com/book/*/catalog/",
-    "*://www.rmkbr.com/*/*/*.html"
+    "*://www.rmkbr.com/*/*/*.html",
+    "*://www.fdhxs.com/*/*/*.html"
   ],
   "grant": [
     "unsafeWindow",

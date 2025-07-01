@@ -481,6 +481,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = xszj();
       break;
     }
+    case "www.fdhxs.com": {
+      const { haitangshuwu } = await import("../rules/onePageWithMultiIndexPage/haitangshuwu");
+      ruleClass = haitangshuwu();
+      break;
+    }
     /* onePageWithMultiIndexPage End */
 
     /* twoPage */
