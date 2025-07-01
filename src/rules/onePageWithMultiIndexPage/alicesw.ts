@@ -30,5 +30,5 @@ export const alicesw = () =>
     // concurrencyLimit: 3,
     // sleepTime: 1000,
     language: "zh",
-    // nsfw: true,
+    nsfw: true,
   });
