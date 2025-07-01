@@ -1,7 +1,17 @@
 import { log } from "../log";
 
 /**
- * State for tracking mappings and loading status per session+domain
+ * Mapping type constants for cache key generation
+ */
+export const MAPPING_TYPES = {
+  FILENAME: 'filename',
+  HASH: 'hash'
+} as const;
+
+export type MappingType = typeof MAPPING_TYPES[keyof typeof MAPPING_TYPES];
+
+/**
+ * State for tracking mappings and loading status per session+domain+type
  */
 interface SessionDomainState {
   mappings: Map<string, string> | null;
@@ -12,10 +22,11 @@ interface SessionDomainState {
  * Session-based mapping cache for decoders
  * Provides in-memory mapping storage that's automatically cleaned up when book downloads complete
  * Prevents repeated downloads of the same mapping file during a book download session
+ * Supports multiple mapping types (filename, hash) per domain without conflicts
  */
 export class SessionMappingCache {
   private static instance: SessionMappingCache | null = null;
-  private cache: Map<string, SessionDomainState> = new Map(); // sessionId-domain -> state
+  private cache: Map<string, SessionDomainState> = new Map(); // sessionId-domain-type -> state
   private activeSessions: Set<string> = new Set();
 
   private constructor() {
@@ -69,16 +80,21 @@ export class SessionMappingCache {
   }
 
   /**
-   * Get mappings for a session+domain with concurrent loading support
+   * Get mappings for a session+domain+type with concurrent loading support
    * If mappings aren't cached, calls the provided fetch function to download them
    * Prevents multiple simultaneous downloads of the same mapping file
    */
   async getMappingsWithLoading(
     sessionId: string, 
     domain: string, 
+    mappingType: MappingType,
     fetchFn: () => Promise<Map<string, string>>
   ): Promise<Map<string, string>> {
-    const key = this.getKey(sessionId, domain);
+    if (!sessionId || !domain || !mappingType) {
+      throw new Error("SessionMappingCache: sessionId, domain, and mappingType are required");
+    }
+    
+    const key = this.getKey(sessionId, domain, mappingType);
     let state = this.cache.get(key);
     
     if (!state) {
@@ -88,26 +104,26 @@ export class SessionMappingCache {
     
     // Return cached mappings if available
     if (state.mappings) {
-      log.debug(`[SessionMappingCache] Using cached mappings for ${key}`);
+      log.debug(`[SessionMappingCache] Using cached ${mappingType} mappings for ${key}`);
       return state.mappings;
     }
     
     // If already loading, wait for existing load to complete
     if (state.loading) {
-      log.debug(`[SessionMappingCache] Waiting for in-progress download for ${key}`);
+      log.debug(`[SessionMappingCache] Waiting for in-progress ${mappingType} download for ${key}`);
       return await state.loading;
     }
     
     // Start new download
-    log.debug(`[SessionMappingCache] Starting download for ${key}`);
+    log.debug(`[SessionMappingCache] Starting ${mappingType} download for ${key}`);
     state.loading = fetchFn();
     
     try {
       state.mappings = await state.loading;
-      log.debug(`[SessionMappingCache] Successfully cached ${state.mappings.size} mappings for ${key}`);
+      log.debug(`[SessionMappingCache] Successfully cached ${state.mappings.size} ${mappingType} mappings for ${key}`);
       return state.mappings;
     } catch (error) {
-      log.error(`[SessionMappingCache] Failed to download mappings for ${key}:`, error);
+      log.error(`[SessionMappingCache] Failed to download ${mappingType} mappings for ${key}:`, error);
       // Remove the cache entry on failure so future attempts can retry
       this.cache.delete(key);
       throw error;
@@ -117,10 +133,10 @@ export class SessionMappingCache {
   }
 
   /**
-   * Check if mappings are cached for a session+domain
+   * Check if mappings are cached for a session+domain+type
    */
-  hasMappings(sessionId: string, domain: string): boolean {
-    const key = this.getKey(sessionId, domain);
+  hasMappings(sessionId: string, domain: string, mappingType: MappingType): boolean {
+    const key = this.getKey(sessionId, domain, mappingType);
     const state = this.cache.get(key);
     return state?.mappings !== null && state?.mappings !== undefined;
   }
@@ -160,9 +176,9 @@ export class SessionMappingCache {
   }
 
   /**
-   * Generate cache key for session+domain combination
+   * Generate cache key for session+domain+type combination
    */
-  private getKey(sessionId: string, domain: string): string {
-    return `${sessionId}-${domain}`;
+  private getKey(sessionId: string, domain: string, mappingType: MappingType): string {
+    return `${sessionId}-${domain}-${mappingType}`;
   }
 }
