@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1197
+// @version        5.2.1198
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -69,6 +69,8 @@
 // @exclude        *://www.fxshu.top/*/*_*.html
 // @exclude        *://www.xiguashuwu.com/book/*/*.html
 // @exclude        *://www.xiguashuwu.com/book/*/catalog/
+// @exclude        *://www.rmkbr.com/*/*/*.html
+// @exclude        *://www.fdhxs.com/*/*/*.html
 // @match          *://101kanshu.com/book/*.html
 // @match          *://www.sudugu.com/*
 // @match          *://www.po18.tw/books/*
@@ -323,6 +325,12 @@
 // @match          *://mangguoshufang.com/*/*/info.html
 // @match          *://m.bixiange.me/*/*/
 // @match          *://www.xiguashuwu.com/book/*/
+// @match          *://www.rmkbr.com/*/*/
+// @match          *://www.fdhxs.com/*/*/
+// @match          *://www.alicesw.com/novel/*.html
+// @match          *://pornhulu.com/novel/*.html
+// @match          *://xn--yhqvcx66l.xnxnxn7.xyz/novel/*.html
+// @match          *://321dh.org/novel/*.html
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
@@ -7281,11 +7289,16 @@ async function _GM_deleteValue(name) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   $: () => (/* binding */ MAPPING_TYPES),
 /* harmony export */   j: () => (/* binding */ SessionMappingCache)
 /* harmony export */ });
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
 
+const MAPPING_TYPES = {
+    FILENAME: 'filename',
+    HASH: 'hash'
+};
 class SessionMappingCache {
     static instance = null;
     cache = new Map();
@@ -7318,30 +7331,33 @@ class SessionMappingCache {
     isSessionActive(sessionId) {
         return this.activeSessions.has(sessionId);
     }
-    async getMappingsWithLoading(sessionId, domain, fetchFn) {
-        const key = this.getKey(sessionId, domain);
+    async getMappingsWithLoading(sessionId, domain, mappingType, fetchFn) {
+        if (!sessionId || !domain || !mappingType) {
+            throw new Error("SessionMappingCache: sessionId, domain, and mappingType are required");
+        }
+        const key = this.getKey(sessionId, domain, mappingType);
         let state = this.cache.get(key);
         if (!state) {
             state = { mappings: null, loading: null };
             this.cache.set(key, state);
         }
         if (state.mappings) {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`[SessionMappingCache] Using cached mappings for ${key}`);
+            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`[SessionMappingCache] Using cached ${mappingType} mappings for ${key}`);
             return state.mappings;
         }
         if (state.loading) {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`[SessionMappingCache] Waiting for in-progress download for ${key}`);
+            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`[SessionMappingCache] Waiting for in-progress ${mappingType} download for ${key}`);
             return await state.loading;
         }
-        _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`[SessionMappingCache] Starting download for ${key}`);
+        _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`[SessionMappingCache] Starting ${mappingType} download for ${key}`);
         state.loading = fetchFn();
         try {
             state.mappings = await state.loading;
-            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`[SessionMappingCache] Successfully cached ${state.mappings.size} mappings for ${key}`);
+            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`[SessionMappingCache] Successfully cached ${state.mappings.size} ${mappingType} mappings for ${key}`);
             return state.mappings;
         }
         catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().error(`[SessionMappingCache] Failed to download mappings for ${key}:`, error);
+            _log__WEBPACK_IMPORTED_MODULE_0___default().error(`[SessionMappingCache] Failed to download ${mappingType} mappings for ${key}:`, error);
             this.cache.delete(key);
             throw error;
         }
@@ -7349,8 +7365,8 @@ class SessionMappingCache {
             state.loading = null;
         }
     }
-    hasMappings(sessionId, domain) {
-        const key = this.getKey(sessionId, domain);
+    hasMappings(sessionId, domain, mappingType) {
+        const key = this.getKey(sessionId, domain, mappingType);
         const state = this.cache.get(key);
         return state?.mappings !== null && state?.mappings !== undefined;
     }
@@ -7375,8 +7391,8 @@ class SessionMappingCache {
             totalMappings
         };
     }
-    getKey(sessionId, domain) {
-        return `${sessionId}-${domain}`;
+    getKey(sessionId, domain, mappingType) {
+        return `${sessionId}-${domain}-${mappingType}`;
     }
 }
 
@@ -14209,6 +14225,31 @@ const xbyuan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 
 /***/ }),
 
+/***/ "./src/rules/onePage/yiqushuzhai.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   yiqushuzhai: () => (/* binding */ yiqushuzhai)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+
+const yiqushuzhai = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("h1")?.innerText.trim(),
+    author: document.querySelector("#info > p:nth-of-type(3) > a")?.innerText.trim() || "",
+    introDom: document.querySelector("#intro > p"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector("#fmimg > img")?.getAttribute("src") || null,
+    aList: document.querySelectorAll("dl > dd > a"),
+    getContent: (doc) => doc.querySelector("#content"),
+    contentPatch: (content) => content,
+    language: "zh",
+});
+
+
+/***/ }),
+
 /***/ "./src/rules/onePage/zgzl.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -14504,6 +14545,39 @@ const c69yuedu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
 
 /***/ }),
 
+/***/ "./src/rules/onePageWithMultiIndexPage/alicesw.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   alicesw: () => (/* binding */ alicesw)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+
+const alicesw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("h1")?.innerText.trim(),
+    author: document.querySelector("div.box_info p:first-of-type > a:first-of-type")?.innerText.trim() || "",
+    introDom: document.querySelector("div.intro"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector("div.pic > img.fengmian2").src || null,
+    getIndexUrls: () => {
+        const chapterPageLink = document.querySelector("div.book_newchap > div.tit > span > em > a");
+        if (!chapterPageLink) {
+            return [];
+        }
+        return [chapterPageLink.href];
+    },
+    getAList: (doc) => doc.querySelectorAll("ul.mulu_list > li > a"),
+    getContent: (doc) => doc.querySelector("div.read-content"),
+    contentPatch: (content) => content,
+    language: "zh",
+    nsfw: true,
+});
+
+
+/***/ }),
+
 /***/ "./src/rules/onePageWithMultiIndexPage/baihexs.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -14613,6 +14687,86 @@ const biqugetw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
         });
         return contentRaw;
     },
+    contentPatch: (content) => content,
+    language: "zh",
+});
+
+
+/***/ }),
+
+/***/ "./src/rules/onePageWithMultiIndexPage/haitangshuwu.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   haitangshuwu: () => (/* binding */ haitangshuwu)
+/* harmony export */ });
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+
+
+const haitangshuwu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("h2")?.innerText.trim(),
+    author: document.querySelector("div.block_txt2 > p:nth-of-type(3) > a")?.innerText.trim() || "未知",
+    introDom: document.querySelector("div.intro_info"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector("div.block_img2 > img")?.src || null,
+    getIndexUrls: async () => {
+        try {
+            const chapterListLink = document.querySelector("a.chapterlist");
+            let firstPageUrl = chapterListLink?.href;
+            if (!firstPageUrl) {
+                const allLinks = Array.from(document.querySelectorAll('a'));
+                const catalogLink = allLinks.find(link => link.textContent?.includes('目录') ||
+                    link.textContent?.includes('章节') ||
+                    link.textContent?.includes('小说目录'));
+                firstPageUrl = catalogLink?.href;
+            }
+            if (!firstPageUrl) {
+                return [];
+            }
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(firstPageUrl, document.characterSet);
+            const pageLinks = Array.from(doc.querySelectorAll('div.page a'));
+            const lastPageLink = pageLinks.find(link => link.textContent?.trim() === '尾页');
+            if (!lastPageLink) {
+                return [firstPageUrl];
+            }
+            const lastPageUrl = lastPageLink.href;
+            const pageMatch = lastPageUrl.match(/_(\d+)\/$/);
+            if (!pageMatch) {
+                return [firstPageUrl];
+            }
+            const totalPages = parseInt(pageMatch[1], 10);
+            if (isNaN(totalPages) || totalPages < 1) {
+                return [firstPageUrl];
+            }
+            const baseUrlMatch = firstPageUrl.match(/^(.+)_1\/$/);
+            if (!baseUrlMatch) {
+                return [firstPageUrl];
+            }
+            const baseUrl = baseUrlMatch[1];
+            const allPageUrls = [];
+            for (let page = 1; page <= totalPages; page++) {
+                allPageUrls.push(`${baseUrl}_${page}/`);
+            }
+            return allPageUrls;
+        }
+        catch (error) {
+            console.warn("Failed to fetch pagination for haitangshuwu:", error);
+            const chapterListLink = document.querySelector("a.chapterlist");
+            if (chapterListLink) {
+                return [chapterListLink.href];
+            }
+            const allLinks = Array.from(document.querySelectorAll('a'));
+            const catalogLink = allLinks.find(link => link.textContent?.includes('目录') ||
+                link.textContent?.includes('章节') ||
+                link.textContent?.includes('小说目录'));
+            return catalogLink ? [catalogLink.href] : [];
+        }
+    },
+    getAList: (doc) => doc.querySelectorAll('ul.chapter > li > a:has(span)'),
+    getContent: (doc) => doc.querySelector("#nr1"),
     contentPatch: (content) => content,
     language: "zh",
 });
@@ -38159,7 +38313,7 @@ class FilenameDecoder {
         }
         this.domain = domain;
         this.sessionId = sessionId || window.workerId;
-        this.remoteUrl = `https://fastly.jsdelivr.net/gh/oovz/novel-downloader-image-to-text-mapping@master/filename-mappings/${domain}.json`;
+        this.remoteUrl = `https://fastly.jsdelivr.net/gh/oovz/novel-downloader-image-to-text-mapping@master/filename-mappings/${domain}.min.json`;
         this.learnedCacheKey = `filename-mappings-learned-${domain}`;
         this.loadLearnedMappings().catch(error => {
             loglevel_default().error("Failed to initialize learned mappings:", error);
@@ -38217,7 +38371,7 @@ class FilenameDecoder {
     async loadMappings() {
         try {
             const sessionCache = SessionMappingCache/* SessionMappingCache */.j.getInstance();
-            this.mappings = await sessionCache.getMappingsWithLoading(this.sessionId, this.domain, () => this.fetchRemoteMappings());
+            this.mappings = await sessionCache.getMappingsWithLoading(this.sessionId, this.domain, SessionMappingCache/* MAPPING_TYPES */.$.FILENAME, () => this.fetchRemoteMappings());
             loglevel_default().debug(`Loaded ${this.mappings.size} filename mappings for session ${this.sessionId}`);
         }
         catch (error) {
@@ -38402,7 +38556,7 @@ class HashDecoder {
         }
         this.domain = domain;
         this.sessionId = sessionId || window.workerId;
-        this.remoteUrl = `https://fastly.jsdelivr.net/gh/oovz/novel-downloader-image-to-text-mapping@master/hash-mappings/${domain}.json`;
+        this.remoteUrl = `https://fastly.jsdelivr.net/gh/oovz/novel-downloader-image-to-text-mapping@master/hash-mappings/${domain}.min.json`;
         this.learnedCacheKey = `hash-mappings-learned-${domain}`;
         this.imageHasher = new imageHasher();
         this.loadLearnedMappings().catch(error => {
@@ -38487,7 +38641,7 @@ class HashDecoder {
     async loadMappings() {
         try {
             const sessionCache = SessionMappingCache/* SessionMappingCache */.j.getInstance();
-            this.mappings = await sessionCache.getMappingsWithLoading(this.sessionId, this.domain, () => this.fetchRemoteMappings());
+            this.mappings = await sessionCache.getMappingsWithLoading(this.sessionId, this.domain, SessionMappingCache/* MAPPING_TYPES */.$.HASH, () => this.fetchRemoteMappings());
             loglevel_default().debug(`Loaded ${this.mappings.size} hash mappings for session ${this.sessionId}`);
         }
         catch (error) {
@@ -38553,18 +38707,8 @@ class HashDecoder {
         }
     }
     async generateImageHash(imageData) {
-        try {
-            const blob = new Blob([imageData]);
-            return await this.imageHasher.hash(blob);
-        }
-        catch (error) {
-            loglevel_default().error("Failed to generate image hash:", error);
-            let hash = 0;
-            for (let i = 0; i < Math.min(imageData.length, 1000); i++) {
-                hash = ((hash << 5) - hash + imageData[i]) & 0xffffffff;
-            }
-            return hash.toString(16);
-        }
+        const blob = new Blob([imageData]);
+        return await this.imageHasher.hash(blob);
     }
 }
 
@@ -43834,6 +43978,11 @@ async function getRule() {
             ruleClass = bixiange();
             break;
         }
+        case "www.rmkbr.com": {
+            const { yiqushuzhai } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/yiqushuzhai.ts"));
+            ruleClass = yiqushuzhai();
+            break;
+        }
         case "m.baihexs.com": {
             const { baihexs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/baihexs.ts"));
             ruleClass = baihexs();
@@ -43863,6 +44012,19 @@ async function getRule() {
         case "xszj.org": {
             const { xszj } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/xszj.ts"));
             ruleClass = xszj();
+            break;
+        }
+        case "www.fdhxs.com": {
+            const { haitangshuwu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/haitangshuwu.ts"));
+            ruleClass = haitangshuwu();
+            break;
+        }
+        case "pornhulu.com":
+        case "xn--yhqvcx66l.xnxnxn7.xyz":
+        case "321dh.org":
+        case "www.alicesw.com": {
+            const { alicesw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/alicesw.ts"));
+            ruleClass = alicesw();
             break;
         }
         case "www.ruochu.com": {
