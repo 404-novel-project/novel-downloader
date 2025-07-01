@@ -275,7 +275,13 @@
     "*://www.52shuku.vip/*/*.html",
     "*://mangguoshufang.com/*/*/info.html",
     "*://m.bixiange.me/*/*/",
-    "*://www.xiguashuwu.com/book/*/"
+    "*://www.xiguashuwu.com/book/*/",
+    "*://www.rmkbr.com/*/*/",
+    "*://www.fdhxs.com/*/*/",
+    "*://www.alicesw.com/novel/*.html",
+    "*://pornhulu.com/novel/*.html",
+    "*://xn--yhqvcx66l.xnxnxn7.xyz/novel/*.html",
+    "*://321dh.org/novel/*.html"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -338,7 +344,9 @@
     "*://m.bixiange.me/*/*/*.html",
     "*://www.fxshu.top/*/*_*.html",
     "*://www.xiguashuwu.com/book/*/*.html",
-    "*://www.xiguashuwu.com/book/*/catalog/"
+    "*://www.xiguashuwu.com/book/*/catalog/",
+    "*://www.rmkbr.com/*/*/*.html",
+    "*://www.fdhxs.com/*/*/*.html"
   ],
   "grant": [
     "unsafeWindow",

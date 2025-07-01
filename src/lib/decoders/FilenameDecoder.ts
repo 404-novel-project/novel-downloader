@@ -1,7 +1,7 @@
 import { log } from "../../log";
 import { ggetText } from "../http";
 import { _GM_setValue, _GM_getValue, _GM_deleteValue } from "../GM";
-import { SessionMappingCache } from "../SessionMappingCache";
+import { SessionMappingCache, MAPPING_TYPES } from "../SessionMappingCache";
 import { GmWindow } from "../../global";
 
 /**
@@ -28,7 +28,7 @@ export class FilenameDecoder {
     this.sessionId = sessionId || (window as GmWindow).workerId;
     
     // Construct site-specific URLs and cache keys
-    this.remoteUrl = `https://fastly.jsdelivr.net/gh/oovz/novel-downloader-image-to-text-mapping@master/filename-mappings/${domain}.json`;
+    this.remoteUrl = `https://fastly.jsdelivr.net/gh/oovz/novel-downloader-image-to-text-mapping@master/filename-mappings/${domain}.min.json`;
     this.learnedCacheKey = `filename-mappings-learned-${domain}`;
     
     this.loadLearnedMappings().catch(error => {
@@ -126,6 +126,7 @@ export class FilenameDecoder {
       this.mappings = await sessionCache.getMappingsWithLoading(
         this.sessionId,
         this.domain,
+        MAPPING_TYPES.FILENAME,
         () => this.fetchRemoteMappings()
       );
       

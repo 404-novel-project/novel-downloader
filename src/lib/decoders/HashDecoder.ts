@@ -2,7 +2,7 @@ import { log } from "../../log";
 import { ggetText } from "../http";
 import { _GM_setValue, _GM_getValue, _GM_deleteValue } from "../GM";
 import ImageHasher from "../imageHasher";
-import { SessionMappingCache } from "../SessionMappingCache";
+import { SessionMappingCache, MAPPING_TYPES } from "../SessionMappingCache";
 import { GmWindow } from "../../global";
 
 /**
@@ -30,7 +30,7 @@ export class HashDecoder {
     this.sessionId = sessionId || (window as GmWindow).workerId;
     
     // Construct site-specific URLs and cache keys
-    this.remoteUrl = `https://fastly.jsdelivr.net/gh/oovz/novel-downloader-image-to-text-mapping@master/hash-mappings/${domain}.json`;
+    this.remoteUrl = `https://fastly.jsdelivr.net/gh/oovz/novel-downloader-image-to-text-mapping@master/hash-mappings/${domain}.min.json`;
     this.learnedCacheKey = `hash-mappings-learned-${domain}`;
     
     this.imageHasher = new ImageHasher();
@@ -169,6 +169,7 @@ export class HashDecoder {
       this.mappings = await sessionCache.getMappingsWithLoading(
         this.sessionId,
         this.domain,
+        MAPPING_TYPES.HASH,
         () => this.fetchRemoteMappings()
       );
       
@@ -253,18 +254,8 @@ export class HashDecoder {
    * Generate a hash from image data using ImageHasher
    */
   private async generateImageHash(imageData: Uint8Array): Promise<string> {
-    try {
-      // Convert Uint8Array to Blob for ImageHasher
-      const blob = new Blob([imageData]);
-      return await this.imageHasher.hash(blob);
-    } catch (error) {
-      log.error("Failed to generate image hash:", error);
-      // Fallback to simple hash if ImageHasher fails
-      let hash = 0;
-      for (let i = 0; i < Math.min(imageData.length, 1000); i++) {
-        hash = ((hash << 5) - hash + imageData[i]) & 0xffffffff;
-      }
-      return hash.toString(16);
-    }
+    // Convert Uint8Array to Blob for ImageHasher
+    const blob = new Blob([imageData]);
+    return await this.imageHasher.hash(blob);
   }
 }

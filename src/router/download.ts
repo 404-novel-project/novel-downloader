@@ -434,6 +434,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = bixiange();
       break;
     }
+    case "www.rmkbr.com": {
+      const { yiqushuzhai } = await import("../rules/onePage/yiqushuzhai");
+      ruleClass = yiqushuzhai();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage Start */
@@ -474,6 +479,19 @@ export async function getRule(): Promise<BaseRuleClass> {
     case "xszj.org": {
       const { xszj } = await import("../rules/onePageWithMultiIndexPage/xszj");
       ruleClass = xszj();
+      break;
+    }
+    case "www.fdhxs.com": {
+      const { haitangshuwu } = await import("../rules/onePageWithMultiIndexPage/haitangshuwu");
+      ruleClass = haitangshuwu();
+      break;
+    }
+    case "pornhulu.com":
+    case "xn--yhqvcx66l.xnxnxn7.xyz": // "爱丽丝.xnxnxn7.xyz"
+    case "321dh.org":
+    case "www.alicesw.com": {
+      const { alicesw } = await import("../rules/onePageWithMultiIndexPage/alicesw");
+      ruleClass = alicesw();
       break;
     }
     /* onePageWithMultiIndexPage End */
