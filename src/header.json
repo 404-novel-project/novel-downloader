@@ -277,7 +277,11 @@
     "*://m.bixiange.me/*/*/",
     "*://www.xiguashuwu.com/book/*/",
     "*://www.rmkbr.com/*/*/",
-    "*://www.fdhxs.com/*/*/"
+    "*://www.fdhxs.com/*/*/",
+    "*://www.alicesw.com/novel/*.html",
+    "*://pornhulu.com/novel/*.html",
+    "*://xn--yhqvcx66l.xnxnxn7.xyz/novel/*.html",
+    "*://321dh.org/novel/*.html"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

@@ -486,6 +486,14 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = haitangshuwu();
       break;
     }
+    case "pornhulu.com":
+    case "xn--yhqvcx66l.xnxnxn7.xyz": // "爱丽丝.xnxnxn7.xyz"
+    case "321dh.org":
+    case "www.alicesw.com": {
+      const { alicesw } = await import("../rules/onePageWithMultiIndexPage/alicesw");
+      ruleClass = alicesw();
+      break;
+    }
     /* onePageWithMultiIndexPage End */
 
     /* twoPage */
