@@ -1,6 +1,4 @@
 import { mkRuleClass } from "./template";
-import { nextPageParse } from "../../lib/rule";
-import { rm } from "../../lib/dom";
 import { getHtmlDOM } from "../../lib/http";
 
 export const haitangshuwu = () =>
