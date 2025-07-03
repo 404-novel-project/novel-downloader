@@ -810,7 +810,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = fanqie;
       break;
     }
-    /** 笔趣阁END **/    
+    /** 笔趣阁END **/
+    case "www.mangguoshufang.com":
     case "mangguoshufang.com": {
       const { Mangguoshufang } = await import("../rules/special/original/mangguoshufang");
       ruleClass = Mangguoshufang;
