@@ -6,86 +6,50 @@ import { log } from "../../../log";
 import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
-
-interface ApiResponse {
-  code: number;
-  msg: string;
-  count: number; // number of propreties in data?
-  data: {
-    novel?: {
-      novel_author: string;
-      novel_chapter: string; // number of chapters
-      novel_cover: string; // cover image URL
-      novel_id: string; // number in string
-      novel_info: string; // description
-      novel_newcid: string; // latest(new) chapter id
-      novel_newcname: string; // latest(new) chapter name
-      novel_pinyin: string; // pinyin of novel name
-      novel_process: string; // unknown
-      novel_startcid: string; // start chapter id
-      novel_startcname: string; // start chapter name
-      novel_wordnumber: string; // total word count
-      type_id: string; // genre id
-      type_name: string; // genre name
-    };
-    chapter?: {
-      author_id: string; // number in string
-      chapter_cid: string; // unknown
-      chapter_id: string; // number in string
-      chapter_islogin: string; // unknown
-      chapter_ispay: string; // is paid? "0" = no
-      chapter_istxt: string; // is text? "0" = no, "1" = yes
-      chapter_isvip: string; // is VIP? "0" = no, "1" = yes
-      chapter_name: string; // chapter name
-      chapter_nid: string; // novel id
-      chapter_number: string; // unknown
-      chapter_order: string; // unknown
-      chapter_status: string; // unknown
-      chapter_time: string; // timestamp of chapter creation in mangguoshufang
-      chapter_type: string; // "公众章节"
-      chapter_vid: string; // unknown?
-      content: string[]; // array of content strings, each string is a paragraph
-      is_content: boolean; // unknown
-      is_sub: number; // unknown
-      novel_id: string; // novel id
-      type_id: string; // genre id
-      volume_desc: string; // volume description "正文内容"
-      volume_name: string; // volume name "正文"
-    };
-    prev?: {
-      chapter_id: string; // number in string. 0 if no chapter.
-      chapter_name: string; // chapter name. empty if no chapter.
-    };
-    next?: {
-      chapter_id: string; // number in string. 0 if no chapter.
-      chapter_name: string; // chapter name. empty if no chapter.
-    };
-    price?: {
-      sell_month: string; // number in string
-      sell_all: string; // number in string
-      sell_number: string; // number in string
-    };
-  };
-}
+import { WeimengCMS, createWeimengForSite, WeimengChapterOptions } from "../lib/weimengcms";
 
 export class Mangguoshufang extends BaseRuleClass {
+  private weimengClient: WeimengCMS | null = null;
+
   public constructor() {
     super();
     this.attachmentMode = "TM";
     this.concurrencyLimit = 1;
     this.sleepTime = 500;
     this.maxSleepTime = 2000;
+    
+    // Initialize WeimengCMS client for this site
+    try {
+      log.debug("[Mangguoshufang] Initializing WeimengCMS client...");
+      this.weimengClient = createWeimengForSite("https://mangguoshufang.com");
+      log.debug("[Mangguoshufang] WeimengCMS client initialized successfully");
+    } catch (error) {
+      log.error("[Mangguoshufang] Failed to initialize WeimengCMS client:", error);
+      this.weimengClient = null;
+    }
   }
 
   /**
-   * 获取章节列表页面URL
+   * Ensures WeimengCMS client is available, throws error if not
+   */
+  private ensureWeimengClient(): WeimengCMS {
+    if (!this.weimengClient) {
+      throw new Error("[Mangguoshufang] WeimengCMS client is not initialized. Cannot proceed with WeimengCMS operations.");
+    }
+    return this.weimengClient;
+  }
+
+  /**
+   * Extracts chapter list page URL from the current page
+   * @returns Promise resolving to chapter list URL or null if not found
    */
   private async getChapterListPageUrl(): Promise<string | null> {
     try {
-      const chapterListPageLink = document.querySelector("div.works-chapter-wr > ul > li.active > a") as HTMLAnchorElement;
+      const config = this.ensureWeimengClient().getConfig();
+      const chapterListPageLink = document.querySelector(config.selectors.CHAPTER_LIST_LINK) as HTMLAnchorElement;
       
       if (!chapterListPageLink) {
-        log.warn("[Mangguoshufang] Chapter list page link not found with selector 'div.works-chapter-wr > ul > li.active > a'");
+        log.warn(`[Mangguoshufang] ${config.errors.NO_CHAPTER_LIST_LINK} with selector '${config.selectors.CHAPTER_LIST_LINK}'`);
         return null;
       }
 
@@ -99,33 +63,40 @@ export class Mangguoshufang extends BaseRuleClass {
     }
   }
 
-  public async bookParse() {
+  /**
+   * Extracts book metadata from the current page DOM
+   * @returns Object containing book metadata
+   */
+  private async extractBookMetadata() {
+    const config = this.ensureWeimengClient().getConfig();
     const bookUrl = document.location.href;
+    
     const bookname = (
-      document.querySelector("h2.works-intro-title > strong") as HTMLElement
+      document.querySelector(config.selectors.BOOK_TITLE) as HTMLElement
     )?.innerText.trim();
+    
     const author = (
-      document.querySelector("p.works-intro-digi > span") as HTMLElement
+      document.querySelector(config.selectors.BOOK_AUTHOR) as HTMLElement
     )?.innerText
       .trim()
       .replace(/^作者：/, "");
 
-    const introDom = document.querySelector("p.works-intro-short") as HTMLElement;
+    const introDom = document.querySelector(config.selectors.BOOK_INTRO) as HTMLElement;
     const [introduction, introductionHTML] = await introDomHandle(
       introDom,
       (introDom) => introDom,
     );
 
     const tags = [''];
-    (document.querySelectorAll("#tags-show > a") as NodeListOf<HTMLAnchorElement>).forEach((aElem) => tags.push(aElem.innerText.trim()));
+    (document.querySelectorAll(config.selectors.BOOK_TAGS) as NodeListOf<HTMLAnchorElement>)
+      .forEach((aElem) => tags.push(aElem.innerText.trim()));
 
     const additionalMetadate: BookAdditionalMetadate = {
       language: "zh",
       tags: tags,
     };
 
-    const coverUrl =
-      document.querySelector("div.works-cover > img")?.getAttribute("src") || null;
+    const coverUrl = document.querySelector(config.selectors.BOOK_COVER)?.getAttribute("src") || null;
     if (coverUrl) {
       getAttachment(coverUrl, this.attachmentMode, "cover-")
         .then((coverClass) => {
@@ -134,36 +105,63 @@ export class Mangguoshufang extends BaseRuleClass {
         .catch((error) => log.error(error));
     }
 
-    const chapters: Chapter[] = [];
-    let aList: NodeListOf<Element> = document.querySelectorAll("nonexistent"); // Initialize to empty NodeList
-    let chapterNumber = 0;
+    return {
+      bookUrl,
+      bookname,
+      author,
+      introduction,
+      introductionHTML,
+      additionalMetadate
+    };
+  }
 
-    // Try to get chapter list from separate page
+  /**
+   * Fetches chapter list from the chapter list page
+   * @returns Promise resolving to NodeListOf chapter links
+   */
+  private async fetchChapterList(): Promise<NodeListOf<Element>> {
+    const config = this.ensureWeimengClient().getConfig();
+    const emptyList = document.querySelectorAll("nonexistent"); // Create empty NodeList
+    
     const chapterListPageUrl = await this.getChapterListPageUrl();
     
-    if (chapterListPageUrl) {
-      try {
-        log.debug(`[Mangguoshufang] Fetching chapter list from separate page: ${chapterListPageUrl}`);
-        const chapterListDoc = await getHtmlDOM(chapterListPageUrl, this.charset);
-        aList = chapterListDoc.querySelectorAll("ol > li > p a");
-        
-        if (aList.length === 0) {
-          log.warn(`[Mangguoshufang] No chapters found in chapter list page: ${chapterListPageUrl}`);
-        }
-      } catch (error) {
-        log.warn(`[Mangguoshufang] Failed to fetch chapter list from separate page: ${error}. Returning empty chapter list.`);
-      }
-    } else {
+    if (!chapterListPageUrl) {
       log.warn(`[Mangguoshufang] Chapter list page URL not found. Returning empty chapter list.`);
+      return emptyList;
     }
+
+    try {
+      log.debug(`[Mangguoshufang] Fetching chapter list from separate page: ${chapterListPageUrl}`);
+      const chapterListDoc = await getHtmlDOM(chapterListPageUrl, this.charset);
+      const aList = chapterListDoc.querySelectorAll(config.selectors.CHAPTER_LINKS);
+      
+      if (aList.length === 0) {
+        log.warn(`[Mangguoshufang] ${config.errors.NO_CHAPTERS_FOUND}: ${chapterListPageUrl}`);
+      }
+      
+      return aList;
+    } catch (error) {
+      log.warn(`[Mangguoshufang] ${config.errors.CHAPTER_LIST_FETCH_FAILED}: ${error}. Returning empty chapter list.`);
+      return emptyList;
+    }
+  }
+
+  /**
+   * Creates Chapter objects from chapter link elements
+   * @param aList - NodeList of chapter link elements
+   * @param bookMetadata - Book metadata object
+   * @returns Array of Chapter objects
+   */
+  private createChapterObjects(aList: NodeListOf<Element>, bookMetadata: any): Chapter[] {
+    const chapters: Chapter[] = [];
+    let chapterNumber = 0;
 
     for (const aElem of Array.from(aList) as HTMLAnchorElement[]) {
       const chapterName = aElem.innerText.trim();
       const chapterUrl = aElem.href;
 
-      // Extract chapter ID from URL - URL format like /1/123/read/12345.html
-      const chapterIdMatch = chapterUrl.match(/\/read\/(\d+)\.html$/);
-      const chapterId = chapterIdMatch ? chapterIdMatch[1] : null;
+      // Extract chapter ID from URL using the WeimengCMS library
+      const chapterId = this.ensureWeimengClient().extractChapterIdFromUrl(chapterUrl);
 
       if (!chapterId) {
         log.warn(`Could not extract chapter ID from URL: ${chapterUrl}`);
@@ -173,8 +171,8 @@ export class Mangguoshufang extends BaseRuleClass {
       chapterNumber++;
 
       const chapter = new Chapter({
-        bookUrl,
-        bookname,
+        bookUrl: bookMetadata.bookUrl,
+        bookname: bookMetadata.bookname,
         chapterUrl,
         chapterNumber,
         chapterName,
@@ -183,7 +181,7 @@ export class Mangguoshufang extends BaseRuleClass {
         sectionName: null,
         sectionNumber: null,
         sectionChapterNumber: null,
-        chapterParse: this.chapterParse,
+        chapterParse: this.chapterParse.bind(this),
         charset: this.charset,
         options: { chapterId },
       });
@@ -191,24 +189,51 @@ export class Mangguoshufang extends BaseRuleClass {
       chapters.push(chapter);
     }
 
+    return chapters;
+  }
+
+  /**
+   * Main method to parse book information and chapters
+   * @returns Promise resolving to Book object
+   */
+  public async bookParse() {
+    // Extract book metadata from current page
+    const bookMetadata = await this.extractBookMetadata();
+    
+    // Fetch chapter list from separate page
+    const aList = await this.fetchChapterList();
+    
+    // Create chapter objects
+    const chapters = this.createChapterObjects(aList, bookMetadata);
+
     return new Book({
-      bookUrl,
-      bookname,
-      author,
-      introduction,
-      introductionHTML,
-      additionalMetadate,
+      bookUrl: bookMetadata.bookUrl,
+      bookname: bookMetadata.bookname,
+      author: bookMetadata.author,
+      introduction: bookMetadata.introduction,
+      introductionHTML: bookMetadata.introductionHTML,
+      additionalMetadate: bookMetadata.additionalMetadate,
       chapters,
     });
   }
 
+  /**
+   * Main method to parse chapter content from WeimengCMS API
+   * @param chapterUrl - Chapter URL
+   * @param chapterName - Chapter name (fallback)
+   * @param isVIP - Whether chapter is VIP (unused for WeimengCMS)
+   * @param isPaid - Whether chapter is paid (unused for WeimengCMS) 
+   * @param charset - Character encoding
+   * @param options - Chapter options containing chapterId
+   * @returns Promise resolving to ChapterParseObject
+   */
   public async chapterParse(
     chapterUrl: string,
     chapterName: string | null,
     isVIP: boolean,
     isPaid: boolean,
     charset: string,
-    options: { chapterId: string },
+    options: WeimengChapterOptions,
   ): Promise<ChapterParseObject> {
     const { chapterId } = options;
 
@@ -224,54 +249,16 @@ export class Mangguoshufang extends BaseRuleClass {
       };
     }
 
-    const apiUrl = `https://mangguoshufang.com/wmcms/ajax/index.php?action=novel.getchapter&cid=${chapterId}&format=1`;
-
     try {
-      log.debug(`[Chapter] Requesting API: ${apiUrl}`);
+      log.debug(`[Chapter] Requesting WeimengCMS API for chapter ID: ${chapterId}`);
 
-      const response = await fetch(apiUrl, {
-        method: "GET",
-        headers: {
-          Accept: "application/json, text/plain, */*",
-          Referer: chapterUrl,
-          "User-Agent": navigator.userAgent,
-        },
-        credentials: "include",
-      });
+      // Use WeimengCMS library to fetch and process chapter content
+      const weimengClient = this.ensureWeimengClient();
+      const chapterData = await weimengClient.fetchChapterContent(chapterId, chapterUrl);
+      const contentRaw = weimengClient.processChapterContent(chapterData);
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const data: ApiResponse = await response.json();
-
-      if (data.code !== 200) {
-        throw new Error(`API Error: ${data.msg}`);
-      }
-
-      if (!data.data.chapter) {
-        throw new Error(`API Error: No chapter data found`);
-      }
-
-      // Create content element from API response
-      const contentRaw = document.createElement("div");
-
-      // The content is an array of strings, join them as paragraphs
-      if (Array.isArray(data.data.chapter.content)) {
-        data.data.chapter.content.forEach((paragraph, index) => {
-          if (paragraph.trim()) {
-            const p = document.createElement("p");
-            p.textContent = paragraph.trim();
-            contentRaw.appendChild(p);
-            // add empty line between paragraphs
-            const br = document.createElement("br");
-            contentRaw.appendChild(br);
-          }
-        });
-      }
-
-      // Use the chapter name from API response
-      const finalChapterName = data.data.chapter.chapter_name || chapterName;
+      // Use the chapter name from API response as fallback
+      const finalChapterName = chapterData.chapter_name || chapterName;
 
       const { dom, text, images } = await cleanDOM(
         contentRaw,
