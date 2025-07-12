@@ -444,6 +444,14 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = dubuxiaoshuo();
       break;
     }
+    case "wxscs.com":
+    case "www.wxscs.com":
+    case "wxsck.com":
+    case "www.wxsck.com": {
+      const { wanxiangshucheng } = await import("../rules/onePage/wanxiangshucheng");
+      ruleClass = wanxiangshucheng();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage Start */

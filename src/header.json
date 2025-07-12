@@ -285,7 +285,11 @@
     "*://321dh.org/novel/*.html",
     "*://www.pilibook.net/*/info.html",
     "*://www.mozishuwu.com/*/info.html",
-    "*://www.dbxsd.com/book/*/"
+    "*://www.dbxsd.com/book/*/",
+    "*://wxsck.com/book/*/",
+    "*://www.wxsck.com/book/*/",
+    "*://wxscs.com/book/*/",
+    "*://www.wxscs.com/book/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -351,7 +355,11 @@
     "*://www.xiguashuwu.com/book/*/catalog/",
     "*://www.rmkbr.com/*/*/*.html",
     "*://www.fdhxs.com/*/*/*.html",
-    "*://www.dbxsd.com/book/*.html"
+    "*://www.dbxsd.com/book/*.html",
+    "*://wxsck.com/book/*.html",
+    "*://www.wxsck.com/book/*.html",
+    "*://wxscs.com/book/*.html",
+    "*://www.wxscs.com/book/*.html"
   ],
   "grant": [
     "unsafeWindow",
