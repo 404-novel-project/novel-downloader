@@ -282,7 +282,9 @@
     "*://www.alicesw.com/novel/*.html",
     "*://pornhulu.com/novel/*.html",
     "*://xn--yhqvcx66l.xnxnxn7.xyz/novel/*.html",
-    "*://321dh.org/novel/*.html"
+    "*://321dh.org/novel/*.html",
+    "*://www.pilibook.net/*/info.html",
+    "*://www.mozishuwu.com/*/info.html"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

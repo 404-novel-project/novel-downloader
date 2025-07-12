@@ -811,12 +811,20 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     /** 笔趣阁END **/
+    /** WeiMeng CMS */
     case "www.mangguoshufang.com":
     case "mangguoshufang.com": {
       const { Mangguoshufang } = await import("../rules/special/reprint/mangguoshufang");
       ruleClass = Mangguoshufang;
       break;
     }
+    case "www.pilibook.net":
+    case "www.mozishuwu.com": {
+      const { Pilishuwu } = await import("../rules/special/reprint/pilishuwu");
+      ruleClass = Pilishuwu;
+      break;
+    }
+    /** WeiMeng CMS END */
     case "www.xiguashuwu.com": {
       const { Xiguashuwu } = await import("../rules/special/reprint/xiguashuwu");
       ruleClass = Xiguashuwu;
