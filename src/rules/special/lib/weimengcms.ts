@@ -463,10 +463,11 @@ export class WeimengCMS {
 
 /**
  * Creates a WeimengCMS instance for a known site
+ * Note: apiBaseUrl has no trailing slash
  */
-export function createWeimengForSite(apiBaseDomain: string, additionalConfig?: Partial<WeimengConfig>): WeimengCMS {
+export function createWeimengForSite(apiBaseUrl: string, additionalConfig?: Partial<WeimengConfig>): WeimengCMS {
   const config = createWeimengConfig({
-    baseUrl: apiBaseDomain,
+    baseUrl: apiBaseUrl,
     ...additionalConfig
   });
 
