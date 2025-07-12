@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1198
+// @version        5.2.1199
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -322,7 +322,8 @@
 // @match          *://xszj.org/b/*
 // @match          *://m.xszj.org/b/*
 // @match          *://www.52shuku.vip/*/*.html
-// @match          *://mangguoshufang.com/*/*/info.html
+// @match          *://mangguoshufang.com/*/info.html
+// @match          *://www.mangguoshufang.com/*/info.html
 // @match          *://m.bixiange.me/*/*/
 // @match          *://www.xiguashuwu.com/book/*/
 // @match          *://www.rmkbr.com/*/*/
@@ -331,6 +332,8 @@
 // @match          *://pornhulu.com/novel/*.html
 // @match          *://xn--yhqvcx66l.xnxnxn7.xyz/novel/*.html
 // @match          *://321dh.org/novel/*.html
+// @match          *://www.pilibook.net/*/info.html
+// @match          *://www.mozishuwu.com/*/info.html
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
@@ -15307,6 +15310,229 @@ const xszj = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .
     contentPatch: (content) => content,
     language: "zh",
 });
+
+
+/***/ }),
+
+/***/ "./src/rules/special/lib/weimengcms.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ng: () => (/* binding */ createWeimengForSite)
+/* harmony export */ });
+/* unused harmony exports DEFAULT_WEIMENG_CONFIG, isValidWeimengResponse, hasValidChapterData, isValidChapterId, isSuccessResponse, hasValidContent, validateChapterResponse, createWeimengConfig, validateWeimengConfig, WeimengCMS, extractChapterIdFromUrl */
+const DEFAULT_WEIMENG_CONFIG = {
+    baseUrl: "",
+    selectors: {
+        BOOK_TITLE: "h2.works-intro-title > strong",
+        BOOK_AUTHOR: "p.works-intro-digi > span",
+        BOOK_INTRO: "p.works-intro-short",
+        BOOK_TAGS: "#tags-show > a",
+        BOOK_COVER: "div.works-cover > img",
+        CHAPTER_LIST_LINK: "div.works-chapter-wr > ul > li.active > a",
+        CHAPTER_LINKS: "ol > li > p a"
+    },
+    api: {
+        ENDPOINT_PATTERN: "/wmcms/ajax/index.php",
+        CHAPTER_ACTION: "novel.getchapter",
+        SUCCESS_CODE: 200
+    },
+    urlPatterns: {
+        CHAPTER_ID_REGEX: /\/read\/(\d+)\.html$/
+    },
+    errors: {
+        NO_CHAPTER_LIST_LINK: "Chapter list page link not found",
+        NO_CHAPTERS_FOUND: "No chapters found in chapter list page",
+        CHAPTER_LIST_FETCH_FAILED: "Failed to fetch chapter list from separate page",
+        NO_CHAPTER_ID: "Could not extract chapter ID from URL",
+        API_ERROR: "API Error",
+        NO_CHAPTER_DATA: "No chapter data found"
+    }
+};
+function isValidWeimengResponse(data) {
+    return (typeof data === 'object' &&
+        data !== null &&
+        typeof data.code === 'number' &&
+        typeof data.msg === 'string' &&
+        typeof data.data === 'object' &&
+        data.data !== null);
+}
+function hasValidChapterData(response) {
+    return (response.data.chapter !== undefined &&
+        typeof response.data.chapter === 'object' &&
+        response.data.chapter !== null &&
+        typeof response.data.chapter.chapter_name === 'string' &&
+        Array.isArray(response.data.chapter.content));
+}
+function isValidChapterId(chapterId) {
+    return (typeof chapterId === 'string' &&
+        chapterId.length > 0 &&
+        /^\d+$/.test(chapterId));
+}
+function isSuccessResponse(response, expectedCode = 200) {
+    return response.code === expectedCode;
+}
+function hasValidContent(content) {
+    return (Array.isArray(content) &&
+        content.length > 0 &&
+        content.some(paragraph => typeof paragraph === 'string' && paragraph.trim().length > 0));
+}
+function validateChapterResponse(response, expectedCode = 200) {
+    const errors = [];
+    if (!isValidWeimengResponse(response)) {
+        errors.push("Invalid API response structure");
+        return { isValid: false, errors };
+    }
+    if (!isSuccessResponse(response, expectedCode)) {
+        errors.push(`API returned error code: ${response.code} - ${response.msg}`);
+        return { isValid: false, errors };
+    }
+    if (!hasValidChapterData(response)) {
+        errors.push("No valid chapter data found in response");
+        return { isValid: false, errors };
+    }
+    const chapterData = response.data.chapter;
+    if (!hasValidContent(chapterData.content)) {
+        errors.push("Chapter content is empty or invalid");
+        return { isValid: false, errors };
+    }
+    return {
+        isValid: true,
+        errors: [],
+        chapterData
+    };
+}
+function createWeimengConfig(overrides) {
+    return {
+        baseUrl: overrides.baseUrl || DEFAULT_WEIMENG_CONFIG.baseUrl,
+        selectors: {
+            ...DEFAULT_WEIMENG_CONFIG.selectors,
+            ...overrides.selectors
+        },
+        api: {
+            ...DEFAULT_WEIMENG_CONFIG.api,
+            ...overrides.api
+        },
+        urlPatterns: {
+            ...DEFAULT_WEIMENG_CONFIG.urlPatterns,
+            ...overrides.urlPatterns
+        },
+        errors: {
+            ...DEFAULT_WEIMENG_CONFIG.errors,
+            ...overrides.errors
+        }
+    };
+}
+function validateWeimengConfig(config) {
+    const errors = [];
+    if (!config.baseUrl || typeof config.baseUrl !== 'string') {
+        errors.push("baseUrl is required and must be a string");
+    }
+    if (!config.selectors || typeof config.selectors !== 'object') {
+        errors.push("selectors configuration is required");
+    }
+    if (!config.api || typeof config.api !== 'object') {
+        errors.push("api configuration is required");
+    }
+    return {
+        isValid: errors.length === 0,
+        errors
+    };
+}
+class WeimengCMS {
+    config;
+    constructor(config) {
+        const validation = validateWeimengConfig(config);
+        if (!validation.isValid) {
+            throw new Error(`Invalid WeimengCMS configuration: ${validation.errors.join(', ')}`);
+        }
+        this.config = config;
+    }
+    buildApiRequest(chapterId) {
+        const params = new URLSearchParams({
+            action: this.config.api.CHAPTER_ACTION,
+            cid: chapterId,
+            format: "1"
+        });
+        return `${this.config.baseUrl}${this.config.api.ENDPOINT_PATTERN}?${params.toString()}`;
+    }
+    async fetchChapterContent(chapterId, chapterUrl) {
+        if (!isValidChapterId(chapterId)) {
+            throw new Error(`Invalid chapter ID: ${chapterId}`);
+        }
+        const apiUrl = this.buildApiRequest(chapterId);
+        try {
+            const response = await fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    Accept: "application/json, text/plain, */*",
+                    Referer: chapterUrl || this.config.baseUrl,
+                    "User-Agent": navigator.userAgent,
+                },
+            });
+            return await this.handleApiResponse(response);
+        }
+        catch (error) {
+            console.error(`[WeimengCMS] Error fetching chapter content:`, error);
+            throw error;
+        }
+    }
+    processChapterContent(chapterData) {
+        const contentRaw = document.createElement("div");
+        if (Array.isArray(chapterData.content)) {
+            chapterData.content.forEach((paragraph) => {
+                if (paragraph.trim()) {
+                    const p = document.createElement("p");
+                    p.textContent = paragraph.trim();
+                    contentRaw.appendChild(p);
+                    const br = document.createElement("br");
+                    contentRaw.appendChild(br);
+                }
+            });
+        }
+        else {
+            console.warn(`[WeimengCMS] Chapter content is not an array:`, chapterData.content);
+        }
+        return contentRaw;
+    }
+    async handleApiResponse(response) {
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        try {
+            const data = await response.json();
+            const validation = validateChapterResponse(data, this.config.api.SUCCESS_CODE);
+            if (!validation.isValid) {
+                throw new Error(`${this.config.errors.API_ERROR}: ${validation.errors.join(', ')}`);
+            }
+            return validation.chapterData;
+        }
+        catch (error) {
+            console.error(`[WeimengCMS] Error processing API response:`, error);
+            throw error;
+        }
+    }
+    extractChapterIdFromUrl(url) {
+        const match = url.match(this.config.urlPatterns.CHAPTER_ID_REGEX);
+        return match ? match[1] : null;
+    }
+    getConfig() {
+        return { ...this.config };
+    }
+}
+function createWeimengForSite(apiBaseUrl, additionalConfig) {
+    const config = createWeimengConfig({
+        baseUrl: apiBaseUrl,
+        ...additionalConfig
+    });
+    return new WeimengCMS(config);
+}
+function extractChapterIdFromUrl(url, pattern) {
+    const regex = pattern || DEFAULT_WEIMENG_CONFIG.urlPatterns.CHAPTER_ID_REGEX;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+}
 
 
 /***/ }),
@@ -32364,208 +32590,6 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
 
 /***/ }),
 
-/***/ "./src/rules/special/original/mangguoshufang.ts":
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Mangguoshufang: () => (/* binding */ Mangguoshufang)
-/* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-
-
-
-
-
-
-
-
-class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
-    constructor() {
-        super();
-        this.attachmentMode = "TM";
-        this.concurrencyLimit = 1;
-        this.sleepTime = 500;
-        this.maxSleepTime = 2000;
-    }
-    async getChapterListPageUrl() {
-        try {
-            const chapterListPageLink = document.querySelector("div.works-chapter-wr > ul > li.active > a");
-            if (!chapterListPageLink) {
-                _log__WEBPACK_IMPORTED_MODULE_1___default().warn("[Mangguoshufang] Chapter list page link not found with selector 'div.works-chapter-wr > ul > li.active > a'");
-                return null;
-            }
-            const chapterListPageUrl = chapterListPageLink.href;
-            _log__WEBPACK_IMPORTED_MODULE_1___default().debug(`[Mangguoshufang] Found chapter list page URL: ${chapterListPageUrl}`);
-            return chapterListPageUrl;
-        }
-        catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().error(`[Mangguoshufang] Error getting chapter list page URL:`, error);
-            return null;
-        }
-    }
-    async bookParse() {
-        const bookUrl = document.location.href;
-        const bookname = document.querySelector("h2.works-intro-title > strong")?.innerText.trim();
-        const author = document.querySelector("p.works-intro-digi > span")?.innerText
-            .trim()
-            .replace(/^作者：/, "");
-        const introDom = document.querySelector("p.works-intro-short");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom, (introDom) => introDom);
-        const tags = [''];
-        document.querySelectorAll("#tags-show > a").forEach((aElem) => tags.push(aElem.innerText.trim()));
-        const additionalMetadate = {
-            language: "zh",
-            tags: tags,
-        };
-        const coverUrl = document.querySelector("div.works-cover > img")?.getAttribute("src") || null;
-        if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
-                .then((coverClass) => {
-                additionalMetadate.cover = coverClass;
-            })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_1___default().error(error));
-        }
-        const chapters = [];
-        let aList = document.querySelectorAll("nonexistent");
-        let chapterNumber = 0;
-        const chapterListPageUrl = await this.getChapterListPageUrl();
-        if (chapterListPageUrl) {
-            try {
-                _log__WEBPACK_IMPORTED_MODULE_1___default().debug(`[Mangguoshufang] Fetching chapter list from separate page: ${chapterListPageUrl}`);
-                const chapterListDoc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_4__/* .getHtmlDOM */ .wA)(chapterListPageUrl, this.charset);
-                aList = chapterListDoc.querySelectorAll("ol > li > p a");
-                if (aList.length === 0) {
-                    _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Mangguoshufang] No chapters found in chapter list page: ${chapterListPageUrl}`);
-                }
-            }
-            catch (error) {
-                _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Mangguoshufang] Failed to fetch chapter list from separate page: ${error}. Returning empty chapter list.`);
-            }
-        }
-        else {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Mangguoshufang] Chapter list page URL not found. Returning empty chapter list.`);
-        }
-        for (const aElem of Array.from(aList)) {
-            const chapterName = aElem.innerText.trim();
-            const chapterUrl = aElem.href;
-            const chapterIdMatch = chapterUrl.match(/\/read\/(\d+)\.html$/);
-            const chapterId = chapterIdMatch ? chapterIdMatch[1] : null;
-            if (!chapterId) {
-                _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`Could not extract chapter ID from URL: ${chapterUrl}`);
-                continue;
-            }
-            chapterNumber++;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
-                bookUrl,
-                bookname,
-                chapterUrl,
-                chapterNumber,
-                chapterName,
-                isVIP: false,
-                isPaid: false,
-                sectionName: null,
-                sectionNumber: null,
-                sectionChapterNumber: null,
-                chapterParse: this.chapterParse,
-                charset: this.charset,
-                options: { chapterId },
-            });
-            chapters.push(chapter);
-        }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
-            bookUrl,
-            bookname,
-            author,
-            introduction,
-            introductionHTML,
-            additionalMetadate,
-            chapters,
-        });
-    }
-    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const { chapterId } = options;
-        if (!chapterId) {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().error(`No chapter ID found for ${chapterUrl}`);
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-        const apiUrl = `https://mangguoshufang.com/wmcms/ajax/index.php?action=novel.getchapter&cid=${chapterId}&format=1`;
-        try {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().debug(`[Chapter] Requesting API: ${apiUrl}`);
-            const response = await fetch(apiUrl, {
-                method: "GET",
-                headers: {
-                    Accept: "application/json, text/plain, */*",
-                    Referer: chapterUrl,
-                    "User-Agent": navigator.userAgent,
-                },
-                credentials: "include",
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            const data = await response.json();
-            if (data.code !== 200) {
-                throw new Error(`API Error: ${data.msg}`);
-            }
-            if (!data.data.chapter) {
-                throw new Error(`API Error: No chapter data found`);
-            }
-            const contentRaw = document.createElement("div");
-            if (Array.isArray(data.data.chapter.content)) {
-                data.data.chapter.content.forEach((paragraph, index) => {
-                    if (paragraph.trim()) {
-                        const p = document.createElement("p");
-                        p.textContent = paragraph.trim();
-                        contentRaw.appendChild(p);
-                        const br = document.createElement("br");
-                        contentRaw.appendChild(br);
-                    }
-                });
-            }
-            const finalChapterName = data.data.chapter.chapter_name || chapterName;
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .an)(contentRaw, this.attachmentMode);
-            return {
-                chapterName: finalChapterName,
-                contentRaw,
-                contentText: text,
-                contentHTML: dom,
-                contentImages: images,
-                additionalMetadate: null,
-            };
-        }
-        catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().error(`[Chapter] Failed to fetch content for ${chapterUrl}:`, error);
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
-        }
-    }
-}
-
-
-/***/ }),
-
 /***/ "./src/rules/special/original/myrics.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -37980,6 +38004,432 @@ class lzdzw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
             contentImages: null,
             additionalMetadate: null,
         };
+    }
+}
+
+
+/***/ }),
+
+/***/ "./src/rules/special/reprint/mangguoshufang.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Mangguoshufang: () => (/* binding */ Mangguoshufang)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_weimengcms__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/special/lib/weimengcms.ts");
+
+
+
+
+
+
+
+
+
+class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+    weimengClient = null;
+    constructor() {
+        super();
+        this.attachmentMode = "TM";
+        this.concurrencyLimit = 1;
+        this.sleepTime = 500;
+        this.maxSleepTime = 2000;
+        try {
+            _log__WEBPACK_IMPORTED_MODULE_1___default().debug("[Mangguoshufang] Initializing WeimengCMS client...");
+            this.weimengClient = (0,_lib_weimengcms__WEBPACK_IMPORTED_MODULE_2__/* .createWeimengForSite */ .ng)(window.location.origin);
+            _log__WEBPACK_IMPORTED_MODULE_1___default().debug("[Mangguoshufang] WeimengCMS client initialized successfully");
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_1___default().error("[Mangguoshufang] Failed to initialize WeimengCMS client:", error);
+            this.weimengClient = null;
+        }
+    }
+    ensureWeimengClient() {
+        if (!this.weimengClient) {
+            throw new Error("[Mangguoshufang] WeimengCMS client is not initialized. Cannot proceed with WeimengCMS operations.");
+        }
+        return this.weimengClient;
+    }
+    async getChapterListPageUrl() {
+        try {
+            const config = this.ensureWeimengClient().getConfig();
+            const chapterListPageLink = document.querySelector(config.selectors.CHAPTER_LIST_LINK);
+            if (!chapterListPageLink) {
+                _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Mangguoshufang] ${config.errors.NO_CHAPTER_LIST_LINK} with selector '${config.selectors.CHAPTER_LIST_LINK}'`);
+                return null;
+            }
+            const chapterListPageUrl = chapterListPageLink.href;
+            _log__WEBPACK_IMPORTED_MODULE_1___default().debug(`[Mangguoshufang] Found chapter list page URL: ${chapterListPageUrl}`);
+            return chapterListPageUrl;
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_1___default().error(`[Mangguoshufang] Error getting chapter list page URL:`, error);
+            return null;
+        }
+    }
+    async extractBookMetadata() {
+        const config = this.ensureWeimengClient().getConfig();
+        const bookUrl = document.location.href;
+        const bookname = document.querySelector(config.selectors.BOOK_TITLE)?.innerText.trim();
+        const author = document.querySelector(config.selectors.BOOK_AUTHOR)?.innerText
+            .trim()
+            .replace(/^作者：/, "");
+        const introDom = document.querySelector(config.selectors.BOOK_INTRO);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(introDom, (introDom) => introDom);
+        const tags = [''];
+        document.querySelectorAll(config.selectors.BOOK_TAGS)
+            .forEach((aElem) => tags.push(aElem.innerText.trim()));
+        const additionalMetadate = {
+            language: "zh",
+            tags: tags,
+        };
+        const coverUrl = document.querySelector(config.selectors.BOOK_COVER)?.getAttribute("src") || null;
+        if (coverUrl) {
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_1___default().error(error));
+        }
+        return {
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate
+        };
+    }
+    async fetchChapterList() {
+        const config = this.ensureWeimengClient().getConfig();
+        const emptyList = document.querySelectorAll("nonexistent");
+        const chapterListPageUrl = await this.getChapterListPageUrl();
+        if (!chapterListPageUrl) {
+            _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Mangguoshufang] Chapter list page URL not found. Returning empty chapter list.`);
+            return emptyList;
+        }
+        try {
+            _log__WEBPACK_IMPORTED_MODULE_1___default().debug(`[Mangguoshufang] Fetching chapter list from separate page: ${chapterListPageUrl}`);
+            const chapterListDoc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .wA)(chapterListPageUrl, this.charset);
+            const aList = chapterListDoc.querySelectorAll(config.selectors.CHAPTER_LINKS);
+            if (aList.length === 0) {
+                _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Mangguoshufang] ${config.errors.NO_CHAPTERS_FOUND}: ${chapterListPageUrl}`);
+            }
+            return aList;
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Mangguoshufang] ${config.errors.CHAPTER_LIST_FETCH_FAILED}: ${error}. Returning empty chapter list.`);
+            return emptyList;
+        }
+    }
+    createChapterObjects(aList, bookMetadata) {
+        const chapters = [];
+        let chapterNumber = 0;
+        for (const aElem of Array.from(aList)) {
+            const chapterName = aElem.innerText.trim();
+            const chapterUrl = aElem.href;
+            const chapterId = this.ensureWeimengClient().extractChapterIdFromUrl(chapterUrl);
+            if (!chapterId) {
+                _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`Could not extract chapter ID from URL: ${chapterUrl}`);
+                continue;
+            }
+            chapterNumber++;
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
+                bookUrl: bookMetadata.bookUrl,
+                bookname: bookMetadata.bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP: false,
+                isPaid: false,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse.bind(this),
+                charset: this.charset,
+                options: { chapterId },
+            });
+            chapters.push(chapter);
+        }
+        return chapters;
+    }
+    async bookParse() {
+        const bookMetadata = await this.extractBookMetadata();
+        const aList = await this.fetchChapterList();
+        const chapters = this.createChapterObjects(aList, bookMetadata);
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
+            bookUrl: bookMetadata.bookUrl,
+            bookname: bookMetadata.bookname,
+            author: bookMetadata.author,
+            introduction: bookMetadata.introduction,
+            introductionHTML: bookMetadata.introductionHTML,
+            additionalMetadate: bookMetadata.additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const { chapterId } = options;
+        if (!chapterId) {
+            _log__WEBPACK_IMPORTED_MODULE_1___default().error(`No chapter ID found for ${chapterUrl}`);
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+        try {
+            _log__WEBPACK_IMPORTED_MODULE_1___default().debug(`[Chapter] Requesting WeimengCMS API for chapter ID: ${chapterId}`);
+            const weimengClient = this.ensureWeimengClient();
+            const chapterData = await weimengClient.fetchChapterContent(chapterId, chapterUrl);
+            const contentRaw = weimengClient.processChapterContent(chapterData);
+            const finalChapterName = chapterData.chapter_name || chapterName;
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(contentRaw, this.attachmentMode);
+            return {
+                chapterName: finalChapterName,
+                contentRaw,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_1___default().error(`[Chapter] Failed to fetch content for ${chapterUrl}:`, error);
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+    }
+}
+
+
+/***/ }),
+
+/***/ "./src/rules/special/reprint/pilishuwu.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Pilishuwu: () => (/* binding */ Pilishuwu)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_weimengcms__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/special/lib/weimengcms.ts");
+
+
+
+
+
+
+
+
+
+class Pilishuwu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+    weimengClient = null;
+    constructor() {
+        super();
+        this.attachmentMode = "naive";
+        this.concurrencyLimit = 1;
+        this.sleepTime = 500;
+        this.maxSleepTime = 2000;
+        try {
+            _log__WEBPACK_IMPORTED_MODULE_1___default().debug("[Pilishuwu] Initializing WeimengCMS client...");
+            this.weimengClient = (0,_lib_weimengcms__WEBPACK_IMPORTED_MODULE_2__/* .createWeimengForSite */ .ng)(window.location.origin);
+            _log__WEBPACK_IMPORTED_MODULE_1___default().debug("[Pilishuwu] WeimengCMS client initialized successfully");
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_1___default().error("[Pilishuwu] Failed to initialize WeimengCMS client:", error);
+            this.weimengClient = null;
+        }
+    }
+    ensureWeimengClient() {
+        if (!this.weimengClient) {
+            throw new Error("[Pilishuwu] WeimengCMS client is not initialized. Cannot proceed with WeimengCMS operations.");
+        }
+        return this.weimengClient;
+    }
+    async getChapterListPageUrl() {
+        try {
+            const config = this.ensureWeimengClient().getConfig();
+            const chapterListPageLink = document.querySelector(config.selectors.CHAPTER_LIST_LINK);
+            if (!chapterListPageLink) {
+                _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Pilishuwu] ${config.errors.NO_CHAPTER_LIST_LINK} with selector '${config.selectors.CHAPTER_LIST_LINK}'`);
+                return null;
+            }
+            const chapterListPageUrl = chapterListPageLink.href;
+            _log__WEBPACK_IMPORTED_MODULE_1___default().debug(`[Pilishuwu] Found chapter list page URL: ${chapterListPageUrl}`);
+            return chapterListPageUrl;
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_1___default().error(`[Pilishuwu] Error getting chapter list page URL:`, error);
+            return null;
+        }
+    }
+    async extractBookMetadata() {
+        const config = this.ensureWeimengClient().getConfig();
+        const bookUrl = document.location.href;
+        const bookname = document.querySelector(config.selectors.BOOK_TITLE)?.innerText.trim();
+        const author = document.querySelector(config.selectors.BOOK_AUTHOR)?.innerText
+            .trim()
+            .replace(/^作者：/, "");
+        const introDom = document.querySelector(config.selectors.BOOK_INTRO);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(introDom, (introDom) => introDom);
+        const tags = [''];
+        document.querySelectorAll(config.selectors.BOOK_TAGS)
+            .forEach((aElem) => tags.push(aElem.innerText.trim()));
+        const additionalMetadate = {
+            language: "zh",
+            tags: tags,
+        };
+        const coverUrl = document.querySelector(config.selectors.BOOK_COVER)?.getAttribute("src") || null;
+        if (coverUrl) {
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ ["if"])(window.location.origin + coverUrl, this.attachmentMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_1___default().error(error));
+        }
+        return {
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate
+        };
+    }
+    async fetchChapterList() {
+        const config = this.ensureWeimengClient().getConfig();
+        const emptyList = document.querySelectorAll("nonexistent");
+        const chapterListPageUrl = await this.getChapterListPageUrl();
+        if (!chapterListPageUrl) {
+            _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Pilishuwu] Chapter list page URL not found. Returning empty chapter list.`);
+            return emptyList;
+        }
+        try {
+            _log__WEBPACK_IMPORTED_MODULE_1___default().debug(`[Pilishuwu] Fetching chapter list from separate page: ${chapterListPageUrl}`);
+            const chapterListDoc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .wA)(chapterListPageUrl, this.charset);
+            const aList = chapterListDoc.querySelectorAll(config.selectors.CHAPTER_LINKS);
+            if (aList.length === 0) {
+                _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Pilishuwu] ${config.errors.NO_CHAPTERS_FOUND}: ${chapterListPageUrl}`);
+            }
+            return aList;
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Pilishuwu] ${config.errors.CHAPTER_LIST_FETCH_FAILED}: ${error}. Returning empty chapter list.`);
+            return emptyList;
+        }
+    }
+    createChapterObjects(aList, bookMetadata) {
+        const chapters = [];
+        let chapterNumber = 0;
+        for (const aElem of Array.from(aList)) {
+            const chapterName = aElem.innerText.trim();
+            const chapterUrl = aElem.href;
+            const chapterId = this.ensureWeimengClient().extractChapterIdFromUrl(chapterUrl);
+            if (!chapterId) {
+                _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`Could not extract chapter ID from URL: ${chapterUrl}`);
+                continue;
+            }
+            chapterNumber++;
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
+                bookUrl: bookMetadata.bookUrl,
+                bookname: bookMetadata.bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP: false,
+                isPaid: false,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse.bind(this),
+                charset: this.charset,
+                options: { chapterId },
+            });
+            chapters.push(chapter);
+        }
+        return chapters;
+    }
+    async bookParse() {
+        const bookMetadata = await this.extractBookMetadata();
+        const aList = await this.fetchChapterList();
+        const chapters = this.createChapterObjects(aList, bookMetadata);
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
+            bookUrl: bookMetadata.bookUrl,
+            bookname: bookMetadata.bookname,
+            author: bookMetadata.author,
+            introduction: bookMetadata.introduction,
+            introductionHTML: bookMetadata.introductionHTML,
+            additionalMetadate: bookMetadata.additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const { chapterId } = options;
+        if (!chapterId) {
+            _log__WEBPACK_IMPORTED_MODULE_1___default().error(`No chapter ID found for ${chapterUrl}`);
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
+        try {
+            _log__WEBPACK_IMPORTED_MODULE_1___default().debug(`[Chapter] Requesting WeimengCMS API for chapter ID: ${chapterId}`);
+            const weimengClient = this.ensureWeimengClient();
+            const chapterData = await weimengClient.fetchChapterContent(chapterId, chapterUrl);
+            const contentRaw = weimengClient.processChapterContent(chapterData);
+            const finalChapterName = chapterData.chapter_name || chapterName;
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(contentRaw, this.attachmentMode);
+            return {
+                chapterName: finalChapterName,
+                contentRaw,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_1___default().error(`[Chapter] Failed to fetch content for ${chapterUrl}:`, error);
+            return {
+                chapterName,
+                contentRaw: null,
+                contentText: null,
+                contentHTML: null,
+                contentImages: null,
+                additionalMetadate: null,
+            };
+        }
     }
 }
 
@@ -44333,9 +44783,16 @@ async function getRule() {
             ruleClass = fanqie;
             break;
         }
+        case "www.mangguoshufang.com":
         case "mangguoshufang.com": {
-            const { Mangguoshufang } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/mangguoshufang.ts"));
+            const { Mangguoshufang } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/mangguoshufang.ts"));
             ruleClass = Mangguoshufang;
+            break;
+        }
+        case "www.pilibook.net":
+        case "www.mozishuwu.com": {
+            const { Pilishuwu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/pilishuwu.ts"));
+            ruleClass = Pilishuwu;
             break;
         }
         case "www.xiguashuwu.com": {
