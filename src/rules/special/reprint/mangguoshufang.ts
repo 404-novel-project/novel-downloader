@@ -21,7 +21,7 @@ export class Mangguoshufang extends BaseRuleClass {
     // Initialize WeimengCMS client for this site
     try {
       log.debug("[Mangguoshufang] Initializing WeimengCMS client...");
-      this.weimengClient = createWeimengForSite("https://mangguoshufang.com");
+      this.weimengClient = createWeimengForSite(window.location.origin);
       log.debug("[Mangguoshufang] WeimengCMS client initialized successfully");
     } catch (error) {
       log.error("[Mangguoshufang] Failed to initialize WeimengCMS client:", error);

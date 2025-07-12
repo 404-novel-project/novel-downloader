@@ -15,8 +15,6 @@
  * ```
  */
 
-import { gfetch } from "../../../lib/http";
-
 // =============================================================================
 // TYPE DEFINITIONS
 // =============================================================================
@@ -376,7 +374,7 @@ export class WeimengCMS {
     const apiUrl = this.buildApiRequest(chapterId);
 
     try {
-      const response = await gfetch(apiUrl, {
+      const response = await fetch(apiUrl, {
         method: "GET",
         headers: {
           Accept: "application/json, text/plain, */*",
@@ -417,17 +415,15 @@ export class WeimengCMS {
   }
 
   /**
-   * Handles and validates WeimengCMS API response from gfetch (Tampermonkey)
+   * Handles and validates WeimengCMS API response
    */
-  private async handleApiResponse(response: Tampermonkey.Response<object>): Promise<WeimengChapterData> {
-    // gfetch returns Tampermonkey.Response, not standard Response
-    if (response.status !== 200) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText || 'Unknown error'}`);
+  private async handleApiResponse(response: Response): Promise<WeimengChapterData> {
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
     try {
-      // Parse JSON from responseText (gfetch response format)
-      const data: WeimengApiResponse = JSON.parse(response.responseText);
+      const data: WeimengApiResponse = await response.json();
       const validation = validateChapterResponse(data, this.config.api.SUCCESS_CODE);
 
       if (!validation.isValid) {
@@ -436,7 +432,7 @@ export class WeimengCMS {
 
       return validation.chapterData!;
     } catch (error) {
-      console.error(`[WeimengCMS] Error processing gfetch API response:`, error);
+      console.error(`[WeimengCMS] Error processing API response:`, error);
       throw error;
     }
   }
