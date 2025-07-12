@@ -813,7 +813,7 @@ export async function getRule(): Promise<BaseRuleClass> {
     /** 笔趣阁END **/
     case "www.mangguoshufang.com":
     case "mangguoshufang.com": {
-      const { Mangguoshufang } = await import("../rules/special/original/mangguoshufang");
+      const { Mangguoshufang } = await import("../rules/special/reprint/mangguoshufang");
       ruleClass = Mangguoshufang;
       break;
     }
