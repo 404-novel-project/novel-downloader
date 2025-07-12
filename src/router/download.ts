@@ -439,6 +439,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = yiqushuzhai();
       break;
     }
+    case "www.dbxsd.com": {
+      const { dubuxiaoshuo } = await import("../rules/onePage/dubuxiaoshuo");
+      ruleClass = dubuxiaoshuo();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage Start */

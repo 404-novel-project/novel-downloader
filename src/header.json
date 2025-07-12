@@ -284,7 +284,8 @@
     "*://xn--yhqvcx66l.xnxnxn7.xyz/novel/*.html",
     "*://321dh.org/novel/*.html",
     "*://www.pilibook.net/*/info.html",
-    "*://www.mozishuwu.com/*/info.html"
+    "*://www.mozishuwu.com/*/info.html",
+    "*://www.dbxsd.com/book/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -349,7 +350,8 @@
     "*://www.xiguashuwu.com/book/*/*.html",
     "*://www.xiguashuwu.com/book/*/catalog/",
     "*://www.rmkbr.com/*/*/*.html",
-    "*://www.fdhxs.com/*/*/*.html"
+    "*://www.fdhxs.com/*/*/*.html",
+    "*://www.dbxsd.com/book/*.html"
   ],
   "grant": [
     "unsafeWindow",
