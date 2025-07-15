@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1199
+// @version        5.2.1200
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -104,6 +104,7 @@
 // @match          *://book.zongheng.com/showchapter/*.html
 // @match          *://book.zongheng.com/book/*.html
 // @match          *://www.zongheng.com/detail/*
+// @match          *://read.zongheng.com/chapter/*/*.html
 // @match          *://huayu.zongheng.com/showchapter/*.html
 // @match          *://huayu.zongheng.com/book/*.html
 // @match          *://www.linovel.net/book/*.html
@@ -34400,6 +34401,231 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q
 
 /***/ }),
 
+/***/ "./src/rules/special/original/readzongheng.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Zongheng: () => (/* binding */ Zongheng)
+/* harmony export */ });
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/GM.ts");
+
+
+
+
+
+
+
+
+
+
+class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+    constructor() {
+        super();
+        this.attachmentMode = "TM";
+        this.concurrencyLimit = 1;
+    }
+    async bookParse() {
+        const matches = document.location.href.match(/\/chapter\/(\d+)/);
+        const bookId = matches ? matches[1] : null;
+        const bookUrl = `https://www.zongheng.com/detail/${bookId}`;
+        if (!bookId) {
+            return new _main_Book__WEBPACK_IMPORTED_MODULE_1__/* .Book */ .E({
+                bookUrl,
+                bookname: "1",
+                author: "1",
+                introduction: "1",
+                introductionHTML: null,
+                additionalMetadate: {},
+                chapters: [],
+            });
+        }
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .pG)(bookUrl);
+        const bookname = doc.querySelector(".book-info--title > span").innerText.trim();
+        const author = doc.querySelector("a.author-info--name").innerText.trim();
+        const introDom = doc.querySelector("section.detail-work-info--introduction");
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(introDom);
+        const additionalMetadate = {};
+        const coverUrl = doc.querySelector("img.book-info--coverImage-img").src;
+        if (coverUrl) {
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
+        }
+        additionalMetadate.tags = Array.from(document.querySelectorAll(".book-info--tags > span")).map((a) => a.innerText.trim());
+        async function getChapterList(bookId) {
+            const url = `https://bookapi.zongheng.com/api/chapter/getChapterList`;
+            const formData = new URLSearchParams();
+            formData.append("bookId", bookId);
+            return new Promise((resolve) => {
+                (0,_lib_GM__WEBPACK_IMPORTED_MODULE_6__/* ._GM_xmlhttpRequest */ .nV)({
+                    url: url,
+                    headers: {
+                        Cookie: document.cookie,
+                        Origin: "https://www.zongheng.com",
+                        Referer: "https://www.zongheng.com/",
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    method: "POST",
+                    data: formData.toString(),
+                    onload: function (response) {
+                        if (response.status === 200) {
+                            const resultI = JSON.parse(response.responseText);
+                            resolve(resultI);
+                        }
+                        else {
+                            _log__WEBPACK_IMPORTED_MODULE_5___default().error(`post ${url} response status = ${response.status}`);
+                            const resultI = JSON.parse('{"message":"天塌了"}');
+                            resolve(resultI);
+                        }
+                    },
+                });
+            });
+        }
+        const chapters = [];
+        const result = await getChapterList(bookId);
+        if (result.message && result.message === "成功") {
+            let sectionNumber = 0;
+            let chapterNumber = 0;
+            for (const tome of result.result.chapterList) {
+                sectionNumber++;
+                const sectionName = tome.tome.tomeName;
+                let sectionChapterNumber = 0;
+                for (const chapterView of tome.chapterViewList) {
+                    sectionChapterNumber++;
+                    const chapterUrl = `https://read.zongheng.com/chapter/${bookId}/${chapterView.chapterId}.html`;
+                    const chapterName = chapterView.chapterName;
+                    chapterNumber++;
+                    const isVIP = chapterView.level != 0;
+                    const isPaid = isVIP;
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_7__/* .Chapter */ .I({
+                        bookUrl,
+                        bookname,
+                        chapterUrl,
+                        chapterNumber,
+                        chapterName,
+                        isVIP,
+                        isPaid,
+                        sectionName,
+                        sectionNumber,
+                        sectionChapterNumber,
+                        chapterParse: this.chapterParse,
+                        charset: this.charset,
+                        options: {},
+                    });
+                    if (isVIP && !isPaid) {
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status */ .nW.aborted;
+                    }
+                    chapters.push(chapter);
+                }
+            }
+        }
+        else {
+            _log__WEBPACK_IMPORTED_MODULE_5___default().error(`获取目录失败 ${result.message}`);
+        }
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_1__/* .Book */ .E({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        async function publicChapter() {
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
+            const content = doc.querySelector("div.content");
+            if (content) {
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .an)(content, "TM");
+                return {
+                    chapterName: chapterName,
+                    contentRaw: content,
+                    contentText: text,
+                    contentHTML: dom,
+                    contentImages: images,
+                    additionalMetadate: null,
+                };
+            }
+            else {
+                return {
+                    chapterName: chapterName,
+                    contentRaw: null,
+                    contentText: null,
+                    contentHTML: null,
+                    contentImages: null,
+                    additionalMetadate: null,
+                };
+            }
+        }
+        async function vipChapter() {
+            const html = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getFrameContentConditionWithWindow */ .Q2)(chapterUrl, (frame) => {
+                const doc = frame.contentWindow?.document.querySelector("div.eccontent");
+                if (doc) {
+                    const len = doc.innerHTML.length;
+                    return len >= 10;
+                }
+                else {
+                    return false;
+                }
+            });
+            const contentRaw = document.createElement("div");
+            const doc = html?.contentWindow?.document.querySelector("div.eccontent");
+            if (!doc) {
+                contentRaw.innerHTML = '获取章节内容失败';
+            }
+            else {
+                doc.childNodes.forEach((node) => {
+                    if (node.nodeType === Node.ELEMENT_NODE && node.nodeName === "P") {
+                        const newP = document.createElement("p");
+                        let newNode = node;
+                        if (node.querySelector) {
+                            const found = node.querySelector("span.content-txt");
+                            if (found) {
+                                newNode = found;
+                            }
+                        }
+                        newP.innerText = newNode.innerText;
+                        contentRaw.appendChild(newP);
+                    }
+                });
+            }
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .an)(contentRaw, "TM");
+            html?.remove();
+            return {
+                chapterName,
+                contentRaw: contentRaw,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        if (isVIP) {
+            return vipChapter();
+        }
+        else {
+            return publicChapter();
+        }
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/rules/special/original/sfacg.ts":
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -36298,8 +36524,8 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                     const chapterUrl = `https://read.zongheng.com/chapter/${bookId}/${chapterView.chapterId}.html`;
                     const chapterName = chapterView.chapterName;
                     chapterNumber++;
-                    const isVIP = chapterView.price > 0;
-                    const isPaid = chapterView.everBuy;
+                    const isVIP = chapterView.level != 0;
+                    const isPaid = isVIP;
                     const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
                         bookUrl,
                         bookname,
@@ -36338,12 +36564,11 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
             const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
-            const ChapterName = doc.querySelector("div.title_txtbox").innerText.trim();
             const content = doc.querySelector("div.content");
             if (content) {
                 const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .an)(content, "TM");
                 return {
-                    chapterName: ChapterName,
+                    chapterName: chapterName,
                     contentRaw: content,
                     contentText: text,
                     contentHTML: dom,
@@ -36353,7 +36578,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             }
             else {
                 return {
-                    chapterName: ChapterName,
+                    chapterName: chapterName,
                     contentRaw: null,
                     contentText: null,
                     contentHTML: null,
@@ -36363,12 +36588,15 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             }
         }
         async function vipChapter() {
+            const contentRaw = document.createElement("div");
+            contentRaw.innerText = "VIP章节内容无法获取,请前往任意章节页再下载";
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .an)(contentRaw, "TM");
             return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
+                chapterName: chapterName,
+                contentRaw: contentRaw,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
                 additionalMetadate: null,
             };
         }
@@ -44077,6 +44305,11 @@ async function getRule() {
             ruleClass = Zongheng;
             break;
         }
+        case "read.zongheng.com": {
+            const { Zongheng } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/readzongheng.ts"));
+            ruleClass = Zongheng;
+            break;
+        }
         case "www.17k.com": {
             const { C17k } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/17k.ts"));
             ruleClass = C17k;
@@ -45095,6 +45328,7 @@ function getUI() {
                 return defaultObject;
             };
         }
+        case "read.zongheng.com":
         case "www.zongheng.com":
         case "book.zongheng.com":
         case "huayu.zongheng.com": {
