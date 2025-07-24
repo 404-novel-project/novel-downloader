@@ -462,6 +462,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = biquge345();
       break;
     }
+    case "www.beqege.cc": {
+      const { biqugecc } = await import("../rules/onePage/biqugecc");
+      ruleClass = biqugecc();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage Start */
