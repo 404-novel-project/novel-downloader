@@ -199,6 +199,7 @@ export function getUI(): () => UIObject {
         return defaultObject;
       }
     }
+    case "read.zongheng.com":
     case "www.zongheng.com":
     case "book.zongheng.com":
     case "huayu.zongheng.com": {

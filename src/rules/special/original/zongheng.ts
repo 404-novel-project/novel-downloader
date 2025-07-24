@@ -1,6 +1,6 @@
 import { getAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
-import { ggetHtmlDOM} from "../../../lib/http";
+import { ggetHtmlDOM, getFrameContentConditionWithWindow } from "../../../lib/http";
 import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { Status } from "../../../main/main";
@@ -23,10 +23,10 @@ export class Zongheng extends BaseRuleClass {
       document.location.href = bookUrl;
       return new Book({
         bookUrl,
-        bookname:"1",
-        author:"1",
-        introduction:"1",
-        introductionHTML:null,
+        bookname: "1",
+        author: "1",
+        introduction: "1",
+        introductionHTML: null,
         additionalMetadate: {},
         chapters: [],
       });
@@ -169,8 +169,8 @@ export class Zongheng extends BaseRuleClass {
           const chapterUrl = `https://read.zongheng.com/chapter/${bookId}/${chapterView.chapterId}.html`;
           const chapterName = chapterView.chapterName;
           chapterNumber++;
-          const isVIP = chapterView.price > 0;
-          const isPaid = chapterView.everBuy;
+          const isVIP = chapterView.level != 0;
+          const isPaid = isVIP;// chapterView.everBuy;
           const chapter = new Chapter({
             bookUrl,
             bookname,
@@ -216,14 +216,11 @@ export class Zongheng extends BaseRuleClass {
   ) {
     async function publicChapter(): Promise<ChapterParseObject> {
       const doc = await ggetHtmlDOM(chapterUrl, charset);
-      const ChapterName = (
-        doc.querySelector("div.title_txtbox") as HTMLElement
-      ).innerText.trim();
       const content = doc.querySelector("div.content") as HTMLElement;
       if (content) {
         const { dom, text, images } = await cleanDOM(content, "TM");
         return {
-          chapterName: ChapterName,
+          chapterName: chapterName,
           contentRaw: content,
           contentText: text,
           contentHTML: dom,
@@ -232,7 +229,7 @@ export class Zongheng extends BaseRuleClass {
         };
       } else {
         return {
-          chapterName: ChapterName,
+          chapterName: chapterName,
           contentRaw: null,
           contentText: null,
           contentHTML: null,
@@ -243,13 +240,15 @@ export class Zongheng extends BaseRuleClass {
     }
 
     async function vipChapter(): Promise<ChapterParseObject> {
-      // Todo
+      const contentRaw = document.createElement("div");
+      contentRaw.innerText = "VIP章节内容无法获取,请前往任意章节页再下载";
+      const { dom, text, images } = await cleanDOM(contentRaw, "TM");
       return {
-        chapterName,
-        contentRaw: null,
-        contentText: null,
-        contentHTML: null,
-        contentImages: null,
+        chapterName: chapterName,
+        contentRaw: contentRaw,
+        contentText: text,
+        contentHTML: dom,
+        contentImages: images,
         additionalMetadate: null,
       };
     }

@@ -55,6 +55,7 @@
     "*://book.zongheng.com/showchapter/*.html",
     "*://book.zongheng.com/book/*.html",
     "*://www.zongheng.com/detail/*",
+    "*://read.zongheng.com/chapter/*/*.html",
     "*://huayu.zongheng.com/showchapter/*.html",
     "*://huayu.zongheng.com/book/*.html",
     "*://www.linovel.net/book/*.html",

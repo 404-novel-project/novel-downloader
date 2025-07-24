@@ -68,6 +68,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Zongheng;
       break;
     }
+    case "read.zongheng.com": {
+      const { Zongheng } = await import("../rules/special/original/readzongheng");
+      ruleClass = Zongheng;
+      break;
+    }
     case "www.17k.com": {
       const { C17k } = await import("../rules/special/original/17k");
       ruleClass = C17k;
