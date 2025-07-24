@@ -290,7 +290,8 @@
     "*://wxsck.com/book/*/",
     "*://www.wxsck.com/book/*/",
     "*://wxscs.com/book/*/",
-    "*://www.wxscs.com/book/*/"
+    "*://www.wxscs.com/book/*/",
+    "*://www.biquge345.com/book/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

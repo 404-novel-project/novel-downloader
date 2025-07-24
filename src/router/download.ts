@@ -457,6 +457,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = wanxiangshucheng();
       break;
     }
+    case "www.biquge345.com": {
+      const { biquge345 } = await import("../rules/onePage/biquge345");
+      ruleClass = biquge345();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage Start */
