@@ -292,7 +292,8 @@
     "*://wxscs.com/book/*/",
     "*://www.wxscs.com/book/*/",
     "*://www.biquge345.com/book/*/",
-    "*://www.beqege.cc/*/"
+    "*://www.beqege.cc/*/",
+    "*://m.mjyhb.com/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -363,7 +364,8 @@
     "*://www.wxsck.com/book/*.html",
     "*://wxscs.com/book/*.html",
     "*://www.wxscs.com/book/*.html",
-    "*://www.beqege.cc/*/*.html"
+    "*://www.beqege.cc/*/*.html",
+    "*://m.mjyhb.com/*/*.html"
   ],
   "grant": [
     "unsafeWindow",

@@ -467,6 +467,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = biqugecc();
       break;
     }
+    case "m.mjyhb.com": {
+      const { sanwuzhongwen } = await import("../rules/onePage/sanwuzhongwen");
+      ruleClass = sanwuzhongwen();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage Start */
