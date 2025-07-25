@@ -494,6 +494,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = shauthor();
       break;
     }
+    case "m.chenkuan.com": {
+      const { chenkuan } = await import("../rules/onePage/chenkuan");
+      ruleClass = chenkuan();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage Start */
