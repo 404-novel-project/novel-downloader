@@ -6,7 +6,12 @@ import { log } from "../../../log";
 import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
-import { WeimengCMS, createWeimengForSite, WeimengChapterOptions } from "../lib/weimengcms";
+import {
+  WeimengCMS,
+  createWeimengForSite,
+  WeimengChapterOptions,
+  WeimengConfig,
+} from "../lib/weimengcms";
 
 export class Pilishuwu extends BaseRuleClass {
   private weimengClient: WeimengCMS | null = null;
@@ -17,11 +22,13 @@ export class Pilishuwu extends BaseRuleClass {
     this.concurrencyLimit = 1;
     this.sleepTime = 500;
     this.maxSleepTime = 2000;
-    
+
     // Initialize WeimengCMS client for this site
     try {
       log.debug("[Pilishuwu] Initializing WeimengCMS client...");
-      this.weimengClient = createWeimengForSite(window.location.origin);
+      this.weimengClient = createWeimengForSite(window.location.origin, {
+        selectors: { BOOK_AUTHOR: "h2.works-intro-title" },
+      } as Partial<WeimengConfig>);
       log.debug("[Pilishuwu] WeimengCMS client initialized successfully");
     } catch (error) {
       log.error("[Pilishuwu] Failed to initialize WeimengCMS client:", error);
@@ -34,7 +41,9 @@ export class Pilishuwu extends BaseRuleClass {
    */
   private ensureWeimengClient(): WeimengCMS {
     if (!this.weimengClient) {
-      throw new Error("[Pilishuwu] WeimengCMS client is not initialized. Cannot proceed with WeimengCMS operations.");
+      throw new Error(
+        "[Pilishuwu] WeimengCMS client is not initialized. Cannot proceed with WeimengCMS operations.",
+      );
     }
     return this.weimengClient;
   }
@@ -46,16 +55,22 @@ export class Pilishuwu extends BaseRuleClass {
   private async getChapterListPageUrl(): Promise<string | null> {
     try {
       const config = this.ensureWeimengClient().getConfig();
-      const chapterListPageLink = document.querySelector(config.selectors.CHAPTER_LIST_LINK) as HTMLAnchorElement;
-      
+      const chapterListPageLink = document.querySelector(
+        config.selectors.CHAPTER_LIST_LINK,
+      ) as HTMLAnchorElement;
+
       if (!chapterListPageLink) {
-        log.warn(`[Pilishuwu] ${config.errors.NO_CHAPTER_LIST_LINK} with selector '${config.selectors.CHAPTER_LIST_LINK}'`);
+        log.warn(
+          `[Pilishuwu] ${config.errors.NO_CHAPTER_LIST_LINK} with selector '${config.selectors.CHAPTER_LIST_LINK}'`,
+        );
         return null;
       }
 
       const chapterListPageUrl = chapterListPageLink.href;
-      log.debug(`[Pilishuwu] Found chapter list page URL: ${chapterListPageUrl}`);
-      
+      log.debug(
+        `[Pilishuwu] Found chapter list page URL: ${chapterListPageUrl}`,
+      );
+
       return chapterListPageUrl;
     } catch (error) {
       log.error(`[Pilishuwu] Error getting chapter list page URL:`, error);
@@ -70,35 +85,51 @@ export class Pilishuwu extends BaseRuleClass {
   private async extractBookMetadata() {
     const config = this.ensureWeimengClient().getConfig();
     const bookUrl = document.location.href;
-    
+
     const bookname = (
       document.querySelector(config.selectors.BOOK_TITLE) as HTMLElement
     )?.innerText.trim();
-    
-    const author = (
-      document.querySelector(config.selectors.BOOK_AUTHOR) as HTMLElement
-    )?.innerText
-      .trim()
-      .replace(/^作者：/, "");
 
-    const introDom = document.querySelector(config.selectors.BOOK_INTRO) as HTMLElement;
+    // BOOK_AUTHOR is the outer selector for the title & author element
+    const titleElement = document.querySelector(
+      config.selectors.BOOK_AUTHOR,
+    ) as HTMLElement;
+    const titleText = titleElement?.innerText.trim() || "";
+
+    // Extract author from parentheses pattern: "Title（作者：AuthorName）"
+    const authorMatch = titleText.match(/（作者：([^）]+)）/);
+    const author = authorMatch ? authorMatch[1].trim() : "";
+
+    const introDom = document.querySelector(
+      config.selectors.BOOK_INTRO,
+    ) as HTMLElement;
     const [introduction, introductionHTML] = await introDomHandle(
       introDom,
       (introDom) => introDom,
     );
 
-    const tags = [''];
-    (document.querySelectorAll(config.selectors.BOOK_TAGS) as NodeListOf<HTMLAnchorElement>)
-      .forEach((aElem) => tags.push(aElem.innerText.trim()));
+    const tags = [""];
+    (
+      document.querySelectorAll(
+        config.selectors.BOOK_TAGS,
+      ) as NodeListOf<HTMLAnchorElement>
+    ).forEach((aElem) => tags.push(aElem.innerText.trim()));
 
     const additionalMetadate: BookAdditionalMetadate = {
       language: "zh",
       tags: tags,
     };
 
-    const coverUrl = document.querySelector(config.selectors.BOOK_COVER)?.getAttribute("src") || null;
+    const coverUrl =
+      document
+        .querySelector(config.selectors.BOOK_COVER)
+        ?.getAttribute("src") || null;
     if (coverUrl) {
-      getAttachment(window.location.origin+coverUrl, this.attachmentMode, "cover-")
+      getAttachment(
+        window.location.origin + coverUrl,
+        this.attachmentMode,
+        "cover-",
+      )
         .then((coverClass) => {
           additionalMetadate.cover = coverClass;
         })
@@ -111,7 +142,7 @@ export class Pilishuwu extends BaseRuleClass {
       author,
       introduction,
       introductionHTML,
-      additionalMetadate
+      additionalMetadate,
     };
   }
 
@@ -122,26 +153,36 @@ export class Pilishuwu extends BaseRuleClass {
   private async fetchChapterList(): Promise<NodeListOf<Element>> {
     const config = this.ensureWeimengClient().getConfig();
     const emptyList = document.querySelectorAll("nonexistent"); // Create empty NodeList
-    
+
     const chapterListPageUrl = await this.getChapterListPageUrl();
-    
+
     if (!chapterListPageUrl) {
-      log.warn(`[Pilishuwu] Chapter list page URL not found. Returning empty chapter list.`);
+      log.warn(
+        `[Pilishuwu] Chapter list page URL not found. Returning empty chapter list.`,
+      );
       return emptyList;
     }
 
     try {
-      log.debug(`[Pilishuwu] Fetching chapter list from separate page: ${chapterListPageUrl}`);
+      log.debug(
+        `[Pilishuwu] Fetching chapter list from separate page: ${chapterListPageUrl}`,
+      );
       const chapterListDoc = await getHtmlDOM(chapterListPageUrl, this.charset);
-      const aList = chapterListDoc.querySelectorAll(config.selectors.CHAPTER_LINKS);
-      
+      const aList = chapterListDoc.querySelectorAll(
+        config.selectors.CHAPTER_LINKS,
+      );
+
       if (aList.length === 0) {
-        log.warn(`[Pilishuwu] ${config.errors.NO_CHAPTERS_FOUND}: ${chapterListPageUrl}`);
+        log.warn(
+          `[Pilishuwu] ${config.errors.NO_CHAPTERS_FOUND}: ${chapterListPageUrl}`,
+        );
       }
-      
+
       return aList;
     } catch (error) {
-      log.warn(`[Pilishuwu] ${config.errors.CHAPTER_LIST_FETCH_FAILED}: ${error}. Returning empty chapter list.`);
+      log.warn(
+        `[Pilishuwu] ${config.errors.CHAPTER_LIST_FETCH_FAILED}: ${error}. Returning empty chapter list.`,
+      );
       return emptyList;
     }
   }
@@ -152,7 +193,10 @@ export class Pilishuwu extends BaseRuleClass {
    * @param bookMetadata - Book metadata object
    * @returns Array of Chapter objects
    */
-  private createChapterObjects(aList: NodeListOf<Element>, bookMetadata: any): Chapter[] {
+  private createChapterObjects(
+    aList: NodeListOf<Element>,
+    bookMetadata: any,
+  ): Chapter[] {
     const chapters: Chapter[] = [];
     let chapterNumber = 0;
 
@@ -161,7 +205,8 @@ export class Pilishuwu extends BaseRuleClass {
       const chapterUrl = aElem.href;
 
       // Extract chapter ID from URL using the WeimengCMS library
-      const chapterId = this.ensureWeimengClient().extractChapterIdFromUrl(chapterUrl);
+      const chapterId =
+        this.ensureWeimengClient().extractChapterIdFromUrl(chapterUrl);
 
       if (!chapterId) {
         log.warn(`Could not extract chapter ID from URL: ${chapterUrl}`);
@@ -199,10 +244,10 @@ export class Pilishuwu extends BaseRuleClass {
   public async bookParse() {
     // Extract book metadata from current page
     const bookMetadata = await this.extractBookMetadata();
-    
+
     // Fetch chapter list from separate page
     const aList = await this.fetchChapterList();
-    
+
     // Create chapter objects
     const chapters = this.createChapterObjects(aList, bookMetadata);
 
@@ -222,7 +267,7 @@ export class Pilishuwu extends BaseRuleClass {
    * @param chapterUrl - Chapter URL
    * @param chapterName - Chapter name (fallback)
    * @param isVIP - Whether chapter is VIP (unused for WeimengCMS)
-   * @param isPaid - Whether chapter is paid (unused for WeimengCMS) 
+   * @param isPaid - Whether chapter is paid (unused for WeimengCMS)
    * @param charset - Character encoding
    * @param options - Chapter options containing chapterId
    * @returns Promise resolving to ChapterParseObject
@@ -250,11 +295,16 @@ export class Pilishuwu extends BaseRuleClass {
     }
 
     try {
-      log.debug(`[Chapter] Requesting WeimengCMS API for chapter ID: ${chapterId}`);
+      log.debug(
+        `[Chapter] Requesting WeimengCMS API for chapter ID: ${chapterId}`,
+      );
 
       // Use WeimengCMS library to fetch and process chapter content
       const weimengClient = this.ensureWeimengClient();
-      const chapterData = await weimengClient.fetchChapterContent(chapterId, chapterUrl);
+      const chapterData = await weimengClient.fetchChapterContent(
+        chapterId,
+        chapterUrl,
+      );
       const contentRaw = weimengClient.processChapterContent(chapterData);
 
       // Use the chapter name from API response as fallback

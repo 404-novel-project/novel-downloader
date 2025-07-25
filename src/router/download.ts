@@ -444,6 +444,61 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = yiqushuzhai();
       break;
     }
+    case "www.dbxsd.com": {
+      const { dubuxiaoshuo } = await import("../rules/onePage/dubuxiaoshuo");
+      ruleClass = dubuxiaoshuo();
+      break;
+    }
+    case "wxscs.com":
+    case "www.wxscs.com":
+    case "wxsck.com":
+    case "www.wxsck.com": {
+      const { wanxiangshucheng } = await import("../rules/onePage/wanxiangshucheng");
+      ruleClass = wanxiangshucheng();
+      break;
+    }
+    case "www.biquge345.com": {
+      const { biquge345 } = await import("../rules/onePage/biquge345");
+      ruleClass = biquge345();
+      break;
+    }
+    case "www.beqege.cc": {
+      const { biqugecc } = await import("../rules/onePage/biqugecc");
+      ruleClass = biqugecc();
+      break;
+    }
+    case "m.mjyhb.com": {
+      const { mjyhb } = await import("../rules/onePage/mjyhb");
+      ruleClass = mjyhb();
+      break;
+    }
+    case "m.fly-dreams.com": {
+      const { flydreams } = await import("../rules/onePage/fly-dreams");
+      ruleClass = flydreams();
+      break;
+    }
+    case "www.23dishuge.com": {
+      const { dishuge } = await import("../rules/onePage/dishuge");
+      ruleClass = dishuge();
+      break;
+    }
+    case "www.69hsw.com":
+    case "www.69hao.com":
+    case "www.69hsz.net": {
+      const { c69shuba } = await import("../rules/onePage/69shuba");
+      ruleClass = c69shuba();
+      break;
+    }
+    case "m.shauthor.com": {
+      const { shauthor } = await import("../rules/onePage/shauthor");
+      ruleClass = shauthor();
+      break;
+    }
+    case "m.chenkuan.com": {
+      const { chenkuan } = await import("../rules/onePage/chenkuan");
+      ruleClass = chenkuan();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage Start */
