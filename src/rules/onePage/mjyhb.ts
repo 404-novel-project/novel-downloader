@@ -2,7 +2,7 @@ import { rm, rm2 } from "../../lib/dom";
 import { nextPageParse } from "../../lib/rule";
 import { mkRuleClass } from "./template";
 
-export const sanwuzhongwen = () =>
+export const mjyhb = () =>
   mkRuleClass({
     bookUrl: document.location.href,
     bookname: (document.querySelector("h1") as HTMLElement)?.innerText.trim(),
@@ -10,7 +10,16 @@ export const sanwuzhongwen = () =>
       (
         document.querySelector("div.tab > p.p1") as HTMLParagraphElement
       )?.innerText.trim() || "",
-    introDom: undefined,
+    introDom: (() => {
+      // create fake element to hold the introduction
+      const introDom = document.createElement("div");
+      introDom.className = "intro";
+      const introContent = document.querySelector('meta[property="og:description"]')?.getAttribute('content');
+      if (introContent) {
+        introDom.textContent = introContent;
+      }
+      return introDom;
+    })(),
     introDomPatch: (introDom) => introDom,
     coverUrl: (document.querySelector("div.tu > img") as HTMLImageElement)?.src || undefined,
     aList: document.querySelectorAll("div.info_chapters > ul.p2:last-of-type > li > a"),

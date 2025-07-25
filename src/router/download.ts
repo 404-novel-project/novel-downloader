@@ -468,8 +468,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "m.mjyhb.com": {
-      const { sanwuzhongwen } = await import("../rules/onePage/sanwuzhongwen");
-      ruleClass = sanwuzhongwen();
+      const { mjyhb } = await import("../rules/onePage/mjyhb");
+      ruleClass = mjyhb();
       break;
     }
     /* onePage End */
