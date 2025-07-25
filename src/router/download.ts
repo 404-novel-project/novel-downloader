@@ -477,6 +477,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = flydreams();
       break;
     }
+    case "www.23dishuge.com": {
+      const { dishuge } = await import("../rules/onePage/dishuge");
+      ruleClass = dishuge();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage Start */
