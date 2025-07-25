@@ -298,7 +298,8 @@
     "*://www.23dishuge.com/*/*/",
     "*://www.69hsw.com/*/",
     "*://www.69hao.com/*/",
-    "*://www.69hsz.net/*/"
+    "*://www.69hsz.net/*/",
+    "*://m.shauthor.com/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -375,7 +376,8 @@
     "*://www.23dishuge.com/*/*/*.html",
     "*://www.69hsw.com/*/*.html",
     "*://www.69hao.com/*/*.html",
-    "*://www.69hsz.net/*/*.html"
+    "*://www.69hsz.net/*/*.html",
+    "*://m.shauthor.com/*/*.html"
   ],
   "grant": [
     "unsafeWindow",
