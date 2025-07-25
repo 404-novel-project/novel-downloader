@@ -293,7 +293,8 @@
     "*://www.wxscs.com/book/*/",
     "*://www.biquge345.com/book/*/",
     "*://www.beqege.cc/*/",
-    "*://m.mjyhb.com/*/"
+    "*://m.mjyhb.com/*/",
+    "*://m.fly-dreams.com/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -365,7 +366,8 @@
     "*://wxscs.com/book/*.html",
     "*://www.wxscs.com/book/*.html",
     "*://www.beqege.cc/*/*.html",
-    "*://m.mjyhb.com/*/*.html"
+    "*://m.mjyhb.com/*/*.html",
+    "*://m.fly-dreams.com/*/*.html"
   ],
   "grant": [
     "unsafeWindow",
