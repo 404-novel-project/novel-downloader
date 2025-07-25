@@ -482,6 +482,13 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = dishuge();
       break;
     }
+    case "www.69hsw.com":
+    case "www.69hao.com":
+    case "www.69hsz.net": {
+      const { c69shuba } = await import("../rules/onePage/69shuba");
+      ruleClass = c69shuba();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage Start */
