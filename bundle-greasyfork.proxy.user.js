@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1200
+// @version        5.2.1201
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -71,6 +71,20 @@
 // @exclude        *://www.xiguashuwu.com/book/*/catalog/
 // @exclude        *://www.rmkbr.com/*/*/*.html
 // @exclude        *://www.fdhxs.com/*/*/*.html
+// @exclude        *://www.dbxsd.com/book/*.html
+// @exclude        *://wxsck.com/book/*.html
+// @exclude        *://www.wxsck.com/book/*.html
+// @exclude        *://wxscs.com/book/*.html
+// @exclude        *://www.wxscs.com/book/*.html
+// @exclude        *://www.beqege.cc/*/*.html
+// @exclude        *://m.mjyhb.com/*/*.html
+// @exclude        *://m.fly-dreams.com/*/*.html
+// @exclude        *://www.23dishuge.com/*/*/*.html
+// @exclude        *://www.69hsw.com/*/*.html
+// @exclude        *://www.69hao.com/*/*.html
+// @exclude        *://www.69hsz.net/*/*.html
+// @exclude        *://m.shauthor.com/*/*.html
+// @exclude        *://m.chenkuan.com/*/*.html
 // @match          *://101kanshu.com/book/*.html
 // @match          *://www.sudugu.com/*
 // @match          *://www.po18.tw/books/*
@@ -335,6 +349,21 @@
 // @match          *://321dh.org/novel/*.html
 // @match          *://www.pilibook.net/*/info.html
 // @match          *://www.mozishuwu.com/*/info.html
+// @match          *://www.dbxsd.com/book/*/
+// @match          *://wxsck.com/book/*/
+// @match          *://www.wxsck.com/book/*/
+// @match          *://wxscs.com/book/*/
+// @match          *://www.wxscs.com/book/*/
+// @match          *://www.biquge345.com/book/*/
+// @match          *://www.beqege.cc/*/
+// @match          *://m.mjyhb.com/*/
+// @match          *://m.fly-dreams.com/*/
+// @match          *://www.23dishuge.com/*/*/
+// @match          *://www.69hsw.com/*/
+// @match          *://www.69hao.com/*/
+// @match          *://www.69hsz.net/*/
+// @match          *://m.shauthor.com/*/
+// @match          *://m.chenkuan.com/*/
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+

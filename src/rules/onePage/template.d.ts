@@ -31,6 +31,7 @@ interface MkRuleClassOptions {
     cleanDomOptions?: Options;
     overrideConstructor?: (classThis: BaseRuleClass) => any;
     language?: string;
+    attachmentMode?: "TM" | "naive";
 }
-export declare function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, additionalMetadatePatch, aList, getAName, getIsVIP, sections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, sleepTime, maxSleepTime, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }: MkRuleClassOptions): PublicConstructor<BaseRuleClass>;
+export declare function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, additionalMetadatePatch, aList, getAName, getIsVIP, sections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, sleepTime, maxSleepTime, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, attachmentMode }: MkRuleClassOptions): PublicConstructor<BaseRuleClass>;
 export {};
