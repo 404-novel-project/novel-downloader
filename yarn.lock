@@ -3106,15 +3106,16 @@ __metadata:
   linkType: hard
 
 "form-data@npm:^2.5.0":
-  version: 2.5.3
-  resolution: "form-data@npm:2.5.3"
+  version: 2.5.5
+  resolution: "form-data@npm:2.5.5"
   dependencies:
     asynckit: ^0.4.0
     combined-stream: ^1.0.8
     es-set-tostringtag: ^2.1.0
+    hasown: ^2.0.2
     mime-types: ^2.1.35
     safe-buffer: ^5.2.1
-  checksum: 27a81952e140becb03cb3f9c418ac31f25f4db8dc643ea99acb219ed881426f26c069f38789545629a685e3db620fd686090ba756db7bdb36d97f051b34eaee7
+  checksum: ba6d8467f959c9bf36a52e423256c1e8055a8e650416760f54fa5db261529c3de698a4ce8378dd4fdb71b44be190906d6b73446556cc74e58de8bda01d09e9e7
   languageName: node
   linkType: hard
 
