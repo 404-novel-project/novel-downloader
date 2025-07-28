@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1202
+// @version        5.2.1203
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -7579,9 +7579,9 @@ function getLastPart(u) {
 /* harmony export */   eu: () => (/* binding */ isFixWidth),
 /* harmony export */   is: () => (/* binding */ htmlTrim)
 /* harmony export */ });
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
 
 
@@ -8125,7 +8125,7 @@ async function cleanDOM(elem, imgMode, options) {
         }
         map.set("a", a);
         function getImg(url) {
-            const imgClassCache = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachmentClassCache */ ._s)(url);
+            const imgClassCache = (0,_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachmentClassCache */ ._s)(url);
             if (imgClassCache) {
                 const dom = document.createElement("img");
                 dom.setAttribute("data-src-address", imgClassCache.name);
@@ -8140,13 +8140,13 @@ async function cleanDOM(elem, imgMode, options) {
                 };
             }
             else {
-                const comments = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getRandomName */ .VJ)();
+                const comments = (0,_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getRandomName */ .VJ)();
                 const noMd5 = options?.keepImageName ?? false;
                 const imgOptions = {
                     referrerMode: options?.referrerMode,
                     customReferer: options?.customReferer,
                 };
-                const imgClass = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(url, imgMode, "chapter-", noMd5, comments, imgOptions);
+                const imgClass = (0,_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(url, imgMode, "chapter-", noMd5, comments, imgOptions);
                 const dom = document.createElement("img");
                 dom.setAttribute("data-src-address", comments);
                 dom.alt = url;
@@ -8171,7 +8171,7 @@ async function cleanDOM(elem, imgMode, options) {
         function audio(elem) {
             if (elem instanceof HTMLAudioElement) {
                 const url = elem.src;
-                const attachmentCache = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachmentClassCache */ ._s)(url);
+                const attachmentCache = (0,_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachmentClassCache */ ._s)(url);
                 if (attachmentCache) {
                     const dom = document.createElement("audio");
                     dom.innerText = "Your browser does not support the audio element.";
@@ -8188,13 +8188,13 @@ async function cleanDOM(elem, imgMode, options) {
                     };
                 }
                 else {
-                    const comments = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getRandomName */ .VJ)();
+                    const comments = (0,_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getRandomName */ .VJ)();
                     const noMd5 = options?.keepImageName ?? false;
                     const attachmentOptions = {
                         referrerMode: options?.referrerMode,
                         customReferer: options?.customReferer,
                     };
-                    const attachment = (0,_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(url, imgMode, "chapter-", noMd5, comments, attachmentOptions);
+                    const attachment = (0,_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(url, imgMode, "chapter-", noMd5, comments, attachmentOptions);
                     const dom = document.createElement("audio");
                     dom.innerText = "Your browser does not support the audio element.";
                     dom.setAttribute("data-src-address", comments);
@@ -8221,7 +8221,7 @@ async function cleanDOM(elem, imgMode, options) {
                     return getImg(url);
                 }
                 else {
-                    _log__WEBPACK_IMPORTED_MODULE_1___default().warn("[cleanDom][picture]未发现 img", elem);
+                    _log__WEBPACK_IMPORTED_MODULE_0___default().warn("[cleanDom][picture]未发现 img", elem);
                     return null;
                 }
             }
@@ -8364,8 +8364,8 @@ async function cleanDOM(elem, imgMode, options) {
         }
         else {
             const output = defaultHandler(element);
-            _log__WEBPACK_IMPORTED_MODULE_1___default().warn("[cleanDom]发现未知行内元素！");
-            _log__WEBPACK_IMPORTED_MODULE_1___default().warn([element.nodeName.toLowerCase(), element]);
+            _log__WEBPACK_IMPORTED_MODULE_0___default().warn("[cleanDom]发现未知行内元素！");
+            _log__WEBPACK_IMPORTED_MODULE_0___default().warn([element.nodeName.toLowerCase(), element]);
             return output;
         }
     }
@@ -8995,8 +8995,8 @@ function escapeHTML(str) {
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/setting.ts");
-/* harmony import */ var _GM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/GM.ts");
-/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _GM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/GM.ts");
+/* harmony import */ var _misc__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/misc.ts");
 
 
 
@@ -9016,7 +9016,7 @@ async function fetchWithRetry(input, init) {
             return resp;
         }
         else {
-            await (0,_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ .yy)(1000 * (_setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .Iz - retry));
+            await (0,_misc__WEBPACK_IMPORTED_MODULE_3__/* .sleep */ .yy)(1000 * (_setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .Iz - retry));
             retry--;
         }
     }
@@ -9036,7 +9036,7 @@ function gfetch(url, { method = "GET", headers, data, cookie, binary, nocache, r
     return new Promise((resolve, reject) => {
         _log__WEBPACK_IMPORTED_MODULE_0___default().debug("[debug]gfetch:");
         _log__WEBPACK_IMPORTED_MODULE_0___default().debug(Array.from(arguments));
-        (0,_GM__WEBPACK_IMPORTED_MODULE_3__/* ._GM_xmlhttpRequest */ .nV)({
+        (0,_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_xmlhttpRequest */ .nV)({
             url,
             method,
             headers,
@@ -9129,13 +9129,13 @@ async function getHtmlDomWithRetry(input, charset, init, test = (response) => Pr
             _log__WEBPACK_IMPORTED_MODULE_0___default().error(`抓取${input}失败，重试第${_setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .Iz - retry}次。`);
             _log__WEBPACK_IMPORTED_MODULE_0___default().error(error);
             retry--;
-            await (0,_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ .yy)(1000 * (_setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .Iz - retry));
+            await (0,_misc__WEBPACK_IMPORTED_MODULE_3__/* .sleep */ .yy)(1000 * (_setting__WEBPACK_IMPORTED_MODULE_1__/* .retryLimit */ .Iz - retry));
         }
     }
     return doc;
 }
 async function ggetText(url, charset, init, test = (response) => Promise.resolve(false)) {
-    let _init = init ? (0,_misc__WEBPACK_IMPORTED_MODULE_2__/* .deepcopy */ .OJ)(init) : undefined;
+    let _init = init ? (0,_misc__WEBPACK_IMPORTED_MODULE_3__/* .deepcopy */ .OJ)(init) : undefined;
     if (charset === undefined) {
         return gfetch(url, init)
             .then(async (response) => {
@@ -9305,9 +9305,9 @@ async function getFrameContentConditionWithWindow(url, stopCondition, sandboxs) 
 /* harmony export */   yy: () => (/* binding */ sleep)
 /* harmony export */ });
 /* unused harmony exports regexpEscape, mean, sd */
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _GM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/GM.ts");
-/* harmony import */ var mime_db__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/mime-db/index.js");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _GM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/GM.ts");
+/* harmony import */ var mime_db__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/mime-db/index.js");
 
 
 
@@ -9323,10 +9323,10 @@ function concurrencyRun(list, limit, asyncHandle, options = {}) {
     async function recursion(arr) {
         if (signal?.aborted) {
             if (reason) {
-                throw new _main_main__WEBPACK_IMPORTED_MODULE_1__/* .ExpectError */ .K5(reason);
+                throw new _main_main__WEBPACK_IMPORTED_MODULE_0__/* .ExpectError */ .K5(reason);
             }
             else {
-                throw new _main_main__WEBPACK_IMPORTED_MODULE_1__/* .ExpectError */ .K5("concurrencyRun was aborted!");
+                throw new _main_main__WEBPACK_IMPORTED_MODULE_0__/* .ExpectError */ .K5("concurrencyRun was aborted!");
             }
         }
         const item = arr.shift();
@@ -9358,7 +9358,7 @@ async function saveToArchiveOrg(url) {
         }),
         headers: {
             "content-type": "application/json; charset=utf-8",
-            "x-requested-with": `novel-downloader ${_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info */ .JX.script.version}; ${_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info */ .JX.scriptHandler} ${_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_info */ .JX.version}`,
+            "x-requested-with": `novel-downloader ${_GM__WEBPACK_IMPORTED_MODULE_1__/* ._GM_info */ .JX.script.version}; ${_GM__WEBPACK_IMPORTED_MODULE_1__/* ._GM_info */ .JX.scriptHandler} ${_GM__WEBPACK_IMPORTED_MODULE_1__/* ._GM_info */ .JX.version}`,
         },
         method: "POST",
     });
@@ -9401,7 +9401,7 @@ function randomUUID() {
     }
 }
 function extensionToMimetype(ext) {
-    for (const [mimetype, entry] of Object.entries(mime_db__WEBPACK_IMPORTED_MODULE_0__)) {
+    for (const [mimetype, entry] of Object.entries(mime_db__WEBPACK_IMPORTED_MODULE_2__)) {
         if (entry.extensions?.includes(ext)) {
             return mimetype;
         }
@@ -9409,8 +9409,8 @@ function extensionToMimetype(ext) {
     return "application/octet-stream";
 }
 function mimetyepToCompressible(mimeType) {
-    if (mime_db__WEBPACK_IMPORTED_MODULE_0__[mimeType]) {
-        const entry = mime_db__WEBPACK_IMPORTED_MODULE_0__[mimeType];
+    if (mime_db__WEBPACK_IMPORTED_MODULE_2__[mimeType]) {
+        const entry = mime_db__WEBPACK_IMPORTED_MODULE_2__[mimeType];
         if (entry["compressible"]) {
             return entry["compressible"];
         }
@@ -9480,11 +9480,11 @@ async function gfetchAndParse(url, charset, init, patch, options) {
 /* harmony export */   u1: () => (/* binding */ nextPageParse)
 /* harmony export */ });
 /* unused harmony export reIndex */
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var p_limit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/p-limit/index.js");
+/* harmony import */ var p_limit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/p-limit/index.js");
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/main.ts");
 
 
@@ -9504,7 +9504,7 @@ async function introDomHandle(introDom, domPatch) {
     }
 }
 async function nextPageParse({ chapterName, chapterUrl, charset, selector, domPatch, contentPatch, getNextPage, continueCondition, enableCleanDOM, getHtmlDomFunc = _http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA, }) {
-    _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterUrl}`);
+    _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`[Chapter]请求 ${chapterUrl}`);
     let nowUrl = chapterUrl;
     let doc = await getHtmlDomFunc(chapterUrl, charset);
     const content = document.createElement("div");
@@ -9520,7 +9520,7 @@ async function nextPageParse({ chapterName, chapterUrl, charset, selector, domPa
                 flag = true;
             }
             else {
-                _log__WEBPACK_IMPORTED_MODULE_3___default().error("网站页面出错，URL： " + nowUrl);
+                _log__WEBPACK_IMPORTED_MODULE_0___default().error("网站页面出错，URL： " + nowUrl);
                 flag = false;
             }
         }
@@ -9532,7 +9532,7 @@ async function nextPageParse({ chapterName, chapterUrl, charset, selector, domPa
             content.appendChild(_c.cloneNode(true));
         }
         if (flag) {
-            _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${nextLink}`);
+            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`[Chapter]请求 ${nextLink}`);
             nowUrl = nextLink;
             doc = await getHtmlDomFunc(nextLink, charset);
         }
@@ -9660,7 +9660,7 @@ async function chapterHiddenFix(book, invalidTest, getPrevHref, concurrencyLimit
         }
     }
     else {
-        const limit = (0,p_limit__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A)(concurrencyLimit);
+        const limit = (0,p_limit__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A)(concurrencyLimit);
         const tasks = invalidChapterList.map((ic) => {
             return limit(() => fix(ic, chapters));
         });
@@ -9753,12 +9753,12 @@ function saveLogTextToFile() {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   q: () => (/* binding */ AttachmentClass)
 /* harmony export */ });
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/setting.ts");
-/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/main.ts");
 
 
 
@@ -9768,14 +9768,14 @@ class AttachmentClass {
     url;
     name;
     mode;
-    status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.pending;
+    status = _main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.pending;
     retryTime = 0;
     Blob;
     comments;
     referrerMode;
     _init;
     _TMinit;
-    constructor(url, name, mode, referrerMode = _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode */ .ls.keep, customReferer = "", init) {
+    constructor(url, name, mode, referrerMode = _main__WEBPACK_IMPORTED_MODULE_4__/* .ReferrerMode */ .ls.keep, customReferer = "", init) {
         this.url = url;
         this.name = name;
         this.mode = mode;
@@ -9791,14 +9791,14 @@ class AttachmentClass {
         };
         if (!init) {
             ({ init: this._init, TMinit: this._TMinit } = defaultInit);
-            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode */ .ls.none) {
+            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_4__/* .ReferrerMode */ .ls.none) {
                 this._init.referrerPolicy = "no-referrer";
                 this._TMinit.headers = {};
             }
-            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode */ .ls.self) {
+            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_4__/* .ReferrerMode */ .ls.self) {
                 this._TMinit.headers = { Referer: new URL(url).origin };
             }
-            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_0__/* .ReferrerMode */ .ls.custom &&
+            if (this.referrerMode === _main__WEBPACK_IMPORTED_MODULE_4__/* .ReferrerMode */ .ls.custom &&
                 customReferer.startsWith("http")) {
                 this._TMinit.headers = { Referer: customReferer };
             }
@@ -9824,16 +9824,16 @@ class AttachmentClass {
         return this.Blob;
     }
     download() {
-        this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.downloading;
+        this.status = _main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.downloading;
         return fetch(this.url, this._init)
             .then((response) => {
             if (response.ok) {
-                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.finished;
+                this.status = _main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.finished;
                 return response.blob();
             }
             else {
                 if (response.status === 404) {
-                    this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.failed;
+                    this.status = _main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.failed;
                 }
                 throw new Error(`Bad response!\nRequest url: ${this.url}\nStatus code: ${response.status}`);
             }
@@ -9841,12 +9841,12 @@ class AttachmentClass {
             .catch(async (err) => {
             this.retryTime++;
             _log__WEBPACK_IMPORTED_MODULE_2___default().error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
-            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_3__/* .retryLimit */ .Iz) {
+            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_3__/* .retryLimit */ .Iz) {
                 await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .sleep */ .yy)(this.retryTime * 1500);
                 return this.download();
             }
             else {
-                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.failed;
+                this.status = _main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.failed;
                 _log__WEBPACK_IMPORTED_MODULE_2___default().error(err);
                 _log__WEBPACK_IMPORTED_MODULE_2___default().trace(err);
                 return null;
@@ -9854,16 +9854,16 @@ class AttachmentClass {
         });
     }
     tmDownload() {
-        this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.downloading;
-        return (0,_lib_http__WEBPACK_IMPORTED_MODULE_4__/* .gfetch */ ._V)(this.url, this._TMinit)
+        this.status = _main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.downloading;
+        return (0,_lib_http__WEBPACK_IMPORTED_MODULE_0__/* .gfetch */ ._V)(this.url, this._TMinit)
             .then((response) => {
             if (response.status >= 200 && response.status <= 299) {
-                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.finished;
+                this.status = _main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.finished;
                 return response.response;
             }
             else {
                 if (response.status === 404) {
-                    this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.failed;
+                    this.status = _main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.failed;
                 }
                 throw new Error(`Bad response!\nRequest url: ${this.url}\nStatus code: ${response.status}`);
             }
@@ -9871,12 +9871,12 @@ class AttachmentClass {
             .catch(async (err) => {
             this.retryTime++;
             _log__WEBPACK_IMPORTED_MODULE_2___default().error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
-            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_3__/* .retryLimit */ .Iz) {
+            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_3__/* .retryLimit */ .Iz) {
                 await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .sleep */ .yy)(this.retryTime * 1000);
                 return this.tmDownload();
             }
             else {
-                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.failed;
+                this.status = _main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.failed;
                 _log__WEBPACK_IMPORTED_MODULE_2___default().error(err);
                 _log__WEBPACK_IMPORTED_MODULE_2___default().trace(err);
                 return null;
@@ -10107,11 +10107,11 @@ class Book {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   I: () => (/* binding */ Chapter)
 /* harmony export */ });
-/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/setting.ts");
-/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/setting.ts");
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/main.ts");
 
 
 
@@ -10130,7 +10130,7 @@ class Chapter {
     chapterParse;
     charset;
     options;
-    status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.pending;
+    status = _main__WEBPACK_IMPORTED_MODULE_3__/* .Status */ .nW.pending;
     retryTime = 0;
     contentRaw;
     contentText;
@@ -10162,7 +10162,7 @@ class Chapter {
         this.contentHTML = contentHTML;
         this.contentImages = contentImages;
         this.additionalMetadate = additionalMetadate;
-        if (this.status === _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.failed) {
+        if (this.status === _main__WEBPACK_IMPORTED_MODULE_3__/* .Status */ .nW.failed) {
             _log__WEBPACK_IMPORTED_MODULE_1___default().error(`[Chapter]章节名：${this.chapterName}, \
 分卷名：${this.sectionName}, URL:${this.chapterUrl}, \
 VIP:${this.isVIP}, Paid:${this.isPaid}, \
@@ -10177,29 +10177,29 @@ isNull:${!this.contentHTML} 解析成功。`);
         return this;
     }
     async parse() {
-        this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.downloading;
+        this.status = _main__WEBPACK_IMPORTED_MODULE_3__/* .Status */ .nW.downloading;
         return this.chapterParse(this.chapterUrl, this.chapterName, this.isVIP, this.isPaid, this.charset, this.options)
             .then(async (obj) => {
             const contentImages = obj.contentImages;
             if (contentImages) {
-                let downloadingImages = contentImages.filter((imgObj) => imgObj.status === _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.downloading);
+                let downloadingImages = contentImages.filter((imgObj) => imgObj.status === _main__WEBPACK_IMPORTED_MODULE_3__/* .Status */ .nW.downloading);
                 while (downloadingImages.length) {
-                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ .yy)(500);
-                    downloadingImages = contentImages.filter((imgObj) => imgObj.status === _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.downloading);
+                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_0__/* .sleep */ .yy)(500);
+                    downloadingImages = contentImages.filter((imgObj) => imgObj.status === _main__WEBPACK_IMPORTED_MODULE_3__/* .Status */ .nW.downloading);
                 }
             }
-            this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.finished;
+            this.status = _main__WEBPACK_IMPORTED_MODULE_3__/* .Status */ .nW.finished;
             return obj;
         })
             .catch(async (err) => {
             this.retryTime++;
             _log__WEBPACK_IMPORTED_MODULE_1___default().error(`[Chapter]${this.chapterName}解析出错，第${this.retryTime}次重试，章节地址：${this.chapterUrl}`);
-            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_3__/* .retryLimit */ .Iz) {
-                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ .yy)(this.retryTime * 1500);
+            if (this.status !== _main__WEBPACK_IMPORTED_MODULE_3__/* .Status */ .nW.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_2__/* .retryLimit */ .Iz) {
+                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_0__/* .sleep */ .yy)(this.retryTime * 1500);
                 return this.parse();
             }
             else {
-                this.status = _main__WEBPACK_IMPORTED_MODULE_0__/* .Status */ .nW.failed;
+                this.status = _main__WEBPACK_IMPORTED_MODULE_3__/* .Status */ .nW.failed;
                 _log__WEBPACK_IMPORTED_MODULE_1___default().error(err);
                 _log__WEBPACK_IMPORTED_MODULE_1___default().trace(err);
                 window.failedCount++;
@@ -11855,13 +11855,13 @@ const c226ks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeMultiI
 /* harmony export */   xinwanben: () => (/* binding */ xinwanben),
 /* harmony export */   ywggzy: () => (/* binding */ ywggzy)
 /* harmony export */ });
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/biquge/template.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/biquge/template.ts");
 
 
 
-const xinwanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNextPage */ .uk)((introDom) => {
+const xinwanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiqugeNextPage */ .uk)((introDom) => {
     const _bookname = introDom.innerHTML.match(/《(.*)》/);
     let bookname;
     if (_bookname?.length === 2) {
@@ -11882,10 +11882,10 @@ const xinwanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNex
         "【完本神站】",
     ];
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(filters, content);
-    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .is)(content);
+    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .htmlTrim */ .is)(content);
     return content;
 }, (doc) => doc.querySelector("#next_url").href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
-const mijiashe = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNextPage */ .uk)((introDom) => {
+const mijiashe = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiqugeNextPage */ .uk)((introDom) => {
     const _bookname = introDom.innerHTML.match(/《(.*)》/);
     let bookname;
     if (_bookname?.length === 2) {
@@ -11904,10 +11904,10 @@ const mijiashe = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNext
         "【提示】：如果觉得此文不错，请推荐给更多小伙伴吧！分享也是一种享受。",
     ];
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(filters, content);
-    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .htmlTrim */ .is)(content);
+    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .htmlTrim */ .is)(content);
     return content;
 }, (doc) => doc.querySelector("#next_url").href, (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
-const ywggzy = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNextPage */ .uk)((initroDom) => initroDom, (content) => {
+const ywggzy = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiqugeNextPage */ .uk)((initroDom) => initroDom, (content) => {
     (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".posterror", false, content);
     return content;
 }, (doc) => doc.querySelector("div.section-opt:nth-child(1) > a:nth-child(5)")?.href ?? "", (_content, nextLink) => new URL(nextLink).pathname.includes("_"));
@@ -11941,70 +11941,70 @@ const ywggzy = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkBiqugeNextPa
 /* harmony export */   yqxs: () => (/* binding */ yqxs),
 /* harmony export */   yruan: () => (/* binding */ yruan)
 /* harmony export */ });
-/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/biquge/template.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/biquge/template.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/cleanDOM.ts");
 
 
 
 
 const commonContentPatch = (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[style]", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[align]", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[style]", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[align]", true, content);
     return content;
 };
-const common = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => introDom, commonContentPatch);
-const gebiqu = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)([/如果您喜欢.+，别忘记分享给朋友/g], introDom);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('a[href^="http://down.gebiqu.com"]', false, introDom);
+const common = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiquge */ .Wt)((introDom) => introDom, commonContentPatch);
+const gebiqu = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiquge */ .Wt)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)([/如果您喜欢.+，别忘记分享给朋友/g], introDom);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('a[href^="http://down.gebiqu.com"]', false, introDom);
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)([/"www.gashuw.com"/g], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)([/"www.gashuw.com"/g], content);
     return content;
 });
-const bqu9 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)([/如果您喜欢.+，别忘记分享给朋友/g], introDom);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('a[href^="http://down.gebiqu.com"]', false, introDom);
+const bqu9 = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiquge */ .Wt)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)([/如果您喜欢.+，别忘记分享给朋友/g], introDom);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('a[href^="http://down.gebiqu.com"]', false, introDom);
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(['请收藏本站：https://www.bqu9.cc。笔趣阁手机版：https://m.bqu9.cc/'], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(['请收藏本站：https://www.bqu9.cc。笔趣阁手机版：https://m.bqu9.cc/'], content);
     return content;
 }, "#chaptercontent");
-const luoqiuzw = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => {
+const luoqiuzw = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => {
     const ad = content.firstElementChild;
     if (ad.innerText.includes("天才一秒记住本站地址：")) {
         ad.remove();
     }
     const ads = ["记住网址m.luoqｉｕｘｚｗ．ｃｏｍ"];
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)(ads, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)(ads, content);
     return content;
 });
-const biquwx = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)([
+const biquwx = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiquge */ .Wt)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)([
         /本站提示：各位书友要是觉得《.+》还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！/,
     ], introDom);
     return introDom;
 }, (content) => content, undefined, 1);
-const tycqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("a", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)(["推荐都市大神老施新书:"], content);
+const tycqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("a", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)(["推荐都市大神老施新书:"], content);
     return content;
 });
-const dijiubook = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)(["本书网址："], introDom);
+const dijiubook = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiquge */ .Wt)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)(["本书网址："], introDom);
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("a", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('img[src$="alipay.png"]', true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("a", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('img[src$="alipay.png"]', true, content);
     return content;
 }, undefined, 1, 50, 3000, (classThis) => {
     classThis.maxRunLimit = 1;
     const chapterParse = classThis.chapterParse;
     classThis.chapterParse = async (...args) => {
         const obj = await chapterParse(...args);
-        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ .yy)(3000 * Math.random());
+        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_0__/* .sleep */ .yy)(3000 * Math.random());
         return obj;
     };
     return classThis;
@@ -12017,94 +12017,94 @@ const dijiubook = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */
         return chapter;
     }
 });
-const c25zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
+const c25zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiquge */ .Wt)((introDom) => {
     introDom.querySelector("font")?.parentElement?.remove();
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)(["简介:"], introDom);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)(["简介:"], introDom);
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)(".bottem", false, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".bottem", false, content);
     return content;
 });
-const xbiquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)([/笔趣阁 www.xbiquge.tw，最快更新.+ ！/], content);
+const xbiquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)([/笔趣阁 www.xbiquge.tw，最快更新.+ ！/], content);
     return content;
 });
-const yruan = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["本站提示：各位书友要是觉得"], introDom);
+const yruan = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiquge */ .Wt)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(["本站提示：各位书友要是觉得"], introDom);
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("b", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("b", true, content);
     return content;
 }, undefined, 3);
-const ranwen = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！"], introDom);
+const ranwen = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiquge */ .Wt)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(["还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！"], introDom);
     return introDom;
 }, (content) => content);
-const b5200 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => content, undefined, 1);
-const bxwx333 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => {
+const b5200 = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => content, undefined, 1);
+const bxwx333 = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => {
     content.querySelector("#xuanchuan")?.parentElement?.remove();
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[style]", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)(".bottem2", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[style]", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".bottem2", true, content);
     return content;
 }, "#zjneirong");
-const xbiqugeLa = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
+const xbiqugeLa = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiquge */ .Wt)((introDom) => {
     introDom.querySelector("font")?.parentElement?.remove();
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["手机站全新改版升级地址"], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(["手机站全新改版升级地址"], content);
     return content;
 }, undefined, 1);
-const shuquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
+const shuquge = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiquge */ .Wt)((introDom) => {
     document.querySelector(".noshow")?.classList.remove("noshow");
     if (document.querySelector(".showall")) {
         document.querySelector(".showall").innerHTML = "";
     }
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)([
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)([
         /作者：.+所写的《.+》无弹窗免费全文阅读为转载作品,章节由网友发布。/,
         /推荐地址：https?:\/\/www\.ishuquge\.org\/txt\/\d+\/index\.html/g,
     ], introDom);
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["请记住本书首发域名：", "www.ishuquge.org"], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(["请记住本书首发域名：", "www.ishuquge.org"], content);
     return content;
 }, undefined, 1);
-const lusetxt = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["无弹窗免费全文阅读为转载作品", "无弹窗推荐地址", "简介："], introDom);
+const lusetxt = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiquge */ .Wt)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(["无弹窗免费全文阅读为转载作品", "无弹窗推荐地址", "简介："], introDom);
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[style]", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[align]", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["https://www.lvsewx.com/books", "请记住本书首发域名"], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[style]", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[align]", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(["https://www.lvsewx.com/books", "请记住本书首发域名"], content);
     (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .is)(content);
     return content;
 });
-const yqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)(["<span>简介：</span>"], introDom);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["推荐地址："], introDom);
+const yqxs = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiquge */ .Wt)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)(["<span>简介：</span>"], introDom);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(["推荐地址："], introDom);
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('div[align="center"]', false, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["//www.yqxsge.cc/html/", "请记住本书首发域名"], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('div[align="center"]', false, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(["//www.yqxsge.cc/html/", "请记住本书首发域名"], content);
     return content;
 });
-const lewenn = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)([
+const lewenn = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiquge */ .Wt)((introDom) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)([
         /各位书友要是觉得《.*》还不错的话请不要忘记向您QQ群和微博里的朋友推荐哦！/,
     ], introDom);
     return introDom;
 }, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('div[align="center"]', false, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["//www.lewenn.net/lw", "1秒记住乐文小说网"], content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('div[align="center"]', false, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(["//www.lewenn.net/lw", "1秒记住乐文小说网"], content);
     return content;
 });
-const xyb3 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[style]", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[align]", true, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)([
+const xyb3 = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[style]", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[align]", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)([
         "由于各种问题yb3.cc地址更改为xyb3.net请大家收藏新地址避免迷路",
         "网页版章节内容慢，请下载好阅小说app阅读最新内容",
         "请退出转码页面，请下载好阅小说app 阅读最新章节。",
@@ -12112,14 +12112,14 @@ const xyb3 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)
     ], content);
     return content;
 });
-const la42zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => {
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div#content > p:first-child", false, content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)([
+const la42zw = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkBiquge */ .Wt)((introDom) => introDom, (content) => {
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div#content > p:first-child", false, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)([
         "首发网址ｈｔｔps://m.42zw.la",
         "记住网址m.42zw．la",
         "一秒记住ｈｔｔｐs://ｍ．42zw.la"
     ], content);
-    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("br", true, content);
+    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("br", true, content);
     return content;
 });
 
@@ -12286,8 +12286,8 @@ function mkBiqugeMultiIndex(introDomPatch, contentPatch, concurrencyLimit, sleep
 /* harmony export */   mbtxt: () => (/* binding */ mbtxt)
 /* harmony export */ });
 /* harmony import */ var _onePage_template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
 
 
 
@@ -12297,22 +12297,22 @@ const mbtxt = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleC
     author: document.querySelector("a.red").innerText.trim(),
     introDom: document.querySelector(".bookintro"),
     introDomPatch: (dom) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".visible-xs", true, dom);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)(".visible-xs", true, dom);
         return dom;
     },
     coverUrl: document.querySelector(".bookcover > img")?.src,
     aList: document.querySelectorAll("#list-chapterAll > dd > a"),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .u1)({
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .u1)({
             chapterName,
             chapterUrl,
             charset,
             selector: ".readcontent",
             contentPatch: (content) => {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".kongwen", true, content);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".readmiddle", true, content);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".text-danger.text-center", true, content);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)(["-->>"], content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)(".kongwen", true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)(".readmiddle", true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)(".text-danger.text-center", true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rms */ .j3)(["-->>"], content);
                 return content;
             },
             getNextPage: (doc) => doc.querySelector("#linkNext")?.href ?? "",
@@ -12461,11 +12461,11 @@ const i60ksw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   c630shu: () => (/* binding */ c630shu)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-const c630shu = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const c630shu = (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("#info > h1").innerText.trim(),
     author: document.querySelector("div.options > span.item:nth-child(1) > a").innerText.trim(),
@@ -12475,7 +12475,7 @@ const c630shu = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)(
     aList: document.querySelectorAll(".zjlist > dd > a"),
     getContent: (doc) => doc.querySelector("#content"),
     contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)([/恋上你看书网 WWW.630SHU.NET ，最快更新.+最新章节！/], content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)([/恋上你看书网 WWW.630SHU.NET ，最快更新.+最新章节！/], content);
         return content;
     },
 });
@@ -12490,17 +12490,17 @@ const c630shu = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)(
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   c69shuba: () => (/* binding */ c69shuba)
 /* harmony export */ });
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
 
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => document.querySelectorAll(selector);
-const c69shuba = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const c69shuba = () => (0,_template__WEBPACK_IMPORTED_MODULE_3__/* .mkRuleClass */ .N)({
     bookUrl: location.href,
     bookname: $("#info h1").innerText.trim(),
     author: $("#info > p").innerText.trim().replace(/^作\s*者\s*[：:]\s*/u, ""),
@@ -12509,14 +12509,14 @@ const c69shuba = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
     coverUrl: $("#fmimg img").src,
     aList: $$("#list > dl > dt:last-of-type ~ a"),
     async getContentFromUrl(chapterUrl, chapterName, charset) {
-        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .u1)({
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .u1)({
             chapterName,
             chapterUrl,
             charset,
             selector: "#booktxt",
             contentPatch(content, doc) {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .Sf)([/本章阅读完毕/], content);
-                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .is)(content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)([/本章阅读完毕/], content);
+                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .htmlTrim */ .is)(content);
                 return content;
             },
             getNextPage(doc) {
@@ -12602,11 +12602,11 @@ const banxia = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   biquge345: () => (/* binding */ biquge345)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-const biquge345 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const biquge345 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("h1")?.innerText.trim(),
     author: document.querySelector("div.xinxi > span.x1 > a")?.innerText || "",
@@ -12616,7 +12616,7 @@ const biquge345 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass
     aList: document.querySelectorAll("div.border > ul.info > li > a"),
     getContent: (doc) => doc.querySelector("#txt"),
     contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("p", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("p", true, content);
         return content;
     },
     language: "zh",
@@ -12632,11 +12632,11 @@ const biquge345 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   biqugecc: () => (/* binding */ biqugecc)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-const biqugecc = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const biqugecc = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("h1")?.innerText.trim(),
     author: document.querySelector("#info > p")?.innerText.split("作    者：")[1] || "",
@@ -12646,7 +12646,7 @@ const biqugecc = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
     aList: document.querySelectorAll("#list > dl > dd > a"),
     getContent: (doc) => doc.querySelector("#content"),
     contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)(["zw443sx"], content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)(["zw443sx"], content);
         return content;
     },
     language: "zh",
@@ -12687,11 +12687,11 @@ const bixiange = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   boqugew: () => (/* binding */ boqugew)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-const boqugew = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const boqugew = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("h1.bookTitle").innerText.trim(),
     author: document.querySelector("p.booktag > a:first-child").innerText.replace(/作(\s+)?者[：:]/, "").trim(),
@@ -12701,12 +12701,12 @@ const boqugew = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass *
     aList: document.querySelectorAll("div#list-chapterAll > dl > dd > a"),
     getContent: (doc) => doc.querySelector("div#htmlContent"),
     contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)([
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)([
             "记住网址m.ｂｏｑｕgew．ｃｏｍ",
             "一秒记住ｈｔｔｐ://ｍ．boqugeｗ．ｃｏｍ",
             "首发网址ｈｔｔp://m.ｂｏｑｕｇｅｗ.com"
         ], content);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("br", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("br", true, content);
         return content;
     },
 });
@@ -12721,13 +12721,13 @@ const boqugew = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass *
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   chenkuan: () => (/* binding */ chenkuan)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
 
-const chenkuan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const chenkuan = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("h1")?.innerText.trim(),
     author: document.querySelector("div.tab > p.p1")?.innerText.trim() || "",
@@ -12750,8 +12750,8 @@ const chenkuan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
             charset,
             selector: "#novelcontent",
             contentPatch: (content, doc) => {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("p", true, content);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .Sf)(["内容未完，下一页继续阅读", /chenkuan/], content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("p", true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["内容未完，下一页继续阅读", /chenkuan/], content);
                 return content;
             },
             getNextPage: (doc) => {
@@ -12851,17 +12851,17 @@ const czbooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass *
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   dishuge: () => (/* binding */ dishuge)
 /* harmony export */ });
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
 
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => document.querySelectorAll(selector);
-const dishuge = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const dishuge = () => (0,_template__WEBPACK_IMPORTED_MODULE_3__/* .mkRuleClass */ .N)({
     bookUrl: location.href,
     bookname: $("#info h1").innerText.trim(),
     author: $("#info > p").innerText.trim().replace(/^作\s*者\s*[：:]\s*/u, ""),
@@ -12870,14 +12870,14 @@ const dishuge = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass *
     coverUrl: $("#fmimg img").src,
     aList: $$("#list > dl > dt:last-of-type ~ a"),
     async getContentFromUrl(chapterUrl, chapterName, charset) {
-        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .u1)({
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .u1)({
             chapterName,
             chapterUrl,
             charset,
             selector: "#booktxt",
             contentPatch(content, doc) {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .Sf)([/本章阅读完毕/], content);
-                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .is)(content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)([/本章阅读完毕/], content);
+                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .htmlTrim */ .is)(content);
                 return content;
             },
             getNextPage(doc) {
@@ -12906,15 +12906,15 @@ const dishuge = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass *
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   dizishu: () => (/* binding */ dizishu)
 /* harmony export */ });
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/dom.ts");
 
 
 
 
-const dizishu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const dizishu = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".book-text > h1").innerText.trim(),
     author: document.querySelector(".book-text > span").innerText
@@ -12928,7 +12928,7 @@ const dizishu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass *
     sections: document.querySelectorAll("#list > .book-chapter-list > h3"),
     getSName: (sElem) => sElem.innerText.trim(),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_0__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         if (chapterUrl.includes("dizishu")) {
             const script1 = Array.from(doc.querySelectorAll("script"))
                 .filter((s) => s.innerHTML.includes("chapterid="))?.[0]
@@ -12955,7 +12955,7 @@ const dizishu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass *
             mode: "cors",
             credentials: "include",
         });`)();
-            const text = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getText */ .q4)(request, charset);
+            const text = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_0__/* .getText */ .q4)(request, charset);
             const cctxt = new Function(`${text};return cctxt;`)();
             if (cctxt) {
                 const contentRaw = document.createElement("div");
@@ -12969,7 +12969,7 @@ const dizishu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass *
         else {
             const contentDom = doc.querySelector("div#txt");
             if (contentDom) {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("a", true, contentDom);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)("a", true, contentDom);
                 return contentDom;
             }
             else {
@@ -12983,7 +12983,7 @@ const dizishu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass *
         classThis.bookParse = async () => {
             const book = (await Reflect.apply(rawBookParse, classThis, []));
             const chapters = book.chapters;
-            book.chapters = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .deDuplicate */ .hR)(chapters);
+            book.chapters = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .deDuplicate */ .hR)(chapters);
             return book;
         };
         return classThis;
@@ -13054,13 +13054,13 @@ const dubuxiaoshuo = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCl
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   flydreams: () => (/* binding */ flydreams)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
 
-const flydreams = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const flydreams = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("h1")?.innerText.trim(),
     author: document.querySelector("div.tab > p.p1")?.innerText.trim() || "",
@@ -13083,8 +13083,8 @@ const flydreams = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass
             charset,
             selector: "#novelcontent",
             contentPatch: (content, doc) => {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("p", true, content);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .Sf)(["内容未完，下一页继续阅读", /fly-dreams/], content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("p", true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["内容未完，下一页继续阅读", /fly-dreams/], content);
                 return content;
             },
             getNextPage: (doc) => {
@@ -13139,9 +13139,9 @@ const fuxiaoshu = (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   guidaye: () => (/* binding */ guidaye)
 /* harmony export */ });
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/onePage/template.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
 
 
 const guidaye = async () => {
@@ -13153,9 +13153,9 @@ const guidaye = async () => {
             "";
         const api = "https://b.guidaye.com/e/extend/bookpage/pages.php?id=" + sid;
         const htm = document.createElement("div");
-        _log__WEBPACK_IMPORTED_MODULE_0___default().info("[guidaye]" + "作品编号: " + sid + ", 列表页数: " + num);
+        _log__WEBPACK_IMPORTED_MODULE_1___default().info("[guidaye]" + "作品编号: " + sid + ", 列表页数: " + num);
         for (let i = 0; i < num; i++) {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().info("获取列表：" + i);
+            _log__WEBPACK_IMPORTED_MODULE_1___default().info("获取列表：" + i);
             const resp = await fetch(api, {
                 method: "POST",
                 mode: "cors",
@@ -13167,7 +13167,7 @@ const guidaye = async () => {
                 body: "pageNum=" + i,
             });
             if (!resp.ok) {
-                _log__WEBPACK_IMPORTED_MODULE_0___default().error("获取列表错误：" + resp.status);
+                _log__WEBPACK_IMPORTED_MODULE_1___default().error("获取列表错误：" + resp.status);
             }
             const result = (await resp.json());
             result.list.forEach((list) => {
@@ -13178,10 +13178,10 @@ const guidaye = async () => {
                 return;
             });
         }
-        _log__WEBPACK_IMPORTED_MODULE_0___default().info("[guidaye]列表生成完毕");
+        _log__WEBPACK_IMPORTED_MODULE_1___default().info("[guidaye]列表生成完毕");
         return htm.querySelectorAll("a");
     };
-    return (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
+    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
         bookUrl: document.location.href,
         bookname: document.querySelector("div.book-describe > h1").innerText.trim(),
         author: document.querySelector("div.book-describe > p").innerText
@@ -13406,13 +13406,13 @@ const hongxiuzhao = () => (0,template/* mkRuleClass */.N)({
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   mjyhb: () => (/* binding */ mjyhb)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
 
-const mjyhb = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const mjyhb = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("h1")?.innerText.trim(),
     author: document.querySelector("div.tab > p.p1")?.innerText.trim() || "",
@@ -13435,8 +13435,8 @@ const mjyhb = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
             charset,
             selector: "#novelcontent",
             contentPatch: (content, doc) => {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("p", true, content);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .Sf)(["内容未完，下一页继续阅读", /三五中文/], content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("p", true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["内容未完，下一页继续阅读", /三五中文/], content);
                 return content;
             },
             getNextPage: (doc) => {
@@ -13468,11 +13468,11 @@ const mjyhb = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   akatsuki: () => (/* binding */ akatsuki)
 /* harmony export */ });
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-const akatsuki = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const akatsuki = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
     bookUrl: document.location.origin + document.location.pathname,
     bookname: document.querySelector("#LookNovel").innerText.trim(),
     author: document.querySelector(".box.story > h3.font-bb:nth-last-of-type(1) > a").innerText.trim(),
@@ -13498,7 +13498,7 @@ const akatsuki = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
         }
         for (const node of nodes) {
             if (node instanceof HTMLDivElement && node.className === "body-novel") {
-                contentRaw.appendChild((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .convertBr */ .U9)(node, true));
+                contentRaw.appendChild((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .convertBr */ .U9)(node, true));
             }
             else {
                 contentRaw.appendChild(node);
@@ -13521,11 +13521,11 @@ const akatsuki = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   alphapolis: () => (/* binding */ alphapolis)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-const alphapolis = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const alphapolis = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("h1.title").innerText.trim(),
     author: document.querySelector("div.author > span:nth-child(1) > a:nth-child(1)").innerText.trim(),
@@ -13543,7 +13543,7 @@ const alphapolis = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClas
     getSName: (sElem) => sElem.innerText.trim(),
     getContent: (doc) => doc.querySelector("#novelBody"),
     contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .insertBrBeforeText */ .Md)(content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .insertBrBeforeText */ .Md)(content);
         return content;
     },
     language: "ja",
@@ -13559,9 +13559,9 @@ const alphapolis = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClas
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   houhuayuan: () => (/* binding */ houhuayuan)
 /* harmony export */ });
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
 
@@ -13606,26 +13606,26 @@ const houhuayuan = () => {
         a.href = bookUrl;
         aList.push(a);
     }
-    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    return (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ .N)({
         bookUrl,
         bookname,
         author,
         aList,
         getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_0__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
             const pageLinks = doc.querySelectorAll(".page-links > a.post-page-numbers");
             if (pageLinks) {
                 const content = document.createElement("div");
                 const _content0 = doc.querySelector("header + div.entry-content");
                 if (_content0) {
-                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .childNodesCopy */ .Fv)(_content0, content);
+                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .childNodesCopy */ .Fv)(_content0, content);
                 }
                 const pageUrls = Array.from(pageLinks).map((a) => a.href);
                 for (const url of pageUrls) {
-                    const docc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(url, charset);
+                    const docc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_0__/* .getHtmlDOM */ .wA)(url, charset);
                     const _content1 = docc.querySelector("header + div.entry-content");
                     if (_content1) {
-                        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .childNodesCopy */ .Fv)(_content1, content);
+                        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .childNodesCopy */ .Fv)(_content1, content);
                     }
                 }
                 return content;
@@ -13635,14 +13635,14 @@ const houhuayuan = () => {
             }
         },
         contentPatch: (dom) => {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)('div[id^="stage-"]', true, dom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)('div[id^="zhaoz-"]', true, dom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("div.seriesbox", true, dom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("fieldset", true, dom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("div.wpulike", true, dom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)(".simplefavorite-button", true, dom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)(".page-links", true, dom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .Sf)([" – 蔷薇后花园", " – 黑沼泽俱乐部"], dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('div[id^="stage-"]', true, dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('div[id^="zhaoz-"]', true, dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div.seriesbox", true, dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("fieldset", true, dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div.wpulike", true, dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".simplefavorite-button", true, dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".page-links", true, dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)([" – 蔷薇后花园", " – 黑沼泽俱乐部"], dom);
             Array.from(dom.querySelectorAll("img")).forEach((img) => (img.src = img.getAttribute("data-src") ?? ""));
             return dom;
         },
@@ -13732,17 +13732,17 @@ const kakuyomu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   masiro: () => (/* binding */ masiro)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-const masiro = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const masiro = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".novel-title").innerText.trim(),
     author: document.querySelector(".author > a").innerText.trim(),
     introDom: document.querySelector(".brief"),
     introDomPatch: (dom) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)(["简介："], dom);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)(["简介："], dom);
         return dom;
     },
     coverUrl: document.querySelector("div.mailbox-attachment-icon > a > img.img").src,
@@ -13787,11 +13787,11 @@ const masiro = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   penana: () => (/* binding */ penana)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-const penana = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const penana = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".booktitlewrap").innerText.trim(),
     author: document.querySelector("div.fontbold").innerText.trim(),
@@ -13809,9 +13809,9 @@ const penana = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
     getSName: undefined,
     getContent: (doc) => doc.querySelector("article"),
     contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("span", true, content);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('p[style="display:none"]', true, content);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".displaynone", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("span", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('p[style="display:none"]', true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)(".displaynone", true, content);
         return content;
     },
     language: "zh",
@@ -13888,8 +13888,8 @@ __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony export */   syosetu: () => (/* binding */ syosetu),
 /* harmony export */   syosetuOrg: () => (/* binding */ syosetuOrg)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
 const currentPageIndexBox = document.querySelector('.p-eplist');
@@ -13962,7 +13962,7 @@ const syosetu = () => {
         const host = document.location.host;
         return host === "novel18.syosetu.com";
     };
-    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    return (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
         bookUrl: document.location.href,
         bookname: document.querySelector(".p-novel__title").innerText.trim(),
         author: document.querySelector("div.p-novel__author").innerText,
@@ -14019,7 +14019,7 @@ const syosetuOrg = () => {
         }
         return document.querySelector("div.ss:nth-child(2)");
     };
-    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    return (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
         bookUrl: document.location.href,
         bookname: document.querySelector('div.ss > span[itemprop="name"], div.ss:nth-child(1) > p:nth-child(1) > span:nth-child(1) > a:nth-child(1)').innerText.trim(),
         author: document.querySelector('div.ss span[itemprop="author"] > a, div.ss:nth-child(1) > p:nth-child(1) > a:nth-child(2)')?.innerText.trim(),
@@ -14041,11 +14041,11 @@ const syosetuOrg = () => {
             return doc.querySelector("div#maind > div.ss:nth-child(1)");
         },
         contentPatch: (dom) => {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("p:nth-child(1)", false, dom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div.novelnavi", true, dom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('div[style*="text-align:right;"]', true, dom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div#maegaki_open", true, dom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div#atogaki_open", true, dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("p:nth-child(1)", false, dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div.novelnavi", true, dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('div[style*="text-align:right;"]', true, dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div#maegaki_open", true, dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div#atogaki_open", true, dom);
             dom.querySelectorAll('a[name="img"]').forEach((a) => {
                 const img = document.createElement("img");
                 img.src = a.href;
@@ -14094,11 +14094,11 @@ const qbtrcc = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   qzxsw: () => (/* binding */ qzxsw)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-const qzxsw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const qzxsw = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("div.introduce > h1").innerText.trim(),
     author: document.querySelector("div.introduce > p.bq > span:nth-child(2) > a").innerText.trim(),
@@ -14108,12 +14108,12 @@ const qzxsw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
     aList: document.querySelectorAll("div.ml_list > ul > li > a"),
     getContent: (doc) => doc.querySelector(".articlecontent"),
     contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)([
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)([
             "一秒记住m.quanzhifashｉ。com",
             "ｍ．ｑuanzhifashｉ．com",
             "ｈttp://m.quanzhifashi.com首发"
         ], content);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("br", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("br", true, content);
         return content;
     },
 });
@@ -14128,13 +14128,13 @@ const qzxsw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   shauthor: () => (/* binding */ shauthor)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
 
-const shauthor = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const shauthor = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("h1")?.innerText.trim(),
     author: document.querySelector("div.tab > p.p1")?.innerText.trim() || "",
@@ -14157,8 +14157,8 @@ const shauthor = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
             charset,
             selector: "#novelcontent",
             contentPatch: (content, doc) => {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("p", true, content);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .Sf)(["内容未完，下一页继续阅读", /shauthor/], content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("p", true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["内容未完，下一页继续阅读", /shauthor/], content);
                 return content;
             },
             getNextPage: (doc) => {
@@ -14234,16 +14234,16 @@ const soxscc = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   N: () => (/* binding */ mkRuleClass)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/main.ts");
 
 
 
@@ -14254,7 +14254,7 @@ const soxscc = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 
 
 function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, additionalMetadatePatch, aList, getAName, getIsVIP, sections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, sleepTime, maxSleepTime, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, attachmentMode }) {
-    return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+    return class extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */ .Q {
         constructor() {
             super();
             this.attachmentMode = attachmentMode || "TM";
@@ -14281,17 +14281,17 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
             let introduction = null;
             let introductionHTML = null;
             if (introDom && introDomPatch) {
-                [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom, introDomPatch);
+                [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(introDom, introDomPatch);
             }
             const additionalMetadate = {
                 language: language ?? "zh",
             };
             if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
-                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
             }
             if (additionalMetadatePatch) {
                 Object.assign(additionalMetadate, additionalMetadatePatch(additionalMetadate));
@@ -14317,7 +14317,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 }
                 const chapterUrl = aElem.href;
                 if (hasSection && sections && getSName) {
-                    const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .getSectionName */ .lq)(aElem, sections, getSName);
+                    const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .getSectionName */ .lq)(aElem, sections, getSName);
                     if (_sectionName !== sectionName) {
                         sectionName = _sectionName;
                         sectionNumber++;
@@ -14331,7 +14331,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 if (getIsVIP) {
                     ({ isVIP, isPaid } = getIsVIP(aElem));
                 }
-                let chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+                let chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -14347,7 +14347,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     options: { bookname },
                 });
                 if (isVIP && !isPaid) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status */ .nW.aborted;
                 }
                 if (typeof postHook === "function") {
                     chapter = postHook(chapter);
@@ -14372,7 +14372,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 content = await getContentFromUrl(chapterUrl, chapterName, charset);
             }
             else if (typeof getContent === "function") {
-                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
                 content = getContent(doc);
             }
             else {
@@ -14380,7 +14380,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
             }
             if (content) {
                 content = contentPatch(content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM", cleanDomOptions);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM", cleanDomOptions);
                 return {
                     chapterName,
                     contentRaw: content,
@@ -14412,11 +14412,11 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   tianyabooks: () => (/* binding */ tianyabooks)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-const tianyabooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const tianyabooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".book > h1")?.innerText
         .replace(/[《》]/g, "")
@@ -14424,7 +14424,7 @@ const tianyabooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCla
     author: document.querySelector(".book > h2 > a").innerText.trim(),
     introDom: document.querySelector(".description"),
     introDomPatch: (dom) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("h3", false, dom);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("h3", false, dom);
         return dom;
     },
     coverUrl: null,
@@ -14433,10 +14433,10 @@ const tianyabooks = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCla
     getSName: (dom) => dom.innerText.trim(),
     getContent: (doc) => doc.querySelector("#main"),
     contentPatch: (dom) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div.crumb", false, dom);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("h1", false, dom);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)('p[align="center"]', false, dom);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("table", true, dom);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div.crumb", false, dom);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("h1", false, dom);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('p[align="center"]', false, dom);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("table", true, dom);
         return dom;
     },
 });
@@ -14579,15 +14579,15 @@ const uukanshu = () => {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   wanben: () => (/* binding */ wanben)
 /* harmony export */ });
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
 
 
-const wanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const wanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_3__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".detailTitle > h1").innerText.trim(),
     author: document.querySelector(".writer > a").innerText.trim(),
@@ -14596,15 +14596,15 @@ const wanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
     coverUrl: document.querySelector(".detailTopLeft > img")?.src,
     aList: document.querySelectorAll(".chapter li > a"),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .u1)({
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .u1)({
             chapterName,
             chapterUrl,
             charset,
             selector: "div.readerCon",
             contentPatch: (content, doc) => {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("script", true, content);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("div[style]", true, content);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("a", true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[style]", true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("a", true, content);
                 const ads = [
                     "【提示】：如果觉得此文不错，请推荐给更多小伙伴吧！分享也是一种享受。",
                     "【看书助手】",
@@ -14612,8 +14612,8 @@ const wanben = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
                     "【完本神站】",
                     "一秒记住、永不丢失！"
                 ];
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .Sf)(ads, content);
-                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .is)(content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(ads, content);
+                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .htmlTrim */ .is)(content);
                 return content;
             },
             getNextPage: (doc) => doc.querySelector(".readPage > a:nth-child(3)")
@@ -14693,11 +14693,11 @@ const wanxiangshucheng = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRu
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   westnovel: () => (/* binding */ westnovel)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
-const westnovel = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const westnovel = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".btitle > h1 > a").innerText.trim(),
     author: document.querySelector(".btitle > em:nth-child(2)").innerText
@@ -14709,9 +14709,9 @@ const westnovel = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass
     aList: document.querySelectorAll(".chapterlist > dd > a"),
     getContent: (doc) => doc.querySelector("#BookText"),
     contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div.ads", true, content);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div.link", true, content);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("h4", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div.ads", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div.link", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("h4", true, content);
         return content;
     },
 });
@@ -14726,17 +14726,17 @@ const westnovel = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   xbyuan: () => (/* binding */ xbyuan)
 /* harmony export */ });
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/rules/onePage/template.ts");
 
 
 
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => document.querySelectorAll(selector);
-const xbyuan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const xbyuan = () => (0,_template__WEBPACK_IMPORTED_MODULE_3__/* .mkRuleClass */ .N)({
     bookUrl: location.href,
     bookname: $("#info h1").innerText.trim(),
     author: $("#info .small > span").innerText.trim(),
@@ -14745,22 +14745,22 @@ const xbyuan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
     coverUrl: $("#fmimg img").src,
     aList: $$("#list dl")[1].querySelectorAll("a"),
     async getContentFromUrl(chapterUrl, chapterName, charset) {
-        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .u1)({
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .u1)({
             chapterName,
             chapterUrl,
             charset,
             selector: "#nr_content > p",
             contentPatch(content, doc) {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("a", true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("a", true, content);
                 const ads = [
                     "精华书阁",
                     "最新章节！",
                     "最快更新，为了您下次还能查看到本书的最快更新，请务必保存好书签！",
                     "https://www.xbyuan.com",
                 ];
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .Sf)(ads, content);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rms */ .j3)(["(本章未完，请点击下一页继续阅读)"], content);
-                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .is)(content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(ads, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)(["(本章未完，请点击下一页继续阅读)"], content);
+                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .htmlTrim */ .is)(content);
                 return content;
             },
             getNextPage(doc) {
@@ -14817,8 +14817,8 @@ const yiqushuzhai = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCla
 /* harmony export */   zgzl: () => (/* binding */ zgzl)
 /* harmony export */ });
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
 
 
 
@@ -14868,13 +14868,13 @@ const zgzl = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .
         }
     })(),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .u1)({
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .u1)({
             chapterName,
             chapterUrl,
             charset,
             selector: "#content",
             contentPatch: (content) => {
-                const converted = (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .convertBr */ .U9)(content);
+                const converted = (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .convertBr */ .U9)(content);
                 if (converted.children.length > 1) {
                     const lastLine = converted.lastElementChild.innerText;
                     const unwantedText = /内容未完.*|本章阅读完毕.*/;
@@ -14954,13 +14954,13 @@ const zhenhunxiaoshuo = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRul
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   c69shu: () => (/* binding */ c69shu)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
 
 
 
-const c69shu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const c69shu = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("h1")?.innerText ?? "",
     author: document.querySelector(".booknav2 > p:nth-child(3) > a")?.innerText ?? "",
@@ -14978,8 +14978,8 @@ const c69shu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
     getAName: (aElem) => aElem.innerText.trim(),
     getContent: (doc) => doc.querySelector(".txtnav"),
     contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)(".hide720, .txtright, .bottom-ad", true, content);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .Sf)([/^谷[\u4e00-\u9fa5]{0,1}$/gm], content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)(".hide720, .txtright, .bottom-ad", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)([/^谷[\u4e00-\u9fa5]{0,1}$/gm], content);
         const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null);
         const nodesToReplace = [];
         while (walker.nextNode()) {
@@ -15032,13 +15032,13 @@ const c69shu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   c69yuedu: () => (/* binding */ c69yuedu)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
 
 
 
-const c69yuedu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const c69yuedu = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("h1")?.innerText ?? "",
     author: document.querySelector(".booknav2 > p:nth-child(2) > a")?.innerText ?? "",
@@ -15056,7 +15056,7 @@ const c69yuedu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
     getAName: (aElem) => aElem.innerText.trim(),
     getContent: (doc) => doc.querySelector(".content"),
     contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)(".txtright, .bottom-ad", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)(".txtright, .bottom-ad", true, content);
         const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null);
         const nodesToReplace = [];
         while (walker.nextNode()) {
@@ -15144,9 +15144,9 @@ const alicesw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass *
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   baihexs: () => (/* binding */ baihexs)
 /* harmony export */ });
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
 
 
 
@@ -15156,7 +15156,7 @@ const baihexs = () => {
     if (!bookId) {
         throw Error("获取书籍信息出错！");
     }
-    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    return (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ .N)({
         bookUrl,
         bookname: document.querySelector(".block_txt2 > h2 > a").innerText.trim(),
         author: document.querySelector(".block_txt2 > p:nth-child(4)").innerText
@@ -15168,7 +15168,7 @@ const baihexs = () => {
             ?.src,
         getIndexUrls: async () => {
             const contentPageUrl = `${document.location.origin}/wapbook-${bookId}`;
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(contentPageUrl + "/", document.characterSet);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_0__/* .getHtmlDOM */ .wA)(contentPageUrl + "/", document.characterSet);
             const a = doc.querySelector("div.page > a:nth-last-child(1)");
             const maxNumber = /(\d+)\/?$/.exec(a.href)?.[1];
             if (!maxNumber) {
@@ -15184,7 +15184,7 @@ const baihexs = () => {
         getAList: (doc) => doc.querySelectorAll(".chapter > li > a"),
         getContent: (doc) => doc.querySelector("#nr1"),
         contentPatch: (dom) => {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .Sf)(["请您牢记：百合小说网"], dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(["请您牢记：百合小说网"], dom);
             return dom;
         },
         concurrencyLimit: 3,
@@ -15340,13 +15340,13 @@ const haitangshuwu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCl
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   haiwaishubao: () => (/* binding */ haiwaishubao)
 /* harmony export */ });
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
 
 
 
-const haiwaishubao = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const haiwaishubao = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("h1")?.innerText.trim(),
     author: document.querySelector(".BGsectionOne-top-right > p.author > span > a")?.innerText ?? "",
@@ -15361,7 +15361,7 @@ const haiwaishubao = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCl
             return [];
         }
         const chapterListUrl = chapterListLink.href;
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(chapterListUrl, document.characterSet);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_0__/* .getHtmlDOM */ .wA)(chapterListUrl, document.characterSet);
         return Array.from(doc.querySelectorAll('p.CGsectionTwo-right-bottom-btn > select > option')).map((o) => document.location.origin + o.getAttribute("value"));
     },
     getAList: (doc) => {
@@ -15373,7 +15373,7 @@ const haiwaishubao = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCl
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
         const lastParagraphIndex = [];
         let lastPageTotalParagraph = 0;
-        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .u1)({
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .u1)({
             chapterName,
             chapterUrl,
             charset,
@@ -15425,15 +15425,15 @@ const haiwaishubao = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleCl
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   novelup: () => (/* binding */ novelup)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
 
 
 
 const novelup = () => {
     const bookUrl = document.location.origin + document.location.pathname;
-    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    return (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ .N)({
         bookUrl,
         bookname: document.querySelector("#section_episode_info_table > div:nth-child(2) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2)").innerText.trim(),
         author: document.querySelector("#section_episode_info_table > div:nth-child(2) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2) > a:nth-child(1)").innerText.trim(),
@@ -15442,7 +15442,7 @@ const novelup = () => {
             Array.from(dom.querySelectorAll("p")).forEach((p) => {
                 const div = document.createElement("div");
                 div.innerHTML = p.innerHTML.split("\n").join("<br>");
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .insertBrBeforeText */ .Md)(div);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .insertBrBeforeText */ .Md)(div);
                 p.replaceWith(div);
             });
             return dom;
@@ -15453,7 +15453,7 @@ const novelup = () => {
             const indexPages = [];
             let nextUrl = bookUrl;
             do {
-                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(nextUrl);
+                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(nextUrl);
                 indexPages.push(doc);
                 nextUrl =
                     doc.querySelector("div.move_set:nth-child(4) > div:nth-child(3) > a")?.href ?? null;
@@ -15468,7 +15468,7 @@ const novelup = () => {
             Array.from(content.querySelectorAll("p")).forEach((p) => {
                 const div = document.createElement("div");
                 div.innerHTML = p.innerHTML.split("\n").join("<br>");
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .insertBrBeforeText */ .Md)(div);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .insertBrBeforeText */ .Md)(div);
                 p.replaceWith(div);
             });
             return content;
@@ -15487,17 +15487,17 @@ const novelup = () => {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   N: () => (/* binding */ mkRuleClass)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/misc.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/main/main.ts");
 
 
 
@@ -15509,7 +15509,7 @@ const novelup = () => {
 
 
 function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, coverUrl, getIndexUrls, getIndexPages, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, concurrencyLimit, sleepTime, maxSleepTime, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }) {
-    return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+    return class extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
         constructor() {
             super();
             this.attachmentMode = "TM";
@@ -15535,17 +15535,17 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
         async bookParse() {
             let [introduction, introductionHTML] = [null, null];
             if (introDom && introDomPatch) {
-                [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom, introDomPatch);
+                [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_4__/* .introDomHandle */ .HV)(introDom, introDomPatch);
             }
             const additionalMetadate = {
                 language: language ?? "zh",
             };
             if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
-                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
             }
             let indexPages = [];
             if (typeof getIndexPages === "function") {
@@ -15555,9 +15555,9 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 const indexUrls = await getIndexUrls();
                 if (indexUrls.length > 0) {
                     const _indexPage = [];
-                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__/* .concurrencyRun */ .rr)(indexUrls, this.concurrencyLimit, async (url) => {
-                        _log__WEBPACK_IMPORTED_MODULE_3___default().info(`[BookParse]抓取目录页：${url}`);
-                        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDomWithRetry */ .kP)(url, this.charset);
+                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_3__/* .concurrencyRun */ .rr)(indexUrls, this.concurrencyLimit, async (url) => {
+                        _log__WEBPACK_IMPORTED_MODULE_5___default().info(`[BookParse]抓取目录页：${url}`);
+                        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDomWithRetry */ .kP)(url, this.charset);
                         _indexPage.push([doc, url]);
                         return doc;
                     });
@@ -15599,7 +15599,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     }
                     const chapterUrl = aElem.href;
                     if (hasSection && sections && getSName) {
-                        const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .getSectionName */ .lq)(aElem, sections, getSName);
+                        const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_4__/* .getSectionName */ .lq)(aElem, sections, getSName);
                         if (_sectionName !== null && _sectionName !== sectionName) {
                             sectionName = _sectionName;
                             sectionNumber++;
@@ -15629,7 +15629,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                         options: { bookname },
                     });
                     if (isVIP && !isPaid) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .nW.aborted;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_9__/* .Status */ .nW.aborted;
                     }
                     if (typeof postHook === "function") {
                         chapter = postHook(chapter);
@@ -15639,7 +15639,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                     }
                 }
             }
-            return new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .E({
+            return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
                 bookUrl,
                 bookname,
                 author,
@@ -15655,7 +15655,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
                 content = await getContentFromUrl(chapterUrl, chapterName, charset);
             }
             else if (typeof getContent === "function") {
-                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
                 content = getContent(doc);
             }
             else {
@@ -15663,7 +15663,7 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
             }
             if (content) {
                 content = contentPatch(content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .an)(content, "TM", cleanDomOptions);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM", cleanDomOptions);
                 return {
                     chapterName,
                     contentRaw: content,
@@ -15695,11 +15695,11 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   wanben: () => (/* binding */ wanben)
 /* harmony export */ });
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
 
 
 
@@ -15714,7 +15714,7 @@ const wanben = () => {
         }
         return document.querySelector(".bookInfo");
     };
-    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    return (0,_template__WEBPACK_IMPORTED_MODULE_4__/* .mkRuleClass */ .N)({
         bookUrl: document.location.href,
         bookname: document.querySelector("div.bookPhr > h2").innerText.trim(),
         author: document.querySelector("div.bookPhrMid > p:nth-child(1)").innerText
@@ -15733,22 +15733,22 @@ const wanben = () => {
         },
         getAList: (doc) => doc.querySelectorAll("div.chapterDiv > div.chapterList > ul > a"),
         getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-            const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .u1)({
+            const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .nextPageParse */ .u1)({
                 chapterName,
                 chapterUrl,
                 charset,
                 selector: "div.raderCon",
                 contentPatch: (content, doc) => {
-                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)("script", true, content);
-                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)("[style]", true, content);
+                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("script", true, content);
+                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("[style]", true, content);
                     const ads = [
                         "【提示】：如果觉得此文不错，请推荐给更多小伙伴吧！分享也是一种享受。",
                         "【看书助手】",
                         "【完本神站】",
                         "百万热门书籍终身无广告免费阅读",
                     ];
-                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rm2 */ .Sf)(ads, content);
-                    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__/* .htmlTrim */ .is)(content);
+                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rm2 */ .Sf)(ads, content);
+                    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .htmlTrim */ .is)(content);
                     return content;
                 },
                 getNextPage: (doc) => doc.querySelector("div.page > a:nth-child(3)")
@@ -15775,11 +15775,11 @@ const wanben = () => {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   xbookcn: () => (/* binding */ xbookcn)
 /* harmony export */ });
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
 
 
-const xbookcn = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const xbookcn = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector(".status-msg-body")?.textContent ?? "",
     author: document.querySelector(".entry-content > p:nth-child(1)")?.innerText.split("：")[1] ?? "",
@@ -15791,7 +15791,7 @@ const xbookcn = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass *
         const indexPages = [];
         let nextUrl = bookUrl;
         do {
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(nextUrl, "UTF-8");
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_0__/* .getHtmlDOM */ .wA)(nextUrl, "UTF-8");
             indexPages.push(doc);
             nextUrl =
                 doc.querySelector("#Blog1_blog-pager-older-link")?.href ?? null;
@@ -16100,17 +16100,17 @@ function extractChapterIdFromUrl(url, pattern) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   C17k: () => (/* binding */ C17k)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -16121,7 +16121,7 @@ function extractChapterIdFromUrl(url, pattern) {
 
 
 
-class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class C17k extends _rules__WEBPACK_IMPORTED_MODULE_9__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -16132,17 +16132,17 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         const bookUrl = document.location.href.replace("/list/", "/book/");
         const bookname = document.querySelector("h1.Title").innerText.trim();
         const author = document.querySelector("div.Author > a").innerText.trim();
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(bookUrl, undefined);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(bookUrl, undefined);
         const introDom = doc.querySelector("#bookInfo p.intro > a");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_4__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = doc.querySelector("#bookCover img.book").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
         }
         const chapters = [];
         const sections = document.querySelectorAll("dl.Volume");
@@ -16165,7 +16165,7 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
                 const isPaid = () => {
                     return false;
                 };
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_7__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -16189,7 +16189,7 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
                 chapters.push(chapter);
             }
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -16203,15 +16203,15 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
             chapterName = doc.querySelector("#readArea > div.readAreaBox.content > h1").innerText.trim();
             const content = doc.querySelector("#readArea > div.readAreaBox.content > div.p");
             if (content) {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)("p.copy", false, content);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)("#banner_content", false, content);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)("div.qrcode", false, content);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)("div.chapter_text_ad", false, content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .an)(content, "TM");
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)("p.copy", false, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)("#banner_content", false, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)("div.qrcode", false, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)("div.chapter_text_ad", false, content);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -16264,18 +16264,18 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 /* harmony export */ });
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Attachment__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("./src/main/Attachment.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Attachment__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Attachment.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -16288,7 +16288,7 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 
 
 
-class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
+class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_11__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -16300,19 +16300,19 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
         const bookname = document.querySelector(".book-title > span").innerText.trim();
         const author = document.querySelector("div.username").innerText.trim();
         const introDom = document.querySelector(".book-brief");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom, (introDomI) => {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rms */ .j3)(["简介："], introDomI);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_5__/* .introDomHandle */ .HV)(introDom, (introDomI) => {
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .rms */ .j3)(["简介："], introDomI);
             return introDomI;
         });
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book-img")
             .src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_6___default().error(error));
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll("div.row > span.tag")).map((span) => span.innerText.trim());
         const chapters = [];
@@ -16342,7 +16342,7 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
                     const isLogin = () => {
                         return (document.querySelector("#header > div.container > div.right.pull-right")?.childElementCount === 3);
                     };
-                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_9__/* .Chapter */ .I({
                         bookUrl,
                         bookname,
                         chapterUrl,
@@ -16364,7 +16364,7 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
                 }
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_10__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -16390,7 +16390,7 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
         });
     }
 }
-class Duread extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
+class Duread extends _rules__WEBPACK_IMPORTED_MODULE_11__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -16402,19 +16402,19 @@ class Duread extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q 
         const bookname = document.querySelector(".book-title > span").innerText.trim();
         const author = document.querySelector("div.username").innerText.trim();
         const introDom = document.querySelector(".book-brief");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom, (introDomI) => {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rms */ .j3)(["简介："], introDomI);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_5__/* .introDomHandle */ .HV)(introDom, (introDomI) => {
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .rms */ .j3)(["简介："], introDomI);
             return introDomI;
         });
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book-img")
             .src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_6___default().error(error));
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll("div.row > span.tag")).map((span) => span.innerText.trim());
         const chapters = [];
@@ -16444,7 +16444,7 @@ class Duread extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q 
                     const isLogin = () => {
                         return (document.querySelector("#header > div.container > div.right.pull-right")?.childElementCount === 3);
                     };
-                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_9__/* .Chapter */ .I({
                         bookUrl,
                         bookname,
                         chapterUrl,
@@ -16466,7 +16466,7 @@ class Duread extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q 
                 }
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_10__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -16521,7 +16521,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
         return message.toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8);
     }
     async function getChapterAuthorSay() {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .getHtmlDOM */ .wA)(chapterUrl, undefined);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .wA)(chapterUrl, undefined);
         const chapterAuthorSays = doc.querySelectorAll("#J_BookCnt .chapter.author_say");
         let divChapterAuthorSay;
         if (chapterAuthorSays.length !== 0) {
@@ -16529,7 +16529,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
             divChapterAuthorSay = document.createElement("div");
             divChapterAuthorSay.appendChild(hr);
             for (const chapterAuthorSay of Array.from(chapterAuthorSays)) {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)("i", true, chapterAuthorSay);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("i", true, chapterAuthorSay);
                 divChapterAuthorSay.appendChild(chapterAuthorSay);
             }
         }
@@ -16540,8 +16540,8 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
         async function chapterDecrypt(chapterIdt, refererUrl) {
             const accessKeyUrl = rootPath + "chapter/ajax_get_session_code";
             const chapterContentUrl = rootPath + "chapter/get_book_chapter_detail_info";
-            _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${accessKeyUrl} Referer ${refererUrl}`);
-            const accessKeyObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ ._V)(accessKeyUrl, {
+            _log__WEBPACK_IMPORTED_MODULE_6___default().debug(`[Chapter]请求 ${accessKeyUrl} Referer ${refererUrl}`);
+            const accessKeyObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .gfetch */ ._V)(accessKeyUrl, {
                 method: "POST",
                 headers: {
                     Accept: "application/json, text/javascript, */*; q=0.01",
@@ -16554,11 +16554,11 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
                 responseType: "json",
             })
                 .then((response) => response.response)
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_6___default().error(error));
             const chapter_access_key = accessKeyObj
                 .chapter_access_key;
-            _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${chapterContentUrl} Referer ${refererUrl}`);
-            const chapterContentObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ ._V)(chapterContentUrl, {
+            _log__WEBPACK_IMPORTED_MODULE_6___default().debug(`[Chapter]请求 ${chapterContentUrl} Referer ${refererUrl}`);
+            const chapterContentObj = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .gfetch */ ._V)(chapterContentUrl, {
                 method: "POST",
                 headers: {
                     Accept: "application/json, text/javascript, */*; q=0.01",
@@ -16571,9 +16571,9 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
                 responseType: "json",
             })
                 .then((response) => response.response)
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_6___default().error(error));
             if (chapterContentObj.code !== 100000) {
-                _log__WEBPACK_IMPORTED_MODULE_5___default().error(chapterContentObj);
+                _log__WEBPACK_IMPORTED_MODULE_6___default().error(chapterContentObj);
                 throw new Error(`下载 ${refererUrl} 失败`);
             }
             return decrypt({
@@ -16586,11 +16586,11 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
         const content = document.createElement("div");
         const decryptDate = await chapterDecrypt(chapterId, chapterUrl);
         content.innerHTML = decryptDate;
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)(".chapter span", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)(".chapter span", true, content);
         if (divChapterAuthorSay) {
             content.appendChild(divChapterAuthorSay);
         }
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(content, "TM");
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .an)(content, "TM");
         return {
             chapterName,
             contentRaw: content,
@@ -16603,8 +16603,8 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
     async function vipChapter(parentWidth, setFontSize) {
         async function vipChapterDecrypt(chapterIdi, refererUrl) {
             const imageSessionCodeUrl = rootPath + "chapter/ajax_get_image_session_code";
-            _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
-            const imageSessionCodeObject = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ ._V)(imageSessionCodeUrl, {
+            _log__WEBPACK_IMPORTED_MODULE_6___default().debug(`[Chapter]请求 ${imageSessionCodeUrl} Referer ${refererUrl}`);
+            const imageSessionCodeObject = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .gfetch */ ._V)(imageSessionCodeUrl, {
                 method: "POST",
                 headers: {
                     Accept: "application/json, text/javascript, */*; q=0.01",
@@ -16615,9 +16615,9 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
                 responseType: "json",
             })
                 .then((response) => response.response)
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_6___default().error(error));
             if (imageSessionCodeObject.code !== 100000) {
-                _log__WEBPACK_IMPORTED_MODULE_5___default().error(imageSessionCodeObject);
+                _log__WEBPACK_IMPORTED_MODULE_6___default().error(imageSessionCodeObject);
                 throw new Error(`下载 ${refererUrl} 失败`);
             }
             const imageCode = decrypt({
@@ -16656,8 +16656,8 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
         if (isLogin && isPaid) {
             const divChapterAuthorSay = await getChapterAuthorSay();
             const vipCHapterImageUrl = await vipChapterDecrypt(chapterId, chapterUrl);
-            _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
-            const vipCHapterImageBlob = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_9__/* .gfetch */ ._V)(vipCHapterImageUrl, {
+            _log__WEBPACK_IMPORTED_MODULE_6___default().debug(`[Chapter]请求 ${vipCHapterImageUrl} Referer ${chapterUrl}`);
+            const vipCHapterImageBlob = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .gfetch */ ._V)(vipCHapterImageUrl, {
                 method: "GET",
                 headers: {
                     Referer: chapterUrl,
@@ -16666,19 +16666,19 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
                 responseType: "blob",
             })
                 .then((response) => response.response)
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_6___default().error(error));
             const vipCHapterName = `vipCHapter${chapterId}.png`;
-            const vipCHapterImage = new _main_Attachment__WEBPACK_IMPORTED_MODULE_11__/* .AttachmentClass */ .q(vipCHapterImageUrl, vipCHapterName, "TM");
+            const vipCHapterImage = new _main_Attachment__WEBPACK_IMPORTED_MODULE_8__/* .AttachmentClass */ .q(vipCHapterImageUrl, vipCHapterName, "TM");
             if (vipCHapterImageBlob) {
                 vipCHapterImage.Blob = vipCHapterImageBlob;
                 vipCHapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .nW.finished;
             }
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .putAttachmentClassCache */ .Ld)(vipCHapterImage);
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .putAttachmentClassCache */ .Ld)(vipCHapterImage);
             const contentImages = [vipCHapterImage];
             let ddom;
             let dtext;
             if (divChapterAuthorSay) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(divChapterAuthorSay, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .an)(divChapterAuthorSay, "TM");
                 [ddom, dtext] = [dom, text, images];
             }
             const img = document.createElement("img");
@@ -16733,16 +16733,16 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
 /* harmony export */ });
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -16753,7 +16753,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
 
 
 
-class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
+class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_9__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -16767,15 +16767,15 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         const author = bookObject.authorName;
         const introDom = document.createElement("div");
         introDom.innerHTML = bookObject.notes.replace("/\n/g", "<br/><br/>");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_4__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = bookObject.imgUrl;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
         }
         additionalMetadate.tags = bookObject.tagList.map((tagobj) => tagobj.tagName);
         const bookChapterObject = unsafeWindow.__NEXT_DATA__.props.pageProps.bookChapter;
@@ -16799,7 +16799,7 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             sectionChapterNumber++;
             const isVIP = chapterObj.isFee === "1";
             const isPaid = chapterObj.isBuy === "1";
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_7__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -16819,7 +16819,7 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             }
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -16857,7 +16857,7 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                 }).toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8);
             }
         }
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         const nextDataElement = document.getElementById("__NEXT_DATA__");
         if (!nextDataElement) {
             throw new Error("无法找到'__NEXT_DATA__'，下载失败");
@@ -16868,7 +16868,7 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         const chapterContent = decrypt(chapterObj.chapterContentFormat);
         if (chapterContent) {
             content.innerHTML = chapterContent;
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .an)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .an)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -16899,19 +16899,19 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Cool18: () => (/* binding */ Cool18)
 /* harmony export */ });
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/rules.ts");
 
 
 
 
 
 
-class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_5__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -16919,7 +16919,7 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(bookUrl, this.charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(bookUrl, this.charset);
         const title = doc.querySelector('h1.main-title').innerText.trim();
         const matchs = /[【《](.+)[】》](.+)?作者[:：]([^\s-]+)/.exec(title);
         let bookname = title;
@@ -16973,7 +16973,7 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 .replace(`《${bookname}》`, "")
                 .replace(`作者：${author}`, "")
                 .trim();
-            return new _main_Chapter__WEBPACK_IMPORTED_MODULE_2__/* .Chapter */ .I({
+            return new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -17005,7 +17005,7 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         chapterName = doc.querySelector('h1.main-title').innerText
             .replace(`【${options.bookname}】`, "")
             .replace(`《${options.bookname}》`, "")
@@ -17017,15 +17017,15 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             const contentRaw = document.createElement("div");
             const nodes = Array.from(dom.childNodes);
             if (nodes.length > 10) {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .childNodesCopy */ .Fv)(dom, contentRaw);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("a", true, contentRaw);
-                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .convertFixWidth */ .N0)(contentRaw);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .childNodesCopy */ .Fv)(dom, contentRaw);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("a", true, contentRaw);
+                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .convertFixWidth */ .N0)(contentRaw);
             }
             else {
                 for (const node of nodes) {
                     if (node instanceof Text && (node.textContent?.length ?? 0) > 200) {
-                        if ((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .isFixWidth */ .eu)(node)) {
-                            contentRaw.appendChild((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .convertFixWidthText */ .WF)(node));
+                        if ((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .isFixWidth */ .eu)(node)) {
+                            contentRaw.appendChild((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .convertFixWidthText */ .WF)(node));
                             continue;
                         }
                         else {
@@ -17039,8 +17039,8 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 }
                 Array.from(contentRaw.querySelectorAll("p"))
                     .filter((p) => p.innerText.trim() === "" &&
-                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .getPreviousSibling */ .UN)(p) instanceof HTMLElement &&
-                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .getNextSibling */ .wX)(p) instanceof HTMLElement)
+                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .getPreviousSibling */ .UN)(p) instanceof HTMLElement &&
+                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .getNextSibling */ .wX)(p) instanceof HTMLElement)
                     .forEach((p) => p.remove());
             }
             Array.from(contentRaw.querySelectorAll("center")).forEach((center) => {
@@ -17050,7 +17050,7 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 }
                 center.replaceWith(div);
             });
-            const { dom: contentHTML, text: contentText, images: contentImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .an)(contentRaw, "TM");
+            const { dom: contentHTML, text: contentText, images: contentImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .cleanDOM */ .an)(contentRaw, "TM");
             return {
                 chapterName,
                 contentRaw,
@@ -17081,14 +17081,14 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   doufuyuedu: () => (/* binding */ doufuyuedu)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/rules.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
 
 
@@ -17098,7 +17098,7 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
 
 
 
-class doufuyuedu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class doufuyuedu extends _rules__WEBPACK_IMPORTED_MODULE_6__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "naive";
@@ -17112,16 +17112,16 @@ class doufuyuedu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
         const author = document.querySelector("div.user_name").innerText.trim();
         const introductionHTML = document.createElement("div");
         introductionHTML.innerHTML = document.querySelector("div.book_des").innerHTML;
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("a", true, introductionHTML);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("span", true, introductionHTML);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_5__.rm)("a", true, introductionHTML);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_5__.rm)("span", true, introductionHTML);
         const introduction = introductionHTML.innerText;
         const additionalMetadate = {};
         const coverUrl = document.querySelector("img.book_img ").src;
-        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, "TM", "vertical_cover-")
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, "TM", "vertical_cover-")
             .then((coverClass) => {
             additionalMetadate.cover = coverClass;
         })
-            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
         additionalMetadate.tags = Array.from(document.querySelectorAll("div.book_subtt > span.book_tag")).map((tag) => tag.innerText);
         const chapters = [];
         let chapterNumber = 0;
@@ -17159,7 +17159,7 @@ class doufuyuedu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
                 chapters.push(chapter);
             });
         });
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_3__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -17170,10 +17170,10 @@ class doufuyuedu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const rawDom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getFrameContentEvent */ .n6)(chapterUrl) ?? document.createElement("html");
+        const rawDom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getFrameContentEvent */ .n6)(chapterUrl) ?? document.createElement("html");
         const contentRaw = document.createElement("div");
         contentRaw.innerHTML = rawDom.querySelector("div#J_chapterContent").innerHTML;
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("span", true, contentRaw);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_5__.rm)("span", true, contentRaw);
         const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .an)(contentRaw, "TM");
         return {
             chapterName,
@@ -17196,16 +17196,16 @@ class doufuyuedu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   esjzone: () => (/* binding */ esjzone)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_8__);
 
 
 
@@ -17215,7 +17215,7 @@ class doufuyuedu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
 
 
 
-class esjzone extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class esjzone extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -17225,18 +17225,18 @@ class esjzone extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
         const bookname = document.querySelector(".book-detail h2").innerText.trim();
         const author = Array.from(document.querySelectorAll('ul.book-detail li')).find(li => li.textContent && li.textContent.includes('作者:'))?.querySelector('a')?.innerText.trim() || "Unknown Author";
         const introDom = document.querySelector(".description");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_6__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         additionalMetadate.tags = Array.from(document.querySelectorAll('section.widget-tags.m-t-20 a.tag')).map((a) => a.innerText);
         const isVIP = false;
         const isPaid = false;
         const coverUrl = document.querySelector("div.product-gallery")?.querySelector("img")?.getAttribute("src") ?? null;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_7__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_8___default().error(error));
         }
         const chapters = [];
         let chapterNumber = 0;
@@ -17256,7 +17256,7 @@ class esjzone extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
                     const chapterName = getAName(node);
                     chapterNumber++;
                     sectionChapterNumber++;
-                    chapters.push(new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+                    chapters.push(new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
                         bookUrl,
                         bookname,
                         chapterUrl,
@@ -17283,7 +17283,7 @@ class esjzone extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
                         const chapterName = getAName(aElem);
                         chapterNumber++;
                         sectionChapterNumber++;
-                        chapters.push(new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+                        chapters.push(new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
                             bookUrl,
                             bookname,
                             chapterUrl,
@@ -17308,7 +17308,7 @@ class esjzone extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
                     break;
             }
         });
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_2__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -17319,12 +17319,12 @@ class esjzone extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         const content = doc.querySelector('.forum-content');
         if (content) {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__.rm)('h3', true, content);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__.rm)('footer', true, content);
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('h3', true, content);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)('footer', true, content);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_4__/* .cleanDOM */ .an)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -17357,17 +17357,17 @@ class esjzone extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   faloo: () => (/* binding */ faloo)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -17378,7 +17378,7 @@ class esjzone extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
 
 
 
-class faloo extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class faloo extends _rules__WEBPACK_IMPORTED_MODULE_9__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -17395,17 +17395,17 @@ class faloo extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         let introduction = null;
         let introductionHTML = null;
         if (introDom) {
-            [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
+            [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_4__/* .introDomHandle */ .HV)(introDom);
         }
         const additionalMetadate = {};
         const coverUrl = document.querySelector("img.imgcss")
             ?.src ?? null;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll("div.T-R-T-B2-Box1 a")).map((a) => a.innerText.trim());
         const aList = document.querySelectorAll("div.C-Fo-Zuo div.DivTable a");
@@ -17421,7 +17421,7 @@ class faloo extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         for (const aElem of Array.from(aList)) {
             const chapterName = aElem.innerText.trim();
             const chapterUrl = aElem.href;
-            const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .getSectionName */ .lq)(aElem, sections, getName);
+            const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_4__/* .getSectionName */ .lq)(aElem, sections, getName);
             if (_sectionName !== sectionName) {
                 sectionName = _sectionName;
                 sectionNumber++;
@@ -17431,7 +17431,7 @@ class faloo extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
             sectionChapterNumber++;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_7__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -17447,7 +17447,7 @@ class faloo extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
                 options: { bookname },
             });
             if (isVIP && !isPaid) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status */ .nW.aborted;
             }
             if (chapter) {
                 chapters.push(chapter);
@@ -17464,14 +17464,14 @@ class faloo extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         if (!doc) {
             throw new Error("chapterParse: getHtmlDOM error");
         }
         const doms = doc.querySelector("div.noveContent");
         const content = document.createElement("div");
         if (doms) {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)("b", true, doms);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("b", true, doms);
             if (doms.querySelector("div.con_img")) {
                 const domain = "https://read.faloo.com/";
                 const script = Array.from(doc.querySelectorAll('script')).find(s => s?.textContent && s.textContent.includes('image_do3'));
@@ -17494,7 +17494,7 @@ class faloo extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
             else {
                 content.innerHTML = doms.innerHTML;
             }
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .an)(content, "TM", undefined);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM", undefined);
             return {
                 chapterName,
                 contentRaw: content,
@@ -17526,16 +17526,16 @@ class faloo extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 /* harmony export */   fanqie: () => (/* binding */ fanqie)
 /* harmony export */ });
 /* unused harmony export replaceFanqieCharacter */
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/GM.ts");
+/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/GM.ts");
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/misc.ts");
 
 
@@ -17547,7 +17547,7 @@ class faloo extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 
 
 
-class fanqie extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class fanqie extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -17561,7 +17561,7 @@ class fanqie extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
         const bookname = document.querySelector(".info-name h1").innerText.trim();
         const author = document.querySelector('.author-name')?.innerText.trim();
         const introDom = document.querySelector(".page-abstract-content");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_5__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         additionalMetadate.tags = Array.from(document.querySelectorAll('span.info-label-grey')).map((a) => a.innerText);
         const chapters = [];
@@ -17583,7 +17583,7 @@ class fanqie extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 const chapterName = chapterElem.querySelector('a').innerText;
                 const isVIP = chapterElem.querySelector('.chapter-item-lock') ? true : false;
                 const isPaid = false;
-                chapters.push(new _main_Chapter__WEBPACK_IMPORTED_MODULE_2__/* .Chapter */ .I({
+                chapters.push(new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -17604,13 +17604,13 @@ class fanqie extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             await new Promise((resolve) => setTimeout(resolve, 1000));
         const coverUrl = document.querySelector(".book-cover img.loaded")?.getAttribute("src") ?? null;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_6___default().error(error));
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_2__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -17623,11 +17623,11 @@ class fanqie extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const contentRaw = document.createElement('div');
         if (isVIP) {
-            _log__WEBPACK_IMPORTED_MODULE_4___default().debug('未购买SVIP,尝试第三方API获取章节内容');
+            _log__WEBPACK_IMPORTED_MODULE_6___default().debug('未购买SVIP,尝试第三方API获取章节内容');
             const id = chapterUrl.match(/\d+/);
             const url = `https://api.cenguigui.cn/api/tomato/content.php?item_id=${id}`;
             const result = await new Promise((resolve) => {
-                (0,_lib_GM__WEBPACK_IMPORTED_MODULE_6__/* ._GM_xmlhttpRequest */ .nV)({
+                (0,_lib_GM__WEBPACK_IMPORTED_MODULE_8__/* ._GM_xmlhttpRequest */ .nV)({
                     url: url,
                     method: "GET",
                     onload: function (response) {
@@ -17635,7 +17635,7 @@ class fanqie extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                             resolve(response.responseText);
                         }
                         else {
-                            _log__WEBPACK_IMPORTED_MODULE_4___default().error(response);
+                            _log__WEBPACK_IMPORTED_MODULE_6___default().error(response);
                             resolve('');
                         }
                     },
@@ -17647,11 +17647,11 @@ class fanqie extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 json = JSON.parse(result);
             }
             catch (error) {
-                _log__WEBPACK_IMPORTED_MODULE_4___default().error('JSON.parse(result) error', error);
+                _log__WEBPACK_IMPORTED_MODULE_6___default().error('JSON.parse(result) error', error);
             }
             const data = json?.data ?? null;
             if (!data) {
-                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(url, result);
+                _log__WEBPACK_IMPORTED_MODULE_6___default().debug(url, result);
                 content = '你没有购买SVIP,且第三方API获取章节内容失败';
             }
             else if (data.need_pay)
@@ -17684,13 +17684,13 @@ class fanqie extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                     contentRaw.innerHTML = await replaceFanqieCharacter(fontName, fontlink, doc.innerHTML);
                 }
                 else {
-                    _log__WEBPACK_IMPORTED_MODULE_4___default().error('字体替换失败,字体名称:', fontName, '字体链接:', fontlink);
+                    _log__WEBPACK_IMPORTED_MODULE_6___default().error('字体替换失败,字体名称:', fontName, '字体链接:', fontlink);
                     contentRaw.innerHTML = '字体替换失败';
                 }
             }
             html?.remove();
         }
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(contentRaw, "TM");
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .cleanDOM */ .an)(contentRaw, "TM");
         return {
             chapterName,
             contentRaw: contentRaw,
@@ -17727,7 +17727,7 @@ async function getFont(dom) {
             }
         }
         catch (e) {
-            _log__WEBPACK_IMPORTED_MODULE_4___default().error('Cannot find stylesheet:', e);
+            _log__WEBPACK_IMPORTED_MODULE_6___default().error('Cannot find stylesheet:', e);
         }
     }
     return [null, null];
@@ -17751,16 +17751,16 @@ async function replaceFanqieCharacter(fontName, fontlink, inputText) {
 async function getFanqieFontTable(fontName, fontlink) {
     const FontTable = await fetchRemoteFont(fontName);
     if (!FontTable) {
-        _log__WEBPACK_IMPORTED_MODULE_4___default().error(`[fanqie-font]字体对照表 ${fontName} 未找到,请前往https://github.com/404-novel-project/fanqie_font_tables 提交字体链接, ${fontlink}`);
+        _log__WEBPACK_IMPORTED_MODULE_6___default().error(`[fanqie-font]字体对照表 ${fontName} 未找到,请前往https://github.com/404-novel-project/fanqie_font_tables 提交字体链接, ${fontlink}`);
     }
     else {
-        _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[fanqie-font]字体对照表 ${fontName}已找到,如果你认为字体对应有错误,请前往https://github.com/404-novel-project/fanqie_font_tables 重新提交字体链接, ${fontlink}`);
+        _log__WEBPACK_IMPORTED_MODULE_6___default().debug(`[fanqie-font]字体对照表 ${fontName}已找到,如果你认为字体对应有错误,请前往https://github.com/404-novel-project/fanqie_font_tables 重新提交字体链接, ${fontlink}`);
     }
     return FontTable;
 }
 async function fetchRemoteFont(fontName) {
     const url = `https://fastly.jsdelivr.net/gh/404-novel-project/fanqie_font_tables@master/${fontName}.json`;
-    _log__WEBPACK_IMPORTED_MODULE_4___default().info(`[fanqie-font]开始请求远程字体对照表 ${fontName}`);
+    _log__WEBPACK_IMPORTED_MODULE_6___default().info(`[fanqie-font]开始请求远程字体对照表 ${fontName}`);
     const retryLimit = 10;
     let retry = retryLimit;
     while (retry > 0) {
@@ -17773,7 +17773,7 @@ async function fetchRemoteFont(fontName) {
                     onload: (response) => {
                         responseStatus = response.status;
                         if (response.status >= 200 && response.status < 300) {
-                            _log__WEBPACK_IMPORTED_MODULE_4___default().info(`[fanqie-font]远程字体对照表 ${fontName} 下载成功`);
+                            _log__WEBPACK_IMPORTED_MODULE_6___default().info(`[fanqie-font]远程字体对照表 ${fontName} 下载成功`);
                             resolve(JSON.parse(response.responseText));
                         }
                         else {
@@ -17790,10 +17790,10 @@ async function fetchRemoteFont(fontName) {
             }
         }
         catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_4___default().error(error);
+            _log__WEBPACK_IMPORTED_MODULE_6___default().error(error);
             retry--;
             if (responseStatus === 404 || retry < 0) {
-                _log__WEBPACK_IMPORTED_MODULE_4___default().info(`[fanqie-font]远程字体对照表 ${fontName} 下载失败`);
+                _log__WEBPACK_IMPORTED_MODULE_6___default().info(`[fanqie-font]远程字体对照表 ${fontName} 下载失败`);
                 return undefined;
             }
             else {
@@ -17816,16 +17816,16 @@ async function fetchRemoteFont(fontName) {
 /* harmony export */ });
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/setting.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/setting.ts");
 
 
 
@@ -17836,7 +17836,7 @@ async function fetchRemoteFont(fontName) {
 
 
 
-class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
+class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -17857,7 +17857,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         const novelGetListBaseUrl = "https://www.gongzicp.com/webapi/novel/chapterGetList";
         const novelGetListUrl = new URL(novelGetListBaseUrl);
         novelGetListUrl.searchParams.set("nid", bookId);
-        _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`请求地址: ${novelGetInfoUrl.toString()}`);
+        _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`请求地址: ${novelGetInfoUrl.toString()}`);
         const novelInfo = await fetch(novelGetInfoUrl.toString(), {
             credentials: "include",
             headers: {
@@ -17871,7 +17871,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             mode: "cors",
         })
             .then((response) => response.json())
-            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         if (novelInfo.code !== 200) {
             throw new Error(`数据接口请求失败，URL:${novelGetInfoUrl.toString()}`);
         }
@@ -17884,16 +17884,16 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         const additionalMetadate = {};
         const coverUrl = data.novel_cover;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         additionalMetadate.tags = data.tag_list;
         async function isLogin() {
             const getUserInfoUrl = "https://www.gongzicp.com/webapi/user/getUserInfo";
-            _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`正在请求: ${getUserInfoUrl}`);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`正在请求: ${getUserInfoUrl}`);
             const userInfo = await fetch(getUserInfoUrl, {
                 headers: {
                     accept: "application/json, text/javascript, */*; q=0.01",
@@ -17904,11 +17904,11 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                 credentials: "include",
             })
                 .then((response) => response.json())
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
             return userInfo.code === 200;
         }
         const logined = await isLogin();
-        _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`请求地址: ${novelGetListUrl.toString()}`);
+        _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`请求地址: ${novelGetListUrl.toString()}`);
         const chapterList = await fetch(novelGetListUrl.toString(), {
             credentials: "include",
             headers: {
@@ -17922,7 +17922,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             mode: "cors",
         })
             .then((response) => response.json())
-            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         if (novelInfo.code !== 200) {
             throw new Error(`数据接口请求失败，URL:${novelGetListUrl.toString()}`);
         }
@@ -17952,7 +17952,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                     novel_id: data.novel_id,
                     chapter_id: chapterObj.id,
                 };
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -17968,7 +17968,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                     options: chapterOption,
                 });
                 if ((isVIP && !(logined && chapter.isPaid)) || isLock) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
                 }
                 chapters.push(chapter);
             }
@@ -18019,7 +18019,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             return content;
         }
         function randomWalker() {
-            _log__WEBPACK_IMPORTED_MODULE_2___default().info("[chapter]随机翻页中……");
+            _log__WEBPACK_IMPORTED_MODULE_4___default().info("[chapter]随机翻页中……");
             if (document.location.pathname.includes("novel")) {
                 document.querySelector(".chapter-list .chapter a").click();
             }
@@ -18040,7 +18040,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                     }
                 }
                 else {
-                    _log__WEBPACK_IMPORTED_MODULE_2___default().info("[chapter]随机翻页失败，可能是页面结构变化或者只有一章");
+                    _log__WEBPACK_IMPORTED_MODULE_4___default().info("[chapter]随机翻页失败，可能是页面结构变化或者只有一章");
                 }
             }
         }
@@ -18052,7 +18052,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             chapterGetInfoUrl.searchParams.set("server", "0");
             let retryTime = 0;
             async function getChapterInfo(url) {
-                _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`请求地址: ${url}, Referrer: ${chapterUrl}，retryTime：${retryTime}`);
+                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`请求地址: ${url}, Referrer: ${chapterUrl}，retryTime：${retryTime}`);
                 const token = unsafeWindow.sessionStorage.getItem("token");
                 const resultI = await fetch(url, {
                     credentials: "include",
@@ -18067,21 +18067,21 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                     method: "GET",
                 })
                     .then((resp) => resp.json())
-                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
                 if (resultI.data.chapterInfo.content.length !== 0 &&
                     resultI.data.chapterInfo.content.length < 30) {
                     retryTime++;
-                    if (retryTime > _setting__WEBPACK_IMPORTED_MODULE_8__/* .retryLimit */ .Iz) {
-                        _log__WEBPACK_IMPORTED_MODULE_2___default().error(`请求 ${url} 失败`);
+                    if (retryTime > _setting__WEBPACK_IMPORTED_MODULE_9__/* .retryLimit */ .Iz) {
+                        _log__WEBPACK_IMPORTED_MODULE_4___default().error(`请求 ${url} 失败`);
                         throw new Error(`请求 ${url} 失败`);
                     }
-                    _log__WEBPACK_IMPORTED_MODULE_2___default().warn("[chapter]疑似被阻断，进行随机翻页……");
+                    _log__WEBPACK_IMPORTED_MODULE_4___default().warn("[chapter]疑似被阻断，进行随机翻页……");
                     const walkerTime = Math.round(Math.random() * retryTime) + 1;
                     for (let i = 0; i < walkerTime; i++) {
-                        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ .yy)(3000 + Math.round(Math.random() * 5000));
+                        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ .yy)(3000 + Math.round(Math.random() * 5000));
                         randomWalker();
                     }
-                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ .yy)(3000 + Math.round(Math.random() * 2000));
+                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ .yy)(3000 + Math.round(Math.random() * 2000));
                     return getChapterInfo(url);
                 }
                 else {
@@ -18159,7 +18159,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                             chapterInfo.postscript,
                         ].join("\n\n");
                     }
-                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ .yy)(3000 + Math.round(Math.random() * 5000));
+                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ .yy)(3000 + Math.round(Math.random() * 5000));
                     return {
                         chapterName,
                         contentRaw,
@@ -18183,7 +18183,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             if (Math.random() < 0.2) {
                 randomWalker();
             }
-            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ .yy)(3000 + Math.round(Math.random() * 4000));
+            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ .yy)(3000 + Math.round(Math.random() * 4000));
         }
         async function publicChapter() {
             await antiAntiCrawler();
@@ -18214,17 +18214,17 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
 /* harmony export */ });
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -18236,7 +18236,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
 
 
 
-class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
+class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_10__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -18244,19 +18244,19 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
     async bookParse() {
         const bookUrl = document.location.href;
         const anotherPageUrl = document.querySelector("a.titleText_3").href;
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(anotherPageUrl, this.charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .wA)(anotherPageUrl, this.charset);
         const bookname = document.querySelector("span.titleText_1").innerText.trim();
         const author = document.querySelector("span.authorText_1").innerText.trim();
         const introDom = document.querySelector("#introtext");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_5__/* .introDomHandle */ .HV)(introDom);
         const coverUrl = document.querySelector(".wR_JSAS > img").src;
         const additionalMetadate = {};
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_6___default().error(error));
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll("div.labelBox_1 > span")).map((span) => span?.innerText.trim());
         const chapters = [];
@@ -18272,7 +18272,7 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
             const chapterName = aElem.innerText.trim();
             const chapterUrl = aElem.href;
             if (sections.length !== 0) {
-                const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .getSectionName */ .lq)(aElem, sections, (dom) => dom.innerText.trim());
+                const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_5__/* .getSectionName */ .lq)(aElem, sections, (dom) => dom.innerText.trim());
                 if (_sectionName !== sectionName) {
                     sectionName = _sectionName;
                     sectionNumber++;
@@ -18284,7 +18284,7 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
             const icon = divElem.querySelector("img");
             const isVIP = icon !== null;
             const isPaid = isVIP ? icon.src.includes("lock_2_off.png") : false;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_8__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -18311,7 +18311,7 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
             }
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .E({
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_9__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -18324,7 +18324,7 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         const script = Array.from(doc.querySelectorAll("script")).filter((s) => s.innerHTML.includes("var chapterContent"))?.[0];
         const getContent = (CryptoJS, chapterContent) => {
             function AesDecrypt(content) {
@@ -18350,10 +18350,10 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
                 .split("\n")
                 .filter((l) => l.includes("var chapterContent"))?.[0];
             const content = new Function("CryptoJS", `${chapterContentLine};return (${getContent.toString()})(CryptoJS, chapterContent);`)(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__/* .rm2 */ .Sf)(["更多优惠快去下载寒武纪年小说APP哦"], content);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .rm2 */ .Sf)(["更多优惠快去下载寒武纪年小说APP哦"], content);
             content.innerHTML = content.innerHTML.replaceAll("%3A", "：");
             content.innerHTML = content.innerHTML.replaceAll("++++【", "【");
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .an)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -18385,14 +18385,14 @@ class Hanwujinian extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass *
 /* harmony export */   ihuaben: () => (/* binding */ ihuaben)
 /* harmony export */ });
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/dom.ts");
 
 
 
@@ -18420,11 +18420,11 @@ class ihuaben extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
             language: "zh",
         };
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((img) => {
                 additionalMetadate.cover = img;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
         }
         const chapternumsMatch = document.querySelector("div.chapters h2.hidden-xs a")?.innerText?.match(/\d+/);
         let chapternums = chapternumsMatch ? parseInt(chapternumsMatch[0]) : 0;
@@ -18432,7 +18432,7 @@ class ihuaben extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
         const chapterList = Array.from(getList(document));
         for (let i = 2; i <= chapternums; i++) {
             const url = bookUrl + "?page=" + i;
-            const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .ggetHtmlDOM */ .pG)(url);
+            const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .ggetHtmlDOM */ .pG)(url);
             getList(dom).forEach((e) => chapterList.push(e));
         }
         let chapterNumber = 0;
@@ -18441,7 +18441,7 @@ class ihuaben extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
             const chapterUrl = cc.href;
             const ChapterName = cc.innerText;
             chapterNumber++;
-            return new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+            return new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -18457,7 +18457,7 @@ class ihuaben extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
                 options: {},
             });
         });
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_1__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -18470,7 +18470,7 @@ class ihuaben extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const contentRaw = document.createElement("div");
         contentRaw.innerHTML = "";
-        (await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getFrameContentEvent */ .n6)(chapterUrl))?.querySelectorAll("div.nbcontent div.discription,div.talkcontent")?.forEach((e) => {
+        (await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getFrameContentEvent */ .n6)(chapterUrl))?.querySelectorAll("div.nbcontent div.discription,div.talkcontent")?.forEach((e) => {
             if (e.classList.contains("discription")) {
                 e.querySelectorAll("p").forEach((p) => {
                     const pClone = document.createElement("p");
@@ -18494,8 +18494,8 @@ class ihuaben extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
                 });
             }
         });
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__.rm)("i", true, contentRaw);
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .an)(contentRaw, "TM");
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__.rm)("i", true, contentRaw);
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .an)(contentRaw, "TM");
         return {
             chapterName,
             contentRaw,
@@ -18520,15 +18520,15 @@ function getList(dom) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Iqingguo: () => (/* binding */ Iqingguo)
 /* harmony export */ });
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
-/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("crypto-js");
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_6__);
 
 
 
@@ -18536,7 +18536,7 @@ function getList(dom) {
 
 
 
-class Iqingguo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
+class Iqingguo extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.concurrencyLimit = 2;
@@ -18566,11 +18566,11 @@ class Iqingguo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
             ids: bookId,
         };
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_5__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((img) => {
                 additionalMetadate.cover = img;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_6___default().error(error));
         }
         const chapters = catalogData.map((c) => {
             const chapterUrl = "https://www.iqingguo.com/book/reading?" +
@@ -18594,7 +18594,7 @@ class Iqingguo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
                 },
             });
         });
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_2__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -18610,7 +18610,7 @@ class Iqingguo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .
         chapterName = data.name;
         const contentRaw = document.createElement("div");
         contentRaw.innerText = data.content;
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .an)(contentRaw, "TM");
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .cleanDOM */ .an)(contentRaw, "TM");
         const additionalMetadate = {
             lastModified: data.updateTime,
         };
@@ -18637,7 +18637,7 @@ function sign(path, params) {
         return obj;
     }, {});
     const l = path + "?" + new URLSearchParams(orderd).toString();
-    orderd.sign = crypto_js__WEBPACK_IMPORTED_MODULE_0__.MD5(decodeURI(l)).toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Hex);
+    orderd.sign = crypto_js__WEBPACK_IMPORTED_MODULE_1__.MD5(decodeURI(l)).toString(crypto_js__WEBPACK_IMPORTED_MODULE_1__.enc.Hex);
     return orderd;
 }
 async function get(path, params) {
@@ -32186,13 +32186,13 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
 /* harmony export */   kadokado: () => (/* binding */ kadokado)
 /* harmony export */ });
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
 
 
 
@@ -32227,11 +32227,11 @@ class kadokado extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             language: "zh",
         };
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((img) => {
                 additionalMetadate.cover = img;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
         }
         const sectionList = Array.from(document.querySelectorAll("section#chapter > div >div"));
         let chapterNumber = 0;
@@ -32265,7 +32265,7 @@ class kadokado extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                 }));
             });
         });
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_1__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -32277,8 +32277,8 @@ class kadokado extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const contentRaw = document.createElement("div");
-        contentRaw.innerHTML = (await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getFrameContentEvent */ .n6)(chapterUrl))?.querySelector("ul > div")?.innerHTML ?? "";
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .an)(contentRaw, "TM");
+        contentRaw.innerHTML = (await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getFrameContentEvent */ .n6)(chapterUrl))?.querySelector("ul > div")?.innerHTML ?? "";
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .an)(contentRaw, "TM");
         return {
             chapterName,
             contentRaw,
@@ -32300,17 +32300,17 @@ class kadokado extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Lcread: () => (/* binding */ Lcread)
 /* harmony export */ });
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/rules.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/rule.ts");
 
 
 
@@ -32321,7 +32321,7 @@ class kadokado extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
 
 
 
-class Lcread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Lcread extends _rules__WEBPACK_IMPORTED_MODULE_3__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -32340,7 +32340,7 @@ class Lcread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             .then((coverClass) => {
             additionalMetadate.cover = coverClass;
         })
-            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_0___default().error(error));
         additionalMetadate.tags = document.querySelector("#l1_a .bri #bri3")?.innerText
             ?.split("，")
             .map((t) => t.trim());
@@ -32360,7 +32360,7 @@ class Lcread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 continue;
             }
             chapterNumber++;
-            const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .getSectionName */ .lq)(elem, sectionElems, getSName);
+            const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_9__/* .getSectionName */ .lq)(elem, sectionElems, getSName);
             if (sectionName !== _sectionName && _sectionName) {
                 sectionName = _sectionName;
                 sectionNumber++;
@@ -32391,11 +32391,11 @@ class Lcread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 .querySelector("div#brl div#tip")
                 ?.innerHTML.includes("登录后发帖不用输入验证码，并获得评论积分，升级职业得到更多作品推荐票!");
             if (chapter.isVIP && !isLogin) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
             }
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_2__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -32407,13 +32407,13 @@ class Lcread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`[Chapter]请求 ${chapterUrl}`);
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+        _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`[Chapter]请求 ${chapterUrl}`);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         const content = document.createElement("div");
         const contentText = doc.querySelector("#ccon");
         (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__/* .rm2 */ .Sf)(['    '], contentText);
         content.innerHTML = contentText.innerHTML;
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .an)(content, "TM");
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .an)(content, "TM");
         return {
             chapterName,
             contentRaw: content,
@@ -32435,16 +32435,16 @@ class Lcread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Linovel: () => (/* binding */ Linovel)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -32454,7 +32454,7 @@ class Lcread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
 
 
 
-class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -32465,28 +32465,28 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
         const bookname = document.querySelector(".book-title").innerText.trim();
         const author = document.querySelector(".author-frame > .novelist > div:nth-child(3) > a").innerText.trim();
         const introDom = document.querySelector(".about-text");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const attachmentsUrlList = [];
         const coverUrl = document.querySelector(".book-cover > a").href;
         if (coverUrl) {
             attachmentsUrlList.push(coverUrl);
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         additionalMetadate.attachments = [];
         const volumeCoverUrlList = Array.from(document.querySelectorAll(".section-list > .section > .volume-info > .volume-cover a")).map((a) => a.href);
         for (const volumeCoverUrl of volumeCoverUrlList) {
             if (!attachmentsUrlList.includes(volumeCoverUrl)) {
                 attachmentsUrlList.push(volumeCoverUrl);
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(volumeCoverUrl, this.attachmentMode, "volumeCover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(volumeCoverUrl, this.attachmentMode, "volumeCover-")
                     .then((volumeCoverObj) => {
                     additionalMetadate.attachments?.push(volumeCoverObj);
                 })
-                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
             }
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll("div.meta-info > div.book-cats.clearfix > a")).map((a) => a.innerText.trim());
@@ -32514,7 +32514,7 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
                 const isPaid = () => {
                     return false;
                 };
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -32538,7 +32538,7 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
                 chapters.push(chapter);
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -32550,11 +32550,11 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
             const ChapterName = doc.querySelector(".article-title").innerText.trim();
             const content = doc.querySelector(".article-text");
             if (content) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM");
                 return {
                     chapterName: ChapterName,
                     contentRaw: content,
@@ -32604,16 +32604,16 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Lofter: () => (/* binding */ Lofter)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_readability__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/readability.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_readability__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/readability.ts");
 
 
 
@@ -32623,7 +32623,7 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
 
 
 
-class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_6__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -32651,18 +32651,18 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             const avatar = new URL(_avatar);
             avatar.search = "";
             const avatarUrl = avatar.toString();
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(avatarUrl, this.attachmentMode, "avatar-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(avatarUrl, this.attachmentMode, "avatar-")
                 .then((avatarClass) => {
                 additionalMetadate.cover = avatarClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
         }
         const chapters = [];
         const pageUrlSet = new Set();
         const indexPageUrls = [];
         const getPageUrl = async (url) => {
-            _log__WEBPACK_IMPORTED_MODULE_2___default().info(`[chapter]正在抓取目录页：${url}`);
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .wA)(url, undefined);
+            _log__WEBPACK_IMPORTED_MODULE_3___default().info(`[chapter]正在抓取目录页：${url}`);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(url, undefined);
             const selector = `a[href^="${[document.location.origin, "post"].join("/")}"]`;
             const urlSet = new Set(Array.from(doc.querySelectorAll(selector)).map((a) => a.href));
             urlSet.forEach((item) => pageUrlSet.add(item));
@@ -32722,8 +32722,8 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function post() {
-            _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`[chapter]请求页面：${chapterUrl}`);
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+            _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[chapter]请求页面：${chapterUrl}`);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
             chapterName =
                 doc
                     .querySelector("title")
@@ -32739,20 +32739,20 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             let content;
             for (const selector of selectors) {
                 const _content = doc.querySelector(selector);
-                if (_content !== null && !(0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__/* .isHidden */ .dK)(_content)) {
+                if (_content !== null && !(0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__/* .isHidden */ .dK)(_content)) {
                     content = _content;
                     break;
                 }
             }
             if (!content) {
-                const obj = (0,_lib_readability__WEBPACK_IMPORTED_MODULE_7__.parse)(doc);
+                const obj = (0,_lib_readability__WEBPACK_IMPORTED_MODULE_8__.parse)(doc);
                 if (obj?.content) {
                     content = obj.content;
                 }
             }
             if (content) {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__.rm)(".otherinfo", true, content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__.rm)(".otherinfo", true, content);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -32767,12 +32767,12 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             }
         }
         async function lpost() {
-            _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`[chapter]请求页面：${chapterUrl}`);
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
+            _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[chapter]请求页面：${chapterUrl}`);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
             chapterName = doc.querySelector("#title")?.innerText.trim();
             const content = doc.querySelector("#m-cnt .long-text");
             if (content) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -32805,18 +32805,18 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Longmabook: () => (/* binding */ Longmabook)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/misc.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -32828,7 +32828,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
 
 
 
-class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_10__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -32839,7 +32839,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
         const isLogin = Boolean(document.querySelector('a[href="/?act=signinlst"]'));
         if (!isLogin) {
             alert("小说下载器：海棠文化线上文学城需登录后方可下载！请登录帐号。");
-            throw new _main_main__WEBPACK_IMPORTED_MODULE_1__/* .ExpectError */ .K5("海棠文化线上文学城需登录后方可浏览！");
+            throw new _main_main__WEBPACK_IMPORTED_MODULE_7__/* .ExpectError */ .K5("海棠文化线上文学城需登录后方可浏览！");
         }
         const self = this;
         const bookUrl = document.location.href;
@@ -32856,24 +32856,24 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
             ?.cloneNode(true);
         let [introduction, introductionHTML] = [null, null, null];
         if (introDom) {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("div", true, introDom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("textarea", true, introDom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("font", true, introDom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("b", true, introDom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("span", true, introDom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("h4", true, introDom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("img", true, introDom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rms */ .j3)([/【作品编号：\d+】|【作品編號：\d+】/, "\n)\n"], introDom);
-            [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(introDom, undefined);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("div", true, introDom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("textarea", true, introDom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("font", true, introDom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("b", true, introDom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("span", true, introDom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("h4", true, introDom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("img", true, introDom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .rms */ .j3)([/【作品编号：\d+】|【作品編號：\d+】/, "\n)\n"], introDom);
+            [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_5__/* .introDomHandle */ .HV)(introDom, undefined);
         }
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#mypages > div:nth-child(8) > div:nth-child(1) > img")?.src.replace("_s.", "_b.");
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_6___default().error(error));
         }
         additionalMetadate.tags =
             document.querySelector('#mypages > div:nth-child(8) > div:nth-child(1) > font[color="#800080"]')?.innerText
@@ -32922,7 +32922,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
             return Array.from(chapterAList).map((a) => {
                 const chapterName = a.innerText;
                 const chapterUrl = a.href;
-                const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .getSectionName */ .lq)(a, sections, getSName);
+                const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_5__/* .getSectionName */ .lq)(a, sections, getSName);
                 const isVip = getIsVip(a);
                 let isPaid = false;
                 if (isVip) {
@@ -32938,15 +32938,15 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
             });
         };
         const chapterObjs = [];
-        const initDoc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDomWithRetry */ .kP)(showbooklistAPIUrl, self.charset, getInitObj(initShowbooklistParams));
+        const initDoc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDomWithRetry */ .kP)(showbooklistAPIUrl, self.charset, getInitObj(initShowbooklistParams));
         if (initDoc) {
             chapterObjs.push(...getChapterObjs(initDoc));
             const pages = getPages(initDoc);
             if (pages.length !== 0) {
                 for (const page of pages) {
-                    const showbooklistParams = (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .deepcopy */ .OJ)(initShowbooklistParams);
+                    const showbooklistParams = (0,_lib_misc__WEBPACK_IMPORTED_MODULE_3__/* .deepcopy */ .OJ)(initShowbooklistParams);
                     showbooklistParams.pages = page.toString();
-                    const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDomWithRetry */ .kP)(showbooklistAPIUrl, self.charset, getInitObj(showbooklistParams));
+                    const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDomWithRetry */ .kP)(showbooklistAPIUrl, self.charset, getInitObj(showbooklistParams));
                     if (doc) {
                         chapterObjs.push(...getChapterObjs(doc));
                     }
@@ -32982,7 +32982,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
                 options: { bookId, bookwritercode },
             });
             if (chapter.isVIP && !chapter.isPaid) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_1__/* .Status */ .nW.aborted;
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .nW.aborted;
             }
             chapters.push(chapter);
         }
@@ -32998,7 +32998,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const self = this;
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         if (doc.body.innerHTML.includes("您目前正在海棠清水區，只能觀看清水認證文章。")) {
             if (!window.stopFlag) {
                 alert("您目前正在海棠清水區，只能觀看清水認證文章。請使用海棠其他網址進入。");
@@ -33025,7 +33025,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
             additionalMetadate: null,
         };
         if (doc.querySelector("#paperbuybtm")) {
-            _log__WEBPACK_IMPORTED_MODULE_5___default().info(`[chapter]付费章节 ${chapterName} 未购买。`);
+            _log__WEBPACK_IMPORTED_MODULE_6___default().info(`[chapter]付费章节 ${chapterName} 未购买。`);
             return nullObj;
         }
         const content = document.createElement("div");
@@ -33078,12 +33078,12 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
         async function getImages() {
             const imageDom = document.createElement("div");
             Array.from(doc.querySelectorAll("#mypages > div:nth-child(10) > div:nth-child(2) > div:nth-child(6) > ul > li:nth-child(14) > img")).forEach((img) => imageDom.appendChild(img.cloneNode(true)));
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(imageDom, self.attachmentMode);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(imageDom, self.attachmentMode);
             return [dom, text, images];
         }
         async function getMainContent() {
             const showpapercolorUrl = document.location.origin + "/showpapercolor.php";
-            _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[chapter]正在请求${showpapercolorUrl}`);
+            _log__WEBPACK_IMPORTED_MODULE_6___default().debug(`[chapter]正在请求${showpapercolorUrl}`);
             const resp = await fetch(showpapercolorUrl, {
                 credentials: "include",
                 headers: {
@@ -33101,14 +33101,14 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
             });
             const contentMain = document.createElement("div");
             contentMain.innerHTML = await resp.text();
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)('img[src="/images/fullcolor.png"]', true, contentMain);
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(contentMain, self.attachmentMode);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)('img[src="/images/fullcolor.png"]', true, contentMain);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(contentMain, self.attachmentMode);
             return [dom, text, images];
         }
         async function getAuthorSay() {
             const authorSayDom = doc.querySelector("#colorpanelwritersay");
             if (authorSayDom) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(authorSayDom, self.attachmentMode);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(authorSayDom, self.attachmentMode);
                 return [dom, text, images];
             }
             else {
@@ -33132,8 +33132,8 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
                     eggHTML += eggDOM.innerHTML;
                 const eggDom = document.createElement("div");
                 eggDom.innerHTML = eggHTML;
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)('img[src="/images/fullcolor.png"]', true, eggDom);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(eggDom, self.attachmentMode);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)('img[src="/images/fullcolor.png"]', true, eggDom);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(eggDom, self.attachmentMode);
                 return [dom, text, images];
             }
             else {
@@ -33153,15 +33153,15 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Myrics: () => (/* binding */ Myrics)
 /* harmony export */ });
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/misc.ts");
-/* harmony import */ var p_limit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/p-limit/index.js");
+/* harmony import */ var p_limit__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/p-limit/index.js");
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/cleanDOM.ts");
 
@@ -33174,7 +33174,7 @@ class Longmabook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
 
 
 
-class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
+class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -33263,7 +33263,7 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q 
             }
             return _menu.data;
         };
-        const limit = (0,p_limit__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A)(this.concurrencyLimit);
+        const limit = (0,p_limit__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .A)(this.concurrencyLimit);
         const getChapters = async () => {
             const loginStatus = isLogin();
             const { total_page } = await getMenu(1);
@@ -33284,7 +33284,7 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q 
                     const sectionName = `卷${sectionNumber}`;
                     const sectionChapterNumber = item.part;
                     const isAdult = item.is_adult;
-                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_7__/* .Chapter */ .I({
                         bookUrl,
                         bookname,
                         chapterUrl,
@@ -33320,7 +33320,7 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q 
             chapter.chapterNumber = i;
             i++;
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_1__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -33375,14 +33375,14 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   novelpia: () => (/* binding */ novelpia)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/rules.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
 
 
@@ -33392,7 +33392,7 @@ class Myrics extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q 
 
 
 
-class novelpia extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class novelpia extends _rules__WEBPACK_IMPORTED_MODULE_6__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "naive";
@@ -33420,7 +33420,7 @@ class novelpia extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         const additionalMetadate = {};
         const coverUrl = "https:" + novelInfo.novel.cover_img;
         _log__WEBPACK_IMPORTED_MODULE_2___default().debug("coverUrl:" + coverUrl.toString());
-        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, "TM", "vertical_cover-")
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, "TM", "vertical_cover-")
             .then((coverClass) => {
             additionalMetadate.cover = coverClass;
         })
@@ -33440,7 +33440,7 @@ class novelpia extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             const content = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .fetchWithRetry */ .J5)("https://novelpia.jp/proc/episode_list", init);
             const dom = document.createElement("div");
             dom.innerHTML = await content.text();
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("td.ep_style3", true, dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_5__.rm)("td.ep_style3", true, dom);
             const chapterList = dom.querySelectorAll("tr > td > b");
             Array.from(chapterList).forEach((ep) => {
                 const chapter_id = ep.querySelector("i")?.getAttribute("id")?.match(/(\d+)/)[1];
@@ -33448,13 +33448,13 @@ class novelpia extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                 chapterNumber++;
                 const isVIP = (ep.querySelector("span.b_free") ?? null) == null;
                 const epe = ep;
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("span", true, epe);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_5__.rm)("span", true, epe);
                 const chapterName = epe.innerText.trim();
                 const isPaid = true;
                 const options = {
                     chapter_id: chapter_id,
                 };
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -33472,7 +33472,7 @@ class novelpia extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                 chapters.push(chapter);
             });
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_3__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -33526,14 +33526,14 @@ class novelpia extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Pixiv: () => (/* binding */ Pixiv)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -33541,7 +33541,7 @@ class novelpia extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
 
 
 
-class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_6__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -33583,14 +33583,14 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
                 }
                 const introduction = introductionHTML.innerText;
                 const additionalMetadate = {};
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(novel.coverUrl, self.attachmentMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(novel.coverUrl, self.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
                     .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
                 additionalMetadate.lastModified = new Date(novel.uploadDate).getTime();
                 additionalMetadate.tags = novel.tags;
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl: bookUrl,
@@ -33610,7 +33610,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
                         isWriteDescInContent: false,
                     },
                 });
-                return new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .E({
+                return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
                     bookUrl,
                     bookname,
                     author,
@@ -33635,14 +33635,14 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
                 introductionHTML.appendChild(glossary);
             }
             const additionalMetadate = {};
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(series.coverURL, self.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(series.coverURL, self.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
                 .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
             additionalMetadate.lastModified = series.lastModified;
             additionalMetadate.tags = series.tags;
-            return new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .E({
+            return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
                 bookUrl,
                 bookname,
                 author,
@@ -33651,7 +33651,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
                 additionalMetadate,
                 chapters: series.chapterObjList.map((c) => {
                     const { viewableType, ...cp } = c;
-                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                         bookUrl,
                         bookname,
                         isVIP: false,
@@ -33664,7 +33664,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
                         ...cp,
                     });
                     if (viewableType !== 0) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_3__/* .Status */ .nW.aborted;
                     }
                     return chapter;
                 }),
@@ -33701,7 +33701,7 @@ class Pixiv extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
             contentDom.append(DescIncontent);
         }
         contentDom.append(contentRaw);
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .an)(contentDom, "TM");
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(contentDom, "TM");
         const additionalMetadate = {
             lastModified: new Date(novel.uploadDate).getTime(),
             tags: novel.tags,
@@ -33964,18 +33964,18 @@ async function getNovel(novelID, lang, version) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   po18: () => (/* binding */ po18)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/rules.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/lib/misc.ts");
 
 
 
@@ -33987,7 +33987,7 @@ async function getNovel(novelID, lang, version) {
 
 
 
-class po18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class po18 extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -33999,18 +33999,18 @@ class po18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         const bookname = document.querySelector("h1.book_name").innerText.trim();
         const author = document.querySelector("a.book_author").innerText.trim();
         const introDom = document.querySelector("div.B_I_content");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("div.book_cover > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll("div.book_intro_tags > a")).map((a) => a.innerText.trim());
-        let dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_4__/* .getHtmlDOM */ .wA)(`https://www.po18.tw/books/${bookID}/articles`);
+        let dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(`https://www.po18.tw/books/${bookID}/articles`);
         const chapters = [];
         let chapterNumber = 0;
         const listUrls = new Set(Array.from(dom.querySelectorAll("div.pagenum a")).map((a) => a.href));
@@ -34018,8 +34018,8 @@ class po18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
             listUrls.add(`https://www.po18.tw/books/${bookID}/articles`);
         }
         for (const url of listUrls) {
-            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_5__/* .sleep */ .yy)(this.maxSleepTime);
-            dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_4__/* .getHtmlDOM */ .wA)(url);
+            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_10__/* .sleep */ .yy)(this.maxSleepTime);
+            dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(url);
             const cos = dom.querySelectorAll("div.list-view div.c_l");
             for (const aElem of Array.from(cos)) {
                 chapterNumber++;
@@ -34045,15 +34045,15 @@ class po18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
                     options: {},
                 });
                 if (isVIP) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .nW.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
                     if (chapter.isPaid) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .nW.pending;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.pending;
                     }
                 }
                 chapters.push(chapter);
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -34064,10 +34064,10 @@ class po18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterUrl}`);
+        _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter]请求 ${chapterUrl}`);
         const chapterID = chapterUrl.match(/articles\/(\d+)/)?.[1];
         const url = chapterUrl.replace('articles', 'articlescontent');
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_4__/* .gfetch */ ._V)(url, {
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ ._V)(url, {
             cookie: document.cookie,
             method: "GET",
             headers: {
@@ -34079,7 +34079,7 @@ class po18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         const content = document.createElement("div");
         content.innerHTML = (await doc.responseText).replaceAll("<p>\n", "");
         (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)("blockquote", true, content);
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(content, "TM");
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM");
         return {
             chapterName,
             contentRaw: content,
@@ -34101,18 +34101,18 @@ class po18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Qidian: () => (/* binding */ Qidian)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/misc.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -34124,7 +34124,7 @@ class po18 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 
 
 
-class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_10__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -34153,19 +34153,19 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             ?.getAttribute("data-authorid");
         const bookname = document.querySelector("#bookName")?.innerText;
         const introDom = document.querySelector("#book-intro-detail");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_5__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#bookImg > img").src.slice(0, -5);
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_6___default().error(error));
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll("#all-label > a")).map((a) => a.innerText.trim());
         const limitFree = Boolean(document.querySelector("#bookImg > div.limit-flag"));
-        _log__WEBPACK_IMPORTED_MODULE_3___default().info(`[Book]限免书籍 ${limitFree}`);
+        _log__WEBPACK_IMPORTED_MODULE_6___default().info(`[Book]限免书籍 ${limitFree}`);
         const sections = document.querySelectorAll(".catalog-volume");
         let chapterNumber = 0;
         const chapters = [];
@@ -34200,7 +34200,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 else {
                     chapterId = null;
                 }
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_8__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -34232,18 +34232,18 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                     return false;
                 };
                 if (isVIP) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .nW.aborted;
                     if (limitFree) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.pending;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .nW.pending;
                     }
                     if (chapter.isPaid) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.pending;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .nW.pending;
                     }
                 }
                 chapters.push(chapter);
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_9__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -34276,19 +34276,19 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             .replace(/\s+著$/, "")
             .trim();
         const introDom = document.querySelector(".book-info-detail .book-intro");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_5__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#bookImg > img").src.slice(0, -5);
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_6___default().error(error));
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll(".book-info > .tag > a, .tag-wrap > .tags")).map((a) => a.innerText.trim());
         const limitFree = Boolean(document.querySelector(".book-information .flag"));
-        _log__WEBPACK_IMPORTED_MODULE_3___default().info(`[Book]限免书籍 ${limitFree}`);
+        _log__WEBPACK_IMPORTED_MODULE_6___default().info(`[Book]限免书籍 ${limitFree}`);
         const chapters = [];
         const liLength = document.querySelectorAll("#j-catalogWrap li").length;
         const getChapterTotalNumber = () => {
@@ -34298,7 +34298,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             }
         };
         if (!(liLength && getChapterTotalNumber() === liLength)) {
-            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .sleep */ .yy)(3000);
+            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_3__/* .sleep */ .yy)(3000);
         }
         const sections = document.querySelectorAll("#j-catalogWrap > .volume-wrap > .volume");
         let chapterNumber = 0;
@@ -34333,7 +34333,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 else {
                     chapterId = null;
                 }
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_8__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -34365,18 +34365,18 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                     return false;
                 };
                 if (isVIP) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .nW.aborted;
                     if (limitFree) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.pending;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .nW.pending;
                     }
                     if (chapter.isPaid) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.pending;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .nW.pending;
                     }
                 }
                 chapters.push(chapter);
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_9__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -34398,10 +34398,10 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
         async function getChapter() {
             let doc;
             if (isVIP) {
-                doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
+                doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
                 if (!doc.querySelector(".content-text") ||
                     (doc.querySelector(".content-text")?.childElementCount ?? 0) < 10) {
-                    doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .getFrameContentCondition */ .eF)(chapterUrl, (frame) => {
+                    doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getFrameContentCondition */ .eF)(chapterUrl, (frame) => {
                         const doc = frame.contentWindow?.document ?? null;
                         if (doc) {
                             return doc.querySelectorAll(".content-text").length !== 0;
@@ -34416,7 +34416,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 }
             }
             else {
-                doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
+                doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
             }
             if (doc) {
                 chapterName = doc.querySelector("h1.title").innerText.trim();
@@ -34426,21 +34426,21 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 const content = document.createElement("div");
                 let contentText = "";
                 const contentMain = doc.querySelector("main");
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)("span.review-count", true, contentMain);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("span.review-count", true, contentMain);
                 const authorSayWrap = doc.querySelector("#r-authorSay");
                 if (contentMain) {
-                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(contentMain, "TM");
-                    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .htmlTrim */ .is)(dom);
+                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(contentMain, "TM");
+                    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .htmlTrim */ .is)(dom);
                     content.appendChild(dom);
-                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__/* .rm2 */ .Sf)([/^谷[\u4e00-\u9fa5]{0,1}$/gm], content);
+                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__/* .rm2 */ .Sf)([/^谷[\u4e00-\u9fa5]{0,1}$/gm], content);
                     contentText = contentText + text;
                     if (authorSayWrap) {
                         const authorSay = authorSayWrap.querySelector("div");
                         if (authorSay) {
-                            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)("a.avatar", false, authorSay);
-                            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)("h4", false, authorSay);
-                            const { dom: authorDom, text: authorText, images: authorImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(authorSayWrap, "TM");
-                            (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .htmlTrim */ .is)(authorDom);
+                            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("a.avatar", false, authorSay);
+                            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("h4", false, authorSay);
+                            const { dom: authorDom, text: authorText, images: authorImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(authorSayWrap, "TM");
+                            (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .htmlTrim */ .is)(authorDom);
                             authorDom.className = "authorSay";
                             const hr = document.createElement("hr");
                             content.appendChild(hr);
@@ -34476,15 +34476,15 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Qimao: () => (/* binding */ Qimao)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/rules.ts");
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/misc.ts");
 
 
@@ -34495,7 +34495,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
 
 
 
-class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -34511,11 +34511,11 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         const additionalMetadate = {};
         const coverUrl = document.querySelector("div.wrap-pic > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll("em.qm-tag > a")).map((a) => a.innerText.trim());
         const chapters = [];
@@ -34531,7 +34531,7 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
             const isPaid = () => {
                 return false;
             };
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -34554,7 +34554,7 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
             }
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -34566,12 +34566,12 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`[Chapter]请求 ${chapterUrl}`);
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+            _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterUrl}`);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
             chapterName = doc.querySelector(".chapter-title").innerText.trim();
             const content = doc.querySelector(".article");
             if (content) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .an)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -34622,17 +34622,17 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   QQBook: () => (/* binding */ QQBook)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -34643,7 +34643,7 @@ class Qimao extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 
 
 
-class QQBook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class QQBook extends _rules__WEBPACK_IMPORTED_MODULE_9__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -34659,15 +34659,15 @@ class QQBook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             ?.getAttribute("data-authorid");
         const bookname = document.querySelector(".book-title")?.innerText;
         const introDom = document.querySelector(".book-intro");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_4__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book-cover > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll(".book-tags > a")).map((a) => a.innerText.trim());
         const sectionName = null;
@@ -34691,7 +34691,7 @@ class QQBook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             sectionChapterNumber++;
             const chapterName = a.innerText.trim();
             const chapterUrl = a.href;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_7__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -34707,14 +34707,14 @@ class QQBook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 options: {},
             });
             if (isVIP) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
                 if (chapter.isPaid) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.pending;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.pending;
                 }
             }
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -34737,10 +34737,10 @@ class QQBook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             let doc;
             const selector = "#article";
             if (isVIP) {
-                doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
+                doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
                 if (!doc.querySelector(selector) ||
                     (doc.querySelector(selector)?.childElementCount ?? 0) < 10) {
-                    doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getFrameContentCondition */ .eF)(chapterUrl, (frame) => {
+                    doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getFrameContentCondition */ .eF)(chapterUrl, (frame) => {
                         const doc = frame.contentWindow?.document ?? null;
                         if (doc) {
                             return doc.querySelectorAll(selector).length !== 0;
@@ -34755,7 +34755,7 @@ class QQBook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 }
             }
             else {
-                doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
+                doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
             }
             if (doc) {
                 chapterName = doc.querySelector("h1.chapter-title").innerText.trim();
@@ -34763,10 +34763,10 @@ class QQBook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 let contentText = "";
                 const contentMain = doc.querySelector(selector);
                 if (contentMain) {
-                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(contentMain, "TM");
-                    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .htmlTrim */ .is)(dom);
+                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(contentMain, "TM");
+                    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .htmlTrim */ .is)(dom);
                     content.appendChild(dom);
-                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__/* .rm2 */ .Sf)([/^谷[\u4e00-\u9fa5]{0,1}$/gm], content);
+                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__/* .rm2 */ .Sf)([/^谷[\u4e00-\u9fa5]{0,1}$/gm], content);
                     contentText = contentText + text;
                     return {
                         chapterName,
@@ -34795,13 +34795,13 @@ class QQBook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
 /* harmony export */   Readmoo: () => (/* binding */ Readmoo)
 /* harmony export */ });
 /* harmony import */ var p_limit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/p-limit/index.js");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules.ts");
 /* harmony import */ var _main_Attachment__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Attachment.ts");
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/misc.ts");
 
 
 
@@ -34810,7 +34810,7 @@ class QQBook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
 
 
 
-class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
+class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_2__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.saveType = { txt: false, epub: false, raw: { ext: "epub" } };
@@ -34841,7 +34841,7 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q
         ];
         const bookId = document.location.pathname.split("/").slice(-1)[0];
         const navUrl = `${navBase}${bookId}/nav`;
-        const navResp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ ._V)(navUrl, navInit);
+        const navResp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .gfetch */ ._V)(navUrl, navInit);
         const navData = navResp.response;
         if (navData.message !== "success") {
             throw new Error("获取 nav 失败！");
@@ -34852,7 +34852,7 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q
             path: "META-INF/container.xml",
             data: container_xml_url,
         });
-        const containerResp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetText */ .bx)(container_xml_url, "UTF-8", epubInit);
+        const containerResp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .ggetText */ .bx)(container_xml_url, "UTF-8", epubInit);
         if (!containerResp) {
             throw new Error("抓取 container.xml 失败！");
         }
@@ -34865,7 +34865,7 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q
         }
         const content_opf_url = `${epubBase}${content_opf_path}`;
         epubFileList.push({ path: content_opf_path, data: content_opf_url });
-        const content_opf_resp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetText */ .bx)(content_opf_url, "UTF-8", epubInit);
+        const content_opf_resp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .ggetText */ .bx)(content_opf_url, "UTF-8", epubInit);
         if (!content_opf_resp) {
             throw new Error("抓取 content.opf 失败！");
         }
@@ -34894,7 +34894,7 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q
             return limit(async () => {
                 const { path, data, nocompress } = fobj;
                 if (typeof data === "string") {
-                    const attach = new _main_Attachment__WEBPACK_IMPORTED_MODULE_3__/* .AttachmentClass */ .q(data, path, this.attachmentMode, _main_main__WEBPACK_IMPORTED_MODULE_4__/* .ReferrerMode */ .ls.keep, "", { init: (0,_lib_misc__WEBPACK_IMPORTED_MODULE_5__/* .deepcopy */ .OJ)(epubInit), TMinit: (0,_lib_misc__WEBPACK_IMPORTED_MODULE_5__/* .deepcopy */ .OJ)(epubInit) });
+                    const attach = new _main_Attachment__WEBPACK_IMPORTED_MODULE_3__/* .AttachmentClass */ .q(data, path, this.attachmentMode, _main_main__WEBPACK_IMPORTED_MODULE_4__/* .ReferrerMode */ .ls.keep, "", { init: (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .deepcopy */ .OJ)(epubInit), TMinit: (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .deepcopy */ .OJ)(epubInit) });
                     await attach.init();
                     if (fobj.nocompress) {
                         attach.comments = "nocompress";
@@ -34913,7 +34913,7 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q
             });
         });
         const attachments = await Promise.all(attachmentTasks);
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_1__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -34921,7 +34921,7 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q
             introductionHTML: null,
             additionalMetadate: { attachments },
             chapters: [
-                new _main_Chapter__WEBPACK_IMPORTED_MODULE_7__/* .Chapter */ .I({
+                new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl: "",
@@ -34963,17 +34963,17 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Zongheng: () => (/* binding */ Zongheng)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/GM.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/GM.ts");
 
 
 
@@ -34984,7 +34984,7 @@ class Readmoo extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q
 
 
 
-class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -34995,7 +34995,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         const bookId = matches ? matches[1] : null;
         const bookUrl = `https://www.zongheng.com/detail/${bookId}`;
         if (!bookId) {
-            return new _main_Book__WEBPACK_IMPORTED_MODULE_1__/* .Book */ .E({
+            return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
                 bookUrl,
                 bookname: "1",
                 author: "1",
@@ -35013,11 +35013,11 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         const additionalMetadate = {};
         const coverUrl = doc.querySelector("img.book-info--coverImage-img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll(".book-info--tags > span")).map((a) => a.innerText.trim());
         async function getChapterList(bookId) {
@@ -35025,7 +35025,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             const formData = new URLSearchParams();
             formData.append("bookId", bookId);
             return new Promise((resolve) => {
-                (0,_lib_GM__WEBPACK_IMPORTED_MODULE_6__/* ._GM_xmlhttpRequest */ .nV)({
+                (0,_lib_GM__WEBPACK_IMPORTED_MODULE_9__/* ._GM_xmlhttpRequest */ .nV)({
                     url: url,
                     headers: {
                         Cookie: document.cookie,
@@ -35041,7 +35041,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                             resolve(resultI);
                         }
                         else {
-                            _log__WEBPACK_IMPORTED_MODULE_5___default().error(`post ${url} response status = ${response.status}`);
+                            _log__WEBPACK_IMPORTED_MODULE_4___default().error(`post ${url} response status = ${response.status}`);
                             const resultI = JSON.parse('{"message":"天塌了"}');
                             resolve(resultI);
                         }
@@ -35065,7 +35065,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                     chapterNumber++;
                     const isVIP = chapterView.level != 0;
                     const isPaid = isVIP;
-                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_7__/* .Chapter */ .I({
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
                         bookUrl,
                         bookname,
                         chapterUrl,
@@ -35081,16 +35081,16 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                         options: {},
                     });
                     if (isVIP && !isPaid) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status */ .nW.aborted;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
                     }
                     chapters.push(chapter);
                 }
             }
         }
         else {
-            _log__WEBPACK_IMPORTED_MODULE_5___default().error(`获取目录失败 ${result.message}`);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().error(`获取目录失败 ${result.message}`);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_1__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -35105,7 +35105,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
             const content = doc.querySelector("div.content");
             if (content) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .an)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM");
                 return {
                     chapterName: chapterName,
                     contentRaw: content,
@@ -35158,7 +35158,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                     }
                 });
             }
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .an)(contentRaw, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(contentRaw, "TM");
             html?.remove();
             return {
                 chapterName,
@@ -35188,18 +35188,18 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Sfacg: () => (/* binding */ Sfacg)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Attachment__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Attachment.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main_Attachment__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Attachment.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/rules.ts");
 /* harmony import */ var _setting__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("./src/setting.ts");
 
 
@@ -35213,7 +35213,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
 
 
 
-class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_10__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -35222,28 +35222,28 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     async bookParse() {
         const bookUrl = document.location.href.replace("/MainIndex/", "");
         const bookname = document.querySelector("h1.story-title").innerText.trim();
-        const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(bookUrl, undefined);
+        const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(bookUrl, undefined);
         const author = dom.querySelector(".author-name").innerText.trim();
         const introDom = dom.querySelector(".introduce");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_4__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = dom.querySelector("#hasTicket div.pic img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
         }
         additionalMetadate.tags = Array.from(dom.querySelectorAll("ul.tag-list > li.tag > a")).map((a) => {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_5__.rm)("span.icn", false, a);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)("span.icn", false, a);
             return a.innerText.trim().replace(/\(\d+\)$/, "");
         });
         if (dom.querySelector(".d-banner")) {
             const _beitouUrl = dom.querySelector(".d-banner")?.style.backgroundImage.split('"');
             if (_beitouUrl?.length === 3) {
                 const beitouUrl = _beitouUrl[1];
-                const beitou = new _main_Attachment__WEBPACK_IMPORTED_MODULE_6__/* .AttachmentClass */ .q(beitouUrl, `beitou.${beitouUrl.split(".").slice(-1)[0]}`, "TM");
+                const beitou = new _main_Attachment__WEBPACK_IMPORTED_MODULE_7__/* .AttachmentClass */ .q(beitouUrl, `beitou.${beitouUrl.split(".").slice(-1)[0]}`, "TM");
                 beitou.init();
                 additionalMetadate.attachments = [beitou];
             }
@@ -35261,7 +35261,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         for (const elem of Array.from(chapterElems)) {
             const chapterName = elem.getAttribute("title")?.trim() ?? "";
             const chapterUrl = elem.href;
-            const sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .getSectionName */ .lq)(elem, sections, getName);
+            const sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_4__/* .getSectionName */ .lq)(elem, sections, getName);
             if (sectionName && _sectionName !== sectionName) {
                 _sectionName = sectionName;
                 sectionNumber++;
@@ -35274,7 +35274,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
                     elem.firstElementChild?.getAttribute("class") === "icn_vip");
             };
             const isPaid = null;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_7__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_8__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -35293,7 +35293,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
                 .querySelector(".user-bar > .top-link > .normal-link")
                 ?.innerHTML.includes("您好，SF游客");
             if (chapter.isVIP && !isLogin) {
-                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status */ .nW.aborted;
+                chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
             }
             chapters.push(chapter);
         }
@@ -35312,11 +35312,11 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const chapterId = chapterUrl.split("/").slice(-2, -1)[0];
         async function publicChapter() {
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
             chapterName = doc.querySelector("h1.article-title").innerText.trim();
             const content = doc.querySelector(".article-content");
             if (content) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -35341,7 +35341,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
             async function getvipChapterImage(vipChapterImageUrl, vipChapterName) {
                 let retryTime = 0;
                 function fetchVipChapterImage(vipChapterImageUrlI) {
-                    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter]请求 ${vipChapterImageUrlI} Referer ${chapterUrl} 重试次数 ${retryTime}`);
+                    _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${vipChapterImageUrlI} Referer ${chapterUrl} 重试次数 ${retryTime}`);
                     return fetch(vipChapterImageUrlI, {
                         headers: {
                             accept: "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
@@ -35355,7 +35355,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
                         .then((response) => response.blob())
                         .then((blob) => {
                         if (blob.size === 53658 || blob.size === 42356) {
-                            _log__WEBPACK_IMPORTED_MODULE_4___default().error(`[Chapter]请求 ${vipChapterImageUrlI} 失败 Referer ${chapterUrl}`);
+                            _log__WEBPACK_IMPORTED_MODULE_5___default().error(`[Chapter]请求 ${vipChapterImageUrlI} 失败 Referer ${chapterUrl}`);
                             if (retryTime < _setting__WEBPACK_IMPORTED_MODULE_11__/* .retryLimit */ .Iz) {
                                 retryTime++;
                                 return fetchVipChapterImage(vipChapterImageUrlI);
@@ -35368,23 +35368,23 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
                             return blob;
                         }
                     })
-                        .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+                        .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
                 }
                 const vipChapterImageBlob = await fetchVipChapterImage(vipChapterImageUrl);
-                const vipChapterImage = new _main_Attachment__WEBPACK_IMPORTED_MODULE_6__/* .AttachmentClass */ .q(vipChapterImageUrl, vipChapterName, "naive");
+                const vipChapterImage = new _main_Attachment__WEBPACK_IMPORTED_MODULE_7__/* .AttachmentClass */ .q(vipChapterImageUrl, vipChapterName, "naive");
                 if (vipChapterImageBlob) {
                     vipChapterImage.Blob = vipChapterImageBlob;
-                    vipChapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status */ .nW.finished;
+                    vipChapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.finished;
                 }
                 else {
-                    vipChapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status */ .nW.failed;
+                    vipChapterImage.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.failed;
                 }
                 return vipChapterImage;
             }
             const isLogin = document.querySelector(".user-bar > .top-link > .normal-link")
                 ?.childElementCount === 3;
             if (isLogin) {
-                const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+                const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
                 const chapterNameI = dom.querySelector("h1.article-title").innerText.trim();
                 isPaid = dom.querySelector(".pay-section") === null;
                 if (isPaid) {
@@ -35393,7 +35393,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
                         const vipChapterImageUrl = vipChapterDom.src;
                         const vipChapterName = `vipCHapter${chapterId}.gif`;
                         const vipChapterImage = await getvipChapterImage(vipChapterImageUrl, vipChapterName);
-                        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .putAttachmentClassCache */ .Ld)(vipChapterImage);
+                        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .putAttachmentClassCache */ .Ld)(vipChapterImage);
                         const contentImages = [vipChapterImage];
                         const img = document.createElement("img");
                         img.setAttribute("data-src-address", vipChapterName);
@@ -35443,16 +35443,16 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Shaoniandream: () => (/* binding */ Shaoniandream)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
-/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("crypto-js");
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/GM.ts");
 
 
@@ -35463,7 +35463,7 @@ class Sfacg extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 
 
 
-class Shaoniandream extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
+class Shaoniandream extends _rules__WEBPACK_IMPORTED_MODULE_6__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -35476,15 +35476,15 @@ class Shaoniandream extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass
         const bookname = document.querySelector(".bookdetail-name .title").innerText.trim();
         const author = document.querySelector(".bookdetail-name .penName").innerText.trim();
         const introDom = document.querySelector(".bookdetial-jianjie");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".bookdetail-top .cover img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll(".bookdetail-top .label-list span")).map((a) => a.innerText.trim());
         const chapters = [];
@@ -35511,7 +35511,7 @@ class Shaoniandream extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass
                 const isPaid = () => {
                     return true;
                 };
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -35537,15 +35537,15 @@ class Shaoniandream extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass
                     return false;
                 };
                 if (isVIP()) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_3__/* .Status */ .nW.aborted;
                     if (chapter.isPaid) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.pending;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_3__/* .Status */ .nW.pending;
                     }
                 }
                 chapters.push(chapter);
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -35579,7 +35579,7 @@ async function MemberSingleChapter(bookID, chapterID, chapterName) {
                     resolve(resultI);
                 }
                 else {
-                    _log__WEBPACK_IMPORTED_MODULE_4___default().error(`response status = ${response.status}`);
+                    _log__WEBPACK_IMPORTED_MODULE_2___default().error(`response status = ${response.status}`);
                     const resultI = JSON.parse(`{"msg":"ND error"}`);
                     resolve(resultI);
                 }
@@ -35612,7 +35612,7 @@ async function MemberSingleChapter(bookID, chapterID, chapterName) {
                     resolve(resultI);
                 }
                 else {
-                    _log__WEBPACK_IMPORTED_MODULE_4___default().error(`response status = ${response.status}`);
+                    _log__WEBPACK_IMPORTED_MODULE_2___default().error(`response status = ${response.status}`);
                     const resultI = JSON.parse(`{"msg":"ND error"}`);
                     resolve(resultI);
                 }
@@ -35620,7 +35620,7 @@ async function MemberSingleChapter(bookID, chapterID, chapterName) {
         });
     });
     function base64Decode(str) {
-        return crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.stringify(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Base64.parse(str));
+        return crypto_js__WEBPACK_IMPORTED_MODULE_7__.enc.Utf8.stringify(crypto_js__WEBPACK_IMPORTED_MODULE_7__.enc.Base64.parse(str));
     }
     if (singlechapter.msg === "ND error")
         throw new Error("chapterSign resolve error");
@@ -35632,12 +35632,12 @@ async function MemberSingleChapter(bookID, chapterID, chapterName) {
         const chapterpic = singlechapter.data.chapterpic;
         let content = "";
         for (let i = 0; i < listArr.length; i++) {
-            const tempContent = crypto_js__WEBPACK_IMPORTED_MODULE_0__.AES.decrypt(listArr[i].content, crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse(tempKey), {
-                iv: crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse(tempVi),
-                mode: crypto_js__WEBPACK_IMPORTED_MODULE_0__.mode.CBC,
-                padding: crypto_js__WEBPACK_IMPORTED_MODULE_0__.pad.Pkcs7
+            const tempContent = crypto_js__WEBPACK_IMPORTED_MODULE_7__.AES.decrypt(listArr[i].content, crypto_js__WEBPACK_IMPORTED_MODULE_7__.enc.Utf8.parse(tempKey), {
+                iv: crypto_js__WEBPACK_IMPORTED_MODULE_7__.enc.Utf8.parse(tempVi),
+                mode: crypto_js__WEBPACK_IMPORTED_MODULE_7__.mode.CBC,
+                padding: crypto_js__WEBPACK_IMPORTED_MODULE_7__.pad.Pkcs7
             });
-            content += tempContent.toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8);
+            content += tempContent.toString(crypto_js__WEBPACK_IMPORTED_MODULE_7__.enc.Utf8);
             content += "\n";
         }
         let contentText = content
@@ -35654,11 +35654,11 @@ async function MemberSingleChapter(bookID, chapterID, chapterName) {
                 chapterImgs.appendChild(imgi);
             }
         }
-        const postscript = crypto_js__WEBPACK_IMPORTED_MODULE_0__.AES.decrypt(singlechapter.data.miaoshu, crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse(tempKey), {
-            iv: crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse(tempVi),
-            mode: crypto_js__WEBPACK_IMPORTED_MODULE_0__.mode.CBC,
-            padding: crypto_js__WEBPACK_IMPORTED_MODULE_0__.pad.Pkcs7
-        }).toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8) ?? "";
+        const postscript = crypto_js__WEBPACK_IMPORTED_MODULE_7__.AES.decrypt(singlechapter.data.miaoshu, crypto_js__WEBPACK_IMPORTED_MODULE_7__.enc.Utf8.parse(tempKey), {
+            iv: crypto_js__WEBPACK_IMPORTED_MODULE_7__.enc.Utf8.parse(tempVi),
+            mode: crypto_js__WEBPACK_IMPORTED_MODULE_7__.mode.CBC,
+            padding: crypto_js__WEBPACK_IMPORTED_MODULE_7__.pad.Pkcs7
+        }).toString(crypto_js__WEBPACK_IMPORTED_MODULE_7__.enc.Utf8) ?? "";
         const contentRaw = document.createElement("pre");
         contentRaw.innerHTML = content;
         const _contentHTML = document.createElement("div");
@@ -35710,7 +35710,7 @@ async function MemberSingleChapter(bookID, chapterID, chapterName) {
         };
     }
     else if (singlechapter.status == 3) {
-        _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`请登录后阅读 chapterID = ${chapterID}`);
+        _log__WEBPACK_IMPORTED_MODULE_2___default().warn(`请登录后阅读 chapterID = ${chapterID}`);
         return {
             chapterName: chapterName,
             contentRaw: null,
@@ -35721,7 +35721,7 @@ async function MemberSingleChapter(bookID, chapterID, chapterName) {
         };
     }
     else if (singlechapter.status == 4) {
-        _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`章节不存在 chapterID = ${chapterID}`);
+        _log__WEBPACK_IMPORTED_MODULE_2___default().warn(`章节不存在 chapterID = ${chapterID}`);
         return {
             chapterName: chapterName,
             contentRaw: null,
@@ -35732,7 +35732,7 @@ async function MemberSingleChapter(bookID, chapterID, chapterName) {
         };
     }
     else {
-        _log__WEBPACK_IMPORTED_MODULE_4___default().error(`解析失败, status = ${singlechapter.status}, msg = ${singlechapter.msg}`);
+        _log__WEBPACK_IMPORTED_MODULE_2___default().error(`解析失败, status = ${singlechapter.status}, msg = ${singlechapter.msg}`);
         throw new Error(`解析失败, status = ${singlechapter.status}, msg = ${singlechapter.msg}`);
     }
 }
@@ -35747,18 +35747,18 @@ async function MemberSingleChapter(bookID, chapterID, chapterName) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Shuhai: () => (/* binding */ Shuhai)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/misc.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -35770,7 +35770,7 @@ async function MemberSingleChapter(bookID, chapterID, chapterName) {
 
 
 
-class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_10__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -35785,20 +35785,20 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             .trim();
         const introDom = document.querySelector("div.book-info-bookintro") ||
             document.querySelector("div.book-info-bookintro-all");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_5__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book-cover-wrapper > img").getAttribute("data-original");
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_6___default().error(error));
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll(".book-info-bookstate > .tag")).map((span) => span.innerText.trim());
         const chapters = [];
         if (document.querySelectorAll("#catalog > .chapter-item").length === 0) {
-            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_4__/* .sleep */ .yy)(3000);
+            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_3__/* .sleep */ .yy)(3000);
         }
         const dsList = document.querySelectorAll("#catalog > .chapter-item");
         let chapterNumber = 0;
@@ -35823,7 +35823,7 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 };
                 const chapterName = a.innerText.trim();
                 const chapterUrl = a.href;
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_8__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -35842,12 +35842,12 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                     return false;
                 };
                 if (isVIP() && !(isLogin() && chapter.isPaid)) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .nW.aborted;
                 }
                 chapters.push(chapter);
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_9__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -35859,14 +35859,14 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
             chapterName = doc.querySelector("div.chapter-name").innerText
                 .replace("正文 ", "")
                 .trim();
             const content = doc.querySelector("#reader-content > div:nth-child(1)");
             if (content) {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)("div.chaper-info", false, content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_10__/* .cleanDOM */ .an)(content, "TM");
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("div.chaper-info", false, content);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM");
                 return {
                     chapterName,
                     contentRaw: content,
@@ -35916,19 +35916,19 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Sosadfun: () => (/* binding */ Sosadfun)
 /* harmony export */ });
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/rules.ts");
 
 
 
 
 
 
-class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_5__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -35955,7 +35955,7 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         let introDom;
         if (needLogin()) {
             alert("本小说需要登录后浏览！");
-            throw new _main_main__WEBPACK_IMPORTED_MODULE_1__/* .ExpectError */ .K5("本小说需要登录后浏览！");
+            throw new _main_main__WEBPACK_IMPORTED_MODULE_2__/* .ExpectError */ .K5("本小说需要登录后浏览！");
         }
         else {
             introDom = document.createElement("div");
@@ -35977,7 +35977,7 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             introductionHTML = null;
         }
         else {
-            const { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .an)(introDom, "TM");
+            const { dom: introCleanDom, text: introCleantext, images: introCleanimages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .cleanDOM */ .an)(introDom, "TM");
             introduction = introCleantext;
             introductionHTML = introCleanDom;
             if (introCleanimages) {
@@ -36019,7 +36019,7 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         chapterName = doc.querySelector("strong.h3").innerText.trim();
         const content = document.createElement("div");
         const _content = doc.querySelector(".main-text.no-selection > span[id^=full]");
@@ -36030,9 +36030,9 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             }
         }
         if (_content) {
-            let { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .an)(content, "TM");
+            let { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .cleanDOM */ .an)(content, "TM");
             if (_authorSay) {
-                const { dom: authorSayDom, text: authorySayText, images: authorSayImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .an)(_authorSay, "TM");
+                const { dom: authorSayDom, text: authorySayText, images: authorSayImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .cleanDOM */ .an)(_authorSay, "TM");
                 const hrElem = document.createElement("hr");
                 const authorSayDiv = document.createElement("div");
                 authorSayDiv.className = "authorSay";
@@ -36078,16 +36078,16 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Tadu: () => (/* binding */ Tadu)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -36097,7 +36097,7 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
 
 
 
-class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -36108,15 +36108,15 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         const bookname = document.querySelector("div.bookNm > a.bkNm").innerText.trim();
         const author = document.querySelector("div.authorInfo > a.author > span").innerText.trim();
         const introDom = document.querySelector("div.boxCenter.boxT.clearfix > div.lf.lfO > p.intro");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("a.bookImg > img").getAttribute("data-src");
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         const chapters = [];
         const cos = document.querySelectorAll("div.lf.lfT > li > div > a");
@@ -36131,7 +36131,7 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
             const isPaid = () => {
                 return false;
             };
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -36154,7 +36154,7 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
             }
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -36166,8 +36166,8 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterUrl}`);
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter]请求 ${chapterUrl}`);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
             const content = document.createElement("div");
             const _bookPartResourceUrl = doc
                 .getElementById("bookPartResourceUrl")
@@ -36177,8 +36177,8 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
                 const rootDomain = `${currentUrl.protocol}//${currentUrl.host}`;
                 const bookPartResourceUrl = new URL(_bookPartResourceUrl, rootDomain);
                 bookPartResourceUrl.searchParams.set("callback", "callback");
-                _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${bookPartResourceUrl.toString()}`);
-                const jsonpText = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .gfetch */ ._V)(bookPartResourceUrl.toString(), {
+                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter]请求 ${bookPartResourceUrl.toString()}`);
+                const jsonpText = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ ._V)(bookPartResourceUrl.toString(), {
                     headers: {
                         accept: "*/*",
                         Referer: document.location.origin,
@@ -36192,7 +36192,7 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
                         throw new Error(`Bad response! ${bookPartResourceUrl.toString()}`);
                     }
                 })
-                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
                 if (!jsonpText) {
                     throw new Error("jsonp request failed!");
                 }
@@ -36200,7 +36200,7 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
                 const contentObj = getContentObj();
                 if (typeof contentObj === "object") {
                     content.innerHTML = contentObj.content;
-                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
+                    const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM");
                     return {
                         chapterName,
                         contentRaw: content,
@@ -36249,15 +36249,15 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   XRUnionread: () => (/* binding */ XRUnionread)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/rules.ts");
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/GM.ts");
+/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/GM.ts");
 
 
 
@@ -36266,7 +36266,7 @@ class Tadu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 
 
 
-class XRUnionread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class XRUnionread extends _rules__WEBPACK_IMPORTED_MODULE_5__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -36293,17 +36293,17 @@ class XRUnionread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass *
         const coverDom = document.querySelector("img.bookcover");
         const coverUrl = coverDom.src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
         }
         additionalMetadate.tags = Array.from(document.querySelectorAll("div.zuopin span.novel_type"))?.map((t) => t.innerText) ?? [];
         additionalMetadate.tags.push(document.querySelector("div.novel_type_name")?.innerText ?? "");
         const url = `https://hk-api.xrzww.com/api/directoryList?nid=${bookID}&orderBy=0`;
         const directoryList = await new Promise((resolve) => {
-            (0,_lib_GM__WEBPACK_IMPORTED_MODULE_4__/* ._GM_xmlhttpRequest */ .nV)({
+            (0,_lib_GM__WEBPACK_IMPORTED_MODULE_7__/* ._GM_xmlhttpRequest */ .nV)({
                 url: url,
                 method: "GET",
                 headers: {
@@ -36316,7 +36316,7 @@ class XRUnionread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass *
                         resultI = JSON.parse(String(response.responseText));
                     }
                     else {
-                        _log__WEBPACK_IMPORTED_MODULE_3___default().error(`response status = ${response.status}`);
+                        _log__WEBPACK_IMPORTED_MODULE_2___default().error(`response status = ${response.status}`);
                         resultI = JSON.parse('{"message":"nd error"}');
                     }
                     resolve(resultI);
@@ -36363,7 +36363,7 @@ class XRUnionread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass *
             const chapter_id = c.chapter_id;
             const chapter_order = c.chapter_order;
             const chapterUrl = `https://hk-api.xrzww.com/api/readNovelByWeb?nid=${nid}&vid=${vid}&chapter_id=${chapter_id}&chapter_order=${chapter_order}&showpic=false`;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -36390,7 +36390,7 @@ class XRUnionread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass *
             }
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -36401,9 +36401,9 @@ class XRUnionread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass *
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterUrl}`);
+        _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`[Chapter]请求 ${chapterUrl}`);
         const chapter = await new Promise((resolve) => {
-            (0,_lib_GM__WEBPACK_IMPORTED_MODULE_4__/* ._GM_xmlhttpRequest */ .nV)({
+            (0,_lib_GM__WEBPACK_IMPORTED_MODULE_7__/* ._GM_xmlhttpRequest */ .nV)({
                 url: chapterUrl,
                 method: "GET",
                 headers: {
@@ -36416,7 +36416,7 @@ class XRUnionread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass *
                         resultI = JSON.parse(String(response.responseText));
                     }
                     else {
-                        _log__WEBPACK_IMPORTED_MODULE_3___default().error(`response status = ${response.status}`);
+                        _log__WEBPACK_IMPORTED_MODULE_2___default().error(`response status = ${response.status}`);
                         resultI = JSON.parse('{"message":"nd error"}');
                     }
                     resolve(resultI);
@@ -36487,18 +36487,18 @@ class XRUnionread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass *
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Xrzww: () => (/* binding */ Xrzww)
 /* harmony export */ });
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/rules.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/misc.ts");
-/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/GM.ts");
-/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
-/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/GM.ts");
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("crypto-js");
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_9__);
 
 
 
@@ -36509,7 +36509,7 @@ class XRUnionread extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass *
 
 
 
-class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
+class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_3__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -36552,11 +36552,11 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
         introductionHTML.innerText = introduction;
         const additionalMetadate = {};
         const coverUrl = `${ossBase}${webNovelDetail.data.novel_cover}`;
-        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
             .then((coverClass) => {
             additionalMetadate.cover = coverClass;
         })
-            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_0___default().error(error));
         additionalMetadate.tags = webNovelDetail.data.novel_tags
             .split(",")
             .map((t) => t.trim());
@@ -36639,7 +36639,7 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
             }
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_2__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -36659,9 +36659,9 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
             }
             const key = "9495ef469eb3e7ae8ef3";
             const timestamp = Math.round(Date.now() / 1000).toString();
-            const signature = crypto_js__WEBPACK_IMPORTED_MODULE_0__.MD5(device + timestamp + key).toString();
+            const signature = crypto_js__WEBPACK_IMPORTED_MODULE_9__.MD5(device + timestamp + key).toString();
             return new Promise((resolve) => {
-                (0,_lib_GM__WEBPACK_IMPORTED_MODULE_7__/* ._GM_xmlhttpRequest */ .nV)({
+                (0,_lib_GM__WEBPACK_IMPORTED_MODULE_8__/* ._GM_xmlhttpRequest */ .nV)({
                     url: url,
                     headers: {
                         "Authorization": Authorization,
@@ -36683,7 +36683,7 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
                             resolve(resultI);
                         }
                         else {
-                            _log__WEBPACK_IMPORTED_MODULE_3___default().error(`response status = ${response.status}`);
+                            _log__WEBPACK_IMPORTED_MODULE_0___default().error(`response status = ${response.status}`);
                             resolve(JSON.parse('{"message":"try again!"}'));
                         }
                     },
@@ -36725,15 +36725,15 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
                 }
                 let content = readNew.data.content;
                 try {
-                    const decrypted = crypto_js__WEBPACK_IMPORTED_MODULE_0__.DES.decrypt(content, crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse("VT5aj59QCjf2J8F3"), {
-                        iv: crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8.parse("259c4e9881b5fe05"),
-                        mode: crypto_js__WEBPACK_IMPORTED_MODULE_0__.mode.CBC,
-                        padding: crypto_js__WEBPACK_IMPORTED_MODULE_0__.pad.Pkcs7,
+                    const decrypted = crypto_js__WEBPACK_IMPORTED_MODULE_9__.DES.decrypt(content, crypto_js__WEBPACK_IMPORTED_MODULE_9__.enc.Utf8.parse("VT5aj59QCjf2J8F3"), {
+                        iv: crypto_js__WEBPACK_IMPORTED_MODULE_9__.enc.Utf8.parse("259c4e9881b5fe05"),
+                        mode: crypto_js__WEBPACK_IMPORTED_MODULE_9__.mode.CBC,
+                        padding: crypto_js__WEBPACK_IMPORTED_MODULE_9__.pad.Pkcs7,
                     });
-                    content = decrypted.toString(crypto_js__WEBPACK_IMPORTED_MODULE_0__.enc.Utf8);
+                    content = decrypted.toString(crypto_js__WEBPACK_IMPORTED_MODULE_9__.enc.Utf8);
                 }
                 catch (e) {
-                    _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`VIP章节解密失败：${e}`);
+                    _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`VIP章节解密失败：${e}`);
                     throw new Error("VIP章节解密失败！");
                 }
                 contentRaw.innerText = content;
@@ -36745,8 +36745,8 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
         else {
             contentRaw.innerText = "";
         }
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(contentRaw, "TM");
-        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_9__/* .sleep */ .yy)(4200 * Math.random());
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__/* .cleanDOM */ .an)(contentRaw, "TM");
+        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_7__/* .sleep */ .yy)(4200 * Math.random());
         return {
             chapterName,
             contentRaw,
@@ -36768,13 +36768,13 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Youdubook: () => (/* binding */ Youdubook)
 /* harmony export */ });
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/misc.ts");
 
@@ -36785,7 +36785,7 @@ class Xrzww extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
 
 
 
-class Youdubook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Youdubook extends _rules__WEBPACK_IMPORTED_MODULE_3__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -36832,7 +36832,7 @@ class Youdubook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
             .then((coverClass) => {
             additionalMetadate.cover = coverClass;
         })
-            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_2___default().error(error));
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_0___default().error(error));
         additionalMetadate.tags = webNovelDetail.data.novel_tags
             .split(",")
             .map((t) => t.trim());
@@ -36888,7 +36888,7 @@ class Youdubook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
                 apiBase,
                 headers: baseHeader,
             };
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -36905,17 +36905,17 @@ class Youdubook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
             });
             if (signIn) {
                 if (chapter.isVIP && chapter.isPaid === false) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
                 }
             }
             else {
                 if (chapter.isVIP) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
                 }
             }
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_2__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -36967,17 +36967,17 @@ class Youdubook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Zongheng: () => (/* binding */ Zongheng)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/GM.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/GM.ts");
 
 
 
@@ -36988,7 +36988,7 @@ class Youdubook extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
 
 
 
-class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -36999,7 +36999,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         bookUrl = document.location.href.replace(/\?tabsName=.*$/, "");
         if (bookUrl != document.location.href) {
             document.location.href = bookUrl;
-            return new _main_Book__WEBPACK_IMPORTED_MODULE_1__/* .Book */ .E({
+            return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
                 bookUrl,
                 bookname: "1",
                 author: "1",
@@ -37012,7 +37012,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         const match = bookUrl.match(/\/detail\/(\d+)/);
         const bookId = match ? match[1] : null;
         if (!bookId) {
-            return new _main_Book__WEBPACK_IMPORTED_MODULE_1__/* .Book */ .E({
+            return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
                 bookUrl,
                 bookname: "1",
                 author: "1",
@@ -37025,11 +37025,11 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         const bookname = document.querySelector(".book-info--title > span").innerText.trim();
         const author = document.querySelector("a.author-info--name").innerText.trim();
         const introDom = document.querySelector("section.detail-work-info--introduction");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("img.book-info--coverImage-img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -37041,7 +37041,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             const formData = new URLSearchParams();
             formData.append("bookId", bookId);
             return new Promise((resolve) => {
-                (0,_lib_GM__WEBPACK_IMPORTED_MODULE_5__/* ._GM_xmlhttpRequest */ .nV)({
+                (0,_lib_GM__WEBPACK_IMPORTED_MODULE_9__/* ._GM_xmlhttpRequest */ .nV)({
                     url: url,
                     headers: {
                         Cookie: document.cookie,
@@ -37097,7 +37097,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
                         options: {},
                     });
                     if (isVIP && !isPaid) {
-                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_7__/* .Status */ .nW.aborted;
+                        chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
                     }
                     chapters.push(chapter);
                 }
@@ -37106,7 +37106,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         else {
             _log__WEBPACK_IMPORTED_MODULE_4___default().error(`获取目录失败 ${result.message}`);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_1__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -37118,10 +37118,10 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function publicChapter() {
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_8__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
             const content = doc.querySelector("div.content");
             if (content) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .an)(content, "TM");
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM");
                 return {
                     chapterName: chapterName,
                     contentRaw: content,
@@ -37145,7 +37145,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         async function vipChapter() {
             const contentRaw = document.createElement("div");
             contentRaw.innerText = "VIP章节内容无法获取,请前往任意章节页再下载";
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_9__/* .cleanDOM */ .an)(contentRaw, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(contentRaw, "TM");
             return {
                 chapterName: chapterName,
                 contentRaw: contentRaw,
@@ -37174,16 +37174,16 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   I99csw: () => (/* binding */ I99csw)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -37193,7 +37193,7 @@ class Zongheng extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
 
 
 
-class I99csw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class I99csw extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.concurrencyLimit = 1;
@@ -37206,14 +37206,14 @@ class I99csw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
         const bookname = $("div#book_info > h2").innerText.trim();
         const author = $('div#book_info > h4 > a').innerText.trim();
         const intro = $("div#book_info > div.intro");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(intro);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_4__/* .introDomHandle */ .HV)(intro);
         const additionalMetadate = {};
         const coverUrl = $("div#book_info img").getAttribute("src");
-        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])("https:" + coverUrl, "naive", "cover-")
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])("https:" + coverUrl, "naive", "cover-")
             .then((coverClass) => {
             additionalMetadate.cover = coverClass;
         })
-            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
         const chapters = [];
         let chapter_id = 0;
         const chapterList = Array.from(document.querySelectorAll("dl#dir > dd > a"));
@@ -37238,7 +37238,7 @@ class I99csw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             if (sectionChapterNumber !== null)
                 sectionChapterNumber += 1;
             chapter_id += 1;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_7__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl: chapterUrl,
@@ -37255,7 +37255,7 @@ class I99csw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             });
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -37266,7 +37266,7 @@ class I99csw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const html = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getFrameContentConditionWithWindow */ .Q2)(chapterUrl, (frame) => {
+        const html = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getFrameContentConditionWithWindow */ .Q2)(chapterUrl, (frame) => {
             frame.contentWindow?.scrollTo(0, frame.contentWindow?.document?.body?.scrollHeight ?? 0);
             const doc = frame.contentWindow?.document ?? null;
             if (doc) {
@@ -37291,9 +37291,9 @@ class I99csw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                     contentRaw.appendChild(p);
                 }
             });
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__.rm)("abbm", true, contentRaw);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("abbm", true, contentRaw);
         }
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(contentRaw, "TM");
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(contentRaw, "TM");
         html?.remove();
         return {
             chapterName,
@@ -37316,15 +37316,15 @@ class I99csw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Bilibili: () => (/* binding */ Bilibili)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -37333,7 +37333,7 @@ class I99csw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
 
 
 
-class Bilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Bilibili extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -37350,14 +37350,14 @@ class Bilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             .trim();
         const introDom = document.querySelector("div.introduce");
         const coverUrl = document.querySelector("img.cover").src;
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         const chapters = [];
         const bookListURL = `https://api.bilibili.com/x/article/list/web/articles?id=${bookID}`;
@@ -37371,7 +37371,7 @@ class Bilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         let i = 0;
         for (const article of booklist.data.articles) {
             i++;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl: `https://www.bilibili.com/read/cv${article.id}`,
@@ -37388,7 +37388,7 @@ class Bilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             });
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -37399,7 +37399,7 @@ class Bilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const chapterDom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getHtmlDOM */ .wA)(chapterUrl);
+        const chapterDom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(chapterUrl);
         const content = chapterDom.querySelector("div.opus-module-content");
         const chapterimg = document.createElement("img");
         chapterimg.src = options["chapterimg"][0];
@@ -37407,7 +37407,7 @@ class Bilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         const chapterimgTitle = document.createElement("p");
         chapterimgTitle.innerText = "章节封面插图";
         content.insertBefore(chapterimgTitle, chapterimg);
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .an)(content, "TM");
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM");
         return {
             chapterName,
             contentRaw: content,
@@ -37429,19 +37429,19 @@ class Bilibili extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Fushuwang: () => (/* binding */ Fushuwang)
 /* harmony export */ });
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/rules.ts");
 
 
 
 
 
 
-class Fushuwang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Fushuwang extends _rules__WEBPACK_IMPORTED_MODULE_5__/* .BaseRuleClass */ .Q {
     saveOptions;
     constructor() {
         super();
@@ -37467,7 +37467,7 @@ class Fushuwang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
             const chapterName = `page${i}`;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_1__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -37484,7 +37484,7 @@ class Fushuwang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
             });
             chapters.push(chapter);
         }
-        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_2__/* .Book */ .E({
+        const book = new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -37497,13 +37497,13 @@ class Fushuwang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
         return book;
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         const content = doc.querySelector("#text");
         if (content) {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("span", true, content);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("p.pageLink", true, content);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("script", true, content);
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .an)(content, "TM");
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("span", true, content);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("p.pageLink", true, content);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("script", true, content);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .cleanDOM */ .an)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -37800,16 +37800,16 @@ const haitangtxt = () => getClass(replaceHaitangtxtImage);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Hetushu: () => (/* binding */ Hetushu)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -37819,7 +37819,7 @@ const haitangtxt = () => getClass(replaceHaitangtxtImage);
 
 
 
-class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -37829,15 +37829,15 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
         const bookname = document.querySelector(".book_info > h2").innerText.trim();
         const author = document.querySelector(".book_info > div:nth-child(3) > a:nth-child(1)").innerText.trim();
         const introDom = document.querySelector(".intro");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_4__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book_info > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
         }
         const chapters = [];
         const chapterList = document.querySelector("#dir")?.childNodes;
@@ -37864,7 +37864,7 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
                     const chapterUrl = a.href;
                     const isVIP = false;
                     const isPaid = false;
-                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
                         bookUrl,
                         bookname,
                         chapterUrl,
@@ -37883,7 +37883,7 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
                 }
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -37912,7 +37912,7 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
                 bid,
                 "r" + sid + ".json",
             ].join("/");
-            _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
+            _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[Chapter]请求 ${url} Referer ${chapterUrl}`);
             const token = await fetch(url, {
                 headers: {
                     accept: "*/*",
@@ -37927,13 +37927,13 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
                 credentials: "include",
             })
                 .then((response) => response.headers.get("token"))
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
             if (token) {
                 const tokenDict = atob(token)
                     .split(/[A-Z]+%/)
                     .map((v) => parseInt(v));
                 const thisBody = doc.querySelector("#content");
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__.rm)(".mask.mask2", false, thisBody);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)(".mask.mask2", false, thisBody);
                 let b = 0;
                 let star = 0;
                 for (let i = 0; i < thisBody.childNodes.length; i++) {
@@ -37963,21 +37963,21 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
                 }
             }
         }
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         chapterName = doc.querySelector("#content .h2").innerText.trim();
         await sorfPage();
         const content = doc.querySelector("#content");
         if (content) {
             const tagRemoved = "h2, acronym, bdo, big, cite, code, dfn, kbd, q, s, samp, strike, tt, u, var";
             tagRemoved.split(", ").forEach((s) => {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_6__.rm)(s, true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)(s, true, content);
             });
             Array.from(content.querySelectorAll("div")).map((oldNode) => {
                 const newNode = document.createElement("p");
                 newNode.innerHTML = oldNode.innerHTML;
                 oldNode.parentNode?.replaceChild(newNode, oldNode);
             });
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -38010,15 +38010,15 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Idejian: () => (/* binding */ Idejian)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/GM.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/GM.ts");
 
 
 
@@ -38027,7 +38027,7 @@ class Hetushu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
 
 
 
-class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_6__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -38081,11 +38081,11 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
             author = _author.textContent.trim();
         }
         const introDom = document.querySelector(".brief_con");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".book_img > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
@@ -38134,7 +38134,7 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
         const chapterTrueUrl = chapterUrl.replace("https://www.idejian.com", "https://wechat.idejian.com/api/wechat").replace(".html", "");
         _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterTrueUrl}，Refer：${chapterUrl}`);
         const chapter = await new Promise((resolve) => {
-            (0,_lib_GM__WEBPACK_IMPORTED_MODULE_6__/* ._GM_xmlhttpRequest */ .nV)({
+            (0,_lib_GM__WEBPACK_IMPORTED_MODULE_7__/* ._GM_xmlhttpRequest */ .nV)({
                 url: chapterTrueUrl,
                 headers: { 'cache-control': 'no-cache', 'accept-encoding': 'gzip' },
                 method: "GET",
@@ -38157,7 +38157,7 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
         if (content) {
             const Dcontent = document.createElement("div");
             Dcontent.innerHTML = content;
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .an)(Dcontent, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(Dcontent, "TM");
             return {
                 chapterName,
                 contentRaw: Dcontent,
@@ -38190,16 +38190,16 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Kanunu8: () => (/* binding */ Kanunu8)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_readability__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/readability.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_readability__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/readability.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -38209,7 +38209,7 @@ class Idejian extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
 
 
 
-class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -38228,13 +38228,13 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
             .trim() ?? "";
         const introDom = Array.from(document.body.querySelectorAll("td, p"))
             .filter((elem) => elem.innerText.length !== 0)
-            .map((elem) => [elem, (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .getNodeTextLength */ .K4)(elem)])
+            .map((elem) => [elem, (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .getNodeTextLength */ .K4)(elem)])
             .sort(softByValue)
             .slice(-1)?.[0][0];
         let introduction = null, introductionHTML = null;
         if (introDom) {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("a", true, introDom);
-            [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("a", true, introDom);
+            [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_4__/* .introDomHandle */ .HV)(introDom);
         }
         let aList = null;
         let sections = null;
@@ -38267,9 +38267,9 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
         else {
             const tables = document.querySelectorAll("table");
             const _table = Array.from(tables)
-                .map((tb) => [tb, (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .getMaxDepth */ .e_)(tb)])
+                .map((tb) => [tb, (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .getMaxDepth */ .e_)(tb)])
                 .filter((ds) => ds[1] === 4)
-                .filter((ds) => (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .centerDetct */ .sy)(ds[0])[0])
+                .filter((ds) => (0,_lib_rule__WEBPACK_IMPORTED_MODULE_4__/* .centerDetct */ .sy)(ds[0])[0])
                 .map((ds) => [
                 ds[0],
                 Array.from(ds[0].querySelectorAll("a")).filter(aListFilter)
@@ -38288,11 +38288,11 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
         if (_cover.length === 1) {
             const coverUrl = _cover[0].src;
             if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
-                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+                    .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
             }
         }
         const chapters = [];
@@ -38307,7 +38307,7 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
             const chapterName = elem.innerText.trim();
             const chapterUrl = elem.href;
             if (sections && getName) {
-                const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .getSectionName */ .lq)(elem, sections, getName);
+                const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_4__/* .getSectionName */ .lq)(elem, sections, getName);
                 if (_sectionName && sectionName !== _sectionName) {
                     sectionName = _sectionName;
                     sectionNumber++;
@@ -38318,7 +38318,7 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
             }
             const isVIP = false;
             const isPaid = false;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -38335,7 +38335,7 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
             });
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -38346,11 +38346,11 @@ class Kanunu8 extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const obj = await (0,_lib_readability__WEBPACK_IMPORTED_MODULE_7__.fetchAndParse)(chapterUrl, this.charset);
+        const obj = await (0,_lib_readability__WEBPACK_IMPORTED_MODULE_3__.fetchAndParse)(chapterUrl, this.charset);
         if (obj) {
             const content = obj.content;
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("a", true, content);
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("a", true, content);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM");
             return {
                 chapterName,
                 contentRaw: content,
@@ -38384,16 +38384,16 @@ function softByValue(a, b) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Langge: () => (/* binding */ Langge)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/GM.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_GM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/GM.ts");
 
 
 
@@ -38403,7 +38403,7 @@ function softByValue(a, b) {
 
 
 
-class Langge extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Langge extends _rules__WEBPACK_IMPORTED_MODULE_6__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -38416,7 +38416,7 @@ class Langge extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
         const chapterUrlPrefix = bookUrl.replace("online_detail", "online_reader") + "&item_id=";
         const bookname = document.querySelector("div.book-info > h1").innerText.trim();
         const authorDom = document.querySelector("div.book-info > p");
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("strong", true, authorDom);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__.rm)("strong", true, authorDom);
         const author = authorDom.innerText
             .trim();
         const introDom = document.querySelector("div.book-info");
@@ -38424,11 +38424,11 @@ class Langge extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
         const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
         }
         const regex = /goToChapter\('(\d+)'/;
         const chapters = [];
@@ -38446,7 +38446,7 @@ class Langge extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 throw Error(`Match ${onclickAttr} ID失败，结果为${match}`);
             }
             const chapterName = c.querySelector("span")?.innerText ?? i.toString();
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl: chapterUrlPrefix + chapterID,
@@ -38463,7 +38463,7 @@ class Langge extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
             });
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -38477,9 +38477,9 @@ class Langge extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
         let chapterTrueUrl = chapterUrl.replace("/online_reader?", "/content?");
         const secretKey2 = getCookie('secretKey2');
         chapterTrueUrl += '&key=' + secretKey2;
-        _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter]请求 ${chapterTrueUrl}，Refer：${chapterUrl}`);
+        _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[Chapter]请求 ${chapterTrueUrl}，Refer：${chapterUrl}`);
         const chapter = await new Promise((resolve) => {
-            (0,_lib_GM__WEBPACK_IMPORTED_MODULE_7__/* ._GM_xmlhttpRequest */ .nV)({
+            (0,_lib_GM__WEBPACK_IMPORTED_MODULE_8__/* ._GM_xmlhttpRequest */ .nV)({
                 url: chapterTrueUrl,
                 headers: {
                     'cache-control': 'no-cache', 'accept-encoding': 'gzip, deflate, br, zstd'
@@ -38491,7 +38491,7 @@ class Langge extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                         resolve(resultI);
                     }
                     else {
-                        _log__WEBPACK_IMPORTED_MODULE_4___default().error(`response status = ${response.status}`);
+                        _log__WEBPACK_IMPORTED_MODULE_3___default().error(`response status = ${response.status}`);
                         const resultI = JSON.parse(`{"code": 500`);
                         resolve(resultI);
                     }
@@ -38504,7 +38504,7 @@ class Langge extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
         if (content) {
             const Dcontent = document.createElement("div");
             Dcontent.innerText = content;
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(Dcontent, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(Dcontent, "TM");
             return {
                 chapterName,
                 contentRaw: Dcontent,
@@ -38544,19 +38544,19 @@ function getCookie(name) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Lightnovel: () => (/* binding */ Lightnovel)
 /* harmony export */ });
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/rules.ts");
 
 
 
 
 
 
-class Lightnovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Lightnovel extends _rules__WEBPACK_IMPORTED_MODULE_5__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -38584,7 +38584,7 @@ class Lightnovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
                     chapterNumber++;
                     const chapterName = i.title;
                     const chapterUrl = `https://www.lightnovel.fun/cn/detail/${i.aid}`;
-                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_1__/* .Chapter */ .I({
+                    const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
                         bookUrl,
                         bookname,
                         chapterUrl,
@@ -38606,7 +38606,7 @@ class Lightnovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
         else {
             bookname = document.querySelector("h2.article-title")?.textContent?.trim() ?? "";
             author = document.querySelector("div.author-name > span")?.textContent?.trim() ?? "";
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_1__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl: bookUrl,
@@ -38624,7 +38624,7 @@ class Lightnovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
             chapters.push(chapter);
         }
         const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom);
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_3__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -38635,13 +38635,13 @@ class Lightnovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset) {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_4__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset, {
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset, {
             headers: {
                 "Accept-Language": "zh-CN",
             },
         });
         const Dcontent = doc.querySelector("article#article-main-contents");
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_5__/* .cleanDOM */ .an)(Dcontent, "TM");
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .cleanDOM */ .an)(Dcontent, "TM");
         return {
             chapterName,
             contentRaw: Dcontent,
@@ -38663,15 +38663,15 @@ class Lightnovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   lzdzw: () => (/* binding */ lzdzw)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -38680,7 +38680,7 @@ class Lightnovel extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */
 
 
 
-class lzdzw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class lzdzw extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
     }
@@ -38691,10 +38691,10 @@ class lzdzw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         const intro = document.querySelector("#intro_pc");
         (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("strong", true, intro);
         (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(["您要是觉得《", "》还不错的话请不要忘记向您QQ群和微博微信里的朋友推荐哦！"], intro);
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(intro);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(intro);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("img.img-thumbnail").src;
-        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
             .then((coverClass) => {
             additionalMetadate.cover = coverClass;
         })
@@ -38708,10 +38708,10 @@ class lzdzw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         if (match) {
             const id = match[1];
             const url = `https://www.lzdzw.com/book/${id}/1/`;
-            const contentList = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .ggetHtmlDOM */ .pG)(url).then((doc) => doc.querySelectorAll(".page-item option"));
+            const contentList = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .pG)(url).then((doc) => doc.querySelectorAll(".page-item option"));
             for (const a of Array.from(contentList)) {
                 const url = "https://www.lzdzw.com/" + a.getAttribute("value");
-                const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .ggetHtmlDOM */ .pG)(url);
+                const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .pG)(url);
                 const AList = getAList(dom);
                 for (const a of Array.from(AList)) {
                     ALists.push(a);
@@ -38743,7 +38743,7 @@ class lzdzw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         else {
             throw new Error("获取小说ID失败");
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -38755,7 +38755,7 @@ class lzdzw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const content = document.createElement("div");
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getFrameContentEvent */ .n6)(chapterUrl);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getFrameContentEvent */ .n6)(chapterUrl);
         function appendcontent(dom) {
             if (!dom)
                 return;
@@ -38772,7 +38772,7 @@ class lzdzw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         while (i < 10000) {
             i++;
             const newUrl = url + '_' + i + ".html";
-            const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .ggetHtmlDOM */ .pG)(newUrl);
+            const dom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .pG)(newUrl);
             if (dom.title.match("第1页"))
                 break;
             appendcontent(dom);
@@ -38800,16 +38800,16 @@ class lzdzw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Mangguoshufang: () => (/* binding */ Mangguoshufang)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _lib_weimengcms__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/special/lib/weimengcms.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_weimengcms__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/rules/special/lib/weimengcms.ts");
 
 
 
@@ -38819,7 +38819,7 @@ class lzdzw extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
 
 
 
-class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */ .Q {
     weimengClient = null;
     constructor() {
         super();
@@ -38828,12 +38828,12 @@ class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClas
         this.sleepTime = 500;
         this.maxSleepTime = 2000;
         try {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().debug("[Mangguoshufang] Initializing WeimengCMS client...");
-            this.weimengClient = (0,_lib_weimengcms__WEBPACK_IMPORTED_MODULE_2__/* .createWeimengForSite */ .ng)(window.location.origin);
-            _log__WEBPACK_IMPORTED_MODULE_1___default().debug("[Mangguoshufang] WeimengCMS client initialized successfully");
+            _log__WEBPACK_IMPORTED_MODULE_4___default().debug("[Mangguoshufang] Initializing WeimengCMS client...");
+            this.weimengClient = (0,_lib_weimengcms__WEBPACK_IMPORTED_MODULE_8__/* .createWeimengForSite */ .ng)(window.location.origin);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().debug("[Mangguoshufang] WeimengCMS client initialized successfully");
         }
         catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().error("[Mangguoshufang] Failed to initialize WeimengCMS client:", error);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().error("[Mangguoshufang] Failed to initialize WeimengCMS client:", error);
             this.weimengClient = null;
         }
     }
@@ -38848,15 +38848,15 @@ class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClas
             const config = this.ensureWeimengClient().getConfig();
             const chapterListPageLink = document.querySelector(config.selectors.CHAPTER_LIST_LINK);
             if (!chapterListPageLink) {
-                _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Mangguoshufang] ${config.errors.NO_CHAPTER_LIST_LINK} with selector '${config.selectors.CHAPTER_LIST_LINK}'`);
+                _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`[Mangguoshufang] ${config.errors.NO_CHAPTER_LIST_LINK} with selector '${config.selectors.CHAPTER_LIST_LINK}'`);
                 return null;
             }
             const chapterListPageUrl = chapterListPageLink.href;
-            _log__WEBPACK_IMPORTED_MODULE_1___default().debug(`[Mangguoshufang] Found chapter list page URL: ${chapterListPageUrl}`);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Mangguoshufang] Found chapter list page URL: ${chapterListPageUrl}`);
             return chapterListPageUrl;
         }
         catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().error(`[Mangguoshufang] Error getting chapter list page URL:`, error);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().error(`[Mangguoshufang] Error getting chapter list page URL:`, error);
             return null;
         }
     }
@@ -38878,11 +38878,11 @@ class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClas
         };
         const coverUrl = document.querySelector(config.selectors.BOOK_COVER)?.getAttribute("src") || null;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_1___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         return {
             bookUrl,
@@ -38898,20 +38898,20 @@ class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClas
         const emptyList = document.querySelectorAll("nonexistent");
         const chapterListPageUrl = await this.getChapterListPageUrl();
         if (!chapterListPageUrl) {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Mangguoshufang] Chapter list page URL not found. Returning empty chapter list.`);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`[Mangguoshufang] Chapter list page URL not found. Returning empty chapter list.`);
             return emptyList;
         }
         try {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().debug(`[Mangguoshufang] Fetching chapter list from separate page: ${chapterListPageUrl}`);
-            const chapterListDoc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .wA)(chapterListPageUrl, this.charset);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Mangguoshufang] Fetching chapter list from separate page: ${chapterListPageUrl}`);
+            const chapterListDoc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(chapterListPageUrl, this.charset);
             const aList = chapterListDoc.querySelectorAll(config.selectors.CHAPTER_LINKS);
             if (aList.length === 0) {
-                _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Mangguoshufang] ${config.errors.NO_CHAPTERS_FOUND}: ${chapterListPageUrl}`);
+                _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`[Mangguoshufang] ${config.errors.NO_CHAPTERS_FOUND}: ${chapterListPageUrl}`);
             }
             return aList;
         }
         catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Mangguoshufang] ${config.errors.CHAPTER_LIST_FETCH_FAILED}: ${error}. Returning empty chapter list.`);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`[Mangguoshufang] ${config.errors.CHAPTER_LIST_FETCH_FAILED}: ${error}. Returning empty chapter list.`);
             return emptyList;
         }
     }
@@ -38923,11 +38923,11 @@ class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClas
             const chapterUrl = aElem.href;
             const chapterId = this.ensureWeimengClient().extractChapterIdFromUrl(chapterUrl);
             if (!chapterId) {
-                _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`Could not extract chapter ID from URL: ${chapterUrl}`);
+                _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`Could not extract chapter ID from URL: ${chapterUrl}`);
                 continue;
             }
             chapterNumber++;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
                 bookUrl: bookMetadata.bookUrl,
                 bookname: bookMetadata.bookname,
                 chapterUrl,
@@ -38950,7 +38950,7 @@ class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClas
         const bookMetadata = await this.extractBookMetadata();
         const aList = await this.fetchChapterList();
         const chapters = this.createChapterObjects(aList, bookMetadata);
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
             bookUrl: bookMetadata.bookUrl,
             bookname: bookMetadata.bookname,
             author: bookMetadata.author,
@@ -38963,7 +38963,7 @@ class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClas
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const { chapterId } = options;
         if (!chapterId) {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().error(`No chapter ID found for ${chapterUrl}`);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().error(`No chapter ID found for ${chapterUrl}`);
             return {
                 chapterName,
                 contentRaw: null,
@@ -38974,12 +38974,12 @@ class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClas
             };
         }
         try {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().debug(`[Chapter] Requesting WeimengCMS API for chapter ID: ${chapterId}`);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter] Requesting WeimengCMS API for chapter ID: ${chapterId}`);
             const weimengClient = this.ensureWeimengClient();
             const chapterData = await weimengClient.fetchChapterContent(chapterId, chapterUrl);
             const contentRaw = weimengClient.processChapterContent(chapterData);
             const finalChapterName = chapterData.chapter_name || chapterName;
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(contentRaw, this.attachmentMode);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(contentRaw, this.attachmentMode);
             return {
                 chapterName: finalChapterName,
                 contentRaw,
@@ -38990,7 +38990,7 @@ class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClas
             };
         }
         catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().error(`[Chapter] Failed to fetch content for ${chapterUrl}:`, error);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().error(`[Chapter] Failed to fetch content for ${chapterUrl}:`, error);
             return {
                 chapterName,
                 contentRaw: null,
@@ -39013,16 +39013,16 @@ class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClas
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Pilishuwu: () => (/* binding */ Pilishuwu)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _lib_weimengcms__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/special/lib/weimengcms.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_weimengcms__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/rules/special/lib/weimengcms.ts");
 
 
 
@@ -39032,7 +39032,7 @@ class Mangguoshufang extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClas
 
 
 
-class Pilishuwu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Pilishuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */ .Q {
     weimengClient = null;
     constructor() {
         super();
@@ -39041,14 +39041,14 @@ class Pilishuwu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
         this.sleepTime = 500;
         this.maxSleepTime = 2000;
         try {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().debug("[Pilishuwu] Initializing WeimengCMS client...");
-            this.weimengClient = (0,_lib_weimengcms__WEBPACK_IMPORTED_MODULE_2__/* .createWeimengForSite */ .ng)(window.location.origin, {
+            _log__WEBPACK_IMPORTED_MODULE_4___default().debug("[Pilishuwu] Initializing WeimengCMS client...");
+            this.weimengClient = (0,_lib_weimengcms__WEBPACK_IMPORTED_MODULE_8__/* .createWeimengForSite */ .ng)(window.location.origin, {
                 selectors: { BOOK_AUTHOR: "h2.works-intro-title" },
             });
-            _log__WEBPACK_IMPORTED_MODULE_1___default().debug("[Pilishuwu] WeimengCMS client initialized successfully");
+            _log__WEBPACK_IMPORTED_MODULE_4___default().debug("[Pilishuwu] WeimengCMS client initialized successfully");
         }
         catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().error("[Pilishuwu] Failed to initialize WeimengCMS client:", error);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().error("[Pilishuwu] Failed to initialize WeimengCMS client:", error);
             this.weimengClient = null;
         }
     }
@@ -39063,15 +39063,15 @@ class Pilishuwu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
             const config = this.ensureWeimengClient().getConfig();
             const chapterListPageLink = document.querySelector(config.selectors.CHAPTER_LIST_LINK);
             if (!chapterListPageLink) {
-                _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Pilishuwu] ${config.errors.NO_CHAPTER_LIST_LINK} with selector '${config.selectors.CHAPTER_LIST_LINK}'`);
+                _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`[Pilishuwu] ${config.errors.NO_CHAPTER_LIST_LINK} with selector '${config.selectors.CHAPTER_LIST_LINK}'`);
                 return null;
             }
             const chapterListPageUrl = chapterListPageLink.href;
-            _log__WEBPACK_IMPORTED_MODULE_1___default().debug(`[Pilishuwu] Found chapter list page URL: ${chapterListPageUrl}`);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Pilishuwu] Found chapter list page URL: ${chapterListPageUrl}`);
             return chapterListPageUrl;
         }
         catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().error(`[Pilishuwu] Error getting chapter list page URL:`, error);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().error(`[Pilishuwu] Error getting chapter list page URL:`, error);
             return null;
         }
     }
@@ -39095,11 +39095,11 @@ class Pilishuwu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
             .querySelector(config.selectors.BOOK_COVER)
             ?.getAttribute("src") || null;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_4__/* .getAttachment */ ["if"])(window.location.origin + coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(window.location.origin + coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_1___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         return {
             bookUrl,
@@ -39115,20 +39115,20 @@ class Pilishuwu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
         const emptyList = document.querySelectorAll("nonexistent");
         const chapterListPageUrl = await this.getChapterListPageUrl();
         if (!chapterListPageUrl) {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Pilishuwu] Chapter list page URL not found. Returning empty chapter list.`);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`[Pilishuwu] Chapter list page URL not found. Returning empty chapter list.`);
             return emptyList;
         }
         try {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().debug(`[Pilishuwu] Fetching chapter list from separate page: ${chapterListPageUrl}`);
-            const chapterListDoc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_5__/* .getHtmlDOM */ .wA)(chapterListPageUrl, this.charset);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Pilishuwu] Fetching chapter list from separate page: ${chapterListPageUrl}`);
+            const chapterListDoc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(chapterListPageUrl, this.charset);
             const aList = chapterListDoc.querySelectorAll(config.selectors.CHAPTER_LINKS);
             if (aList.length === 0) {
-                _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Pilishuwu] ${config.errors.NO_CHAPTERS_FOUND}: ${chapterListPageUrl}`);
+                _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`[Pilishuwu] ${config.errors.NO_CHAPTERS_FOUND}: ${chapterListPageUrl}`);
             }
             return aList;
         }
         catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`[Pilishuwu] ${config.errors.CHAPTER_LIST_FETCH_FAILED}: ${error}. Returning empty chapter list.`);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`[Pilishuwu] ${config.errors.CHAPTER_LIST_FETCH_FAILED}: ${error}. Returning empty chapter list.`);
             return emptyList;
         }
     }
@@ -39140,11 +39140,11 @@ class Pilishuwu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
             const chapterUrl = aElem.href;
             const chapterId = this.ensureWeimengClient().extractChapterIdFromUrl(chapterUrl);
             if (!chapterId) {
-                _log__WEBPACK_IMPORTED_MODULE_1___default().warn(`Could not extract chapter ID from URL: ${chapterUrl}`);
+                _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`Could not extract chapter ID from URL: ${chapterUrl}`);
                 continue;
             }
             chapterNumber++;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
                 bookUrl: bookMetadata.bookUrl,
                 bookname: bookMetadata.bookname,
                 chapterUrl,
@@ -39167,7 +39167,7 @@ class Pilishuwu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
         const bookMetadata = await this.extractBookMetadata();
         const aList = await this.fetchChapterList();
         const chapters = this.createChapterObjects(aList, bookMetadata);
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
             bookUrl: bookMetadata.bookUrl,
             bookname: bookMetadata.bookname,
             author: bookMetadata.author,
@@ -39180,7 +39180,7 @@ class Pilishuwu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const { chapterId } = options;
         if (!chapterId) {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().error(`No chapter ID found for ${chapterUrl}`);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().error(`No chapter ID found for ${chapterUrl}`);
             return {
                 chapterName,
                 contentRaw: null,
@@ -39191,12 +39191,12 @@ class Pilishuwu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
             };
         }
         try {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().debug(`[Chapter] Requesting WeimengCMS API for chapter ID: ${chapterId}`);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter] Requesting WeimengCMS API for chapter ID: ${chapterId}`);
             const weimengClient = this.ensureWeimengClient();
             const chapterData = await weimengClient.fetchChapterContent(chapterId, chapterUrl);
             const contentRaw = weimengClient.processChapterContent(chapterData);
             const finalChapterName = chapterData.chapter_name || chapterName;
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(contentRaw, this.attachmentMode);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(contentRaw, this.attachmentMode);
             return {
                 chapterName: finalChapterName,
                 contentRaw,
@@ -39207,7 +39207,7 @@ class Pilishuwu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
             };
         }
         catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_1___default().error(`[Chapter] Failed to fetch content for ${chapterUrl}:`, error);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().error(`[Chapter] Failed to fetch content for ${chapterUrl}:`, error);
             return {
                 chapterName,
                 contentRaw: null,
@@ -39230,15 +39230,15 @@ class Pilishuwu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Sudugu: () => (/* binding */ Sudugu)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -39247,7 +39247,7 @@ class Pilishuwu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ 
 
 
 
-class Sudugu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Sudugu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -39262,30 +39262,30 @@ class Sudugu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
         const bookname = document.querySelector("div.itemtxt > h1 > a").innerText;
         const author = document.querySelector("div.itemtxt > p > a").innerText.replace(/作者：/, "").trim();
         const intro = document.querySelector("div.des");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(intro);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(intro);
         const genre = Array.from(document.querySelectorAll("div.itemtxt > p > span")).map((element) => element.innerText.trim());
         const additionalMetadate = {
             tags: genre,
         };
         const coverUrl = document.querySelector("div.item img")?.getAttribute("src");
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         const chapters = [];
         let chapterId = 0;
         let flag = true;
         let dirurl = bookUrl;
         while (flag) {
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_4__/* .ggetHtmlDOM */ .pG)(dirurl, this.charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .pG)(dirurl, this.charset);
             Array.from(doc.querySelectorAll("div#list > ul > li > a")).forEach((element) => {
                 chapterId++;
                 const chapterUrl = element.getAttribute("href");
                 const chapterName = element.innerText.trim();
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl: chapterUrl,
@@ -39319,7 +39319,7 @@ class Sudugu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 break;
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -39334,7 +39334,7 @@ class Sudugu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
         const content = document.createElement("div");
         let flag = true;
         while (flag) {
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_4__/* .ggetHtmlDOM */ .pG)(pageUrl, charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .pG)(pageUrl, charset);
             content.innerHTML += doc.querySelector("div.con").innerHTML;
             const pages = doc.querySelectorAll("div.prenext > span > a");
             const lastLink = pages.length > 0 ? pages[pages.length - 1] : null;
@@ -39353,7 +39353,7 @@ class Sudugu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
                 break;
             }
         }
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_7__/* .cleanDOM */ .an)(content, "TM");
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM");
         return {
             chapterName,
             contentRaw: content,
@@ -39375,16 +39375,16 @@ class Sudugu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Ttkan: () => (/* binding */ Ttkan)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -39394,7 +39394,7 @@ class Sudugu extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q 
 
 
 
-class Ttkan extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+class Ttkan extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
     }
@@ -39407,17 +39407,17 @@ class Ttkan extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         const bookname = $(".novel_info h1").innerText;
         const author = $('meta[name="og:novel:author"]').content;
         const intro = $(".description");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .introDomHandle */ .HV)(intro);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_4__/* .introDomHandle */ .HV)(intro);
         const genre = $(".novel_info > div:nth-child(2) > ul > li:nth-child(3)").childNodes[1].data;
         const additionalMetadate = {
             tags: [genre],
         };
         const coverUrl = $(".novel_info amp-img").getAttribute("src");
-        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_2__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+        (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
             .then((coverClass) => {
             additionalMetadate.cover = coverClass;
         })
-            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
         const chapters = [];
         const tocUrl = `https://${host}/api/nq/amp_novel_chapters?language=${language}&novel_id=${novelId}&__amp_source_origin=https%3A%2F%2Fwww.ttkan.co`;
         const res = await fetch(tocUrl, {
@@ -39429,7 +39429,7 @@ class Ttkan extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         });
         const data = (await res.json());
         for (const { chapter_id, chapter_name } of data.items) {
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_7__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl: `https://${host}/novel/user/page_direct?novel_id=${novelId}&page=${chapter_id}`,
@@ -39446,7 +39446,7 @@ class Ttkan extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
             });
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -39457,16 +39457,16 @@ class Ttkan extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset, {
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset, {
             headers: {
                 "Accept-Language": "zh-CN",
             },
         });
         const content = doc.querySelector(".content");
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__.rm)("a", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("a", true, content);
         const ttkanAd = /[wWщшω]{0,3} ?[¸◆⊕●.•＿¤☢⊙▲✿★▪]? ?(?:[tTтⓣ] ?){2}[kKκКⓚ] ?[aAǎáдāΛⓐ] ?[nNⓝ] ?[¸◆⊕●.•＿¤☢⊙▲✿★▪]? ?[cCС￠℃] ?[oO〇○Ο] ?/gi;
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__/* .rms */ .j3)([ttkanAd], content);
-        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM");
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__/* .rms */ .j3)([ttkanAd], content);
+        const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM");
         return {
             chapterName,
             contentRaw: content,
@@ -41978,15 +41978,15 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
 /* harmony export */ });
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -41996,7 +41996,7 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
 
 
 
-class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
+class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -42008,20 +42008,20 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
             .replace(/作(\s+)?者[：:]/, "")
             .trim();
         const introDom = document.querySelector("#intro");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_4__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector("#fmimg > img").src;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
         }
         const chapters = [];
         const bookid = unsafeWindow.bookId;
         const apiUrl = [document.location.origin, "action.php"].join("/");
-        _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[chapter]正在请求${apiUrl}`);
+        _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`[chapter]正在请求${apiUrl}`);
         const siteChapterList = await fetch(apiUrl, {
             headers: {
                 accept: "application/json, text/javascript, */*",
@@ -42034,7 +42034,7 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
             credentials: "include",
         })
             .then((response) => response.json())
-            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+            .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
         const dl1 = document.querySelector("#wrapper > div.box_con:nth-child(7) > div:nth-child(1) > dl:nth-child(1)");
         const dl2 = document.querySelector("#wrapper > div.box_con:nth-child(11) > div:nth-child(1) > dl:nth-child(1)");
         const mkList = (dl) => {
@@ -42133,7 +42133,7 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
                 const chapterUrl = bookUrl + (sitechapter.chapterid + bookid * 11) + ".html";
                 const isVIP = false;
                 const isPaid = false;
-                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
@@ -42151,7 +42151,7 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
                 chapters.push(chapter);
             }
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -42267,12 +42267,12 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
             }
             showttt1(doc);
         }
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_7__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
         runEval(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
         chapterName = doc.querySelector(".bookname > h1:nth-child(1)").innerText.trim();
         const contentG = doc.querySelector("#content");
         if (contentG) {
-            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(contentG, "TM");
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .an)(contentG, "TM");
             return {
                 chapterName,
                 contentRaw: contentG,
@@ -42305,11 +42305,11 @@ class Xkzw extends _rules__WEBPACK_IMPORTED_MODULE_1__/* .BaseRuleClass */ .Q {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   c101kanshu: () => (/* binding */ c101kanshu)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/twoPage/template.ts");
 
 
-const c101kanshu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const c101kanshu = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     anotherPageUrl: getAnotherPageUrl(document.location.href),
     getBookname: (doc) => document.querySelector("div.bookbox h1").innerText.trim(),
@@ -42323,8 +42323,8 @@ const c101kanshu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClas
     },
     getContent: (doc) => doc.querySelector("div#txtcontent"),
     contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div.txtad", true, content);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div.txtad", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
         const c = document.createElement("div");
         c.innerHTML = content.innerHTML.replace("<br><br>", "<br>");
         return c;
@@ -42348,11 +42348,11 @@ function getAnotherPageUrl(bookUrl) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   c18kanshu: () => (/* binding */ c18kanshu)
 /* harmony export */ });
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/template.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/twoPage/template.ts");
 
 
-const c18kanshu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const c18kanshu = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     anotherPageUrl: document.querySelector("div.menu_more_black > a").href,
     getBookname: (doc) => document.querySelector(".in_textone").innerText.trim(),
@@ -42388,8 +42388,8 @@ const c18kanshu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass
                 text.parentNode?.insertBefore(document.createElement("br"), text);
             }
         });
-        if ((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .isFixWidth */ .eu)(dom)) {
-            (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .convertFixWidth */ .N0)(dom);
+        if ((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .isFixWidth */ .eu)(dom)) {
+            (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .convertFixWidth */ .N0)(dom);
         }
         return dom;
     },
@@ -42406,11 +42406,11 @@ const c18kanshu = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   xiaoshuodaquan: () => (/* binding */ xiaoshuodaquan)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/twoPage/template.ts");
 
 
-const xiaoshuodaquan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const xiaoshuodaquan = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     anotherPageUrl: document.querySelector(".viewalllinks").href,
     getBookname: (doc) => document.querySelector(".r420 > h1").innerText.trim(),
@@ -42428,8 +42428,8 @@ const xiaoshuodaquan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRule
     },
     getContent: (doc) => doc.querySelector("#content"),
     contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div", true, content);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script", true, content);
         const c = document.createElement("div");
         c.innerHTML = content.innerHTML.replace(/\n/g, "<br/><br/>");
         return c;
@@ -42446,11 +42446,11 @@ const xiaoshuodaquan = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRule
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   jingcaiyuedu6: () => (/* binding */ jingcaiyuedu6)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/twoPage/template.ts");
 
 
-const jingcaiyuedu6 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const jingcaiyuedu6 = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     anotherPageUrl: document.querySelector("a.red-btn:nth-child(3)").href,
     getBookname: (doc) => document.querySelector(".book-info > h1 > em").innerText.trim(),
@@ -42461,7 +42461,7 @@ const jingcaiyuedu6 = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleC
     getAList: (doc) => doc.querySelectorAll("dd.col-md-4 > a"),
     getContent: (doc) => doc.querySelector("#htmlContent"),
     contentPatch: (dom) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(["精彩小说网最新地址"], dom);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["精彩小说网最新地址"], dom);
         return dom;
     },
 });
@@ -42920,15 +42920,15 @@ const ruochu = () => {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   shencou: () => (/* binding */ shencou)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/twoPage/template.ts");
 
 
 
 const shencou = () => {
     const anotherPageUrl = document.querySelector("#content > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > ul:nth-child(1) > li:nth-child(1) > a:nth-child(1)").href;
-    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    return (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ .N)({
         bookUrl: document.location.href,
         anotherPageUrl,
         getBookname: (doc) => document.querySelector("#content > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > span:nth-child(1) > a:nth-child(1)").innerText.trim(),
@@ -42937,9 +42937,9 @@ const shencou = () => {
             .trim(),
         getIntroDom: (doc) => document.querySelector("#content > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2)"),
         introDomPatch: (el) => {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("a", true, el);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".hottext", true, el);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rm2 */ .Sf)(["论坛回帖，推荐本书，都可以得积分。每天送50积分"], el);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("a", true, el);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)(".hottext", true, el);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)(["论坛回帖，推荐本书，都可以得积分。每天送50积分"], el);
             return el;
         },
         getCoverUrl: (doc) => document.querySelector("#content > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > a:nth-child(1) > img:nth-child(1)")?.src,
@@ -42952,12 +42952,12 @@ const shencou = () => {
             return doc.querySelector("#content");
         },
         contentPatch: (dom) => {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("h1", true, dom);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[id^=BookSee]", true, dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("h1", true, dom);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[id^=BookSee]", true, dom);
             return dom;
         },
         cleanDomOptions: {
-            referrerMode: _main_main__WEBPACK_IMPORTED_MODULE_2__/* .ReferrerMode */ .ls.custom,
+            referrerMode: _main_main__WEBPACK_IMPORTED_MODULE_1__/* .ReferrerMode */ .ls.custom,
             customReferer: "http://www.wenku8.net",
         },
     });
@@ -42973,16 +42973,16 @@ const shencou = () => {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   N: () => (/* binding */ mkRuleClass)
 /* harmony export */ });
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/main.ts");
 
 
 
@@ -42993,7 +42993,7 @@ const shencou = () => {
 
 
 function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, getIntroDom, introDomPatch, getCoverUrl, additionalMetadatePatch, getAList, getAName, getIsVIP, getSections, getSName, postHook, getContentFromUrl, getContent, contentPatch, maxRunLimit, concurrencyLimit, sleepTime, maxSleepTime, needLogin, nsfw, cleanDomOptions, overrideConstructor, language, }) {
-    return class extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .Q {
+    return class extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */ .Q {
         constructor() {
             super();
             this.attachmentMode = "TM";
@@ -43020,17 +43020,17 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
             }
         }
         async bookParse() {
-            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(anotherPageUrl, this.charset);
+            const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(anotherPageUrl, this.charset);
             const bookname = getBookname(doc);
             const author = getAuthor(doc);
             const introDom = getIntroDom(doc);
-            const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .introDomHandle */ .HV)(introDom, introDomPatch);
+            const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(introDom, introDomPatch);
             const coverUrl = getCoverUrl(doc);
             const additionalMetadate = {
                 language: language ?? "zh",
             };
             if (coverUrl) {
-                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_3__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+                (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_0__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                     .then((coverClass) => {
                     additionalMetadate.cover = coverClass;
                 })
@@ -43065,7 +43065,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
                 }
                 const chapterUrl = aElem.href;
                 if (hasSection && sections && getSName) {
-                    const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .getSectionName */ .lq)(aElem, sections, getSName);
+                    const _sectionName = (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .getSectionName */ .lq)(aElem, sections, getSName);
                     if (_sectionName !== sectionName) {
                         sectionName = _sectionName;
                         sectionNumber++;
@@ -43095,7 +43095,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
                     options: { bookname },
                 });
                 if (isVIP && !isPaid) {
-                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
+                    chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_8__/* .Status */ .nW.aborted;
                 }
                 if (typeof postHook === "function") {
                     chapter = postHook(chapter);
@@ -43104,7 +43104,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
                     chapters.push(chapter);
                 }
             }
-            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
+            const book = new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
                 bookUrl,
                 bookname,
                 author,
@@ -43127,7 +43127,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
                 content = await getContentFromUrl(chapterUrl, chapterName, charset);
             }
             else if (typeof getContent === "function") {
-                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
+                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(chapterUrl, charset);
                 content = getContent(doc);
             }
             else {
@@ -43135,7 +43135,7 @@ function mkRuleClass({ bookUrl, anotherPageUrl, ToCUrl, getBookname, getAuthor, 
             }
             if (content) {
                 content = contentPatch(content);
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_8__/* .cleanDOM */ .an)(content, "TM", cleanDomOptions);
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM", cleanDomOptions);
                 return {
                     chapterName,
                     contentRaw: content,
@@ -43246,15 +43246,15 @@ const wenku8 = () => {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   xiaoshuowu: () => (/* binding */ xiaoshuowu)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/twoPage/template.ts");
 
 
 const xiaoshuowu = () => {
     const href = document.location.href;
     const bookId = href.substring(href.lastIndexOf("/", href.lastIndexOf("/") - 1) + 1, href.lastIndexOf("/"));
     const bookUrl = document.location.origin + `/book/${bookId}/`;
-    return (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    return (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
         bookUrl,
         ToCUrl: document.location.href,
         anotherPageUrl: bookUrl,
@@ -43274,10 +43274,10 @@ const xiaoshuowu = () => {
         },
         getContent: (doc) => doc.querySelector("#acontent"),
         contentPatch: (content) => {
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[align]", true, content);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)(".tishi", true, content);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("h1", false, content);
-            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .rms */ .j3)(["(小说屋 www.xiaoshuowu.com)", "小说屋 www.xiaoshuowu.com"], content);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("div[align]", true, content);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)(".tishi", true, content);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("h1", false, content);
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)(["(小说屋 www.xiaoshuowu.com)", "小说屋 www.xiaoshuowu.com"], content);
             return content;
         },
         concurrencyLimit: 1,
@@ -43294,15 +43294,15 @@ const xiaoshuowu = () => {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   yibige: () => (/* binding */ yibige)
 /* harmony export */ });
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/twoPage/template.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/rules/twoPage/template.ts");
 
 
 
 
-const yibige = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+const yibige = () => (0,_template__WEBPACK_IMPORTED_MODULE_3__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     anotherPageUrl: document.location.href + "index.html",
     getBookname: (doc) => document.querySelector("#info h1:nth-of-type(1)").innerText.trim(),
@@ -43315,15 +43315,15 @@ const yibige = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */
     getAList: (doc) => doc.querySelectorAll("#list dd > a"),
     getContent: (doc) => doc.querySelector("#content"),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_1__/* .nextPageParse */ .u1)({
+        const { contentRaw } = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_2__/* .nextPageParse */ .u1)({
             chapterName,
             chapterUrl,
             charset,
             selector: "#content",
             contentPatch: (content, doc) => {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("script", true, content);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("div[style]", true, content);
-                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_3__/* .htmlTrim */ .is)(content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script", true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("div[style]", true, content);
+                (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .htmlTrim */ .is)(content);
                 return content;
             },
             getNextPage: (doc) => doc.querySelector(".bottem1 > a:nth-child(4)")
@@ -44448,9 +44448,12 @@ module.exports = Vue;
 /************************************************************************/
 /******/ 	/* webpack/runtime/async module */
 /******/ 	(() => {
-/******/ 		var webpackQueues = typeof Symbol === "function" ? Symbol("webpack queues") : "__webpack_queues__";
-/******/ 		var webpackExports = typeof Symbol === "function" ? Symbol("webpack exports") : "__webpack_exports__";
-/******/ 		var webpackError = typeof Symbol === "function" ? Symbol("webpack error") : "__webpack_error__";
+/******/ 		var hasSymbol = typeof Symbol === "function";
+/******/ 		var webpackQueues = hasSymbol ? Symbol("webpack queues") : "__webpack_queues__";
+/******/ 		var webpackExports = hasSymbol ? Symbol("webpack exports") : "__webpack_exports__";
+/******/ 		var webpackError = hasSymbol ? Symbol("webpack error") : "__webpack_error__";
+/******/ 		
+/******/ 		
 /******/ 		var resolveQueue = (queue) => {
 /******/ 			if(queue && queue.d < 1) {
 /******/ 				queue.d = 1;
@@ -44460,6 +44463,7 @@ module.exports = Vue;
 /******/ 		}
 /******/ 		var wrapDeps = (deps) => (deps.map((dep) => {
 /******/ 			if(dep !== null && typeof dep === "object") {
+/******/ 		
 /******/ 				if(dep[webpackQueues]) return dep;
 /******/ 				if(dep.then) {
 /******/ 					var queue = [];
@@ -44472,6 +44476,7 @@ module.exports = Vue;
 /******/ 						resolveQueue(queue);
 /******/ 					});
 /******/ 					var obj = {};
+/******/ 		
 /******/ 					obj[webpackQueues] = (fn) => (fn(queue));
 /******/ 					return obj;
 /******/ 				}
@@ -44496,10 +44501,11 @@ module.exports = Vue;
 /******/ 			promise[webpackExports] = exports;
 /******/ 			promise[webpackQueues] = (fn) => (queue && fn(queue), depQueues.forEach(fn), promise["catch"](x => {}));
 /******/ 			module.exports = promise;
-/******/ 			body((deps) => {
+/******/ 			var handle = (deps) => {
 /******/ 				currentDeps = wrapDeps(deps);
 /******/ 				var fn;
 /******/ 				var getResult = () => (currentDeps.map((d) => {
+/******/ 		
 /******/ 					if(d[webpackError]) throw d[webpackError];
 /******/ 					return d[webpackExports];
 /******/ 				}))
@@ -44510,7 +44516,9 @@ module.exports = Vue;
 /******/ 					currentDeps.map((dep) => (dep[webpackQueues](fnQueue)));
 /******/ 				});
 /******/ 				return fn.r ? promise : getResult();
-/******/ 			}, (err) => ((err ? reject(promise[webpackError] = err) : outerResolve(exports)), resolveQueue(queue)));
+/******/ 			}
+/******/ 			var done = (err) => ((err ? reject(promise[webpackError] = err) : outerResolve(exports)), resolveQueue(queue))
+/******/ 			body(handle, done);
 /******/ 			queue && queue.d < 0 && (queue.d = 0);
 /******/ 		};
 /******/ 	})();
