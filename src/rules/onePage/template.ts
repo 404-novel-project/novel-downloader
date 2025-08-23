@@ -13,7 +13,7 @@ interface MkRuleClassOptions {
   bookUrl: string;
   bookname: string;
   author: string;
-  introDom?: HTMLElement;
+  introDom?: HTMLElement; // must have introDomPatch defined with this
   introDomPatch?: (introDom: HTMLElement) => HTMLElement;
   coverUrl?: string | null;
   additionalMetadatePatch?: (
@@ -43,6 +43,7 @@ interface MkRuleClassOptions {
   cleanDomOptions?: Options;
   overrideConstructor?: (classThis: BaseRuleClass) => any;
   language?: string;
+  attachmentMode?: "TM" | "naive";
 }
 
 export function mkRuleClass({
@@ -70,11 +71,12 @@ export function mkRuleClass({
   cleanDomOptions,
   overrideConstructor,
   language,
+  attachmentMode
 }: MkRuleClassOptions): PublicConstructor<BaseRuleClass> {
   return class extends BaseRuleClass {
     public constructor() {
       super();
-      this.attachmentMode = "TM";
+      this.attachmentMode = attachmentMode || "TM";
       if (concurrencyLimit) {
         this.concurrencyLimit = concurrencyLimit;
       }
