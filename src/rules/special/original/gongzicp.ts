@@ -505,35 +505,24 @@ export class Gongzicp extends BaseRuleClass {
         const rightMenu = document.querySelector(
           ".right-menu"
         ) as HTMLDivElement;
-        if (rightMenu.childElementCount == 5) {
-          (document.querySelector(
-              ".right-menu > div:nth-child(5) > a:nth-child(1)"
-            ) as HTMLAnchorElement
-          ).click();
-          } else if (document.querySelector("div.content.unpaid")) {
-            (
-              document.querySelector(
-                ".right-menu > div:nth-child(5) > a:nth-child(1)"
-              ) as HTMLAnchorElement
-            ).click();
-          } 
-        else if (rightMenu.childElementCount == 6) {
-          // 30%概率向前翻页
+        const rightMenuCount = rightMenu.childElementCount;
+        const btn1 = (document.querySelector(
+          `.right-menu > div:nth-child(${rightMenuCount - 1}) > a:nth-child(1)`
+        ) as HTMLAnchorElement
+        );
+        const btn2 = (document.querySelector(
+          `.right-menu > div:nth-child(${rightMenuCount}) > a:nth-child(1)`
+        ) as HTMLAnchorElement
+        );
+        if (btn1 && btn1.textContent?.includes("一章")) {
           if (Math.random() < 0.3) {
-            (
-              document.querySelector(
-                ".right-menu > div:nth-child(5) > a:nth-child(1)"
-              ) as HTMLAnchorElement
-            ).click();
+            btn1.click();
           } else {
-            (
-              document.querySelector(
-                ".right-menu > div:nth-child(6) > a:nth-child(1)"
-              ) as HTMLAnchorElement
-            ).click();
+            btn2.click();
           }
-        }
-        else {
+        } else if (btn2 && btn2.textContent?.includes("一章")) {
+          btn2.click();
+        } else {
           log.info("[chapter]随机翻页失败，可能是页面结构变化或者只有一章");
         }
       }

@@ -9,6 +9,9 @@ export class AttachmentClass {
   public name: string;
   public readonly mode: "naive" | "TM";
 
+  readonly DEFAULT_UA =
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36";
+  
   public status: Status = Status.pending;
   public retryTime = 0;
 
@@ -73,6 +76,10 @@ export class AttachmentClass {
         delete this._init.responseType;
       }
     }
+    this._TMinit.headers = {
+      ...(this._TMinit.headers ?? {}),
+      "User-Agent": this.DEFAULT_UA,
+    };
   }
 
   public async init() {
@@ -146,7 +153,7 @@ export class AttachmentClass {
         );
 
         if (this.status !== Status.failed && this.retryTime < retryLimit) {
-          await sleep(this.retryTime * 1000);
+          await sleep(this.retryTime * 1500);
           return this.tmDownload();
         } else {
           this.status = Status.failed;
