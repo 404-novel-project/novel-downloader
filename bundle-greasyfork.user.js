@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1203
+// @version        5.2.1205
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -9768,6 +9768,7 @@ class AttachmentClass {
     url;
     name;
     mode;
+    DEFAULT_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36";
     status = _main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.pending;
     retryTime = 0;
     Blob;
@@ -9810,6 +9811,10 @@ class AttachmentClass {
                 delete this._init.responseType;
             }
         }
+        this._TMinit.headers = {
+            ...(this._TMinit.headers ?? {}),
+            "User-Agent": this.DEFAULT_UA,
+        };
     }
     async init() {
         if (this.mode === "naive") {
@@ -9872,7 +9877,7 @@ class AttachmentClass {
             this.retryTime++;
             _log__WEBPACK_IMPORTED_MODULE_2___default().error(`[attachment]下载 ${this.url} 出错，第${this.retryTime}次重试，下载模式：${this.mode}`);
             if (this.status !== _main__WEBPACK_IMPORTED_MODULE_4__/* .Status */ .nW.failed && this.retryTime < _setting__WEBPACK_IMPORTED_MODULE_3__/* .retryLimit */ .Iz) {
-                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .sleep */ .yy)(this.retryTime * 1000);
+                await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_1__/* .sleep */ .yy)(this.retryTime * 1500);
                 return this.tmDownload();
             }
             else {
@@ -18025,19 +18030,19 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .
             }
             else if (document.location.pathname.includes("read")) {
                 const rightMenu = document.querySelector(".right-menu");
-                if (rightMenu.childElementCount == 5) {
-                    document.querySelector(".right-menu > div:nth-child(5) > a:nth-child(1)").click();
-                }
-                else if (document.querySelector("div.content.unpaid")) {
-                    document.querySelector(".right-menu > div:nth-child(5) > a:nth-child(1)").click();
-                }
-                else if (rightMenu.childElementCount == 6) {
+                const rightMenuCount = rightMenu.childElementCount;
+                const btn1 = document.querySelector(`.right-menu > div:nth-child(${rightMenuCount - 1}) > a:nth-child(1)`);
+                const btn2 = document.querySelector(`.right-menu > div:nth-child(${rightMenuCount}) > a:nth-child(1)`);
+                if (btn1 && btn1.textContent?.includes("一章")) {
                     if (Math.random() < 0.3) {
-                        document.querySelector(".right-menu > div:nth-child(5) > a:nth-child(1)").click();
+                        btn1.click();
                     }
                     else {
-                        document.querySelector(".right-menu > div:nth-child(6) > a:nth-child(1)").click();
+                        btn2.click();
                     }
+                }
+                else if (btn2 && btn2.textContent?.includes("一章")) {
+                    btn2.click();
                 }
                 else {
                     _log__WEBPACK_IMPORTED_MODULE_4___default().info("[chapter]随机翻页失败，可能是页面结构变化或者只有一章");
