@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1205
+// @version        5.2.1206
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -306,8 +306,8 @@
 // @match          *://www.xyb3.net/5200/*/
 // @match          *://hongxiuzhao.net/*.html
 // @match          *://www.mijiashe.com/*/
-// @match          *://www.duread.cn/book/*
-// @match          *://duread.cn/book/*
+// @match          *://www.cddaoyue.cn/book/*
+// @match          *://cddaoyue.cn/book/*
 // @match          *://www.ttkan.co/novel/chapters/*
 // @match          *://cn.ttkan.co/novel/chapters/*
 // @match          *://tw.ttkan.co/novel/chapters/*
@@ -438,7 +438,7 @@
 // @connect        readmoo.com
 // @connect        qingoo.cn
 // @connect        sundung.com
-// @connect        duread.cn
+// @connect        cddaoyue.cn
 // @connect        ttkan.co
 // @connect        bg3.co
 // @connect        wanbengo.com
@@ -16482,7 +16482,7 @@ class Duread extends _rules__WEBPACK_IMPORTED_MODULE_11__/* .BaseRuleClass */ .Q
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const rootPath = "https://www.duread.cn/";
+        const rootPath = "https://www.cddaoyue.cn/";
         const [parentWidth, setFontSize] = [939.2, "18"];
         return getChapter({
             chapterUrl,
@@ -16646,7 +16646,7 @@ function getChapter({ chapterUrl, chapterName, isVIP, isPaid, charset, options, 
             return vipCHapterImageUrlI;
         }
         const getIsLogin = () => {
-            if (document.location.host === "www.duread.cn" || document.location.host === "duread.cn") {
+            if (document.location.host === "www.cddaoyue.cn" || document.location.host === "cddaoyue.cn") {
                 return (document.querySelector("div.dropdown-menu")?.childElementCount === 3);
             }
             else if (document.location.host === "www.shubl.com" || document.location.host === "shubl.com") {
@@ -45041,8 +45041,8 @@ async function getRule() {
             ruleClass = Iqingguo;
             break;
         }
-        case "duread.cn":
-        case "www.duread.cn": {
+        case "cddaoyue.cn":
+        case "www.cddaoyue.cn": {
             const { Duread } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ciweimao.ts"));
             ruleClass = Duread;
             break;
