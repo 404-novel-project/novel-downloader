@@ -404,8 +404,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = await guidaye();
       break;
     }
-    case "www.banxia.la":
-    case "www.banxia.cc": {
+    case "www.xbanxia.la":
+    case "www.xbanxia.cc": {
       const { banxia } = await import("../rules/onePage/banxia");
       ruleClass = banxia();
       break;
