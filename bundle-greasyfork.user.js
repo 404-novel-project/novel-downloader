@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1207
+// @version        5.2.1208
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -80,6 +80,7 @@
 // @exclude        *://m.mjyhb.com/*/*.html
 // @exclude        *://m.fly-dreams.com/*/*.html
 // @exclude        *://www.23dishuge.com/*/*/*.html
+// @exclude        *://twkan.com/book/*/index.html
 // @exclude        *://www.69hsw.com/*/*.html
 // @exclude        *://www.69hao.com/*/*.html
 // @exclude        *://www.69hsz.net/*/*.html
@@ -293,6 +294,7 @@
 // @match          *://www.akatsuki-novels.com/stories/index/novel_id~*
 // @match          *://www.alphapolis.co.jp/novel/*/*
 // @match          *://novelup.plus/story/*
+// @match          *://twkan.com/book/*.html
 // @match          *://69shuba.cx/book/*.htm
 // @match          *://www.69shuba.com/book/*.htm
 // @match          *://book.xbookcn.net/search/label/*
@@ -15689,6 +15691,84 @@ function mkRuleClass({ bookUrl, bookname, author, introDom, introDomPatch, cover
         }
     };
 }
+
+
+/***/ }),
+
+/***/ "./src/rules/onePageWithMultiIndexPage/twkan.ts":
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   twkan: () => (/* binding */ twkan)
+/* harmony export */ });
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+
+
+
+const twkan = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: document.querySelector("h1")?.innerText ?? "",
+    author: document.querySelector(".booknav2 > p:nth-child(3) > a")?.innerText ?? "",
+    introDom: document.querySelector(".navtxt"),
+    introDomPatch: (content) => content,
+    coverUrl: document.querySelector(".bookimg2 > img")?.src ?? null,
+    getIndexPages: async () => {
+        const indexPages = [];
+        const menuUrl = document.querySelector('a.btn.more-btn[href]').href;
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(menuUrl, "UTF-8");
+        indexPages.push(doc);
+        return indexPages;
+    },
+    getAList: (doc) => Array.from(doc.querySelectorAll("#allchapter ul a")),
+    getAName: (aElem) => aElem.innerText.trim(),
+    getContent: (doc) => doc.querySelector(".txtnav"),
+    contentPatch: (content) => {
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)(".hide720, .txtcenter, .bottom-ad", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)([/【.*台灣小說網.*】/g, /（.*台灣小說網.*）/g, /本書由.*首發/g, /本書首發.*讀體驗/g, /GOOGLE搜索TWKAN/gi, /.*台灣小說網.*(隨時享|超實用)/g], content);
+        const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null);
+        const nodesToReplace = [];
+        while (walker.nextNode()) {
+            const node = walker.currentNode;
+            if (node.parentNode &&
+                node.parentNode.nodeName !== 'P' &&
+                node.textContent &&
+                node.textContent.trim() !== '') {
+                nodesToReplace.push(node);
+            }
+        }
+        nodesToReplace.forEach((node) => {
+            const p = document.createElement('p');
+            p.textContent = node.textContent;
+            if (node.parentNode) {
+                node.parentNode.replaceChild(p, node);
+            }
+        });
+        const paragraphs = content.querySelectorAll('p');
+        const brRegex = /<br\s*\/?>/i;
+        paragraphs.forEach((p) => {
+            if (brRegex.test(p.innerHTML)) {
+                const parts = p.innerHTML.split(brRegex);
+                const fragment = document.createDocumentFragment();
+                parts.forEach((part) => {
+                    const newP = document.createElement('p');
+                    newP.innerHTML = part.trim();
+                    if (newP.innerHTML !== '') {
+                        fragment.appendChild(newP);
+                    }
+                });
+                if (p.parentNode) {
+                    p.parentNode.replaceChild(fragment, p);
+                }
+            }
+        });
+        return content;
+    },
+    language: "zh",
+    concurrencyLimit: 1,
+});
 
 
 /***/ }),
@@ -45450,6 +45530,11 @@ async function getRule() {
         case "www.xiaoshuowu.com": {
             const { xiaoshuowu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/xiaoshuowu.ts"));
             ruleClass = xiaoshuowu();
+            break;
+        }
+        case "twkan.com": {
+            const { twkan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/twkan.ts"));
+            ruleClass = twkan();
             break;
         }
         case "www.69shuba.com":
