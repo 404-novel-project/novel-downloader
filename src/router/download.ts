@@ -672,6 +672,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = xiaoshuowu();
       break;
     }
+    case "twkan.com": {
+      const { twkan } = await import("../rules/onePageWithMultiIndexPage/twkan");
+      ruleClass = twkan();
+      break;
+    }
     case "www.69shuba.com": 
     case "69shuba.cx": {
       const { c69shu } = await import("../rules/onePageWithMultiIndexPage/69shu");
