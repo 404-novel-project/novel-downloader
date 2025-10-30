@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1208
+// @version        5.2.1209
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -15718,16 +15718,27 @@ const twkan = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ 
     getIndexPages: async () => {
         const indexPages = [];
         const menuUrl = document.querySelector('a.btn.more-btn[href]').href;
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(menuUrl, "UTF-8");
+        const article = menuUrl.match(/\/book\/(\d+)\/index.html/);
+        const articleId = article ? article[1] : "";
+        const menuUrlNew = "https://twkan.com/ajax_novels/chapterlist/" + articleId + ".html";
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getHtmlDOM */ .wA)(menuUrlNew, "UTF-8");
         indexPages.push(doc);
         return indexPages;
     },
-    getAList: (doc) => Array.from(doc.querySelectorAll("#allchapter ul a")),
+    getAList: (doc) => Array.from(doc.querySelectorAll("ul a")),
     getAName: (aElem) => aElem.innerText.trim(),
-    getContent: (doc) => doc.querySelector(".txtnav"),
+    getContent: (doc) => doc.querySelector("#txtcontent0"),
     contentPatch: (content) => {
         (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)(".hide720, .txtcenter, .bottom-ad", true, content);
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)([/【.*台灣小說網.*】/g, /（.*台灣小說網.*）/g, /本書由.*首發/g, /本書首發.*讀體驗/g, /GOOGLE搜索TWKAN/gi, /.*台灣小說網.*(隨時享|超實用)/g], content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)([
+            /【.*台灣小說網.*】/g,
+            /（.*台灣小說網.*）/g,
+            /本書由.*首發/g,
+            /本書首發.*讀體驗/g,
+            /GOOGLE搜索TWKAN/gi,
+            /.*台灣小說網.*(隨時.|超全|超讚|超實用|超順暢|超流暢|超方便|超好用|超貼心|超給力|超省心|超靠譜|輕鬆讀|輕鬆看|任你.|等你尋)/g,
+            /\(本章完\)/g
+        ], content);
         const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null);
         const nodesToReplace = [];
         while (walker.nextNode()) {
