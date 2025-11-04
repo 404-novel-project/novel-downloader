@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1209
+// @version        5.2.1211
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -32050,7 +32050,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             const keys = extractKeys(responseHeader);
             accessKey = keys.accessKey;
             keyString = keys.keyString;
-            const content = String(responseText);
+            const content = responseText.trim();
             const accesskeyLen = accessKey.length;
             let v9 = 0;
             const v6 = String(accessKey[accesskeyLen - 1]).charCodeAt(0);
@@ -32058,16 +32058,16 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                 v9 += accessKey[i].charCodeAt(0);
             }
             const v15 = v9 % keyString.length;
-            const v17 = v9 / 65;
+            const v17 = Math.floor(v9 / 65);
             const v18 = keyString.length;
             if (v17 + v15 > v18) {
-                v43 = keyString.substring(v15, (v18 - v15) + v15);
+                v43 = keyString.substring(v15, v18);
             }
             else {
                 v43 = keyString.substring(v15, v17 + v15);
             }
             const v32 = content.length;
-            if ((v6 & 1) != 0) {
+            if ((v6 & 1) !== 0) {
                 v38 = content.substring(v32 - 12, v32);
                 dest = content.substring(0, v32 - 12);
             }
@@ -32131,7 +32131,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             }
             async function getChapterInfo(url) {
                 loglevel_default().debug(`请求地址: ${url}, Referrer: ${chapterUrl}, 重试次数: ${retryTime}`);
-                const user_agent = "Mozilla/5.0 (Linux; Android 15; Pixel 7 Pro Build/TP1A.241005.002.B2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/134.0.6998.109 Mobile Safari/537.36/JINJIANG-Android/381(Pixel7Pro;Scale/3.5;isHarmonyOS/false)" + Date.now();
+                const user_agent = "Mozilla/5.0 (Linux; Android 16; Pixel 9 Pro Build/TP1A.251005.002.B2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/134.0.6998.109 Mobile Safari/537.36/JINJIANG-Android/381(Pixel9Pro;Scale/3.5;isHarmonyOS/false)" + Date.now();
                 return new Promise((resolve) => {
                     (0,GM/* _GM_xmlhttpRequest */.nV)({
                         url: url,
