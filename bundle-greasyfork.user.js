@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1211
+// @version        5.2.1212
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -8383,7 +8383,8 @@ async function cleanDOM(elem, imgMode, options) {
                         const { dom: tdom, text: ttext, images: timages } = tobj;
                         _outDom.appendChild(tdom);
                         _outText = _outText + "\n" + ttext + "\n";
-                        _outImages = _outImages.concat(timages);
+                        if (timages.length > 0)
+                            _outImages = _outImages.concat(timages);
                         continue;
                     }
                 }
@@ -8394,7 +8395,8 @@ async function cleanDOM(elem, imgMode, options) {
                     const { dom: tdom, text: ttext, images: timages } = tobj;
                     _outDom.appendChild(tdom);
                     _outText = _outText + ttext;
-                    _outImages = _outImages.concat(timages);
+                    if (timages.length > 0)
+                        _outImages = _outImages.concat(timages);
                     continue;
                 }
             }
@@ -13777,7 +13779,21 @@ const masiro = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */
     sections: document.querySelectorAll("li.chapter-box > span + b"),
     getSName: (dom) => dom.innerText.trim(),
     getContent: (dom) => dom.querySelector("div.box-body.nvl-content"),
-    contentPatch: (dom) => dom,
+    contentPatch: (dom) => {
+        dom.querySelectorAll("img").forEach((img) => {
+            const el = img;
+            const heightAttr = Number.parseFloat(el.getAttribute("height") ?? "100");
+            const styleHeight = el.style.height
+                ? Number.parseFloat(el.style.height)
+                : 100;
+            const isAttrSmall = Number.isFinite(heightAttr) && heightAttr <= 1;
+            const isStyleSmall = Number.isFinite(styleHeight) && styleHeight <= 1;
+            if (isAttrSmall || isStyleSmall) {
+                el.remove();
+            }
+        });
+        return dom;
+    },
     concurrencyLimit: 1,
     sleepTime: 100,
     maxSleepTime: 3000,
