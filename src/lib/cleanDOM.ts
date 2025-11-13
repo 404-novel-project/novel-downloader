@@ -1074,7 +1074,8 @@ export async function cleanDOM(
             const { dom: tdom, text: ttext, images: timages } = tobj;
             _outDom.appendChild(tdom);
             _outText = _outText + "\n" + ttext + "\n";
-            _outImages = _outImages.concat(timages);
+            if (timages.length > 0)
+              _outImages = _outImages.concat(timages);
             continue;
           }
         }
@@ -1086,7 +1087,8 @@ export async function cleanDOM(
           const { dom: tdom, text: ttext, images: timages } = tobj;
           _outDom.appendChild(tdom);
           _outText = _outText + ttext;
-          _outImages = _outImages.concat(timages);
+          if (timages.length > 0)
+            _outImages = _outImages.concat(timages);
           continue;
         }
       }

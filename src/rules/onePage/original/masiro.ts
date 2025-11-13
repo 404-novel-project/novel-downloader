@@ -50,7 +50,24 @@ export const masiro = () =>
     sections: document.querySelectorAll("li.chapter-box > span + b"),
     getSName: (dom) => (dom as HTMLElement).innerText.trim(),
     getContent: (dom) => dom.querySelector("div.box-body.nvl-content"),
-    contentPatch: (dom) => dom,
+    contentPatch: (dom) => {
+      dom.querySelectorAll("img").forEach((img) => {
+        const el = img as HTMLImageElement;
+        const heightAttr = Number.parseFloat(el.getAttribute("height") ?? "100");
+        const styleHeight = el.style.height
+          ? Number.parseFloat(el.style.height)
+          : 100;
+        const isAttrSmall =
+          Number.isFinite(heightAttr) && heightAttr <= 1;
+        const isStyleSmall =
+          Number.isFinite(styleHeight) && styleHeight <= 1;
+
+        if (isAttrSmall || isStyleSmall) {
+          el.remove();
+        }
+      });
+      return dom;
+    },
     concurrencyLimit: 1,
     sleepTime: 100,
     maxSleepTime: 3000,
