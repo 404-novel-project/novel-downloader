@@ -125,5 +125,5 @@ export class ihuaben extends BaseRuleClass {
     }
 }
 function getList(dom: Document) {
-    return dom.querySelectorAll("div.chapterlist span.chapterTitle a");
+    return dom.querySelectorAll("div.chapter-list span.chapterTitle a");
 }
