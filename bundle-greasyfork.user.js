@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1220
+// @version        5.2.1221
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -37512,7 +37512,7 @@ class Bilibili extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */ .
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         const chapterDom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(chapterUrl);
-        const content = chapterDom.querySelector("div.opus-module-content");
+        const content = (chapterDom.querySelector("div.opus-module-content") ?? chapterDom.querySelector("div.article-content"));
         const chapterimg = document.createElement("img");
         chapterimg.src = options["chapterimg"][0];
         content.insertBefore(chapterimg, content.firstChild);
