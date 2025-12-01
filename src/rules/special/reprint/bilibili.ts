@@ -90,7 +90,7 @@ export class Bilibili extends BaseRuleClass {
         options: chapterOption
     ) {
         const chapterDom = await getHtmlDOM(chapterUrl);
-        const content = chapterDom.querySelector("div.opus-module-content") as HTMLElement;
+        const content = (chapterDom.querySelector("div.opus-module-content") ?? chapterDom.querySelector("div.article-content")) as HTMLElement;
         const chapterimg = document.createElement("img");
         chapterimg.src = options["chapterimg"][0];
         content.insertBefore(chapterimg, content.firstChild);
