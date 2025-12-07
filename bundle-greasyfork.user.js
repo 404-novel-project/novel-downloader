@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1221
+// @version        5.2.1222
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -116,6 +116,7 @@
 // @match          *://www.gongzicp.com/novel-*.html
 // @match          *://gongzicp.com/novel-*.html
 // @match          *://m.gongzicp.com/novel-*.html
+// @match          *://www.ciweimao.com/book/*
 // @match          *://book.zongheng.com/showchapter/*.html
 // @match          *://book.zongheng.com/book/*.html
 // @match          *://www.zongheng.com/detail/*
@@ -16371,6 +16372,7 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_9__/* .BaseRuleClass */ .Q {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Ciweimao: () => (/* binding */ Ciweimao),
 /* harmony export */   Duread: () => (/* binding */ Duread),
 /* harmony export */   Shubl: () => (/* binding */ Shubl)
 /* harmony export */ });
@@ -16400,6 +16402,95 @@ class C17k extends _rules__WEBPACK_IMPORTED_MODULE_9__/* .BaseRuleClass */ .Q {
 
 
 
+class Ciweimao extends _rules__WEBPACK_IMPORTED_MODULE_11__/* .BaseRuleClass */ .Q {
+    constructor() {
+        super();
+        this.attachmentMode = "TM";
+        this.concurrencyLimit = 1;
+        this.maxRunLimit = 1;
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const bookID = RegExp(/\/book\/(\d+)/).exec(bookUrl)?.[1] || null;
+        const bookname = document.querySelector(".book-info h1.title").innerText.trim();
+        const author = document.querySelector(".book-info a").innerText.trim();
+        const introDom = document.querySelector(".book-desc");
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_5__/* .introDomHandle */ .HV)(introDom);
+        const additionalMetadate = {};
+        const coverUrl = document.querySelector(".cover img").src;
+        if (coverUrl) {
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+                .then((coverClass) => {
+                additionalMetadate.cover = coverClass;
+            })
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_6___default().error(error));
+        }
+        additionalMetadate.tags = Array.from(document.querySelectorAll(".label-box a")).map((a) => a.innerText.trim());
+        const chapters = [];
+        const listDom = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__/* .getHtmlDOM */ .wA)(`https://www.ciweimao.com/chapter-list/${bookID}/book_detail`, this.charset);
+        const sectionList = listDom.querySelectorAll("div.book-chapter div.book-chapter-box");
+        let sectionNumber = 0;
+        let chapterNumber = 0;
+        for (const section of Array.from(sectionList)) {
+            sectionNumber++;
+            const sectionName = section.querySelector("h4.sub-tit").innerText.trim();
+            let sectionChapterNumber = 0;
+            const chapterList = section.querySelectorAll("ul.book-chapter-list li a");
+            for (const chapterA of Array.from(chapterList)) {
+                chapterNumber++;
+                sectionChapterNumber++;
+                const chapterName = chapterA.innerText.trim();
+                const chapterUrl = chapterA.href;
+                const isVIP = () => {
+                    return chapterA.querySelector("i.icon-lock") !== null;
+                };
+                const isPaid = () => {
+                    return true;
+                };
+                const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_9__/* .Chapter */ .I({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP: isVIP(),
+                    isPaid: isPaid(),
+                    sectionName,
+                    sectionNumber,
+                    sectionChapterNumber,
+                    chapterParse: this.chapterParse,
+                    charset: this.charset,
+                    options: {},
+                });
+                chapters.push(chapter);
+            }
+        }
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_10__/* .Book */ .E({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const rootPath = document.location.origin + '/';
+        const [parentWidth, setFontSize] = [939.2, "18"];
+        return getChapter({
+            chapterUrl,
+            chapterName,
+            isVIP,
+            isPaid,
+            charset,
+            options,
+            rootPath,
+            parentWidth,
+            setFontSize,
+        });
+    }
+}
 class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_11__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
@@ -45005,6 +45096,11 @@ async function getRule() {
         case "m.gongzicp.com": {
             const { Gongzicp } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/gongzicp.ts"));
             ruleClass = Gongzicp;
+            break;
+        }
+        case "www.ciweimao.com": {
+            const { Ciweimao } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ciweimao.ts"));
+            ruleClass = Ciweimao;
             break;
         }
         case "www.linovel.net": {
