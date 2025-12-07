@@ -91,6 +91,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Gongzicp;
       break;
     }
+    case "www.ciweimao.com": {
+      const { Ciweimao } = await import("../rules/special/original/ciweimao");
+      ruleClass = Ciweimao;
+      break;
+    }
     case "www.linovel.net": {
       const { Linovel } = await import("../rules/special/original/linovel");
       ruleClass = Linovel;

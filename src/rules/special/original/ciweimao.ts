@@ -14,6 +14,122 @@ import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 
+export class Ciweimao extends BaseRuleClass {
+  public constructor() {
+    super();
+    this.attachmentMode = "TM";
+    this.concurrencyLimit = 1;
+    this.maxRunLimit = 1;
+  }
+  public async bookParse() {
+    const bookUrl = document.location.href;
+    const bookID = RegExp(/\/book\/(\d+)/).exec(bookUrl)?.[1] || null;
+    const bookname = (
+      document.querySelector(".book-info h1.title") as HTMLTitleElement
+    ).innerText.trim();
+    const author = (
+      document.querySelector(".book-info a") as HTMLAnchorElement
+    ).innerText.trim();
+    const introDom = document.querySelector(".book-desc");
+    const [introduction, introductionHTML] = await introDomHandle(introDom);
+    const additionalMetadate: BookAdditionalMetadate = {};
+    const coverUrl = (
+      document.querySelector(".cover img") as HTMLImageElement
+    ).src;
+    if (coverUrl) {
+      getAttachment(coverUrl, this.attachmentMode, "cover-")
+        .then((coverClass) => {
+          additionalMetadate.cover = coverClass;
+        })
+        .catch((error) => log.error(error));
+    }
+    additionalMetadate.tags = Array.from(
+      document.querySelectorAll(".label-box a")
+    ).map((a) => (a as HTMLAnchorElement).innerText.trim());
+    const chapters: Chapter[] = [];
+    const listDom = await getHtmlDOM(
+      `https://www.ciweimao.com/chapter-list/${bookID}/book_detail`,
+      this.charset
+    );
+    const sectionList = listDom.querySelectorAll(
+      "div.book-chapter div.book-chapter-box"
+    ) as NodeListOf<HTMLAnchorElement>;
+    let sectionNumber = 0;
+    let chapterNumber = 0;
+    for (const section of Array.from(sectionList)) {
+      sectionNumber++;
+      const sectionName = (
+        section.querySelector("h4.sub-tit") as HTMLDivElement
+      ).innerText.trim();
+      let sectionChapterNumber = 0;
+      const chapterList = section.querySelectorAll(
+        "ul.book-chapter-list li a"
+      ) as NodeListOf<HTMLAnchorElement>;
+      for (const chapterA of Array.from(chapterList)) {
+        chapterNumber++;
+        sectionChapterNumber++;
+        const chapterName = chapterA.innerText.trim();
+        const chapterUrl = chapterA.href;
+        const isVIP = () => {
+          return chapterA.querySelector("i.icon-lock") !== null;
+        }
+        const isPaid = () => {
+          return true; // unknown
+        }
+        const chapter = new Chapter({
+          bookUrl,
+          bookname,
+          chapterUrl,
+          chapterNumber,
+          chapterName,
+          isVIP: isVIP(),
+          isPaid: isPaid(),
+          sectionName,
+          sectionNumber,
+          sectionChapterNumber,
+          chapterParse: this.chapterParse,
+          charset: this.charset,
+          options: {},
+        });
+        chapters.push(chapter);
+      }
+    }
+
+    return new Book({
+      bookUrl,
+      bookname,
+      author,
+      introduction,
+      introductionHTML,
+      additionalMetadate,
+      chapters,
+    });
+  }
+  public async chapterParse(
+    chapterUrl: string,
+    chapterName: string | null,
+    isVIP: boolean,
+    isPaid: boolean,
+    charset: string,
+    options: object
+  ) {
+    const rootPath = document.location.origin + '/';
+    const [parentWidth, setFontSize] = [939.2, "18"];
+    return getChapter({
+      chapterUrl,
+      chapterName,
+      isVIP,
+      isPaid,
+      charset,
+      options,
+      rootPath,
+      parentWidth,
+      setFontSize,
+    });
+  }
+}
+
+
 export class Shubl extends BaseRuleClass {
   public constructor() {
     super();
