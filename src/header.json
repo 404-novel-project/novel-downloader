@@ -302,7 +302,8 @@
     "*://www.69hao.com/*/",
     "*://www.69hsz.net/*/",
     "*://m.shauthor.com/*/",
-    "*://m.chenkuan.com/*/"
+    "*://m.chenkuan.com/*/",
+    "*://www.xfxs1.com/goreadbook/*/"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
@@ -382,7 +383,8 @@
     "*://www.69hao.com/*/*.html",
     "*://www.69hsz.net/*/*.html",
     "*://m.shauthor.com/*/*.html",
-    "*://m.chenkuan.com/*/*.html"
+    "*://m.chenkuan.com/*/*.html",
+    "*://www.xfxs1.com/goreadbook/*/*.html"
   ],
   "grant": [
     "unsafeWindow",
