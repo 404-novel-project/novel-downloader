@@ -559,6 +559,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = alicesw();
       break;
     }
+    case "www.xfxs1.com": {
+      const { xianfengxiaoshuo } = await import("../rules/onePageWithMultiIndexPage/xianfengxiaoshuo");
+      ruleClass = xianfengxiaoshuo();
+      break;
+    }
     /* onePageWithMultiIndexPage End */
 
     /* twoPage */
