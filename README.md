@@ -202,7 +202,7 @@ EPUB 文件请使用相应阅读器阅读。
 1. **文件名映射**：首先尝试根据图片文件名直接匹配对应的文字，这是最快的方法。
 2. **哈希映射**：如果文件名匹配不到，就下载图片并计算哈希值来匹配，速度也比较快。
 > [!NOTE]
-> 文件名和哈希映射的匹配表会自动从(https://github.com/oovz/novel-downloader-image-to-text-mapping)获取并保存在 Tampermonkey 的本地存储中。
+> 文件名和哈希映射的匹配表会自动从(https://github.com/404-novel-project/novel-downloader-image-to-text-mapping )获取并保存在 Tampermonkey 的本地存储中。
 3. **OCR识别**：前两种方法都失败时，才会使用OCR（光学字符识别）来识别图片中的文字，这是最准确但也最慢的方法。注意，OCR识别也不能保证100%准确率。
 > [!NOTE]
 > OCR功能使用的是PaddleOCR中文识别模型，模型文件会从GitHub自动下载并保存在Tampermonkey本地存储中。

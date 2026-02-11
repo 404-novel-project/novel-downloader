@@ -790,8 +790,18 @@ export async function cleanDOM(
 
     function img(elem: Element) {
       if (elem instanceof HTMLImageElement) {
-        const url = elem.src;
-        return getImg(url);
+        let url =
+          elem.src ||
+          elem.dataset.src ||
+          elem.dataset.original ||
+          elem.getAttribute("data-lazy-src") ||
+          "";
+        if (url) {
+          if (url.startsWith("//")) {
+            url = document.location.protocol + url;
+          }
+          return getImg(url);
+        }
       }
       return null;
     }
@@ -1110,7 +1120,31 @@ export async function cleanDOM(
     text: string;
     images: (Promise<AttachmentClass> | AttachmentClass)[];
   }): Promise<Output> {
-    const attachments = await Promise.all(images);
+    const timeout = 10000;
+    const wrappedImages = images.map((img) =>
+      Promise.resolve(img).then(
+        (v) => v,
+        (err) => {
+          log.error("[cleanDom]附件下载失败:", err);
+          return null;
+        }
+      )
+    );
+    const withTimeout = wrappedImages.map((p) =>
+      Promise.race([
+        p,
+        new Promise<null>((resolve) =>
+          setTimeout(() => {
+            log.warn("[cleanDom]附件下载超时，已跳过");
+            resolve(null);
+          }, timeout)
+        ),
+      ])
+    );
+    const results = await Promise.all(withTimeout);
+    const attachments = results.filter(
+      (a): a is AttachmentClass => a !== null
+    );
     attachments.forEach((attach) => {
       if (attach.comments) {
         dom.innerHTML = dom.innerHTML.replaceAll(attach.comments, attach.name);

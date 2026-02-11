@@ -30,7 +30,7 @@ export class HashDecoder {
     this.sessionId = sessionId || (window as GmWindow).workerId;
     
     // Construct site-specific URLs and cache keys
-    this.remoteUrl = `https://fastly.jsdelivr.net/gh/oovz/novel-downloader-image-to-text-mapping@master/hash-mappings/${domain}.min.json`;
+    this.remoteUrl = `https://fastly.jsdelivr.net/gh/404-novel-project/novel-downloader-image-to-text-mapping@master/hash-mappings/${domain}.min.json`;
     this.learnedCacheKey = `hash-mappings-learned-${domain}`;
     
     this.imageHasher = new ImageHasher();
