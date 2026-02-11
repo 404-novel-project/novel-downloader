@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1223
+// @version        5.2.1225
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -8167,8 +8167,17 @@ async function cleanDOM(elem, imgMode, options) {
         }
         function img(elem) {
             if (elem instanceof HTMLImageElement) {
-                const url = elem.src;
-                return getImg(url);
+                let url = elem.src ||
+                    elem.dataset.src ||
+                    elem.dataset.original ||
+                    elem.getAttribute("data-lazy-src") ||
+                    "";
+                if (url) {
+                    if (url.startsWith("//")) {
+                        url = document.location.protocol + url;
+                    }
+                    return getImg(url);
+                }
             }
             return null;
         }
@@ -8411,7 +8420,20 @@ async function cleanDOM(elem, imgMode, options) {
         };
     }
     async function awaitAttachments({ dom, text, images, }) {
-        const attachments = await Promise.all(images);
+        const timeout = 10000;
+        const wrappedImages = images.map((img) => Promise.resolve(img).then((v) => v, (err) => {
+            _log__WEBPACK_IMPORTED_MODULE_0___default().error("[cleanDom]附件下载失败:", err);
+            return null;
+        }));
+        const withTimeout = wrappedImages.map((p) => Promise.race([
+            p,
+            new Promise((resolve) => setTimeout(() => {
+                _log__WEBPACK_IMPORTED_MODULE_0___default().warn("[cleanDom]附件下载超时，已跳过");
+                resolve(null);
+            }, timeout)),
+        ]));
+        const results = await Promise.all(withTimeout);
+        const attachments = results.filter((a) => a !== null);
         attachments.forEach((attach) => {
             if (attach.comments) {
                 dom.innerHTML = dom.innerHTML.replaceAll(attach.comments, attach.name);
@@ -39863,7 +39885,7 @@ class FilenameDecoder {
         }
         this.domain = domain;
         this.sessionId = sessionId || window.workerId;
-        this.remoteUrl = `https://fastly.jsdelivr.net/gh/oovz/novel-downloader-image-to-text-mapping@master/filename-mappings/${domain}.min.json`;
+        this.remoteUrl = `https://fastly.jsdelivr.net/gh/404-novel-project/novel-downloader-image-to-text-mapping@master/filename-mappings/${domain}.min.json`;
         this.learnedCacheKey = `filename-mappings-learned-${domain}`;
         this.loadLearnedMappings().catch(error => {
             loglevel_default().error("Failed to initialize learned mappings:", error);
@@ -40106,7 +40128,7 @@ class HashDecoder {
         }
         this.domain = domain;
         this.sessionId = sessionId || window.workerId;
-        this.remoteUrl = `https://fastly.jsdelivr.net/gh/oovz/novel-downloader-image-to-text-mapping@master/hash-mappings/${domain}.min.json`;
+        this.remoteUrl = `https://fastly.jsdelivr.net/gh/404-novel-project/novel-downloader-image-to-text-mapping@master/hash-mappings/${domain}.min.json`;
         this.learnedCacheKey = `hash-mappings-learned-${domain}`;
         this.imageHasher = new imageHasher();
         this.loadLearnedMappings().catch(error => {
