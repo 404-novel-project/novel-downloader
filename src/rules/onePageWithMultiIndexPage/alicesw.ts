@@ -14,7 +14,7 @@ export const alicesw = () =>
     getIndexUrls: () => {
       // Get the chapter list page URL
       const chapterPageLink = document.querySelector(
-        "div.book_newchap > div.tit > span > em > a",
+        "div.book_newchap > div.tit a",
       ) as HTMLAnchorElement;
       if (!chapterPageLink) {
         return [];
