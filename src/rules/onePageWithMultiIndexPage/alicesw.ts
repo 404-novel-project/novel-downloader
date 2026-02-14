@@ -3,12 +3,12 @@ import { mkRuleClass } from "./template";
 export const alicesw = () =>
   mkRuleClass({
     bookUrl: document.location.href,
-    bookname: (document.querySelector("h1") as HTMLElement)?.innerText.trim(),
+    bookname: (document.querySelector("div.novel_title") as HTMLElement)?.innerText.trim(),
     author:
       (
         document.querySelector("div.box_info p:first-of-type > a:first-of-type") as HTMLAnchorElement
       )?.innerText.trim() || "",
-    introDom: document.querySelector("div.intro") as HTMLDivElement,
+    introDom: document.querySelector("div.jianjie") as HTMLDivElement,
     introDomPatch: (introDom) => introDom,
     coverUrl: (document.querySelector("div.pic > img.fengmian2") as HTMLImageElement).src || null,
     getIndexUrls: () => {
