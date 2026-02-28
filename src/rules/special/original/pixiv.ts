@@ -12,7 +12,9 @@ export class Pixiv extends BaseRuleClass {
     super();
     this.attachmentMode = "TM";
     this.needLogin = true;
-    this.concurrencyLimit = 3;
+    this.concurrencyLimit = 1;
+    this.sleepTime = 1000;
+    this.maxSleepTime = 20000;
   }
 
   public async bookParse(): Promise<Book> {
