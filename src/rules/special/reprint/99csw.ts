@@ -99,9 +99,14 @@ export class I99csw extends BaseRuleClass {
         options: Record<string, any>
     ): Promise<ChapterParseObject> {
         const html = await getFrameContentConditionWithWindow(chapterUrl, (frame) => {
-            frame.contentWindow?.scrollTo(0, frame.contentWindow?.document?.body?.scrollHeight ?? 0);
-            const doc = frame.contentWindow?.document ?? null;
-            if (doc) {
+            const win = frame.contentWindow;
+            const doc = win?.document ?? null;
+            if (win && doc) {
+                // 使用 instant 避免平滑滚动导致的抖动
+                win.scrollTo({
+                    top: doc.body?.scrollHeight ?? 0,
+                    behavior: 'instant'
+                });
                 const displayStyle = doc.querySelector("#cload")?.computedStyleMap()?.get("display")?.toString(); 
                 return displayStyle === "none";
             } else {
