@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1229
+// @version        5.2.1230
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -34363,9 +34363,10 @@ class po18 extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
                 const Elema = aElem.querySelector("div.l_chaptname");
                 const Elemb = aElem.querySelector("div.l_btn a");
                 const chapterName = Elema.innerText.trim();
-                const chapterUrl = Elema.querySelector("a")?.href ?? "javscript:void(0)";
-                const isVIP = Elemb.innerText.trim() != "免費閱讀";
-                const isPaid = Elema.querySelector("a") ? true : false;
+                const chapterUrl = Elemb?.href ?? "javascript:void(0)";
+                const btnText = Elemb.innerText.trim();
+                const isVIP = btnText !== "免費閱讀";
+                const isPaid = btnText === "閱讀";
                 const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
@@ -34403,7 +34404,7 @@ class po18 extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[Chapter]请求 ${chapterUrl}`);
         const chapterID = chapterUrl.match(/articles\/(\d+)/)?.[1];
-        const url = chapterUrl.replace('articles', 'articlescontent');
+        const url = chapterUrl.replace("articles", "articlescontent");
         const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ ._V)(url, {
             cookie: document.cookie,
             method: "GET",
@@ -34416,6 +34417,12 @@ class po18 extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
         const content = document.createElement("div");
         content.innerHTML = (await doc.responseText).replaceAll("<p>\n", "");
         (0,_lib_dom__WEBPACK_IMPORTED_MODULE_9__.rm)("blockquote", true, content);
+        const titleTags = Array.from(content.querySelectorAll("h1, h2"));
+        for (const tag of titleTags) {
+            if (tag.textContent?.trim() === chapterName) {
+                tag.remove();
+            }
+        }
         const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM");
         return {
             chapterName,
