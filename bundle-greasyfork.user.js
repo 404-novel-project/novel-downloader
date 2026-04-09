@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1230
+// @version        5.2.1231
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
@@ -16060,12 +16060,24 @@ const xianfengxiaoshuo = () => (0,_template__WEBPACK_IMPORTED_MODULE_3__/* .mkRu
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   xszj: () => (/* binding */ xszj)
 /* harmony export */ });
+/* unused harmony export getXszjIndexUrlsFromNode */
 /* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
 /* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/dom.ts");
 
 
 
+
+function getXszjIndexUrlsFromNode(node, baseUrl) {
+    if (!node) {
+        return [];
+    }
+    return Array.from(node.querySelectorAll("option"))
+        .map((option) => option.value.trim())
+        .filter((value) => value !== "")
+        .map((value) => new URL(value, baseUrl).href);
+}
 const xszj = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("h1")?.innerText.trim(),
@@ -16074,11 +16086,16 @@ const xszj = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .
     introDomPatch: (introDom) => introDom,
     coverUrl: document.querySelector("#fmimg > img")?.src || null,
     getIndexUrls: async () => {
+        const currentIndexUrls = getXszjIndexUrlsFromNode(document.querySelector("#indexselect"), document.location.origin);
+        if (currentIndexUrls.length > 0) {
+            return currentIndexUrls;
+        }
         const chapterListLink = document.querySelector("a.chapterlist");
         if (!chapterListLink) {
             return [];
         }
-        return [chapterListLink.href];
+        const chapterListDoc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getHtmlDOM */ .wA)(chapterListLink.href, document.characterSet);
+        return getXszjIndexUrlsFromNode(chapterListDoc.querySelector("#indexselect"), chapterListLink.href);
     },
     getAList: (doc) => doc.querySelectorAll('#content_1 > a[rel="chapter"]'),
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
@@ -16088,9 +16105,9 @@ const xszj = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .
             charset,
             selector: "#booktxt",
             contentPatch: (content) => {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("div", true, content);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("script", true, content);
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("ins", true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)("div", true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)("script", true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_3__.rm)("ins", true, content);
                 return content;
             },
             getNextPage: (doc) => {
