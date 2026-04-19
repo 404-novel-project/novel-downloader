@@ -34,5 +34,5 @@ function getAnotherPageUrl(bookUrl: string) {
     if (!match) {
         throw new Error("Invalid book URL.");
     }
-    return `https://101kanshu.com/ajax_novels/chapterlist/${match[1]}.html`;
+    return `https://101kks.com/ajax_novels/chapterlist/${match[1]}.html`;
 }
