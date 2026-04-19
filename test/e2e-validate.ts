@@ -62,6 +62,15 @@ const TEST_CASES: TestCase[] = [
     expectScriptInjected: true,
     validateMetadata: validateBooktokiMetadata,
   },
+  {
+    // zjsw.org - 爪机书屋
+    name: "zjsw-novel-page",
+    url: "https://www.zjsw.org/read/135118/",
+    waitForSelector: "#nd-button",
+    timeout: 30000,
+    expectScriptInjected: true,
+    validateMetadata: validateZjswMetadata,
+  },
 ];
 
 // ─── 元数据验证函数 ───────────────────────────────────────
@@ -182,6 +191,81 @@ async function validateBooktokiMetadata(page: Page): Promise<{ passed: boolean; 
   });
 }
 
+/** zjsw.org (爪机书屋) 元数据验证 */
+async function validateZjswMetadata(page: Page): Promise<{ passed: boolean; details: string }> {
+  const issues: string[] = [];
+
+  const result = await page.evaluate(() => {
+    const data: Record<string, string | number | null> = {};
+
+    // 书名 - h1.f20h 的第一个文本节点（不含作者）
+    const h1 = document.querySelector("h1.f20h");
+    if (h1) {
+      data.bookname = h1.firstChild?.textContent?.trim() || null;
+    }
+
+    // 作者 - h1.f20h > em，去除 "作者：" 前缀
+    const em = h1?.querySelector("em");
+    if (em) {
+      data.author = em.textContent?.replace(/^作者[：:]/, "").trim() || null;
+    }
+
+    // 简介 - div.intro，去除 Tags 部分
+    const introEl = document.querySelector("div.intro");
+    if (introEl) {
+      // 克隆后移除 book_keywords
+      const clone = introEl.cloneNode(true) as HTMLElement;
+      const kw = clone.querySelector("p.book_keywords");
+      if (kw) kw.remove();
+      data.intro = clone.textContent?.trim() || null;
+    }
+
+    // 封面
+    const coverEl = document.querySelector("div.pic > img") as HTMLImageElement | null;
+    data.coverUrl = coverEl?.src || null;
+
+    // 章节列表
+    const chapterLinks = document.querySelectorAll("dl > dd > a");
+    data.chapterCount = chapterLinks.length;
+
+    return data;
+  });
+
+  // 验证书名
+  if (!result.bookname || (result.bookname as string).length < 2) {
+    issues.push(`书名异常: "${result.bookname || "(空)"}"`);
+  }
+
+  // 验证作者
+  if (!result.author) {
+    issues.push("作者为空");
+  }
+
+  // 验证简介
+  const introText = (result.intro as string) || "";
+  if (introText.length < 5) {
+    issues.push(`简介异常: "${introText.substring(0, 50) || "(空)"}" (长度 ${introText.length} < 5)`);
+  }
+
+  // 验证封面
+  const coverUrl = (result.coverUrl as string) || "";
+  if (!coverUrl) {
+    issues.push("封面URL为空");
+  }
+
+  // 验证章节数
+  if ((result.chapterCount as number) < 10) {
+    issues.push(`章节数不足: ${result.chapterCount} < 10`);
+  }
+
+  const passed = issues.length === 0;
+  const details = passed
+    ? `书名="${result.bookname}", 作者="${result.author}", 章节=${result.chapterCount}, 简介="${(result.intro as string)?.substring(0, 30)}...", 封面="${(result.coverUrl as string)?.substring(0, 60) || "无"}"`
+    : issues.join("; ");
+
+  return { passed, details };
+}
+
 // ─── 工具函数 ─────────────────────────────────────────────
 function ensureDir(dir: string) {
   if (!fs.existsSync(dir)) {
@@ -300,42 +384,57 @@ async function runTests() {
     console.log("🔄 预热：自动更新 Tampermonkey 脚本...");
     const warmupPage = await context.newPage();
     try {
-      // 方法1：通过 Tampermonkey options page 的 Utilities tab 触发脚本更新
       const tmExtId = "dhdgffkkebhmkfjojejmpbldmpobfkfo";
-      const tmOptionsUrl = `chrome-extension://${tmExtId}/options.html`;
 
+      // 方法1：通过 Tampermonkey options page 的内部 API 安装/更新脚本
+      // 这是最可靠的方法，直接通过 Tampermonkey 的 runtime 消息 API 传递完整脚本内容
       try {
+        const tmOptionsUrl = `chrome-extension://${tmExtId}/options.html`;
         await warmupPage.goto(tmOptionsUrl, { waitUntil: "load", timeout: 8000 });
 
-        // 切换到 Utilities tab
-        const utilsTab = await warmupPage.$(
-          "[data-tab='utilities'], a[href='#utilities'], li:has-text('Utilities')"
-        );
-        if (utilsTab) {
-          await utilsTab.click();
-          await warmupPage.waitForTimeout(1000);
-        }
+        // 从 dev server 获取最新的 proxy 脚本内容
+        const scriptInstalled = await warmupPage.evaluate(async (extId: string) => {
+          try {
+            // 获取 proxy 脚本内容
+            const resp = await fetch("http://localhost:11944/bundle.proxy.user.js");
+            const scriptContent = await resp.text();
 
-        // 点击 "Check for userscript updates"
-        const updateBtn = await warmupPage.$(
-          "input[value*='Check for'], button:has-text('Check'), [data-i18n*='update']"
-        );
-        if (updateBtn) {
-          console.log("  📦 触发 Tampermonkey 脚本更新...");
-          await updateBtn.click();
-          await warmupPage.waitForTimeout(8000);
-          console.log("  ✅ Tampermonkey 脚本更新完成");
+            // 通过 Tampermonkey 的内部 API 安装脚本
+            // Tampermonkey 的 options page 可以访问 chrome.runtime.sendMessage
+            const chrome_ = (window as any).chrome;
+            return new Promise<boolean>((resolve) => {
+              chrome_?.runtime?.sendMessage(extId, {
+                method: "apiInstall",
+                data: { source: scriptContent },
+              }, (response: any) => {
+                if (chrome_.runtime.lastError) {
+                  resolve(false);
+                } else if (response?.data?.success) {
+                  resolve(true);
+                } else {
+                  resolve(!!response || false);
+                }
+              });
+              // 超时回退
+              setTimeout(() => resolve(false), 5000);
+            });
+          } catch (_e) {
+            return false;
+          }
+        }, tmExtId);
+
+        if (scriptInstalled) {
+          console.log("  ✅ 通过 Tampermonkey API 安装脚本成功");
         } else {
-          console.log("  (未找到更新按钮，继续)");
+          console.log("  (Tampermonkey API 安装未成功，尝试备用方法...)");
         }
       } catch (e) {
-        console.log(`  (Tampermonkey 选项页不可用: ${(e as Error).message?.substring(0, 80)})`);
+        console.log(`  (Tampermonkey API 不可用: ${(e as Error).message?.substring(0, 80)})`);
       }
 
       // 方法2：导航到 proxy 脚本 URL 触发安装/更新
       // Tampermonkey 检测到 .user.js URL 会自动弹出安装对话框
       try {
-        // 在新 tab 中打开 proxy 脚本
         const proxyPage = await context.newPage();
         await proxyPage.goto("http://webpack.localhost:11944/bundle.proxy.user.js", {
           waitUntil: "domcontentloaded",
@@ -344,26 +443,35 @@ async function runTests() {
         await proxyPage.waitForTimeout(2000);
 
         // Tampermonkey 可能已接管页面显示安装对话框
-        // 尝试找到并点击 "Install" 或 "Reinstall" 或 "确认"
-        const installSelectors = [
-          "input[type='submit'][value*='Install' i]",
-          "input[type='button'][value*='Install' i]",
-          "input[value*='安装']",
-          "input[value*='确认']",
-          "button:has-text('Install')",
-          "button:has-text('安装')",
-          "#install_script",
-          "[data-i18n='Install']",
-        ];
+        // 使用更健壮的按钮查找逻辑：遍历所有可点击元素，匹配按钮文本
+        const clicked = await proxyPage.evaluate(() => {
+          const findAndClick = (): string | null => {
+            // 查找所有按钮和链接
+            const clickables = Array.from(document.querySelectorAll("input[type='submit'], input[type='button'], button, a.btn"));
+            for (const el of clickables) {
+              const text = (el as HTMLElement).textContent?.trim() || (el as HTMLInputElement).value?.trim() || "";
+              if (/install|reinstall|安装|确认|ok|save/i.test(text)) {
+                (el as HTMLElement).click();
+                return text;
+              }
+            }
+            // 尝试更宽泛的查找
+            const allInputs = Array.from(document.querySelectorAll("input, button"));
+            for (const el of allInputs) {
+              const text = (el as HTMLElement).textContent?.trim() || (el as HTMLInputElement).value?.trim() || "";
+              if (text.length > 0 && text.length < 30 && /install|安装|确认|reinstall/i.test(text)) {
+                (el as HTMLElement).click();
+                return text;
+              }
+            }
+            return null;
+          };
+          return findAndClick();
+        });
 
-        for (const sel of installSelectors) {
-          const btn = await proxyPage.$(sel);
-          if (btn) {
-            console.log(`  📦 点击 Tampermonkey 安装按钮 (${sel})`);
-            await btn.click();
-            await proxyPage.waitForTimeout(3000);
-            break;
-          }
+        if (clicked) {
+          console.log(`  📦 点击 Tampermonkey 安装按钮 ("${clicked}")`);
+          await proxyPage.waitForTimeout(3000);
         }
         await proxyPage.close();
       } catch {

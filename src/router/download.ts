@@ -915,6 +915,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Xiguashuwu;
       break;
     }
+    case "www.zjsw.org": {
+      const { zjsw } = await import("../rules/onePage/zjsw");
+      ruleClass = zjsw();
+      break;
+    }
     default: {
       // booktoki 多域名匹配 (booktokiNNN.com)
       if (/^booktoki\d+\.com$/.test(host) || /^www\.booktoki\d+\.com$/.test(host)) {

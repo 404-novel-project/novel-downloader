@@ -305,7 +305,8 @@
     "*://m.shauthor.com/*/",
     "*://m.chenkuan.com/*/",
     "*://www.xfxs1.com/goreadbook/*/",
-    "*://uukanshu.cc/book/*/"
+    "*://uukanshu.cc/book/*/",
+    "*://www.zjsw.org/read/*/"
   ],
   "include": [
     "/^https?:\\/\\/(?:www\\.)?booktoki\\d+\\.com\\/novel\\//"
