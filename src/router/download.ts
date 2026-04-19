@@ -266,6 +266,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = uukanshu();
       break;
     }
+    case "uukanshu.cc": {
+      const { uukanshuCc } = await import("../rules/onePage/uukanshuCc");
+      ruleClass = uukanshuCc();
+      break;
+    }
     case "www.westnovel.com": {
       const { westnovel } = await import("../rules/onePage/westnovel");
       ruleClass = westnovel();
