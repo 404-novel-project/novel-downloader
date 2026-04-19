@@ -5,9 +5,10 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1231
+// @version        5.2.1241
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
+// @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
 // @exclude        *://m.yuzhaige.cc/tag/*/
 // @exclude        *://m.yuzhaige.cc/sort/*/
@@ -87,7 +88,8 @@
 // @exclude        *://m.shauthor.com/*/*.html
 // @exclude        *://m.chenkuan.com/*/*.html
 // @exclude        *://www.xfxs1.com/goreadbook/*/*.html
-// @match          *://101kanshu.com/book/*.html
+// @exclude        *://uukanshu.cc/book/*/*.html
+// @match          *://101kks.com/book/*.html
 // @match          *://www.sudugu.com/*
 // @match          *://www.po18.tw/books/*
 // @match          *://b.faloo.com/*
@@ -275,6 +277,7 @@
 // @match          *://www.lvsewx.com/ebook/*.html
 // @match          *://www.shencou.com/books/read_*.html
 // @match          *://www.tianyabooks.com/*/*/
+// @match          *://www.dushu.com/showbook/*
 // @match          *://www.aixiaxs.net/*/*/
 // @match          *://jingcaiyuedu6.com/novel/*.html
 // @match          *://www.hanwujinian.com/book/*
@@ -369,6 +372,8 @@
 // @match          *://m.shauthor.com/*/
 // @match          *://m.chenkuan.com/*/
 // @match          *://www.xfxs1.com/goreadbook/*/
+// @match          *://uukanshu.cc/book/*/
+// @match          *://www.zjsw.org/read/*/
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
