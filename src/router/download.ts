@@ -345,6 +345,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = houhuayuan();
       break;
     }
+    case "www.dushu.com": {
+      const { dushu } = await import("../rules/onePage/dushu");
+      ruleClass = dushu();
+      break;
+    }
     case "www.tianyabooks.com": {
       const { tianyabooks } = await import("../rules/onePage/tianyabooks");
       ruleClass = tianyabooks();

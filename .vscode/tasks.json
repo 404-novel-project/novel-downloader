@@ -1,0 +1,48 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "userscript: dev",
+      "type": "shell",
+      "command": "yarn",
+      "args": ["dev"],
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "userscript: open proxy",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "tools/dev/open-proxy.ps1"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "userscript: build",
+      "type": "shell",
+      "command": "yarn",
+      "args": ["build"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "userscript: build greasyfork",
+      "type": "shell",
+      "command": "yarn",
+      "args": ["build-greasyfork"],
+      "problemMatcher": []
+    },
+    {
+      "label": "userscript: lint",
+      "type": "shell",
+      "command": "yarn",
+      "args": ["lint"],
+      "problemMatcher": []
+    }
+  ]
+}

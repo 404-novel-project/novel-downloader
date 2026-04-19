@@ -150,7 +150,9 @@ dist
 
 ## Custom
 tmp/
-.vscode
+.vscode/*
+!.vscode/
+!.vscode/tasks.json
 secret/
 src/dev/
 

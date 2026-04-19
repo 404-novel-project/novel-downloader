@@ -74,7 +74,6 @@ export default {
     allowedHosts: "all",
     hot: true,
     liveReload: true,
-    magicHtml: false,
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Headers":
