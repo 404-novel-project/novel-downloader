@@ -24,8 +24,8 @@ export class fanqie extends BaseRuleClass {
         this.attachmentMode = "TM";
         this.concurrencyLimit = 1;
         this.maxRunLimit = 1;
-        this.maxSleepTime = 5000;
-        this.sleepTime = 800;
+        this.maxSleepTime = 10000;
+        this.sleepTime = 900;
     }
     public async bookParse() {
         const bookUrl = document.location.href;
@@ -111,7 +111,7 @@ export class fanqie extends BaseRuleClass {
         if (isVIP) {
             log.debug('未购买SVIP,尝试第三方API获取章节内容');
             const id = chapterUrl.match(/\d+/);
-            const url = `https://api.cenguigui.cn/api/tomato/content.php?item_id=${id}`;
+            const url = `https://tt.sjmyzq.cn/api/raw_full?item_id=${id}`;
             const result: string = await new Promise((resolve) => {
                 _GM_xmlhttpRequest({
                     url: url,
