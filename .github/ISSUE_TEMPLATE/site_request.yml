@@ -51,6 +51,6 @@ body:
   - type: textarea
     id: books
     attributes:
-      label: 你认为该站值得阅读的书籍
+      label: 你认为该站值得阅读的书籍（必须涵盖题目，简介，链接），至少2本以供开发者参考评估此网站的质量（收录完整性，错字率，信息完整度等，开发者可以在不提供理由的情况下拒绝适配）。
     validations:
-      required: false
+      required: true

@@ -18,6 +18,16 @@
 - Register routing changes in `src/router/download.ts`.
 - Keep rule implementations inside the existing site-specific folders under `src/rules/`.
 - Follow the existing rule style. Prefer the smallest site-specific rule that fits the target website instead of broad shared changes.
+- **NEVER** use `@match` with `*` in the middle of a hostname (e.g., `booktoki*.com` is invalid). Use `@include` with regex instead.
+- Always scrape real HTML (via `tools/dev/scrape-dom.mjs` or E2E profile scraper) — never guess selectors from accessibility snapshots.
+
+## E2E Testing
+
+- Use `npx tsx test/e2e-validate.ts` for automated browser validation with Tampermonkey.
+- One-time setup: `yarn test:e2e:init` (or `powershell tools/dev/init-profile.ps1`) to create Chrome Profile with Tampermonkey. See `.github/skills/setup-e2e-env/SKILL.md` for full first-time setup guide.
+- Dev server must be running (`yarn dev`) before E2E tests.
+- Test cases are defined in `TEST_CASES` array in `test/e2e-validate.ts`.
+- Screenshots saved to `test/screenshots/`.
 
 ## Safety Checks
 

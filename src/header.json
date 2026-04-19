@@ -307,6 +307,9 @@
     "*://www.xfxs1.com/goreadbook/*/",
     "*://uukanshu.cc/book/*/"
   ],
+  "include": [
+    "/^https?:\\/\\/(?:www\\.)?booktoki\\d+\\.com\\/novel\\//"
+  ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",
     "*://m.yuzhaige.cc/tag/*/",

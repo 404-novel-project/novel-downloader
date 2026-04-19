@@ -915,8 +915,13 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = Xiguashuwu;
       break;
     }
-
     default: {
+      // booktoki 多域名匹配 (booktokiNNN.com)
+      if (/^booktoki\d+\.com$/.test(host) || /^www\.booktoki\d+\.com$/.test(host)) {
+        const { booktoki } = await import("../rules/special/reprint/booktoki");
+        ruleClass = booktoki();
+        break;
+      }
       throw new Error("Not Found Rule!");
     }
   }
