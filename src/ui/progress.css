@@ -11,6 +11,12 @@
   border-radius: 12px;
 }
 
+#chapter-progress-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 #chapter-progress {
   --color: green;
   --position: 0%;
@@ -35,6 +41,14 @@
     -webkit-linear-gradient(var(--color), var(--color));
   background-size: 100%, var(--position);
   background-repeat: no-repeat;
+}
+
+#chapter-eta {
+  color: #555;
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+  font-family: monospace;
 }
 
 #zip-progress {

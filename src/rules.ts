@@ -272,6 +272,9 @@ export abstract class BaseRuleClass {
       return [];
     }
     (progress as ProgressVM).totalChapterNumber = chapters.length;
+    (progress as ProgressVM).concurrencyLimit = self.concurrencyLimit;
+    (progress as ProgressVM).sleepTime = self.sleepTime;
+    (progress as ProgressVM).maxSleepTime = self.maxSleepTime;
 
     if (self.concurrencyLimit === 1) {
       let chapteri = -1;
@@ -297,7 +300,11 @@ export abstract class BaseRuleClass {
           chapteri++;
           const nowSleepTime = Math.min(self.maxSleepTime / 2.0, chapteri * self.sleepTime);
           await sleep(nowSleepTime + Math.round(Math.random() * nowSleepTime));
+          const reqStart = Date.now();
           let chapterObj = await chapter.init();
+          const reqTime = Date.now() - reqStart;
+          (progress as ProgressVM).updateRequestTime(reqTime);
+          (progress as ProgressVM).processedChapterIndex = chapteri + 1;
           chapterObj = await postChapterParseHook(chapterObj, saveBookObj);
         } catch (error) {
           log.error(error);
@@ -324,7 +331,10 @@ export abstract class BaseRuleClass {
         if (curChapter?.status === Status.finished)
           return curChapter;
         try {
+          const reqStart = Date.now();
           let chapterObj = await curChapter.init();
+          const reqTime = Date.now() - reqStart;
+          (progress as ProgressVM).updateRequestTime(reqTime);
           chapterObj = await postChapterParseHook(chapterObj, saveBookObj);
           return chapterObj;
         } catch (error) {
