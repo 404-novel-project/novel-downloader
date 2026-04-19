@@ -9,6 +9,7 @@ import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass } from "../../../rules";
 import { _GM_xmlhttpRequest } from "../../../lib/GM";
 import { UnsafeWindow } from "../../../global";
+import { sleep } from "../../../lib/misc";
 
 export class Lightnovel extends BaseRuleClass {
     public constructor() {
@@ -129,6 +130,35 @@ export class Lightnovel extends BaseRuleClass {
             },
         });
         const Dcontent = doc.querySelector("article#article-main-contents") as HTMLElement;
+
+        // Remove signing parameters from image URLs to avoid 403 errors
+        // when downloading via GM_xmlhttpRequest (CDN serves images without params)
+        const imageElements = Array.from(Dcontent?.querySelectorAll("img[src*='res.lightnovel.fun']") ?? []);
+        for (const img of imageElements) {
+            const src = img.getAttribute("src");
+            if (src) {
+                const url = new URL(src);
+                url.search = "";
+                img.setAttribute("src", url.href);
+            }
+        }
+
+        // Pre-download images sequentially to avoid cleanDOM's 10s timeout
+        // from killing bulk concurrent downloads. getAttachment caches results,
+        // so cleanDOM will hit the cache and skip re-downloading.
+        const imageUrls = imageElements
+            .map((img) => img.getAttribute("src"))
+            .filter((src): src is string => !!src);
+        for (const imgUrl of imageUrls) {
+            try {
+                await getAttachment(imgUrl, this.attachmentMode, "chapter-");
+            } catch (e) {
+                log.error(`[lightnovel]预下载图片失败: ${imgUrl}`);
+                log.error(e);
+            }
+            await sleep(300);
+        }
+
         const { dom, text, images } = await cleanDOM(Dcontent, "TM");
         return {
             chapterName,
