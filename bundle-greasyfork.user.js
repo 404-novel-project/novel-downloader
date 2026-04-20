@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1241
+// @version        5.2.1242
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -9417,6 +9417,1981 @@ function isFixWidth(node, width = 35) {
     const lengths = ns.map((l) => (0,_dom__WEBPACK_IMPORTED_MODULE_2__/* .fullWidthLength */ .QJ)(l));
     const lt = lengths.filter((i) => i > width + 5).length;
     return lt < 5;
+}
+
+
+/***/ },
+
+/***/ "./src/lib/decoders/FilenameDecoder.ts"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   u: () => (/* binding */ FilenameDecoder)
+/* harmony export */ });
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _GM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/GM.ts");
+/* harmony import */ var _SessionMappingCache__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/SessionMappingCache.ts");
+
+
+
+
+class FilenameDecoder {
+    domain;
+    remoteUrl;
+    learnedCacheKey;
+    sessionId;
+    mappings = null;
+    learnedMappings = null;
+    loading = null;
+    constructor(domain, sessionId) {
+        if (!domain) {
+            throw new Error("Domain name is required for FilenameDecoder initialization");
+        }
+        this.domain = domain;
+        this.sessionId = sessionId || window.workerId;
+        this.remoteUrl = `https://fastly.jsdelivr.net/gh/404-novel-project/novel-downloader-image-to-text-mapping@master/filename-mappings/${domain}.min.json`;
+        this.learnedCacheKey = `filename-mappings-learned-${domain}`;
+        this.loadLearnedMappings().catch(error => {
+            _log__WEBPACK_IMPORTED_MODULE_0___default().error("Failed to initialize learned mappings:", error);
+        });
+        _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`FilenameDecoder initialized for domain: ${domain}, session: ${this.sessionId}`);
+    }
+    async decode(imageData) {
+        _log__WEBPACK_IMPORTED_MODULE_0___default().warn("FilenameDecoder.decode() called with imageData - this decoder requires filename context from URL");
+        return null;
+    }
+    async decodeFromFilename(filename) {
+        try {
+            await this.ensureMappingsLoaded();
+            if (this.mappings?.has(filename)) {
+                const character = this.mappings.get(filename);
+                _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Decoded character from server mappings: ${character} for filename: ${filename}`);
+                return character;
+            }
+            if (this.learnedMappings?.has(filename)) {
+                const character = this.learnedMappings.get(filename);
+                _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Decoded character from learned mappings: ${character} for filename: ${filename}`);
+                return character;
+            }
+            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`No character mapping found for filename: ${filename}`);
+            return null;
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_0___default().error("Error in filename decoding:", error);
+            return null;
+        }
+    }
+    getMappingsCount() {
+        return {
+            remote: this.mappings?.size ?? 0,
+            learned: this.learnedMappings?.size ?? 0
+        };
+    }
+    async clearCache() {
+        const sessionCache = _SessionMappingCache__WEBPACK_IMPORTED_MODULE_3__/* .SessionMappingCache */ .j.getInstance();
+        sessionCache.clearSession(this.sessionId);
+        this.mappings = null;
+        this.loading = null;
+    }
+    async ensureMappingsLoaded() {
+        if (this.mappings) {
+            return;
+        }
+        if (this.loading) {
+            await this.loading;
+            return;
+        }
+        this.loading = this.loadMappings();
+        await this.loading;
+    }
+    async loadMappings() {
+        try {
+            const sessionCache = _SessionMappingCache__WEBPACK_IMPORTED_MODULE_3__/* .SessionMappingCache */ .j.getInstance();
+            this.mappings = await sessionCache.getMappingsWithLoading(this.sessionId, this.domain, _SessionMappingCache__WEBPACK_IMPORTED_MODULE_3__/* .MAPPING_TYPES */ .$.FILENAME, () => this.fetchRemoteMappings());
+            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Loaded ${this.mappings.size} filename mappings for session ${this.sessionId}`);
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_0___default().error("Failed to load filename mappings:", error);
+            throw error;
+        }
+    }
+    async fetchRemoteMappings() {
+        try {
+            _log__WEBPACK_IMPORTED_MODULE_0___default().debug("Fetching filename mappings from remote");
+            const response = await (0,_http__WEBPACK_IMPORTED_MODULE_1__/* .ggetText */ .bx)(this.remoteUrl);
+            if (!response) {
+                throw new Error("Empty response from remote URL");
+            }
+            const data = JSON.parse(response);
+            if (typeof data !== 'object' || !data) {
+                throw new Error("Invalid mapping data format");
+            }
+            const mappings = new Map();
+            for (const [key, value] of Object.entries(data)) {
+                if (typeof value === 'string') {
+                    mappings.set(key, value);
+                }
+                else {
+                    _log__WEBPACK_IMPORTED_MODULE_0___default().warn(`Skipping invalid mapping entry: ${key} -> ${value} (not a string)`);
+                }
+            }
+            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Successfully loaded ${mappings.size} filename mappings from remote`);
+            return mappings;
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_0___default().error("Failed to fetch filename mappings:", error);
+            throw error;
+        }
+    }
+    async loadLearnedMappings() {
+        try {
+            const cached = await (0,_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_getValue */ .er)(this.learnedCacheKey);
+            if (cached) {
+                const data = JSON.parse(cached);
+                this.learnedMappings = new Map(Object.entries(data));
+                _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Loaded ${this.learnedMappings.size} learned filename mappings from cache`);
+            }
+            else {
+                this.learnedMappings = new Map();
+            }
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_0___default().error("Failed to load learned filename mappings:", error);
+            this.learnedMappings = new Map();
+        }
+    }
+    async learnMapping(filename, character) {
+        try {
+            if (!this.learnedMappings) {
+                this.learnedMappings = new Map();
+            }
+            this.learnedMappings.set(filename, character);
+            await this.saveLearnedMappings();
+            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Learned new filename mapping: ${filename} -> ${character}`);
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_0___default().error("Error learning filename mapping:", error);
+        }
+    }
+    async clearLearnedMappings() {
+        await (0,_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_deleteValue */ .JU)(this.learnedCacheKey);
+        this.learnedMappings = new Map();
+        _log__WEBPACK_IMPORTED_MODULE_0___default().debug("Cleared all learned filename mappings");
+    }
+    exportLearnedMappings() {
+        if (!this.learnedMappings) {
+            return {};
+        }
+        return Object.fromEntries(this.learnedMappings);
+    }
+    async importLearnedMappings(mappings) {
+        this.learnedMappings = new Map(Object.entries(mappings));
+        await this.saveLearnedMappings();
+        _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Imported ${this.learnedMappings.size} learned filename mappings`);
+    }
+    async saveLearnedMappings() {
+        try {
+            if (this.learnedMappings) {
+                const data = Object.fromEntries(this.learnedMappings);
+                await (0,_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_setValue */ .mN)(this.learnedCacheKey, JSON.stringify(data));
+                _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Saved ${this.learnedMappings.size} learned filename mappings to storage`);
+            }
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_0___default().error("Failed to save learned filename mappings:", error);
+        }
+    }
+}
+
+
+/***/ },
+
+/***/ "./src/lib/decoders/HashDecoder.ts"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  J: () => (/* binding */ HashDecoder)
+});
+
+// EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
+var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
+// EXTERNAL MODULE: ./src/lib/http.ts
+var http = __webpack_require__("./src/lib/http.ts");
+// EXTERNAL MODULE: ./src/lib/GM.ts
+var GM = __webpack_require__("./src/lib/GM.ts");
+;// ./src/lib/imageHasher.ts
+class ImageHasher {
+    hashSize;
+    constructor(hashSize = 8) {
+        this.hashSize = hashSize;
+    }
+    async hash(imageBlob) {
+        const grayscalePixels = await this.preprocessImage(imageBlob);
+        return this.calculateDHash(grayscalePixels);
+    }
+    static hammingDistance(hash1, hash2) {
+        if (hash1.length !== hash2.length) {
+            throw new Error("Hashes must be of equal length.");
+        }
+        const xorResult = BigInt(`0b${hash1}`) ^ BigInt(`0b${hash2}`);
+        return (xorResult.toString(2).match(/1/g) || []).length;
+    }
+    async preprocessImage(imageBlob) {
+        const image = await this.loadImageFromBlob(imageBlob);
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        if (!context)
+            throw new Error("Could not get 2D canvas context.");
+        const scaledWidth = this.hashSize + 1;
+        const scaledHeight = this.hashSize;
+        canvas.width = scaledWidth;
+        canvas.height = scaledHeight;
+        context.drawImage(image, 0, 0, scaledWidth, scaledHeight);
+        const imageData = context.getImageData(0, 0, scaledWidth, scaledHeight).data;
+        const grayscale = new Uint8ClampedArray(scaledWidth * scaledHeight);
+        for (let i = 0, j = 0; i < imageData.length; i += 4, j++) {
+            grayscale[j] =
+                0.299 * imageData[i] +
+                    0.587 * imageData[i + 1] +
+                    0.114 * imageData[i + 2];
+        }
+        return grayscale;
+    }
+    calculateDHash(pixels) {
+        let hash = "";
+        const width = this.hashSize + 1;
+        for (let y = 0; y < this.hashSize; y++) {
+            for (let x = 0; x < this.hashSize; x++) {
+                const left = pixels[y * width + x];
+                const right = pixels[y * width + x + 1];
+                hash += left < right ? "1" : "0";
+            }
+        }
+        return hash;
+    }
+    loadImageFromBlob(blob) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            const url = URL.createObjectURL(blob);
+            img.onload = () => {
+                URL.revokeObjectURL(url);
+                resolve(img);
+            };
+            img.onerror = (err) => {
+                URL.revokeObjectURL(url);
+                reject(new Error(`Failed to load image from blob`));
+            };
+            img.src = url;
+        });
+    }
+}
+/* harmony default export */ const imageHasher = (ImageHasher);
+
+// EXTERNAL MODULE: ./src/lib/SessionMappingCache.ts
+var SessionMappingCache = __webpack_require__("./src/lib/SessionMappingCache.ts");
+;// ./src/lib/decoders/HashDecoder.ts
+
+
+
+
+
+class HashDecoder {
+    domain;
+    remoteUrl;
+    learnedCacheKey;
+    sessionId;
+    mappings = null;
+    learnedMappings = null;
+    loading = null;
+    imageHasher;
+    constructor(domain, sessionId) {
+        if (!domain) {
+            throw new Error("Domain name is required for HashDecoder initialization");
+        }
+        this.domain = domain;
+        this.sessionId = sessionId || window.workerId;
+        this.remoteUrl = `https://fastly.jsdelivr.net/gh/404-novel-project/novel-downloader-image-to-text-mapping@master/hash-mappings/${domain}.min.json`;
+        this.learnedCacheKey = `hash-mappings-learned-${domain}`;
+        this.imageHasher = new imageHasher();
+        this.loadLearnedMappings().catch(error => {
+            loglevel_default().error("Failed to initialize learned mappings:", error);
+        });
+        loglevel_default().debug(`HashDecoder initialized for domain: ${domain}, session: ${this.sessionId}`);
+    }
+    async decode(imageData) {
+        try {
+            await this.ensureMappingsLoaded();
+            const hash = await this.generateImageHash(imageData);
+            if (this.mappings?.has(hash)) {
+                const text = this.mappings.get(hash);
+                loglevel_default().debug(`Decoded text from server mappings: ${text} for hash: ${hash}`);
+                return text;
+            }
+            if (this.learnedMappings?.has(hash)) {
+                const text = this.learnedMappings.get(hash);
+                loglevel_default().debug(`Decoded text from learned mappings: ${text} for hash: ${hash}`);
+                return text;
+            }
+            loglevel_default().debug(`No mapping found for hash: ${hash}`);
+            return null;
+        }
+        catch (error) {
+            loglevel_default().error("Error in hash decoding:", error);
+            return null;
+        }
+    }
+    async learnMapping(imageData, text) {
+        try {
+            const hash = await this.generateImageHash(imageData);
+            if (!this.learnedMappings) {
+                this.learnedMappings = new Map();
+            }
+            this.learnedMappings.set(hash, text);
+            await this.saveLearnedMappings();
+            loglevel_default().debug(`Learned new mapping: ${hash} -> ${text}`);
+        }
+        catch (error) {
+            loglevel_default().error("Error learning mapping:", error);
+        }
+    }
+    getMappingsCount() {
+        return {
+            remote: this.mappings?.size ?? 0,
+            learned: this.learnedMappings?.size ?? 0
+        };
+    }
+    async clearCache() {
+        const sessionCache = SessionMappingCache/* SessionMappingCache */.j.getInstance();
+        sessionCache.clearSession(this.sessionId);
+        this.mappings = null;
+        this.loading = null;
+    }
+    async clearLearnedMappings() {
+        await (0,GM/* _GM_deleteValue */.JU)(this.learnedCacheKey);
+        this.learnedMappings = new Map();
+    }
+    exportLearnedMappings() {
+        if (!this.learnedMappings) {
+            return {};
+        }
+        return Object.fromEntries(this.learnedMappings);
+    }
+    async importLearnedMappings(mappings) {
+        this.learnedMappings = new Map(Object.entries(mappings));
+        await this.saveLearnedMappings();
+        loglevel_default().debug(`Imported ${this.learnedMappings.size} learned mappings`);
+    }
+    async ensureMappingsLoaded() {
+        if (this.mappings) {
+            return;
+        }
+        if (this.loading) {
+            await this.loading;
+            return;
+        }
+        this.loading = this.loadMappings();
+        await this.loading;
+    }
+    async loadMappings() {
+        try {
+            const sessionCache = SessionMappingCache/* SessionMappingCache */.j.getInstance();
+            this.mappings = await sessionCache.getMappingsWithLoading(this.sessionId, this.domain, SessionMappingCache/* MAPPING_TYPES */.$.HASH, () => this.fetchRemoteMappings());
+            loglevel_default().debug(`Loaded ${this.mappings.size} hash mappings for session ${this.sessionId}`);
+        }
+        catch (error) {
+            loglevel_default().error("Failed to load hash mappings:", error);
+            throw error;
+        }
+    }
+    async fetchRemoteMappings() {
+        try {
+            loglevel_default().debug("Fetching hash mappings from remote");
+            const response = await (0,http/* ggetText */.bx)(this.remoteUrl);
+            if (!response) {
+                throw new Error("Empty response from remote URL");
+            }
+            const data = JSON.parse(response);
+            if (typeof data !== 'object' || !data) {
+                throw new Error("Invalid mapping data format");
+            }
+            const mappings = new Map();
+            for (const [key, value] of Object.entries(data)) {
+                if (typeof value === 'string') {
+                    mappings.set(key, value);
+                }
+                else {
+                    loglevel_default().warn(`Skipping invalid mapping entry: ${key} -> ${value} (not a string)`);
+                }
+            }
+            loglevel_default().debug(`Successfully loaded ${mappings.size} hash mappings from remote`);
+            return mappings;
+        }
+        catch (error) {
+            loglevel_default().error("Failed to fetch hash mappings:", error);
+            throw error;
+        }
+    }
+    async loadLearnedMappings() {
+        try {
+            const cached = await (0,GM/* _GM_getValue */.er)(this.learnedCacheKey);
+            if (cached) {
+                const data = JSON.parse(cached);
+                this.learnedMappings = new Map(Object.entries(data));
+                loglevel_default().debug(`Loaded ${this.learnedMappings.size} learned hash mappings from storage`);
+            }
+            else {
+                this.learnedMappings = new Map();
+            }
+        }
+        catch (error) {
+            loglevel_default().error("Failed to load learned mappings:", error);
+            this.learnedMappings = new Map();
+        }
+    }
+    async saveLearnedMappings() {
+        try {
+            if (this.learnedMappings) {
+                const data = Object.fromEntries(this.learnedMappings);
+                await (0,GM/* _GM_setValue */.mN)(this.learnedCacheKey, JSON.stringify(data));
+                loglevel_default().debug(`Saved ${this.learnedMappings.size} learned mappings to storage`);
+            }
+        }
+        catch (error) {
+            loglevel_default().error("Failed to save learned mappings:", error);
+        }
+    }
+    async generateImageHash(imageData) {
+        const blob = new Blob([imageData]);
+        return await this.imageHasher.hash(blob);
+    }
+}
+
+
+/***/ },
+
+/***/ "./src/lib/decoders/ImageCache.ts"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   S: () => (/* binding */ ImageCache)
+/* harmony export */ });
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+
+
+class ImageCache {
+    static instance = null;
+    cache = new Map();
+    maxCacheSize = 50;
+    accessOrder = [];
+    constructor() {
+    }
+    static getInstance() {
+        if (!ImageCache.instance) {
+            ImageCache.instance = new ImageCache();
+        }
+        return ImageCache.instance;
+    }
+    async getImageData(imageUrl) {
+        if (this.cache.has(imageUrl)) {
+            this.updateAccessOrder(imageUrl);
+            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Image cache hit for: ${imageUrl.substring(0, 50)}...`);
+            return this.cache.get(imageUrl);
+        }
+        try {
+            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Downloading image for cache: ${imageUrl.substring(0, 50)}...`);
+            const response = await (0,_http__WEBPACK_IMPORTED_MODULE_1__/* .gfetch */ ._V)(imageUrl, {
+                responseType: "arraybuffer",
+                method: "GET"
+            });
+            if (response.status !== 200 || !response.response) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            const uint8Array = new Uint8Array(response.response);
+            this.cacheImageData(imageUrl, uint8Array);
+            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Downloaded and cached image: ${uint8Array.length} bytes`);
+            return uint8Array;
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_0___default().error(`Failed to download image: ${imageUrl}`, error);
+            throw error;
+        }
+    }
+    cacheImageData(imageUrl, data) {
+        if (this.cache.size >= this.maxCacheSize) {
+            const lruUrl = this.accessOrder.shift();
+            if (lruUrl) {
+                this.cache.delete(lruUrl);
+                _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Evicted LRU image from cache: ${lruUrl.substring(0, 50)}...`);
+            }
+        }
+        this.cache.set(imageUrl, data);
+        this.accessOrder.push(imageUrl);
+    }
+    updateAccessOrder(imageUrl) {
+        const index = this.accessOrder.indexOf(imageUrl);
+        if (index > -1) {
+            this.accessOrder.splice(index, 1);
+            this.accessOrder.push(imageUrl);
+        }
+    }
+    clearCache() {
+        this.cache.clear();
+        this.accessOrder.length = 0;
+        _log__WEBPACK_IMPORTED_MODULE_0___default().debug("Cleared image cache");
+    }
+    getCacheStats() {
+        return {
+            size: this.cache.size,
+            maxSize: this.maxCacheSize,
+            urls: Array.from(this.cache.keys()).map(url => url.substring(0, 50) + "...")
+        };
+    }
+}
+
+
+/***/ },
+
+/***/ "./src/lib/decoders/OCRDecoder.ts"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  T: () => (/* binding */ OCRDecoder)
+});
+
+// NAMESPACE OBJECT: ./node_modules/@oovz/esearch-ocr/dist/eSearchOCR.es.js
+var eSearchOCR_es_namespaceObject = {};
+__webpack_require__.r(eSearchOCR_es_namespaceObject);
+__webpack_require__.d(eSearchOCR_es_namespaceObject, {
+  analyzeLayout: () => (_n),
+  det: () => (Fn),
+  init: () => (Ln),
+  initDet: () => (gn),
+  initDocDirCls: () => (mn),
+  initRec: () => (bn),
+  loadImg: () => (dn),
+  ocr: () => (Rn),
+  rec: () => (Yn),
+  rotateImg: () => (Gt),
+  setOCREnv: () => (hn)
+});
+
+// EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
+var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
+// EXTERNAL MODULE: ./src/lib/http.ts
+var http = __webpack_require__("./src/lib/http.ts");
+// EXTERNAL MODULE: ./src/lib/GM.ts
+var GM = __webpack_require__("./src/lib/GM.ts");
+;// ./node_modules/@oovz/esearch-ocr/dist/eSearchOCR.es.js
+var Kt = Object.defineProperty;
+var Qt = (t, e, o) => e in t ? Kt(t, e, { enumerable: !0, configurable: !0, writable: !0, value: o }) : t[e] = o;
+var yt = (t, e, o) => Qt(t, typeof e != "symbol" ? e + "" : e, o);
+let Rt = (t, e) => new OffscreenCanvas(t, e);
+function st(t, e) {
+  return Rt(t, e);
+}
+function Zt(t) {
+  Rt = t;
+}
+function Ot(t) {
+  return t > 0 ? Math.floor(t) : Math.ceil(t);
+}
+function J(t, e, o) {
+  return Math.max(e, Math.min(t, o));
+}
+function Mt(t, e, o, s, a = "high") {
+  return Jt(t, e, o, s, a).getImageData(0, 0, e, o);
+}
+function Jt(t, e, o, s, a = "high") {
+  const r = H(t), u = st(e, o).getContext("2d");
+  return u.imageSmoothingEnabled = a !== !1, a && (u.imageSmoothingQuality = a), s === "fill" ? u.scale(Math.min(e / t.width, 1), Math.min(o / t.height, 1)) : u.scale(e / t.width, o / t.height), u.drawImage(r, 0, 0), u;
+}
+function H(t, e, o) {
+  const s = st(e || t.width, o || t.height);
+  return s.getContext("2d").putImageData(t, 0, 0), s;
+}
+function kt(t, e, o) {
+  const s = t.data, a = [], r = [], i = [];
+  let u = 0, m = 0;
+  for (let h = 0; h < s.length; h += 4)
+    i[m] || (i[m] = []), r[m] || (r[m] = []), a[m] || (a[m] = []), a[m][u] = (s[h] / 255 - e[0]) / o[0], r[m][u] = (s[h + 1] / 255 - e[1]) / o[1], i[m][u] = (s[h + 2] / 255 - e[2]) / o[2], u++, u === t.width && (u = 0, m++);
+  return [i, r, a];
+}
+class Ft {
+  constructor(e) {
+    yt(this, "tl", []);
+    yt(this, "name");
+    this.name = e;
+  }
+  l(e) {
+    const o = performance.now();
+    this.tl.push({ t: e, n: o });
+    const s = [];
+    for (let r = 1; r < this.tl.length; r++) {
+      const i = this.tl[r].n - this.tl[r - 1].n, u = this.tl[r - 1].t, m = s.find((h) => h.n === u);
+      m ? (m.c++, m.d += i) : s.push({ d: i, n: u, c: 1 });
+    }
+    const a = [];
+    for (const r of s) {
+      const i = r.c > 1 ? `${r.n}x${r.c}` : r.n;
+      a.push(`${i} ${r.d}`);
+    }
+    a.push(this.tl.at(-1).t), console.log(`${this.name} ${s.map((r) => r.d).reduce((r, i) => r + i, 0)}ms: `, a.join(" "));
+  }
+}
+async function tn(t, e, o, s, a, r) {
+  const { transposedData: i, image: u } = nn(t, a, r), h = (await en(i, u, e, o))[0].data, l = h.reduce((y, x) => Math.max(y, x)), d = h.findIndex((y) => y === l);
+  return s[d];
+}
+function nn(t, e, o) {
+  const s = Mt(t, e, o);
+  return { transposedData: kt(s, [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]), image: s };
+}
+async function en(t, e, o, s) {
+  const a = t.flat(Number.POSITIVE_INFINITY), r = Float32Array.from(a), i = new o.Tensor("float32", r, [1, 3, e.height, e.width]), u = {};
+  u[s.inputNames[0]] = i;
+  const m = await s.run(u);
+  return Object.values(m);
+}
+function on(t) {
+  if (t.length === 0) throw new Error("Empty contour");
+  const e = sn([...t]);
+  let o = Number.POSITIVE_INFINITY;
+  const s = {
+    center: { x: 0, y: 0 },
+    size: { width: 0, height: 0 },
+    angle: 0
+  };
+  for (let a = 0; a < e.length; a++) {
+    const r = e[a], i = e[(a + 1) % e.length], u = { x: i.x - r.x, y: i.y - r.y }, m = Math.hypot(u.x, u.y), [h, l] = [u.x / m, u.y / m];
+    let d = Number.POSITIVE_INFINITY, y = Number.NEGATIVE_INFINITY, x = Number.POSITIVE_INFINITY, b = Number.NEGATIVE_INFINITY;
+    for (const I of e) {
+      const k = (I.x - r.x) * h + (I.y - r.y) * l;
+      d = Math.min(d, k), y = Math.max(y, k);
+      const N = -(I.x - r.x) * l + (I.y - r.y) * h;
+      x = Math.min(x, N), b = Math.max(b, N);
+    }
+    const p = (y - d) * (b - x);
+    if (p < o) {
+      o = p;
+      const I = (d + y) / 2, k = (x + b) / 2;
+      s.center = {
+        x: r.x + h * I - l * k,
+        y: r.y + l * I + h * k
+      }, s.size = {
+        width: y - d,
+        height: b - x
+      }, s.angle = Math.atan2(l, h) * (180 / Math.PI);
+    }
+  }
+  return s.size.width < s.size.height && ([s.size.width, s.size.height] = [s.size.height, s.size.width], s.angle += 90), s.angle = (s.angle % 180 + 180) % 180, s;
+}
+function sn(t) {
+  t.sort((s, a) => s.x - a.x || s.y - a.y);
+  const e = [];
+  for (const s of t) {
+    for (; e.length >= 2 && Vt(e[e.length - 2], e[e.length - 1], s) <= 0; )
+      e.pop();
+    e.push(s);
+  }
+  const o = [];
+  for (let s = t.length - 1; s >= 0; s--) {
+    const a = t[s];
+    for (; o.length >= 2 && Vt(o[o.length - 2], o[o.length - 1], a) <= 0; )
+      o.pop();
+    o.push(a);
+  }
+  return e.slice(0, -1).concat(o.slice(0, -1));
+}
+function Vt(t, e, o) {
+  return (e.x - t.x) * (o.y - t.y) - (e.y - t.y) * (o.x - t.x);
+}
+function cn(t, e, o = "CHAIN_APPROX_SIMPLE") {
+  const s = t.length, a = s > 0 ? t[0].length : 0, r = Array.from({ length: s }, () => new Array(a).fill(!1));
+  for (let i = 0; i < s; i++)
+    for (let u = 0; u < a; u++)
+      if (t[i][u] !== 0 && !r[i][u] && Yt(t, u, i)) {
+        const m = rn(t, r, u, i, o === "CHAIN_APPROX_SIMPLE");
+        e.push(m);
+      }
+}
+function Yt(t, e, o) {
+  return t[o][e] !== 0 && (o > 0 && t[o - 1][e] === 0 || o < t.length - 1 && t[o + 1][e] === 0 || e > 0 && t[o][e - 1] === 0 || e < t[0].length - 1 && t[o][e + 1] === 0);
+}
+function rn(t, e, o, s, a) {
+  const r = [];
+  let i = { x: o, y: s }, u = { x: o - 1, y: s };
+  const m = /* @__PURE__ */ new Map(), h = /* @__PURE__ */ new Map();
+  function l(p) {
+    return p.x + p.y * t[0].length;
+  }
+  function d(p) {
+    const I = Math.floor(p / t[0].length);
+    return { x: p % t[0].length, y: I };
+  }
+  function y(p, I) {
+    const k = l(p), N = l(I), T = It(I.x - p.x, I.y - p.y), P = It(p.x - I.x, p.y - I.y), z = m.get(k) ?? [], v = m.get(N) ?? [];
+    m.set(k, [...z, T]), m.set(N, [...v, P]);
+  }
+  function x(p) {
+    const I = l(i);
+    u = i, i = { x: i.x + ft[p].dx, y: i.y + ft[p].dy }, y(u, i);
+    const N = (h.get(I) ?? []).filter((T) => T !== p);
+    N.length > 0 ? h.set(I, N) : h.delete(I);
+  }
+  m.set(l(i), [It(-1, 0)]);
+  let b = 0;
+  do {
+    r.push(i), e[i.y][i.x] = !0;
+    const p = ln(t, m, i);
+    if (p.length === 0) {
+      if (h.size === 0)
+        break;
+      const [I, k] = Array.from(h.entries()).at(0), N = k[0];
+      i = d(I), x(N);
+    }
+    if (p.length >= 1) {
+      const I = l(i);
+      h.set(I, p);
+      const k = p[0];
+      x(k);
+    }
+    b++;
+  } while (b < 1e9);
+  return a ? an(r) : r;
+}
+const ft = [
+  { dx: 1, dy: 0 },
+  // Right
+  { dx: 1, dy: -1 },
+  // Top-Right
+  { dx: 0, dy: -1 },
+  // Top
+  { dx: -1, dy: -1 },
+  // Top-Left
+  { dx: -1, dy: 0 },
+  // Left
+  { dx: -1, dy: 1 },
+  // Bottom-Left
+  { dx: 0, dy: 1 },
+  // Bottom
+  { dx: 1, dy: 1 }
+  // Bottom-Right
+];
+function ln(t, e, o) {
+  function s(i) {
+    return i.x + i.y * t[0].length;
+  }
+  const a = e.get(s(o)) ?? [], r = [];
+  for (const [i, { dx: u, dy: m }] of ft.entries()) {
+    if (a.includes(i)) continue;
+    const h = o.x + u, l = o.y + m;
+    h >= 0 && h < t[0].length && l >= 0 && l < t.length && Yt(t, h, l) && r.push(i);
+  }
+  return r;
+}
+function It(t, e) {
+  const o = ft.findIndex(({ dx: s, dy: a }) => t === s && e === a);
+  return o === -1 ? 0 : o;
+}
+function an(t) {
+  if (t.length < 3) return [...t];
+  const e = [t[0]];
+  for (let o = 1; o < t.length - 1; o++) {
+    const s = e[e.length - 1], a = t[o], r = t[o + 1];
+    un(s, a, r) || e.push(a);
+  }
+  return e.push(t[t.length - 1]), e;
+}
+function un(t, e, o) {
+  return (e.x - t.x) * (o.y - e.y) === (e.y - t.y) * (o.x - e.x);
+}
+const G = new Ft("t"), F = new Ft("af_det");
+let L = !1, Ct = !1, q = null;
+function ot(t, e) {
+  var s;
+  const o = document.createElement("canvas");
+  o.width = t.width, o.height = t.height, o.getContext("2d").drawImage(t, 0, 0), e && (o.id = e);
+  try {
+    (s = document == null ? void 0 : document.body) == null || s.append(o);
+  } catch {
+  }
+}
+let ht = (t, e, o) => new ImageData(t, e, o);
+function O(...t) {
+  Ct && console.log(...t);
+}
+function fn(...t) {
+  Ct && console.log(t.map((e) => `%c${e}`).join(""), ...t.map((e) => `color: ${e}`));
+}
+async function Ln(t) {
+  hn(t);
+  const e = {
+    det: "det" in t ? t.det : {
+      input: t.detPath,
+      ratio: t.detRatio,
+      on: async (s) => {
+        t.onDet && t.onDet(s), t.onProgress && t.onProgress("det", 1, 1);
+      }
+    },
+    rec: "rec" in t ? t.rec : {
+      input: t.recPath,
+      decodeDic: t.dic,
+      imgh: t.imgh,
+      on: async (s, a, r) => {
+        t.onRec && t.onRec(s, a), t.onProgress && t.onProgress("rec", r, s + 1);
+      }
+    },
+    docCls: "rec" in t ? t.docCls : t.docClsPath ? {
+      input: t.docClsPath
+    } : void 0,
+    analyzeLayout: "rec" in t ? t.analyzeLayout : {
+      columnsTip: t.columnsTip,
+      docDirs: t.docDirs
+    },
+    ...t
+  }, o = await xn(e);
+  return q = o, o;
+}
+function hn(t) {
+  L = !!t.dev, Ct = L || !!t.log, L || (G.l = () => {
+  }, F.l = () => {
+  }), t.canvas && Zt(t.canvas), t.imageData && (ht = t.imageData);
+}
+async function dn(t) {
+  let e;
+  if (typeof window > "u") {
+    const o = t;
+    if (!o.data || !o.width || !o.height) throw new Error("invalid image data");
+    return o;
+  }
+  if (typeof t == "string" ? (e = new Image(), e.src = t, await new Promise((o) => {
+    e.onload = o;
+  })) : (t instanceof ImageData, e = t), e instanceof HTMLImageElement) {
+    const s = st(e.naturalWidth, e.naturalHeight).getContext("2d");
+    if (!s) throw new Error("canvas context is null");
+    s.drawImage(e, 0, 0), e = s.getImageData(0, 0, e.naturalWidth, e.naturalHeight);
+  }
+  if (e instanceof HTMLCanvasElement) {
+    const o = e.getContext("2d");
+    if (!o) throw new Error("canvas context is null");
+    e = o.getImageData(0, 0, e.width, e.height);
+  }
+  return e;
+}
+function Nt() {
+  try {
+    st(1, 1), ht(new Uint8ClampedArray(4), 1, 1);
+  } catch (t) {
+    throw console.log("nodejs need set canvas, please use setOCREnv to set canvas and imageData"), t;
+  }
+}
+async function Rn(t) {
+  if (!q) throw new Error("need init");
+  return q.ocr(t);
+}
+async function Fn(t) {
+  if (!q) throw new Error("need init");
+  return q.det(t);
+}
+async function Yn(t) {
+  if (!q) throw new Error("need init");
+  return q.rec(t);
+}
+async function xn(t) {
+  Nt();
+  const e = {
+    ort: t.ort,
+    ortOption: t.ortOption
+  }, o = t.docCls ? await mn({ ...t.docCls, ...e }) : void 0, s = await gn({ ...t.det, ...e }), a = await bn({ ...t.rec, ...e });
+  return {
+    ocr: async (r) => {
+      let i = await dn(r), u = 0;
+      o && (u = await o.docCls(i), O("dir", u), i = Gt(i, 360 - u));
+      const m = await s.det(i), h = await a.rec(m), l = _n(h, t.analyzeLayout);
+      return O(h, l), G.l("end"), { src: h, ...l, docDir: u };
+    },
+    det: s.det,
+    rec: a.rec
+  };
+}
+function St(t, e, o) {
+  return typeof e == "string" ? t.InferenceSession.create(e, o) : e instanceof ArrayBuffer || e instanceof SharedArrayBuffer ? t.InferenceSession.create(new Uint8Array(e), o) : t.InferenceSession.create(e, o);
+}
+async function mn(t) {
+  const e = await St(t.ort, t.input, t.ortOption);
+  return { docCls: async (s) => tn(s, t.ort, e, [0, 90, 180, 270], 224, 224) };
+}
+async function gn(t) {
+  Nt();
+  let e = 1;
+  const o = await St(t.ort, t.input, t.ortOption);
+  t.ratio !== void 0 && (e = t.ratio);
+  async function s(a) {
+    var x;
+    const r = a;
+    if (L) {
+      const b = H(r);
+      ot(b);
+    }
+    G.l("pre_det");
+    const { data: i, width: u, height: m } = In(r, e), { transposedData: h, image: l } = i;
+    G.l("det");
+    const d = await pn(h, l, o, t.ort);
+    G.l("aft_det");
+    const y = wn(
+      { data: d.data, width: d.dims[3], height: d.dims[2] },
+      u,
+      m,
+      r
+    );
+    return (x = t == null ? void 0 : t.on) == null || x.call(t, y), y;
+  }
+  return { det: s };
+}
+async function bn(t) {
+  var i;
+  Nt();
+  let e = 48;
+  const o = await St(t.ort, t.input, t.ortOption), s = t.decodeDic.split(/\r\n|\r|\n/) || [];
+  s.at(-1) === "" ? s[s.length - 1] = " " : s.push(" "), t.imgh && (e = t.imgh);
+  const a = ((i = t.optimize) == null ? void 0 : i.space) === void 0 ? !0 : t.optimize.space;
+  async function r(u) {
+    var l;
+    const m = [];
+    G.l("bf_rec");
+    const h = Pn(u, e);
+    for (const [d, y] of h.entries()) {
+      const { b: x, imgH: b, imgW: p } = y, I = await yn(x, b, p, o, t.ort), k = An(I, s, { opm: { space: a } })[0];
+      m.push({
+        text: k.text,
+        mean: k.mean,
+        box: u[d].box,
+        style: u[d].style
+      }), (l = t == null ? void 0 : t.on) == null || l.call(t, d, k, u.length);
+    }
+    return G.l("rec_end"), m.filter((d) => d.mean >= 0.5);
+  }
+  return { rec: r };
+}
+async function pn(t, e, o, s) {
+  const a = Float32Array.from(t.flat(3)), r = new s.Tensor("float32", a, [1, 3, e.height, e.width]), i = {};
+  return i[o.inputNames[0]] = r, (await o.run(i))[o.outputNames[0]];
+}
+async function yn(t, e, o, s, a) {
+  const r = Float32Array.from(t.flat(3)), i = new a.Tensor("float32", r, [1, 3, e, o]), u = {};
+  return u[s.inputNames[0]] = i, (await s.run(u))[s.outputNames[0]];
+}
+function In(t, e) {
+  const o = Math.max(Math.round(t.height * e / 32) * 32, 32), s = Math.max(Math.round(t.width * e / 32) * 32, 32);
+  if (L) {
+    const i = H(t);
+    ot(i);
+  }
+  const a = Mt(t, s, o, "fill"), r = kt(a, [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]);
+  if (O(a), L) {
+    const i = H(a);
+    ot(i);
+  }
+  return { data: { transposedData: r, image: a }, width: s, height: o };
+}
+function wn(t, e, o, s) {
+  F.l("");
+  const a = Math.min(s.width, e), r = Math.min(s.height, o), { data: i, width: u, height: m } = t, h = new Uint8Array(u * m);
+  for (let x = 0; x < i.length; x++) {
+    const b = i[x] > 0.3 ? 255 : 0;
+    h[x] = b;
+  }
+  if (L) {
+    const x = new Uint8ClampedArray(u * m * 4);
+    for (let I = 0; I < i.length; I++) {
+      const k = I * 4, N = i[I] > 0.3 ? 255 : 0;
+      x[k] = x[k + 1] = x[k + 2] = N, x[k + 3] = 255, h[I] = N;
+    }
+    const b = ht(x, u, m), p = H(b);
+    ot(p, "det_ru");
+  }
+  F.l("edge");
+  const l = [], d = [];
+  for (let x = 0; x < m; x++)
+    d.push(Array.from(h.slice(x * u, x * u + u)));
+  const y = [];
+  if (cn(d, y), L) {
+    const x = document.querySelector("#det_ru").getContext("2d");
+    for (const b of y) {
+      x.moveTo(b[0].x, b[0].y);
+      for (const p of b)
+        x.lineTo(p.x, p.y);
+      x.strokeStyle = "red", x.closePath(), x.stroke();
+    }
+  }
+  for (let x = 0; x < y.length; x++) {
+    F.l("get_box");
+    const b = 3, p = y[x], { points: I, sside: k } = Sn(p);
+    if (k < b) continue;
+    const N = Cn(I), T = N.points;
+    if (N.sside < b + 2)
+      continue;
+    const P = s.width / a, z = s.height / r;
+    for (let _ = 0; _ < T.length; _++)
+      T[_][0] *= P, T[_][1] *= z;
+    F.l("order");
+    const v = Bn(T);
+    for (const _ of v)
+      _[0] = J(Math.round(_[0]), 0, s.width), _[1] = J(Math.round(_[1]), 0, s.height);
+    const dt = Ot(Lt(v[0], v[1])), xt = Ot(Lt(v[0], v[3]));
+    if (dt <= 3 || xt <= 3) continue;
+    zn(T, "", "red", "det_ru"), F.l("crop");
+    const W = Tn(s, T);
+    F.l("match best");
+    const { bg: A, text: $ } = Dn(W), ct = En(T, W, $);
+    l.push({ box: ct, img: W, style: { bg: A, text: $ } });
+  }
+  return F.l("e"), O(l), l;
+}
+function Mn(t) {
+  let e = -1;
+  const o = t.length;
+  let s, a = t[o - 1], r = 0;
+  for (; ++e < o; )
+    s = a, a = t[e], r += s[1] * a[0] - s[0] * a[1];
+  return r / 2;
+}
+function kn(t) {
+  let e = -1;
+  const o = t.length;
+  let s = t[o - 1], a, r, i = s[0], u = s[1], m = 0;
+  for (; ++e < o; )
+    a = i, r = u, s = t[e], i = s[0], u = s[1], a -= i, r -= u, m += Math.hypot(a, r);
+  return m;
+}
+function Cn(t) {
+  const o = Math.abs(Mn(t)), s = kn(t), a = o * 1.5 / s, r = [];
+  for (const [h, l] of t.entries()) {
+    const d = t.at((h - 1) % 4), y = t.at((h + 1) % 4), x = l[0] - d[0], b = l[1] - d[1], p = Math.sqrt(x ** 2 + b ** 2), I = x / p * a, k = b / p * a, N = l[0] - y[0], T = l[1] - y[1], P = Math.sqrt(N ** 2 + T ** 2), z = N / P * a, v = T / P * a;
+    r.push([l[0] + I + z, l[1] + k + v]);
+  }
+  const i = [r[0][0] - r[1][0], r[0][1] - r[1][1]], u = [r[2][0] - r[1][0], r[2][1] - r[1][1]], m = i[0] * u[1] - i[1] * u[0];
+  return { points: r, sside: Math.abs(m) };
+}
+function Nn(t, e, o) {
+  const s = e.width, a = e.height, r = o * Math.PI / 180, i = Math.cos(r), u = Math.sin(r), m = t.x, h = t.y, l = s * 0.5, d = a * 0.5, y = [], x = m - l * i + d * u, b = h - l * u - d * i;
+  y.push([x, b]);
+  const p = m + l * i + d * u, I = h + l * u - d * i;
+  y.push([p, I]);
+  const k = m + l * i - d * u, N = h + l * u + d * i;
+  y.push([k, N]);
+  const T = m - l * i - d * u, P = h - l * u + d * i;
+  return y.push([T, P]), y;
+}
+function Sn(t) {
+  const o = on(t), s = Array.from(Nn(o.center, o.size, o.angle)).sort(
+    (l, d) => l[0] - d[0]
+  );
+  let a = 0, r = 1, i = 2, u = 3;
+  s[1][1] > s[0][1] ? (a = 0, u = 1) : (a = 1, u = 0), s[3][1] > s[2][1] ? (r = 2, i = 3) : (r = 3, i = 2);
+  const m = [s[a], s[r], s[i], s[u]], h = Math.min(o.size.height, o.size.width);
+  return { points: m, sside: h };
+}
+function Lt(t, e) {
+  return Math.sqrt((t[0] - e[0]) ** 2 + (t[1] - e[1]) ** 2);
+}
+function Bn(t) {
+  const e = [
+    [0, 0],
+    [0, 0],
+    [0, 0],
+    [0, 0]
+  ], o = t.map((r) => r[0] + r[1]);
+  e[0] = t[o.indexOf(Math.min(...o))], e[2] = t[o.indexOf(Math.max(...o))];
+  const s = t.filter((r) => r !== e[0] && r !== e[2]), a = s[1].map((r, i) => r - s[0][i]);
+  return e[1] = s[a.indexOf(Math.min(...a))], e[3] = s[a.indexOf(Math.max(...a))], e;
+}
+function Tn(t, e) {
+  const [o, s, a, r] = e.map((v) => ({ x: v[0], y: v[1] })), i = Math.sqrt((s.x - o.x) ** 2 + (s.y - o.y) ** 2), u = Math.sqrt((r.x - o.x) ** 2 + (r.y - o.y) ** 2), m = s.x - o.x, h = s.y - o.y, l = r.x - o.x, d = r.y - o.y, y = m * d - l * h;
+  if (y === 0) throw new Error("点共线，无法形成矩形");
+  const x = i * d / y, b = -l * i / y, p = -u * h / y, I = m * u / y, k = -x * o.x - b * o.y, N = -p * o.x - I * o.y, T = H(t), P = st(Math.ceil(i), Math.ceil(u)), z = P.getContext("2d");
+  return z.setTransform(x, p, b, I, k, N), z.drawImage(T, 0, 0), z.resetTransform(), z.getImageData(0, 0, P.width, P.height);
+}
+function Dn(t) {
+  var m, h;
+  const e = /* @__PURE__ */ new Map(), o = t.data;
+  for (let l = 0; l < o.length; l += 4) {
+    if (l / 4 % t.width > t.height * 4) continue;
+    const y = o[l], x = o[l + 1], b = o[l + 2], p = [y, x, b].join(",");
+    e.set(p, (e.get(p) || 0) + 1);
+  }
+  const s = vn(e, 20).map((l) => ({
+    el: l.el.split(",").map(Number),
+    count: l.count
+  })), a = ((m = s.at(0)) == null ? void 0 : m.el) || [255, 255, 255], r = ((h = s.at(1)) == null ? void 0 : h.el) || [0, 0, 0];
+  let i = r;
+  const u = 100;
+  if (at(r, a) < u) {
+    const l = s.slice(1).filter((d) => at(d.el, a) > 50);
+    l.length > 0 && (i = [0, 1, 2].map(
+      (d) => Math.round(jt(l.map((y) => [y.el[d], y.count])))
+    )), (l.length === 0 || at(i, a) < u) && (i = a.map((d) => 255 - d)), fn(`rgb(${i.join(",")})`);
+  }
+  return {
+    bg: a,
+    text: i,
+    textEdge: r
+  };
+}
+function at(t, e) {
+  const o = t, s = e;
+  return Math.sqrt((o[0] - s[0]) ** 2 + (o[1] - s[1]) ** 2 + (o[2] - s[2]) ** 2);
+}
+function vn(t, e = 1) {
+  let o = [];
+  return t.forEach((s, a) => {
+    o.length === 0 ? o.push({ el: a, count: s }) : (o.length < e ? o.push({ el: a, count: s }) : o.find((r) => r.count <= s) && o.push({ el: a, count: s }), o.sort((r, i) => i.count - r.count), o.length > e && (o = o.slice(0, e)));
+  }), o;
+}
+function En(t, e, o) {
+  let s = 0, a = e.height, r = 0, i = e.width;
+  function u(x) {
+    return at(x, o) < 200;
+  }
+  t: for (let x = s; x < e.height; x++)
+    for (let b = 0; b < e.width; b++) {
+      const p = lt(e, b, x);
+      if (u(p)) {
+        s = x;
+        break t;
+      }
+    }
+  t: for (let x = a - 1; x >= 0; x--)
+    for (let b = 0; b < e.width; b++) {
+      const p = lt(e, b, x);
+      if (u(p)) {
+        a = x;
+        break t;
+      }
+    }
+  t: for (let x = r; x < e.width; x++)
+    for (let b = s; b <= a; b++) {
+      const p = lt(e, x, b);
+      if (u(p)) {
+        r = x;
+        break t;
+      }
+    }
+  t: for (let x = i - 1; x >= 0; x--)
+    for (let b = s; b <= a; b++) {
+      const p = lt(e, x, b);
+      if (u(p)) {
+        i = x;
+        break t;
+      }
+    }
+  const m = J(s - 1, 0, 4), h = J(e.height - a - 1, 0, 4), l = J(r - 1, 0, 4), d = J(e.width - i - 1, 0, 4);
+  return [
+    [t[0][0] + l, t[0][1] + m],
+    [t[1][0] - d, t[1][1] + m],
+    [t[2][0] - d, t[2][1] - h],
+    [t[3][0] + l, t[3][1] - h]
+  ];
+}
+function lt(t, e, o) {
+  const s = (o * t.width + e) * 4;
+  return Array.from(t.data.slice(s, s + 4));
+}
+function Pn(t, e) {
+  const o = [];
+  function s(a) {
+    const r = Math.floor(e * (a.width / a.height)), i = Mt(a, r, e, void 0, !1);
+    return L && ot(H(i, r, e)), { data: i, w: r, h: e };
+  }
+  for (const a of t) {
+    let r = a.img;
+    r.width < r.height && (r = Gt(r, -90));
+    const i = s(r);
+    o.push({ b: kt(i.data, [0.5, 0.5, 0.5], [0.5, 0.5, 0.5]), imgH: i.h, imgW: i.w });
+  }
+  return O(o), o;
+}
+function An(t, e, o) {
+  const s = t.dims[2], a = [];
+  let r = t.dims[0] - 1;
+  function i(m) {
+    return e.at(m - 1) ?? "";
+  }
+  for (let m = 0; m < t.data.length; m += s * t.dims[1]) {
+    const h = [], l = [];
+    for (let d = m; d < m + s * t.dims[1]; d += s) {
+      const y = t.data.slice(d, d + s);
+      let x = Number.NEGATIVE_INFINITY, b = -1, p = Number.NEGATIVE_INFINITY, I = -1;
+      for (let k = 0; k < y.length; k++) {
+        const N = y[k];
+        N > x ? (p = x, x = N, b = k) : N > p && N < x && (p = N, I = k);
+      }
+      o.opm.space && b === 0 && i(I) === " " && p > 1e-3 && (x = p, b = I), l.push(x), h.push(b);
+    }
+    a[r] = u(h, l), r--;
+  }
+  function u(m, h) {
+    const l = [], d = [];
+    for (let b = 0; b < m.length; b++)
+      m[b] !== 0 && (b > 0 && m[b - 1] === m[b] || (l.push(i(m[b])), d.push(h[b])));
+    let y = "", x = 0;
+    if (l.length) {
+      y = l.join("").trim();
+      let b = 0;
+      for (const p of d)
+        b += p;
+      x = b / d.length;
+    }
+    return { text: y, mean: x };
+  }
+  return a;
+}
+function _n(t, e) {
+  var _t;
+  O(t);
+  const o = (e == null ? void 0 : e.docDirs) ?? [
+    { block: "tb", inline: "lr" },
+    { block: "rl", inline: "tb" }
+  ], s = { block: "tb", inline: "lr" }, a = {
+    inline: [1, 0],
+    block: [0, 1]
+  }, r = {
+    inline: [1, 0],
+    block: [0, 1]
+  };
+  if (t.length === 0)
+    return {
+      columns: [],
+      parragraphs: [],
+      readingDir: s,
+      angle: { reading: { inline: 0, block: 90 }, angle: 0 }
+    };
+  const i = [
+    {
+      box: [
+        [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
+        [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY],
+        [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
+        [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY]
+      ],
+      type: "none"
+    }
+  ], u = 0;
+  function m(n) {
+    const c = l.center(n);
+    for (let f = i.length - 1; f >= 0; f--) {
+      const w = i[f].box;
+      if (c[0] >= w[0][0] && c[0] <= w[1][0] && c[1] >= w[0][1] && c[1] <= w[3][1])
+        return f;
+    }
+    return u;
+  }
+  const h = {
+    center: (n, c) => [(n[0] + c[0]) / 2, (n[1] + c[1]) / 2],
+    disByV: (n, c, f) => Math.abs(f === "block" ? d.dotMup(n, r.block) - d.dotMup(c, r.block) : d.dotMup(n, r.inline) - d.dotMup(c, r.inline)),
+    compare: (n, c, f) => f === "block" ? d.dotMup(n, r.block) - d.dotMup(c, r.block) : d.dotMup(n, r.inline) - d.dotMup(c, r.inline),
+    toInline: (n) => d.dotMup(n, r.inline),
+    toBlock: (n) => d.dotMup(n, r.block)
+  }, l = {
+    inlineStart: (n) => h.center(n[0], n[3]),
+    inlineEnd: (n) => h.center(n[1], n[2]),
+    blockStart: (n) => h.center(n[0], n[1]),
+    blockEnd: (n) => h.center(n[2], n[3]),
+    inlineSize: (n) => n[1][0] - n[0][0],
+    blockSize: (n) => n[3][1] - n[0][1],
+    inlineStartDis: (n, c) => h.disByV(n[0], c[0], "inline"),
+    inlineEndDis: (n, c) => h.disByV(n[1], c[1], "inline"),
+    blockGap: (n, c) => h.disByV(n[0], c[3], "block"),
+    inlineCenter: (n) => (n[2][0] + n[0][0]) / 2,
+    blockCenter: (n) => (n[2][1] + n[0][1]) / 2,
+    inlineStartCenter: (n) => l.inlineStart(n),
+    center: (n) => h.center(n[0], n[2])
+  }, d = {
+    fromPonts: (n, c) => [n[0] - c[0], n[1] - c[1]],
+    dotMup: (n, c) => n[0] * c[0] + n[1] * c[1],
+    numMup: (n, c) => [n[0] * c, n[1] * c],
+    add: (n, c) => [n[0] + c[0], n[1] + c[1]]
+  };
+  function y(n) {
+    let c = 0, f = 0;
+    const g = [];
+    for (const [w, M] of n.entries()) {
+      const C = M > 180 ? M - 180 : M, B = C - 180, E = w === 0 ? C : Math.abs(B - c) < Math.abs(C - c) ? B : C;
+      g.push(E), c = (c * f + E) / (f + 1), f++;
+    }
+    return { av: c, l: g };
+  }
+  function x(n, c) {
+    return Math.abs(n - c) < 45 || Math.abs(n - (c - 180)) < 45 || Math.abs(n - 180 - c) < 45;
+  }
+  function b(n) {
+    n.sort((f, g) => f - g);
+    const c = Math.floor(n.length / 2);
+    return n.length % 2 === 0 ? (n[c - 1] + n[c]) / 2 : n[c];
+  }
+  function p(n) {
+    return n === "lr" || n === "rl" ? "x" : "y";
+  }
+  function I(n, c) {
+    let f = Number.POSITIVE_INFINITY, g = -1;
+    for (let w = 0; w < n.length; w++) {
+      const M = c(n[w]);
+      M < f && (f = M, g = w);
+    }
+    return n[g];
+  }
+  const k = {
+    lr: [1, 0],
+    rl: [-1, 0],
+    tb: [0, 1],
+    bt: [0, -1]
+  };
+  function N(n, c) {
+    const f = k[n.inline], g = k[n.block], w = k[c.inline], M = k[c.block], C = [d.dotMup(w, f), d.dotMup(w, g)], B = [d.dotMup(M, f), d.dotMup(M, g)];
+    return (E) => [d.dotMup(E, C), d.dotMup(E, B)];
+  }
+  function T(n, c) {
+    const f = N(n, c);
+    return {
+      b: (g) => {
+        for (const w of g) {
+          const [M, C] = f(w);
+          w[0] = M, w[1] = C;
+        }
+      },
+      p: f
+    };
+  }
+  function P(n) {
+    return (c) => {
+      const f = [
+        [0, 0],
+        [0, 0],
+        [0, 0],
+        [0, 0]
+      ];
+      for (let g = 0; g < n.length; g++)
+        f[g] = c[n[g]];
+      return f;
+    };
+  }
+  function z(n, c) {
+    return Math.sqrt((n[0] - c[0]) ** 2 + (n[1] - c[1]) ** 2);
+  }
+  function v(n) {
+    const c = n.flatMap((D) => D.map((S) => S)), f = Math.min(...c.map((D) => d.dotMup(D, r.inline))), g = Math.max(...c.map((D) => d.dotMup(D, r.inline))), w = Math.min(...c.map((D) => d.dotMup(D, r.block))), M = Math.max(...c.map((D) => d.dotMup(D, r.block))), C = d.add(d.numMup(r.inline, f), d.numMup(r.block, w)), B = d.numMup(r.inline, g - f), E = d.numMup(r.block, M - w);
+    return [C, d.add(C, B), d.add(d.add(C, B), E), d.add(C, E)];
+  }
+  function dt(n) {
+    let c = null, f = Number.POSITIVE_INFINITY;
+    for (const E in Y) {
+      const D = Y[E].src.at(-1);
+      if (!D) continue;
+      const S = z(n.box[0], D.box[0]);
+      S < f && (c = Number(E), f = S);
+    }
+    if (c === null) {
+      Y.push({ src: [n] });
+      return;
+    }
+    const g = Y[c].src.at(-1), w = l.inlineSize(n.box), M = l.inlineSize(g.box), C = Math.min(w, M), B = l.blockSize(n.box);
+    if (
+      // 左右至少有一边是相近的，中心距离要相近
+      // 行之间也不要离太远
+      !((l.inlineStartDis(n.box, g.box) < 3 * B || l.inlineEndDis(n.box, g.box) < 3 * B || h.disByV(l.center(n.box), l.center(g.box), "inline") < C * 0.4) && l.blockGap(n.box, g.box) < B * 1.1)
+    ) {
+      Y.push({ src: [n] });
+      return;
+    }
+    Y[c].src.push(n);
+  }
+  function xt(n) {
+    var w, M;
+    const c = new RegExp("\\p{Ideographic}", "u"), f = /[。，！？；：“”‘’《》、【】（）…—]/, g = {
+      box: v(n.map((C) => C.box)),
+      text: "",
+      mean: jt(n.map((C) => [C.mean, C.text.length])),
+      style: n[0].style
+    };
+    for (const C of n) {
+      const B = g.text.at(-1);
+      B && (!B.match(c) && !B.match(f) || !((w = C.text.at(0)) != null && w.match(c)) && !((M = C.text.at(0)) != null && M.match(f))) && (g.text += " "), g.text += C.text;
+    }
+    return g;
+  }
+  function W(n) {
+    n.sort((c, f) => {
+      const g = c.src.at(0) ? l.blockSize(c.src.at(0).box) : 2;
+      return h.disByV(l.blockStart(c.outerBox), l.blockStart(f.outerBox), "block") < g ? h.compare(l.inlineStart(c.outerBox), l.inlineStart(f.outerBox), "inline") : h.compare(l.blockStart(c.outerBox), l.blockStart(f.outerBox), "block");
+    });
+  }
+  if (e != null && e.columnsTip)
+    for (const n of e.columnsTip) i.push(structuredClone(n));
+  const A = {
+    inline: 0,
+    block: 90
+  }, $ = t.map((n) => {
+    const c = n.box, f = c[1][0] - c[0][0], g = c[3][1] - c[0][1];
+    let w = { x: 0, y: 0 };
+    if (f < g) {
+      const C = d.fromPonts(h.center(c[2], c[3]), h.center(c[0], c[1]));
+      w = { x: C[0], y: C[1] };
+    } else {
+      const C = d.fromPonts(h.center(c[1], c[2]), h.center(c[0], c[3]));
+      w = { x: C[0], y: C[1] };
+    }
+    return ut(Math.atan2(w.y, w.x) * (180 / Math.PI));
+  }), ct = y($), _ = $.filter((n) => x(n, ct.av)), Bt = b(_), Ht = b(_.map((n) => Math.abs(n - Bt))), Tt = _.filter((n) => Math.abs((n - Bt) / (Ht * 1.4826)) < 2), R = ut(y(Tt).av);
+  O("dir0", $, ct, _, Tt, R);
+  const X = ut(R + 90), qt = x(R, 0) ? "x" : "y", Wt = x(X, 90) ? "y" : "x", mt = o.find((n) => qt === p(n.inline) && Wt === p(n.block)) ?? o.at(0);
+  mt && (s.block = mt.block, s.inline = mt.inline);
+  const Dt = {
+    lr: 0,
+    rl: 180,
+    tb: 90,
+    bt: 270
+  };
+  A.inline = I(
+    [R, R - 360, R - 180, R + 180],
+    (n) => Math.abs(n - Dt[s.inline])
+  ), A.block = I(
+    [X, X - 360, X - 180, X + 180],
+    (n) => Math.abs(n - Dt[s.block])
+  ), a.inline = [Math.cos(A.inline * (Math.PI / 180)), Math.sin(A.inline * (Math.PI / 180))], a.block = [Math.cos(A.block * (Math.PI / 180)), Math.sin(A.block * (Math.PI / 180))], O("dir", s, A, a, R, X);
+  const vt = [
+    [s.inline[0], s.block[0]],
+    [s.inline[1], s.block[0]],
+    [s.inline[1], s.block[1]],
+    [s.inline[0], s.block[1]]
+  ].map(
+    ([n, c]) => ({
+      lt: 0,
+      rt: 1,
+      rb: 2,
+      lb: 3
+    })[n === "l" || n === "r" ? n + c : c + n]
+  ), rt = T({ inline: "lr", block: "tb" }, s), Et = P(vt), $t = t.map((n) => {
+    const c = Et(n.box);
+    return rt.b(c), {
+      ...n,
+      box: c
+    };
+  });
+  for (const n of i)
+    n.box = Et(n.box), rt.b(n.box);
+  r.inline = rt.p(a.inline), r.block = rt.p(a.block), O("相对坐标系", r);
+  const Xt = $t.sort((n, c) => h.compare(l.blockStart(n.box), l.blockStart(c.box), "block")), U = [];
+  for (const n of Xt) {
+    const c = m(n.box), f = (_t = U.at(-1)) == null ? void 0 : _t.line.at(-1);
+    if (!f) {
+      U.push({ line: [{ src: n, colId: c }] });
+      continue;
+    }
+    const g = l.center(n.box), w = l.center(f.src.box);
+    if (h.disByV(g, w, "block") < 0.5 * l.blockSize(n.box)) {
+      const M = U.at(-1);
+      M ? M.line.push({ src: n, colId: c }) : U.push({ line: [{ src: n, colId: c }] });
+    } else
+      U.push({ line: [{ src: n, colId: c }] });
+  }
+  const it = [];
+  for (const n of U) {
+    if (n.line.length === 1) {
+      it.push({ src: n.line[0].src, colId: n.line[0].colId });
+      continue;
+    }
+    const c = wt(n.line.map((g) => l.blockSize(g.src.box)));
+    n.line.sort((g, w) => h.compare(l.inlineStart(g.src.box), l.inlineStart(w.src.box), "inline"));
+    let f = n.line.at(0);
+    for (const g of n.line.slice(1)) {
+      const w = l.inlineEnd(f.src.box), M = l.inlineStart(g.src.box);
+      i[g.colId].type === "table" || g.colId !== f.colId || h.toInline(M) - h.toInline(w) > c ? (it.push({ ...f }), f = g) : (f.src.text += g.src.text, f.src.mean = (f.src.mean + g.src.mean) / 2, f.src.box = v([f.src.box, g.src.box]));
+    }
+    it.push({ ...f });
+  }
+  const Y = [], gt = [], tt = [];
+  for (const n of it)
+    if (n.colId === u)
+      gt.push(n);
+    else {
+      const c = tt.find((f) => f.colId === n.colId);
+      c ? c.src.push(n.src) : tt.push({ src: [n.src], type: i[n.colId].type, colId: n.colId });
+    }
+  gt.sort((n, c) => h.compare(l.blockStart(n.src.box), l.blockStart(c.src.box), "block"));
+  for (const n of gt)
+    dt(n.src);
+  const nt = [];
+  for (const [n, c] of Y.entries()) {
+    const f = c.src, g = v(f.map((B) => B.box)), w = l.blockCenter(g), M = l.inlineSize(g);
+    if (n === 0) {
+      nt.push({ smallCol: [{ src: f, outerBox: g, x: w, w: M }] });
+      continue;
+    }
+    const C = nt.find((B) => {
+      const E = B.smallCol.at(-1), D = l.blockSize(f.at(0).box);
+      return l.inlineStartDis(E.outerBox, g) < 3 * D && l.inlineEndDis(E.outerBox, g) < 3 * D && l.blockGap(g, E.outerBox) < D * 2.1;
+    });
+    C ? C.smallCol.push({ src: f, outerBox: g, x: w, w: M }) : nt.push({ smallCol: [{ src: f, outerBox: g, x: w, w: M }] });
+  }
+  for (const n of nt)
+    n.smallCol.sort((c, f) => h.compare(l.blockStart(c.outerBox), l.blockStart(f.outerBox), "block"));
+  for (const n of tt)
+    n.src.sort((c, f) => h.compare(l.blockStart(c.box), l.blockStart(f.box), "block"));
+  const bt = [];
+  for (const n of nt) {
+    const c = v(n.smallCol.map((g) => g.outerBox)), f = n.smallCol.flatMap((g) => g.src);
+    bt.push({ src: f, outerBox: c, type: "none" });
+  }
+  W(bt);
+  const et = [];
+  for (const n of bt) {
+    const c = et.at(-1);
+    if (!c) {
+      et.push(n);
+      continue;
+    }
+    if (c.type !== "none") {
+      et.push(n);
+      continue;
+    }
+    const f = c.outerBox, g = l.blockSize(n.src[0].box);
+    c.src.length === 1 && l.inlineStartDis(f, n.outerBox) < 3 * g || // 标题
+    n.src.length === 1 && l.inlineStartDis(f, n.outerBox) < 3 * g || // 末尾
+    l.inlineStartDis(f, n.outerBox) < 3 * g && l.inlineEndDis(f, n.outerBox) < 3 * g ? (c.src.push(...n.src), c.outerBox = v(c.src.map((w) => w.box))) : et.push(n);
+  }
+  let pt = !1;
+  const j = [];
+  for (const n of et) {
+    const c = j.at(-1), f = { ...n, reCal: !1 };
+    if (!c) {
+      j.push(f);
+      continue;
+    }
+    const g = l.blockSize(f.src.at(0).box);
+    h.compare(l.blockEnd(f.outerBox), l.blockEnd(c.outerBox), "block") < 0 && (l.inlineStartDis(c.outerBox, f.outerBox) < 3 * g || l.inlineEndDis(c.outerBox, f.outerBox) < 3 * g) ? (c.src.push(...f.src), c.reCal = !0, pt = !0) : j.push(f);
+  }
+  for (const n of j)
+    n.reCal && (n.src.sort((c, f) => h.compare(l.blockStart(c.box), l.blockStart(f.box), "block")), n.outerBox = v(n.src.map((c) => c.box)));
+  tt.length && (pt = !0);
+  for (const n of tt) {
+    const c = v(n.src.map((g) => g.box)), f = n.src;
+    j.push({ src: f, outerBox: c, type: n.type, reCal: !1 });
+  }
+  pt && W(j);
+  const Pt = T(s, { inline: "lr", block: "tb" }), At = j.map((n) => {
+    const c = n.src, f = [];
+    if (n.type === "auto" || n.type === "none") {
+      const M = {};
+      for (let S = 1; S < c.length; S++) {
+        const V = c[S - 1].box, Q = c[S].box, Z = h.disByV(l.center(Q), l.center(V), "block");
+        M[Z] || (M[Z] = 0), M[Z]++;
+      }
+      const C = wt(c.map((S) => l.blockSize(S.box))), B = [[]];
+      for (const S of Object.keys(M).map((V) => Number(V)).sort()) {
+        const V = B.at(-1), Q = V.at(-1);
+        Q !== void 0 ? Math.abs(Q - S) < C * 0.5 ? V.push(S) : B.push([]) : V.push(S);
+      }
+      const E = B.map((S) => wt(S)).sort((S, V) => S - V).at(0) || 0;
+      O("d", M, B, E), f.push([c[0]]);
+      let D = c[0];
+      for (let S = 1; S < c.length; S++) {
+        const V = d.add(
+          d.add(l.inlineStartCenter(D.box), d.numMup(r.block, E)),
+          d.numMup(r.inline, -l.inlineStartDis(D.box, n.outerBox))
+        ), Q = l.inlineStartCenter(c[S].box), Z = l.blockSize(c[S].box);
+        if (l.inlineEndDis(D.box, n.outerBox) > 2 * Z || z(V, Q) > Z * 0.5)
+          f.push([c[S]]);
+        else {
+          const zt = f.at(-1);
+          zt ? zt.push(c[S]) : f.push([c[S]]);
+        }
+        D = c[S];
+      }
+    } else (n.type === "table" || n.type === "raw" || n.type === "raw-blank") && f.push(c);
+    for (const M of c) Pt.b(M.box);
+    Pt.b(n.outerBox);
+    const g = [];
+    for (const [M, C] of vt.entries())
+      g[C] = M;
+    const w = P(g);
+    for (const M of c)
+      M.box = w(M.box);
+    return n.outerBox = w(n.outerBox), O(f), {
+      src: c,
+      outerBox: n.outerBox,
+      parragraphs: f.map((M) => ({ src: M, parse: xt(M) }))
+    };
+  }), Ut = At.flatMap((n) => n.parragraphs.map((c) => c.parse));
+  let K = 0;
+  return s.inline === "lr" && (K = A.inline), s.inline === "rl" && (K = A.inline - 180), s.block === "lr" && (K = A.block), s.block === "rl" && (K = A.block - 180), O("angle", K), {
+    columns: At,
+    parragraphs: Ut,
+    readingDir: s,
+    angle: { reading: A, angle: K }
+  };
+}
+function wt(t) {
+  return t.reduce((e, o) => e + o, 0) / t.length;
+}
+function jt(t) {
+  const e = t.map((s) => s[1]).reduce((s, a) => s + a, 0);
+  let o = 0;
+  for (const s of t)
+    o += s[0] * s[1] / e;
+  return o;
+}
+function ut(t) {
+  return (t % 360 + 360) % 360;
+}
+function Gt(t, e) {
+  const o = ut(e);
+  if (o === 0) return t;
+  if (![90, 180, 270].includes(o)) throw new Error("只支持90度的旋转");
+  const s = new Uint8ClampedArray(t.height * t.width * 4);
+  for (let i = 0; i < t.height; i++)
+    for (let u = 0; u < t.width; u++) {
+      const m = i * t.width + u, h = o === 90 ? u * t.height + (t.height - i - 1) : o === 180 ? t.width - u - 1 + (t.height - i - 1) * t.width : (t.width - u - 1) * t.height + i;
+      s.set(t.data.slice(m * 4, m * 4 + 4), h * 4);
+    }
+  const a = o === 90 || o === 270 ? t.height : t.width, r = o === 90 || o === 270 ? t.width : t.height;
+  return ht(s, a, r);
+}
+function zn(t, e = "", o, s, a) {
+  if (!L) return;
+  const i = document.querySelector(`#${s}`).getContext("2d");
+  i.beginPath(), i.strokeStyle = o, i.moveTo(t[0][0], t[0][1]), i.lineTo(t[1][0], t[1][1]), i.lineTo(t[2][0], t[2][1]), i.lineTo(t[3][0], t[3][1]), i.lineTo(t[0][0], t[0][1]), i.stroke(), i.strokeStyle = "black", i.strokeText(e, t[0][0], t[0][1]);
+}
+
+
+;// external "ort"
+const external_ort_namespaceObject = ort;
+// EXTERNAL MODULE: external "fflate"
+var external_fflate_ = __webpack_require__("fflate");
+;// ./src/lib/decoders/OCRDecoder.ts
+
+
+
+
+
+
+class OCRDecoder {
+    modelLoaded = false;
+    loadingPromise = null;
+    ocrEngine = null;
+    modelCache = {};
+    ppocrDict = "";
+    cacheKey = "paddleocr_ch_models";
+    cacheVersion = "4.0.0";
+    cacheVersionKey = "paddleocr_ch_models_version";
+    zipUrl = "https://github.com/xushengfeng/eSearch-OCR/releases/download/4.0.0/ch.zip";
+    filesToExtract = ["ppocr_keys_v1.txt", "ppocr_det.onnx", "ppocr_rec.onnx"];
+    constructor() {
+    }
+    async decode(imageData) {
+        try {
+            await this.ensureModelLoaded();
+            if (!this.modelLoaded || !this.ocrEngine) {
+                throw new Error("PaddleOCR model not available for decoding");
+            }
+            const imageDataObj = await this.uint8ArrayToImageData(imageData);
+            if (!imageDataObj) {
+                throw new Error("Failed to convert image data for OCR");
+            }
+            const result = await this.ocrEngine.ocr(imageDataObj);
+            if (result && result.parragraphs && result.parragraphs.length > 0) {
+                let bestResult = result.parragraphs[0];
+                for (const paragraph of result.parragraphs) {
+                    if (paragraph.mean && paragraph.mean > (bestResult.mean || 0)) {
+                        bestResult = paragraph;
+                    }
+                }
+                const confidence = bestResult.mean || 0;
+                const cleanText = bestResult.text
+                    .trim()
+                    .replace(/\s+/g, "")
+                    .replace(/[^\u4e00-\u9fff\u3400-\u4dbf\u3000-\u303f\uff00-\uffef]/g, "");
+                if (cleanText.length > 0) {
+                    const firstChar = cleanText.charAt(0);
+                    loglevel_default().debug(`OCR result: confidence=${Math.round(confidence * 100)}%, text="${firstChar}"`);
+                    return {
+                        text: firstChar,
+                        confidence: confidence
+                    };
+                }
+            }
+            loglevel_default().debug("No meaningful character found in OCR result");
+            return null;
+        }
+        catch (error) {
+            loglevel_default().error("Error in PaddleOCR decoding:", error);
+            throw error;
+        }
+    }
+    isAvailable() {
+        return this.modelLoaded && this.ocrEngine !== null;
+    }
+    getModelInfo() {
+        return {
+            name: "PaddleOCR",
+            version: this.cacheVersion,
+            loaded: this.modelLoaded
+        };
+    }
+    async close() {
+        this.ocrEngine = null;
+        this.modelLoaded = false;
+        this.loadingPromise = null;
+        loglevel_default().debug("PaddleOCR engine closed and cleaned up");
+    }
+    async clearModelCache() {
+        try {
+            await (0,GM/* _GM_setValue */.mN)(this.cacheKey, null);
+            await (0,GM/* _GM_setValue */.mN)(this.cacheVersionKey, null);
+            this.modelCache = {};
+            this.ppocrDict = "";
+            this.modelLoaded = false;
+            this.ocrEngine = null;
+            this.loadingPromise = null;
+            loglevel_default().debug("Cleared all OCR model cache data");
+        }
+        catch (error) {
+            loglevel_default().error("Failed to clear OCR model cache:", error);
+        }
+    }
+    async ensureModelLoaded() {
+        if (this.modelLoaded) {
+            return;
+        }
+        if (this.loadingPromise) {
+            await this.loadingPromise;
+            return;
+        }
+        this.loadingPromise = this.loadModel();
+        await this.loadingPromise;
+    }
+    async loadModel() {
+        try {
+            loglevel_default().debug("Loading PaddleOCR model...");
+            if (!eSearchOCR_es_namespaceObject || !external_ort_namespaceObject) {
+                throw new Error("PaddleOCR dependencies not loaded. Ensure esearch-ocr and onnxruntime-web are included via script tags.");
+            }
+            this.configureONNXRuntime();
+            await this.downloadAndCacheModels();
+            const dictContent = await this.loadPaddleOCRDict();
+            const detModel = this.modelCache["ppocr_det.onnx"];
+            const recModel = this.modelCache["ppocr_rec.onnx"];
+            if (!detModel || !recModel) {
+                throw new Error("Failed to download required PaddleOCR models");
+            }
+            loglevel_default().debug("Initializing PaddleOCR engine...");
+            this.ocrEngine = await Ln({
+                det: {
+                    input: await detModel.arrayBuffer(),
+                    ratio: 2.0,
+                },
+                rec: {
+                    input: await recModel.arrayBuffer(),
+                    decodeDic: dictContent,
+                    optimize: {
+                        space: false,
+                    },
+                },
+                dev: false,
+                ort: external_ort_namespaceObject,
+            });
+            this.modelLoaded = true;
+            loglevel_default().debug("PaddleOCR engine initialized successfully");
+        }
+        catch (error) {
+            loglevel_default().error("Failed to load PaddleOCR model:", error);
+            this.modelLoaded = false;
+            this.ocrEngine = null;
+            throw error;
+        }
+    }
+    configureONNXRuntime() {
+        try {
+            external_ort_namespaceObject.env.wasm.wasmPaths = "https://unpkg.com/onnxruntime-web@1.22.0/dist/";
+            external_ort_namespaceObject.env.wasm.numThreads = 1;
+            external_ort_namespaceObject.env.wasm.simd = true;
+            external_ort_namespaceObject.env.logLevel = "info";
+            loglevel_default().debug("ONNX Runtime Web configured with WASM paths:", external_ort_namespaceObject.env.wasm.wasmPaths);
+        }
+        catch (error) {
+            loglevel_default().warn("Failed to configure ONNX Runtime:", error);
+        }
+    }
+    async downloadAndCacheModels() {
+        try {
+            const storedVersion = await (0,GM/* _GM_getValue */.er)(this.cacheVersionKey, null);
+            const cachedModels = await (0,GM/* _GM_getValue */.er)(this.cacheKey, null);
+            if (storedVersion === this.cacheVersion && cachedModels) {
+                const parsedCache = JSON.parse(cachedModels);
+                for (const [filename, base64Data] of Object.entries(parsedCache)) {
+                    if (typeof base64Data === "string") {
+                        const binaryString = atob(base64Data);
+                        const bytes = new Uint8Array(binaryString.length);
+                        for (let i = 0; i < binaryString.length; i++) {
+                            bytes[i] = binaryString.charCodeAt(i);
+                        }
+                        this.modelCache[filename] = new Blob([bytes]);
+                    }
+                }
+                loglevel_default().debug("Loaded models from browser cache");
+                return;
+            }
+            else {
+                loglevel_default().debug(`Cache version mismatch, clearing old cache: ${storedVersion} vs ${this.cacheVersion}`);
+                await (0,GM/* _GM_setValue */.mN)(this.cacheKey, null);
+                await (0,GM/* _GM_setValue */.mN)(this.cacheVersionKey, null);
+                this.modelCache = {};
+                loglevel_default().debug("Cleared old model cache");
+            }
+        }
+        catch (error) {
+            loglevel_default().warn("Failed to load from cache, will download fresh:", error);
+        }
+        loglevel_default().debug("Downloading PaddleOCR models from GitHub...");
+        const cacheData = {};
+        try {
+            loglevel_default().debug(`Downloading from ${this.zipUrl}...`);
+            const response = await (0,http/* gfetch */._V)(this.zipUrl, {
+                responseType: "blob",
+                method: "GET"
+            });
+            if (response.status !== 200 || !response.response) {
+                throw new Error(`Failed to download ZIP: HTTP ${response.status} ${response.statusText}`);
+            }
+            const zipBlob = response.response;
+            loglevel_default().debug("Successfully downloaded zip file using gfetch");
+            loglevel_default().debug(`Downloaded ${zipBlob.size} bytes`);
+            await this.extractZipFiles(zipBlob, cacheData);
+            if (Object.keys(cacheData).length > 0) {
+                try {
+                    await (0,GM/* _GM_setValue */.mN)(this.cacheKey, JSON.stringify(cacheData));
+                    await (0,GM/* _GM_setValue */.mN)(this.cacheVersionKey, this.cacheVersion);
+                    loglevel_default().debug(`Cached ${Object.keys(cacheData).length} files successfully`);
+                }
+                catch (cacheError) {
+                    loglevel_default().warn("Failed to cache models (GM storage full?):", cacheError);
+                }
+            }
+        }
+        catch (error) {
+            loglevel_default().error("Failed to download models:", error);
+            throw error;
+        }
+    }
+    async extractZipFiles(zipBlob, cacheData) {
+        try {
+            loglevel_default().debug("Extracting files from zip...");
+            const zipArrayBuffer = await zipBlob.arrayBuffer();
+            const zipData = new Uint8Array(zipArrayBuffer);
+            const extracted = (0,external_fflate_.unzipSync)(zipData, {
+                filter: (file) => this.filesToExtract.includes(file.name)
+            });
+            loglevel_default().debug(`Found ${Object.keys(extracted).length} matching files in zip`);
+            for (const [filename, fileData] of Object.entries(extracted)) {
+                loglevel_default().debug(`Processing ${filename}...`);
+                const blob = new Blob([fileData]);
+                this.modelCache[filename] = blob;
+                if (fileData.length > 50 * 1024 * 1024) {
+                    loglevel_default().warn(`File ${filename} is very large (${(fileData.length / 1024 / 1024).toFixed(1)}MB), skipping GM storage cache`);
+                    continue;
+                }
+                try {
+                    const binaryString = this.uint8ArrayToBinaryString(fileData);
+                    cacheData[filename] = btoa(binaryString);
+                }
+                catch (conversionError) {
+                    loglevel_default().warn(`Failed to convert ${filename} to base64, skipping GM storage cache:`, conversionError);
+                }
+                loglevel_default().debug(`Extracted ${filename} (${blob.size} bytes)`);
+            }
+            loglevel_default().debug(`Successfully extracted ${Object.keys(cacheData).length} files from zip`);
+        }
+        catch (error) {
+            loglevel_default().error("Failed to extract zip files:", error);
+            throw error;
+        }
+    }
+    uint8ArrayToBinaryString(uint8Array) {
+        const chunkSize = 8192;
+        let binaryString = "";
+        for (let i = 0; i < uint8Array.length; i += chunkSize) {
+            const chunk = uint8Array.subarray(i, i + chunkSize);
+            binaryString += String.fromCharCode.apply(null, Array.from(chunk));
+        }
+        return binaryString;
+    }
+    async loadPaddleOCRDict() {
+        if (this.ppocrDict) {
+            return this.ppocrDict;
+        }
+        try {
+            await this.downloadAndCacheModels();
+            const dictBlob = this.modelCache["ppocr_keys_v1.txt"];
+            if (!dictBlob) {
+                throw new Error("Dictionary not found in cached models");
+            }
+            this.ppocrDict = await dictBlob.text();
+            loglevel_default().debug(`Loaded PaddleOCR dictionary from cache with ${this.ppocrDict.split("\n").length} entries`);
+            return this.ppocrDict;
+        }
+        catch (error) {
+            loglevel_default().error("Failed to load PaddleOCR dictionary from cache:", error);
+            throw error;
+        }
+    }
+    async uint8ArrayToImageData(uint8Array) {
+        try {
+            const blob = new Blob([uint8Array]);
+            const img = new Image();
+            const imageLoadPromise = new Promise((resolve, reject) => {
+                img.onload = () => resolve();
+                img.onerror = reject;
+            });
+            img.src = URL.createObjectURL(blob);
+            await imageLoadPromise;
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            if (!ctx) {
+                throw new Error("Cannot get canvas 2D context");
+            }
+            const scaleX = Math.max(4, Math.ceil(120 / img.width));
+            const scaleY = Math.max(4, Math.ceil(120 / img.height));
+            const scale = Math.max(scaleX, scaleY);
+            const scaledWidth = img.width * scale;
+            const scaledHeight = img.height * scale;
+            canvas.width = scaledWidth;
+            canvas.height = scaledHeight;
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, scaledWidth, scaledHeight);
+            ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
+            loglevel_default().debug(`Image scaled from ${img.width}x${img.height} to ${scaledWidth}x${scaledHeight} (${scale}x scale)`);
+            const imageData = ctx.getImageData(0, 0, scaledWidth, scaledHeight);
+            URL.revokeObjectURL(img.src);
+            return imageData;
+        }
+        catch (error) {
+            loglevel_default().error("Error converting Uint8Array to ImageData:", error);
+            return null;
+        }
+    }
 }
 
 
@@ -35343,6 +37318,10 @@ class po18 extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_decoders_FilenameDecoder__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("./src/lib/decoders/FilenameDecoder.ts");
+/* harmony import */ var _lib_decoders_HashDecoder__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__("./src/lib/decoders/HashDecoder.ts");
+/* harmony import */ var _lib_decoders_OCRDecoder__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__("./src/lib/decoders/OCRDecoder.ts");
+/* harmony import */ var _lib_decoders_ImageCache__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__("./src/lib/decoders/ImageCache.ts");
 
 
 
@@ -35354,6 +37333,102 @@ class po18 extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
 
 
 
+
+
+
+
+class QidianImageDecoder {
+    filenameDecoder;
+    hashDecoder;
+    ocrDecoder;
+    mappingCache = {};
+    failedImages = [];
+    PLACEHOLDER_CHAR = "▢";
+    constructor() {
+        this.filenameDecoder = new _lib_decoders_FilenameDecoder__WEBPACK_IMPORTED_MODULE_11__/* .FilenameDecoder */ .u("www.qidian.com");
+        this.hashDecoder = new _lib_decoders_HashDecoder__WEBPACK_IMPORTED_MODULE_12__/* .HashDecoder */ .J("www.qidian.com");
+        this.ocrDecoder = new _lib_decoders_OCRDecoder__WEBPACK_IMPORTED_MODULE_13__/* .OCRDecoder */ .T();
+    }
+    async init() {
+        _log__WEBPACK_IMPORTED_MODULE_6___default().debug("[QidianImageDecoder] Decoder initialized");
+    }
+    async close() {
+        this.mappingCache = {};
+        await this.ocrDecoder.close();
+        const imageCache = _lib_decoders_ImageCache__WEBPACK_IMPORTED_MODULE_14__/* .ImageCache */ .S.getInstance();
+        imageCache.clearCache();
+        if (this.failedImages.length > 0) {
+            _log__WEBPACK_IMPORTED_MODULE_6___default().warn(`[QidianImageDecoder] ${this.failedImages.length} images failed to decode:`);
+            this.failedImages.forEach((url, index) => {
+                _log__WEBPACK_IMPORTED_MODULE_6___default().warn(`  ${index + 1}. ${url}`);
+            });
+            _log__WEBPACK_IMPORTED_MODULE_6___default().warn(`These images were replaced with placeholder character: "${this.PLACEHOLDER_CHAR}"`);
+        }
+        _log__WEBPACK_IMPORTED_MODULE_6___default().debug("[QidianImageDecoder] Decoder closed and image cache cleared");
+    }
+    async decodeImage(imageUrl) {
+        if (this.mappingCache[imageUrl]) {
+            return this.mappingCache[imageUrl];
+        }
+        try {
+            const filename = this.getFilenameFromUrl(imageUrl);
+            const filenameChar = await this.filenameDecoder.decodeFromFilename(filename);
+            if (filenameChar) {
+                _log__WEBPACK_IMPORTED_MODULE_6___default().debug(`[QidianImageDecoder] Filename match: ${filename} -> ${filenameChar}`);
+                this.mappingCache[imageUrl] = filenameChar;
+                return filenameChar;
+            }
+            const imageData = await this.downloadImageData(imageUrl);
+            const hashChar = await this.hashDecoder.decode(imageData);
+            if (hashChar) {
+                _log__WEBPACK_IMPORTED_MODULE_6___default().debug(`[QidianImageDecoder] Hash match: ${filename} -> "${hashChar}"`);
+                this.mappingCache[imageUrl] = hashChar;
+                return hashChar;
+            }
+            const ocrResult = await this.ocrDecoder.decode(imageData);
+            if (ocrResult && ocrResult.confidence >= 0.90) {
+                const ocrChar = ocrResult.text;
+                _log__WEBPACK_IMPORTED_MODULE_6___default().debug(`[QidianImageDecoder] OCR success: ${filename} (${imageUrl}) -> "${ocrChar}" (confidence: ${Math.round(ocrResult.confidence * 100)}%)`);
+                try {
+                    await this.hashDecoder.learnMapping(imageData, ocrChar);
+                    await this.filenameDecoder.learnMapping(filename, ocrChar);
+                    _log__WEBPACK_IMPORTED_MODULE_6___default().debug(`[QidianImageDecoder] Learned both hash and filename mappings for: ${filename} -> "${ocrChar}"`);
+                }
+                catch (learningError) {
+                    _log__WEBPACK_IMPORTED_MODULE_6___default().warn(`[QidianImageDecoder] Failed to learn mappings for ${filename}:`, learningError);
+                }
+                this.mappingCache[imageUrl] = ocrChar;
+                return ocrChar;
+            }
+            else if (ocrResult) {
+                _log__WEBPACK_IMPORTED_MODULE_6___default().error(`[QidianImageDecoder] OCR confidence too low: ${Math.round(ocrResult.confidence * 100)}% < 90% for ${filename}`);
+            }
+            _log__WEBPACK_IMPORTED_MODULE_6___default().warn(`[QidianImageDecoder] All decoding methods failed for: ${imageUrl}`);
+            this.failedImages.push(imageUrl);
+            this.mappingCache[imageUrl] = this.PLACEHOLDER_CHAR;
+            return this.PLACEHOLDER_CHAR;
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_6___default().error(`[QidianImageDecoder] Error during decoding process for ${imageUrl}:`, error);
+            this.failedImages.push(imageUrl);
+            this.mappingCache[imageUrl] = this.PLACEHOLDER_CHAR;
+            return this.PLACEHOLDER_CHAR;
+        }
+    }
+    getFilenameFromUrl(url) {
+        return url.split("/").pop() || "";
+    }
+    async downloadImageData(imageUrl) {
+        const imageCache = _lib_decoders_ImageCache__WEBPACK_IMPORTED_MODULE_14__/* .ImageCache */ .S.getInstance();
+        return await imageCache.getImageData(imageUrl);
+    }
+    getFailedImagesCount() {
+        return this.failedImages.length;
+    }
+    getPlaceholderChar() {
+        return this.PLACEHOLDER_CHAR;
+    }
+}
 class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_10__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
@@ -35625,6 +37700,14 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_10__/* .BaseRuleClass */ .Q
             contentImages: null,
             additionalMetadate: null,
         };
+        const decoder = new QidianImageDecoder();
+        await decoder.init();
+        try {
+            return await getChapter();
+        }
+        finally {
+            await decoder.close();
+        }
         async function getChapter() {
             let doc;
             if (isVIP) {
@@ -35659,6 +37742,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_10__/* .BaseRuleClass */ .Q
                 (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("span.review-count", true, contentMain);
                 const authorSayWrap = doc.querySelector("#r-authorSay");
                 if (contentMain) {
+                    await processCharacterImages(contentMain, decoder);
                     const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(contentMain, "TM");
                     (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .htmlTrim */ .is)(dom);
                     content.appendChild(dom);
@@ -35680,6 +37764,10 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_10__/* .BaseRuleClass */ .Q
                             images.push(...authorImages);
                         }
                     }
+                    const failedCount = decoder.getFailedImagesCount();
+                    if (failedCount > 0) {
+                        _log__WEBPACK_IMPORTED_MODULE_6___default().warn(`[Qidian] Chapter "${chapterName}" has ${failedCount} failed image(s) replaced with "${decoder.getPlaceholderChar()}"`);
+                    }
                     return {
                         chapterName,
                         contentRaw: content,
@@ -35692,7 +37780,52 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_10__/* .BaseRuleClass */ .Q
             }
             return nullObj;
         }
-        return getChapter();
+    }
+}
+async function processCharacterImages(content, decoder) {
+    const images = content.querySelectorAll("img");
+    for (const img of Array.from(images)) {
+        try {
+            const parentElement = img.parentElement;
+            const isInlineImage = parentElement?.tagName === "P" ||
+                parentElement?.closest("p") !== null;
+            const hasImgClass = img.classList.contains("lazy") ||
+                img.classList.contains("content-image");
+            if (img.classList.contains("avatar") ||
+                img.classList.contains("review-count") ||
+                img.alt && img.alt.length > 2) {
+                continue;
+            }
+            if (!isInlineImage && !hasImgClass) {
+                const isInTextContainer = img.closest("p, span, div.content-text");
+                if (!isInTextContainer) {
+                    continue;
+                }
+            }
+            let imageUrl = img.src;
+            if (!imageUrl || imageUrl.startsWith("data:")) {
+                continue;
+            }
+            if (imageUrl.startsWith("http://")) {
+                imageUrl = imageUrl.replace("http://", "https://");
+            }
+            const decodedText = await decoder.decodeImage(imageUrl);
+            if (decodedText !== decoder.getPlaceholderChar()) {
+                const textNode = document.createTextNode(decodedText);
+                img.parentNode?.replaceChild(textNode, img);
+                _log__WEBPACK_IMPORTED_MODULE_6___default().debug(`[Qidian] Decoded character image: ${imageUrl.substring(0, 60)}... -> "${decodedText}"`);
+            }
+            else {
+                const textNode = document.createTextNode(decodedText);
+                img.parentNode?.replaceChild(textNode, img);
+                _log__WEBPACK_IMPORTED_MODULE_6___default().debug(`[Qidian] Image decoding failed, using placeholder: ${imageUrl.substring(0, 60)}...`);
+            }
+        }
+        catch (error) {
+            _log__WEBPACK_IMPORTED_MODULE_6___default().error("[Qidian] Unexpected error during image processing:", img.src, error);
+            const textNode = document.createTextNode(decoder.getPlaceholderChar());
+            img.parentNode?.replaceChild(textNode, img);
+        }
     }
 }
 
@@ -40953,1945 +43086,25 @@ class Ttkan extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  Xiguashuwu: () => (/* binding */ Xiguashuwu)
-});
-
-// NAMESPACE OBJECT: ./node_modules/@oovz/esearch-ocr/dist/eSearchOCR.es.js
-var eSearchOCR_es_namespaceObject = {};
-__webpack_require__.r(eSearchOCR_es_namespaceObject);
-__webpack_require__.d(eSearchOCR_es_namespaceObject, {
-  analyzeLayout: () => (_n),
-  det: () => (Fn),
-  init: () => (Ln),
-  initDet: () => (gn),
-  initDocDirCls: () => (mn),
-  initRec: () => (bn),
-  loadImg: () => (dn),
-  ocr: () => (Rn),
-  rec: () => (Yn),
-  rotateImg: () => (Gt),
-  setOCREnv: () => (hn)
-});
-
-// EXTERNAL MODULE: ./src/lib/cleanDOM.ts
-var cleanDOM = __webpack_require__("./src/lib/cleanDOM.ts");
-// EXTERNAL MODULE: ./src/lib/http.ts
-var http = __webpack_require__("./src/lib/http.ts");
-// EXTERNAL MODULE: ./src/lib/dom.ts
-var dom = __webpack_require__("./src/lib/dom.ts");
-// EXTERNAL MODULE: ./src/lib/rule.ts
-var rule = __webpack_require__("./src/lib/rule.ts");
-// EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
-var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
-// EXTERNAL MODULE: ./src/main/Chapter.ts
-var Chapter = __webpack_require__("./src/main/Chapter.ts");
-// EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
-var Book = __webpack_require__("./src/main/Book.ts");
-// EXTERNAL MODULE: ./src/rules.ts + 11 modules
-var rules = __webpack_require__("./src/rules.ts");
-// EXTERNAL MODULE: ./src/lib/attachments.ts + 1 modules
-var attachments = __webpack_require__("./src/lib/attachments.ts");
-// EXTERNAL MODULE: ./src/lib/GM.ts
-var GM = __webpack_require__("./src/lib/GM.ts");
-// EXTERNAL MODULE: ./src/lib/SessionMappingCache.ts
-var SessionMappingCache = __webpack_require__("./src/lib/SessionMappingCache.ts");
-;// ./src/lib/decoders/FilenameDecoder.ts
-
-
-
-
-class FilenameDecoder {
-    domain;
-    remoteUrl;
-    learnedCacheKey;
-    sessionId;
-    mappings = null;
-    learnedMappings = null;
-    loading = null;
-    constructor(domain, sessionId) {
-        if (!domain) {
-            throw new Error("Domain name is required for FilenameDecoder initialization");
-        }
-        this.domain = domain;
-        this.sessionId = sessionId || window.workerId;
-        this.remoteUrl = `https://fastly.jsdelivr.net/gh/404-novel-project/novel-downloader-image-to-text-mapping@master/filename-mappings/${domain}.min.json`;
-        this.learnedCacheKey = `filename-mappings-learned-${domain}`;
-        this.loadLearnedMappings().catch(error => {
-            loglevel_default().error("Failed to initialize learned mappings:", error);
-        });
-        loglevel_default().debug(`FilenameDecoder initialized for domain: ${domain}, session: ${this.sessionId}`);
-    }
-    async decode(imageData) {
-        loglevel_default().warn("FilenameDecoder.decode() called with imageData - this decoder requires filename context from URL");
-        return null;
-    }
-    async decodeFromFilename(filename) {
-        try {
-            await this.ensureMappingsLoaded();
-            if (this.mappings?.has(filename)) {
-                const character = this.mappings.get(filename);
-                loglevel_default().debug(`Decoded character from server mappings: ${character} for filename: ${filename}`);
-                return character;
-            }
-            if (this.learnedMappings?.has(filename)) {
-                const character = this.learnedMappings.get(filename);
-                loglevel_default().debug(`Decoded character from learned mappings: ${character} for filename: ${filename}`);
-                return character;
-            }
-            loglevel_default().debug(`No character mapping found for filename: ${filename}`);
-            return null;
-        }
-        catch (error) {
-            loglevel_default().error("Error in filename decoding:", error);
-            return null;
-        }
-    }
-    getMappingsCount() {
-        return {
-            remote: this.mappings?.size ?? 0,
-            learned: this.learnedMappings?.size ?? 0
-        };
-    }
-    async clearCache() {
-        const sessionCache = SessionMappingCache/* SessionMappingCache */.j.getInstance();
-        sessionCache.clearSession(this.sessionId);
-        this.mappings = null;
-        this.loading = null;
-    }
-    async ensureMappingsLoaded() {
-        if (this.mappings) {
-            return;
-        }
-        if (this.loading) {
-            await this.loading;
-            return;
-        }
-        this.loading = this.loadMappings();
-        await this.loading;
-    }
-    async loadMappings() {
-        try {
-            const sessionCache = SessionMappingCache/* SessionMappingCache */.j.getInstance();
-            this.mappings = await sessionCache.getMappingsWithLoading(this.sessionId, this.domain, SessionMappingCache/* MAPPING_TYPES */.$.FILENAME, () => this.fetchRemoteMappings());
-            loglevel_default().debug(`Loaded ${this.mappings.size} filename mappings for session ${this.sessionId}`);
-        }
-        catch (error) {
-            loglevel_default().error("Failed to load filename mappings:", error);
-            throw error;
-        }
-    }
-    async fetchRemoteMappings() {
-        try {
-            loglevel_default().debug("Fetching filename mappings from remote");
-            const response = await (0,http/* ggetText */.bx)(this.remoteUrl);
-            if (!response) {
-                throw new Error("Empty response from remote URL");
-            }
-            const data = JSON.parse(response);
-            if (typeof data !== 'object' || !data) {
-                throw new Error("Invalid mapping data format");
-            }
-            const mappings = new Map();
-            for (const [key, value] of Object.entries(data)) {
-                if (typeof value === 'string') {
-                    mappings.set(key, value);
-                }
-                else {
-                    loglevel_default().warn(`Skipping invalid mapping entry: ${key} -> ${value} (not a string)`);
-                }
-            }
-            loglevel_default().debug(`Successfully loaded ${mappings.size} filename mappings from remote`);
-            return mappings;
-        }
-        catch (error) {
-            loglevel_default().error("Failed to fetch filename mappings:", error);
-            throw error;
-        }
-    }
-    async loadLearnedMappings() {
-        try {
-            const cached = await (0,GM/* _GM_getValue */.er)(this.learnedCacheKey);
-            if (cached) {
-                const data = JSON.parse(cached);
-                this.learnedMappings = new Map(Object.entries(data));
-                loglevel_default().debug(`Loaded ${this.learnedMappings.size} learned filename mappings from cache`);
-            }
-            else {
-                this.learnedMappings = new Map();
-            }
-        }
-        catch (error) {
-            loglevel_default().error("Failed to load learned filename mappings:", error);
-            this.learnedMappings = new Map();
-        }
-    }
-    async learnMapping(filename, character) {
-        try {
-            if (!this.learnedMappings) {
-                this.learnedMappings = new Map();
-            }
-            this.learnedMappings.set(filename, character);
-            await this.saveLearnedMappings();
-            loglevel_default().debug(`Learned new filename mapping: ${filename} -> ${character}`);
-        }
-        catch (error) {
-            loglevel_default().error("Error learning filename mapping:", error);
-        }
-    }
-    async clearLearnedMappings() {
-        await (0,GM/* _GM_deleteValue */.JU)(this.learnedCacheKey);
-        this.learnedMappings = new Map();
-        loglevel_default().debug("Cleared all learned filename mappings");
-    }
-    exportLearnedMappings() {
-        if (!this.learnedMappings) {
-            return {};
-        }
-        return Object.fromEntries(this.learnedMappings);
-    }
-    async importLearnedMappings(mappings) {
-        this.learnedMappings = new Map(Object.entries(mappings));
-        await this.saveLearnedMappings();
-        loglevel_default().debug(`Imported ${this.learnedMappings.size} learned filename mappings`);
-    }
-    async saveLearnedMappings() {
-        try {
-            if (this.learnedMappings) {
-                const data = Object.fromEntries(this.learnedMappings);
-                await (0,GM/* _GM_setValue */.mN)(this.learnedCacheKey, JSON.stringify(data));
-                loglevel_default().debug(`Saved ${this.learnedMappings.size} learned filename mappings to storage`);
-            }
-        }
-        catch (error) {
-            loglevel_default().error("Failed to save learned filename mappings:", error);
-        }
-    }
-}
-
-;// ./src/lib/imageHasher.ts
-class ImageHasher {
-    hashSize;
-    constructor(hashSize = 8) {
-        this.hashSize = hashSize;
-    }
-    async hash(imageBlob) {
-        const grayscalePixels = await this.preprocessImage(imageBlob);
-        return this.calculateDHash(grayscalePixels);
-    }
-    static hammingDistance(hash1, hash2) {
-        if (hash1.length !== hash2.length) {
-            throw new Error("Hashes must be of equal length.");
-        }
-        const xorResult = BigInt(`0b${hash1}`) ^ BigInt(`0b${hash2}`);
-        return (xorResult.toString(2).match(/1/g) || []).length;
-    }
-    async preprocessImage(imageBlob) {
-        const image = await this.loadImageFromBlob(imageBlob);
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
-        if (!context)
-            throw new Error("Could not get 2D canvas context.");
-        const scaledWidth = this.hashSize + 1;
-        const scaledHeight = this.hashSize;
-        canvas.width = scaledWidth;
-        canvas.height = scaledHeight;
-        context.drawImage(image, 0, 0, scaledWidth, scaledHeight);
-        const imageData = context.getImageData(0, 0, scaledWidth, scaledHeight).data;
-        const grayscale = new Uint8ClampedArray(scaledWidth * scaledHeight);
-        for (let i = 0, j = 0; i < imageData.length; i += 4, j++) {
-            grayscale[j] =
-                0.299 * imageData[i] +
-                    0.587 * imageData[i + 1] +
-                    0.114 * imageData[i + 2];
-        }
-        return grayscale;
-    }
-    calculateDHash(pixels) {
-        let hash = "";
-        const width = this.hashSize + 1;
-        for (let y = 0; y < this.hashSize; y++) {
-            for (let x = 0; x < this.hashSize; x++) {
-                const left = pixels[y * width + x];
-                const right = pixels[y * width + x + 1];
-                hash += left < right ? "1" : "0";
-            }
-        }
-        return hash;
-    }
-    loadImageFromBlob(blob) {
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            const url = URL.createObjectURL(blob);
-            img.onload = () => {
-                URL.revokeObjectURL(url);
-                resolve(img);
-            };
-            img.onerror = (err) => {
-                URL.revokeObjectURL(url);
-                reject(new Error(`Failed to load image from blob`));
-            };
-            img.src = url;
-        });
-    }
-}
-/* harmony default export */ const imageHasher = (ImageHasher);
-
-;// ./src/lib/decoders/HashDecoder.ts
-
-
-
-
-
-class HashDecoder {
-    domain;
-    remoteUrl;
-    learnedCacheKey;
-    sessionId;
-    mappings = null;
-    learnedMappings = null;
-    loading = null;
-    imageHasher;
-    constructor(domain, sessionId) {
-        if (!domain) {
-            throw new Error("Domain name is required for HashDecoder initialization");
-        }
-        this.domain = domain;
-        this.sessionId = sessionId || window.workerId;
-        this.remoteUrl = `https://fastly.jsdelivr.net/gh/404-novel-project/novel-downloader-image-to-text-mapping@master/hash-mappings/${domain}.min.json`;
-        this.learnedCacheKey = `hash-mappings-learned-${domain}`;
-        this.imageHasher = new imageHasher();
-        this.loadLearnedMappings().catch(error => {
-            loglevel_default().error("Failed to initialize learned mappings:", error);
-        });
-        loglevel_default().debug(`HashDecoder initialized for domain: ${domain}, session: ${this.sessionId}`);
-    }
-    async decode(imageData) {
-        try {
-            await this.ensureMappingsLoaded();
-            const hash = await this.generateImageHash(imageData);
-            if (this.mappings?.has(hash)) {
-                const text = this.mappings.get(hash);
-                loglevel_default().debug(`Decoded text from server mappings: ${text} for hash: ${hash}`);
-                return text;
-            }
-            if (this.learnedMappings?.has(hash)) {
-                const text = this.learnedMappings.get(hash);
-                loglevel_default().debug(`Decoded text from learned mappings: ${text} for hash: ${hash}`);
-                return text;
-            }
-            loglevel_default().debug(`No mapping found for hash: ${hash}`);
-            return null;
-        }
-        catch (error) {
-            loglevel_default().error("Error in hash decoding:", error);
-            return null;
-        }
-    }
-    async learnMapping(imageData, text) {
-        try {
-            const hash = await this.generateImageHash(imageData);
-            if (!this.learnedMappings) {
-                this.learnedMappings = new Map();
-            }
-            this.learnedMappings.set(hash, text);
-            await this.saveLearnedMappings();
-            loglevel_default().debug(`Learned new mapping: ${hash} -> ${text}`);
-        }
-        catch (error) {
-            loglevel_default().error("Error learning mapping:", error);
-        }
-    }
-    getMappingsCount() {
-        return {
-            remote: this.mappings?.size ?? 0,
-            learned: this.learnedMappings?.size ?? 0
-        };
-    }
-    async clearCache() {
-        const sessionCache = SessionMappingCache/* SessionMappingCache */.j.getInstance();
-        sessionCache.clearSession(this.sessionId);
-        this.mappings = null;
-        this.loading = null;
-    }
-    async clearLearnedMappings() {
-        await (0,GM/* _GM_deleteValue */.JU)(this.learnedCacheKey);
-        this.learnedMappings = new Map();
-    }
-    exportLearnedMappings() {
-        if (!this.learnedMappings) {
-            return {};
-        }
-        return Object.fromEntries(this.learnedMappings);
-    }
-    async importLearnedMappings(mappings) {
-        this.learnedMappings = new Map(Object.entries(mappings));
-        await this.saveLearnedMappings();
-        loglevel_default().debug(`Imported ${this.learnedMappings.size} learned mappings`);
-    }
-    async ensureMappingsLoaded() {
-        if (this.mappings) {
-            return;
-        }
-        if (this.loading) {
-            await this.loading;
-            return;
-        }
-        this.loading = this.loadMappings();
-        await this.loading;
-    }
-    async loadMappings() {
-        try {
-            const sessionCache = SessionMappingCache/* SessionMappingCache */.j.getInstance();
-            this.mappings = await sessionCache.getMappingsWithLoading(this.sessionId, this.domain, SessionMappingCache/* MAPPING_TYPES */.$.HASH, () => this.fetchRemoteMappings());
-            loglevel_default().debug(`Loaded ${this.mappings.size} hash mappings for session ${this.sessionId}`);
-        }
-        catch (error) {
-            loglevel_default().error("Failed to load hash mappings:", error);
-            throw error;
-        }
-    }
-    async fetchRemoteMappings() {
-        try {
-            loglevel_default().debug("Fetching hash mappings from remote");
-            const response = await (0,http/* ggetText */.bx)(this.remoteUrl);
-            if (!response) {
-                throw new Error("Empty response from remote URL");
-            }
-            const data = JSON.parse(response);
-            if (typeof data !== 'object' || !data) {
-                throw new Error("Invalid mapping data format");
-            }
-            const mappings = new Map();
-            for (const [key, value] of Object.entries(data)) {
-                if (typeof value === 'string') {
-                    mappings.set(key, value);
-                }
-                else {
-                    loglevel_default().warn(`Skipping invalid mapping entry: ${key} -> ${value} (not a string)`);
-                }
-            }
-            loglevel_default().debug(`Successfully loaded ${mappings.size} hash mappings from remote`);
-            return mappings;
-        }
-        catch (error) {
-            loglevel_default().error("Failed to fetch hash mappings:", error);
-            throw error;
-        }
-    }
-    async loadLearnedMappings() {
-        try {
-            const cached = await (0,GM/* _GM_getValue */.er)(this.learnedCacheKey);
-            if (cached) {
-                const data = JSON.parse(cached);
-                this.learnedMappings = new Map(Object.entries(data));
-                loglevel_default().debug(`Loaded ${this.learnedMappings.size} learned hash mappings from storage`);
-            }
-            else {
-                this.learnedMappings = new Map();
-            }
-        }
-        catch (error) {
-            loglevel_default().error("Failed to load learned mappings:", error);
-            this.learnedMappings = new Map();
-        }
-    }
-    async saveLearnedMappings() {
-        try {
-            if (this.learnedMappings) {
-                const data = Object.fromEntries(this.learnedMappings);
-                await (0,GM/* _GM_setValue */.mN)(this.learnedCacheKey, JSON.stringify(data));
-                loglevel_default().debug(`Saved ${this.learnedMappings.size} learned mappings to storage`);
-            }
-        }
-        catch (error) {
-            loglevel_default().error("Failed to save learned mappings:", error);
-        }
-    }
-    async generateImageHash(imageData) {
-        const blob = new Blob([imageData]);
-        return await this.imageHasher.hash(blob);
-    }
-}
-
-;// ./node_modules/@oovz/esearch-ocr/dist/eSearchOCR.es.js
-var Kt = Object.defineProperty;
-var Qt = (t, e, o) => e in t ? Kt(t, e, { enumerable: !0, configurable: !0, writable: !0, value: o }) : t[e] = o;
-var yt = (t, e, o) => Qt(t, typeof e != "symbol" ? e + "" : e, o);
-let Rt = (t, e) => new OffscreenCanvas(t, e);
-function st(t, e) {
-  return Rt(t, e);
-}
-function Zt(t) {
-  Rt = t;
-}
-function Ot(t) {
-  return t > 0 ? Math.floor(t) : Math.ceil(t);
-}
-function J(t, e, o) {
-  return Math.max(e, Math.min(t, o));
-}
-function Mt(t, e, o, s, a = "high") {
-  return Jt(t, e, o, s, a).getImageData(0, 0, e, o);
-}
-function Jt(t, e, o, s, a = "high") {
-  const r = H(t), u = st(e, o).getContext("2d");
-  return u.imageSmoothingEnabled = a !== !1, a && (u.imageSmoothingQuality = a), s === "fill" ? u.scale(Math.min(e / t.width, 1), Math.min(o / t.height, 1)) : u.scale(e / t.width, o / t.height), u.drawImage(r, 0, 0), u;
-}
-function H(t, e, o) {
-  const s = st(e || t.width, o || t.height);
-  return s.getContext("2d").putImageData(t, 0, 0), s;
-}
-function kt(t, e, o) {
-  const s = t.data, a = [], r = [], i = [];
-  let u = 0, m = 0;
-  for (let h = 0; h < s.length; h += 4)
-    i[m] || (i[m] = []), r[m] || (r[m] = []), a[m] || (a[m] = []), a[m][u] = (s[h] / 255 - e[0]) / o[0], r[m][u] = (s[h + 1] / 255 - e[1]) / o[1], i[m][u] = (s[h + 2] / 255 - e[2]) / o[2], u++, u === t.width && (u = 0, m++);
-  return [i, r, a];
-}
-class Ft {
-  constructor(e) {
-    yt(this, "tl", []);
-    yt(this, "name");
-    this.name = e;
-  }
-  l(e) {
-    const o = performance.now();
-    this.tl.push({ t: e, n: o });
-    const s = [];
-    for (let r = 1; r < this.tl.length; r++) {
-      const i = this.tl[r].n - this.tl[r - 1].n, u = this.tl[r - 1].t, m = s.find((h) => h.n === u);
-      m ? (m.c++, m.d += i) : s.push({ d: i, n: u, c: 1 });
-    }
-    const a = [];
-    for (const r of s) {
-      const i = r.c > 1 ? `${r.n}x${r.c}` : r.n;
-      a.push(`${i} ${r.d}`);
-    }
-    a.push(this.tl.at(-1).t), console.log(`${this.name} ${s.map((r) => r.d).reduce((r, i) => r + i, 0)}ms: `, a.join(" "));
-  }
-}
-async function tn(t, e, o, s, a, r) {
-  const { transposedData: i, image: u } = nn(t, a, r), h = (await en(i, u, e, o))[0].data, l = h.reduce((y, x) => Math.max(y, x)), d = h.findIndex((y) => y === l);
-  return s[d];
-}
-function nn(t, e, o) {
-  const s = Mt(t, e, o);
-  return { transposedData: kt(s, [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]), image: s };
-}
-async function en(t, e, o, s) {
-  const a = t.flat(Number.POSITIVE_INFINITY), r = Float32Array.from(a), i = new o.Tensor("float32", r, [1, 3, e.height, e.width]), u = {};
-  u[s.inputNames[0]] = i;
-  const m = await s.run(u);
-  return Object.values(m);
-}
-function on(t) {
-  if (t.length === 0) throw new Error("Empty contour");
-  const e = sn([...t]);
-  let o = Number.POSITIVE_INFINITY;
-  const s = {
-    center: { x: 0, y: 0 },
-    size: { width: 0, height: 0 },
-    angle: 0
-  };
-  for (let a = 0; a < e.length; a++) {
-    const r = e[a], i = e[(a + 1) % e.length], u = { x: i.x - r.x, y: i.y - r.y }, m = Math.hypot(u.x, u.y), [h, l] = [u.x / m, u.y / m];
-    let d = Number.POSITIVE_INFINITY, y = Number.NEGATIVE_INFINITY, x = Number.POSITIVE_INFINITY, b = Number.NEGATIVE_INFINITY;
-    for (const I of e) {
-      const k = (I.x - r.x) * h + (I.y - r.y) * l;
-      d = Math.min(d, k), y = Math.max(y, k);
-      const N = -(I.x - r.x) * l + (I.y - r.y) * h;
-      x = Math.min(x, N), b = Math.max(b, N);
-    }
-    const p = (y - d) * (b - x);
-    if (p < o) {
-      o = p;
-      const I = (d + y) / 2, k = (x + b) / 2;
-      s.center = {
-        x: r.x + h * I - l * k,
-        y: r.y + l * I + h * k
-      }, s.size = {
-        width: y - d,
-        height: b - x
-      }, s.angle = Math.atan2(l, h) * (180 / Math.PI);
-    }
-  }
-  return s.size.width < s.size.height && ([s.size.width, s.size.height] = [s.size.height, s.size.width], s.angle += 90), s.angle = (s.angle % 180 + 180) % 180, s;
-}
-function sn(t) {
-  t.sort((s, a) => s.x - a.x || s.y - a.y);
-  const e = [];
-  for (const s of t) {
-    for (; e.length >= 2 && Vt(e[e.length - 2], e[e.length - 1], s) <= 0; )
-      e.pop();
-    e.push(s);
-  }
-  const o = [];
-  for (let s = t.length - 1; s >= 0; s--) {
-    const a = t[s];
-    for (; o.length >= 2 && Vt(o[o.length - 2], o[o.length - 1], a) <= 0; )
-      o.pop();
-    o.push(a);
-  }
-  return e.slice(0, -1).concat(o.slice(0, -1));
-}
-function Vt(t, e, o) {
-  return (e.x - t.x) * (o.y - t.y) - (e.y - t.y) * (o.x - t.x);
-}
-function cn(t, e, o = "CHAIN_APPROX_SIMPLE") {
-  const s = t.length, a = s > 0 ? t[0].length : 0, r = Array.from({ length: s }, () => new Array(a).fill(!1));
-  for (let i = 0; i < s; i++)
-    for (let u = 0; u < a; u++)
-      if (t[i][u] !== 0 && !r[i][u] && Yt(t, u, i)) {
-        const m = rn(t, r, u, i, o === "CHAIN_APPROX_SIMPLE");
-        e.push(m);
-      }
-}
-function Yt(t, e, o) {
-  return t[o][e] !== 0 && (o > 0 && t[o - 1][e] === 0 || o < t.length - 1 && t[o + 1][e] === 0 || e > 0 && t[o][e - 1] === 0 || e < t[0].length - 1 && t[o][e + 1] === 0);
-}
-function rn(t, e, o, s, a) {
-  const r = [];
-  let i = { x: o, y: s }, u = { x: o - 1, y: s };
-  const m = /* @__PURE__ */ new Map(), h = /* @__PURE__ */ new Map();
-  function l(p) {
-    return p.x + p.y * t[0].length;
-  }
-  function d(p) {
-    const I = Math.floor(p / t[0].length);
-    return { x: p % t[0].length, y: I };
-  }
-  function y(p, I) {
-    const k = l(p), N = l(I), T = It(I.x - p.x, I.y - p.y), P = It(p.x - I.x, p.y - I.y), z = m.get(k) ?? [], v = m.get(N) ?? [];
-    m.set(k, [...z, T]), m.set(N, [...v, P]);
-  }
-  function x(p) {
-    const I = l(i);
-    u = i, i = { x: i.x + ft[p].dx, y: i.y + ft[p].dy }, y(u, i);
-    const N = (h.get(I) ?? []).filter((T) => T !== p);
-    N.length > 0 ? h.set(I, N) : h.delete(I);
-  }
-  m.set(l(i), [It(-1, 0)]);
-  let b = 0;
-  do {
-    r.push(i), e[i.y][i.x] = !0;
-    const p = ln(t, m, i);
-    if (p.length === 0) {
-      if (h.size === 0)
-        break;
-      const [I, k] = Array.from(h.entries()).at(0), N = k[0];
-      i = d(I), x(N);
-    }
-    if (p.length >= 1) {
-      const I = l(i);
-      h.set(I, p);
-      const k = p[0];
-      x(k);
-    }
-    b++;
-  } while (b < 1e9);
-  return a ? an(r) : r;
-}
-const ft = [
-  { dx: 1, dy: 0 },
-  // Right
-  { dx: 1, dy: -1 },
-  // Top-Right
-  { dx: 0, dy: -1 },
-  // Top
-  { dx: -1, dy: -1 },
-  // Top-Left
-  { dx: -1, dy: 0 },
-  // Left
-  { dx: -1, dy: 1 },
-  // Bottom-Left
-  { dx: 0, dy: 1 },
-  // Bottom
-  { dx: 1, dy: 1 }
-  // Bottom-Right
-];
-function ln(t, e, o) {
-  function s(i) {
-    return i.x + i.y * t[0].length;
-  }
-  const a = e.get(s(o)) ?? [], r = [];
-  for (const [i, { dx: u, dy: m }] of ft.entries()) {
-    if (a.includes(i)) continue;
-    const h = o.x + u, l = o.y + m;
-    h >= 0 && h < t[0].length && l >= 0 && l < t.length && Yt(t, h, l) && r.push(i);
-  }
-  return r;
-}
-function It(t, e) {
-  const o = ft.findIndex(({ dx: s, dy: a }) => t === s && e === a);
-  return o === -1 ? 0 : o;
-}
-function an(t) {
-  if (t.length < 3) return [...t];
-  const e = [t[0]];
-  for (let o = 1; o < t.length - 1; o++) {
-    const s = e[e.length - 1], a = t[o], r = t[o + 1];
-    un(s, a, r) || e.push(a);
-  }
-  return e.push(t[t.length - 1]), e;
-}
-function un(t, e, o) {
-  return (e.x - t.x) * (o.y - e.y) === (e.y - t.y) * (o.x - e.x);
-}
-const G = new Ft("t"), F = new Ft("af_det");
-let L = !1, Ct = !1, q = null;
-function ot(t, e) {
-  var s;
-  const o = document.createElement("canvas");
-  o.width = t.width, o.height = t.height, o.getContext("2d").drawImage(t, 0, 0), e && (o.id = e);
-  try {
-    (s = document == null ? void 0 : document.body) == null || s.append(o);
-  } catch {
-  }
-}
-let ht = (t, e, o) => new ImageData(t, e, o);
-function O(...t) {
-  Ct && console.log(...t);
-}
-function fn(...t) {
-  Ct && console.log(t.map((e) => `%c${e}`).join(""), ...t.map((e) => `color: ${e}`));
-}
-async function Ln(t) {
-  hn(t);
-  const e = {
-    det: "det" in t ? t.det : {
-      input: t.detPath,
-      ratio: t.detRatio,
-      on: async (s) => {
-        t.onDet && t.onDet(s), t.onProgress && t.onProgress("det", 1, 1);
-      }
-    },
-    rec: "rec" in t ? t.rec : {
-      input: t.recPath,
-      decodeDic: t.dic,
-      imgh: t.imgh,
-      on: async (s, a, r) => {
-        t.onRec && t.onRec(s, a), t.onProgress && t.onProgress("rec", r, s + 1);
-      }
-    },
-    docCls: "rec" in t ? t.docCls : t.docClsPath ? {
-      input: t.docClsPath
-    } : void 0,
-    analyzeLayout: "rec" in t ? t.analyzeLayout : {
-      columnsTip: t.columnsTip,
-      docDirs: t.docDirs
-    },
-    ...t
-  }, o = await xn(e);
-  return q = o, o;
-}
-function hn(t) {
-  L = !!t.dev, Ct = L || !!t.log, L || (G.l = () => {
-  }, F.l = () => {
-  }), t.canvas && Zt(t.canvas), t.imageData && (ht = t.imageData);
-}
-async function dn(t) {
-  let e;
-  if (typeof window > "u") {
-    const o = t;
-    if (!o.data || !o.width || !o.height) throw new Error("invalid image data");
-    return o;
-  }
-  if (typeof t == "string" ? (e = new Image(), e.src = t, await new Promise((o) => {
-    e.onload = o;
-  })) : (t instanceof ImageData, e = t), e instanceof HTMLImageElement) {
-    const s = st(e.naturalWidth, e.naturalHeight).getContext("2d");
-    if (!s) throw new Error("canvas context is null");
-    s.drawImage(e, 0, 0), e = s.getImageData(0, 0, e.naturalWidth, e.naturalHeight);
-  }
-  if (e instanceof HTMLCanvasElement) {
-    const o = e.getContext("2d");
-    if (!o) throw new Error("canvas context is null");
-    e = o.getImageData(0, 0, e.width, e.height);
-  }
-  return e;
-}
-function Nt() {
-  try {
-    st(1, 1), ht(new Uint8ClampedArray(4), 1, 1);
-  } catch (t) {
-    throw console.log("nodejs need set canvas, please use setOCREnv to set canvas and imageData"), t;
-  }
-}
-async function Rn(t) {
-  if (!q) throw new Error("need init");
-  return q.ocr(t);
-}
-async function Fn(t) {
-  if (!q) throw new Error("need init");
-  return q.det(t);
-}
-async function Yn(t) {
-  if (!q) throw new Error("need init");
-  return q.rec(t);
-}
-async function xn(t) {
-  Nt();
-  const e = {
-    ort: t.ort,
-    ortOption: t.ortOption
-  }, o = t.docCls ? await mn({ ...t.docCls, ...e }) : void 0, s = await gn({ ...t.det, ...e }), a = await bn({ ...t.rec, ...e });
-  return {
-    ocr: async (r) => {
-      let i = await dn(r), u = 0;
-      o && (u = await o.docCls(i), O("dir", u), i = Gt(i, 360 - u));
-      const m = await s.det(i), h = await a.rec(m), l = _n(h, t.analyzeLayout);
-      return O(h, l), G.l("end"), { src: h, ...l, docDir: u };
-    },
-    det: s.det,
-    rec: a.rec
-  };
-}
-function St(t, e, o) {
-  return typeof e == "string" ? t.InferenceSession.create(e, o) : e instanceof ArrayBuffer || e instanceof SharedArrayBuffer ? t.InferenceSession.create(new Uint8Array(e), o) : t.InferenceSession.create(e, o);
-}
-async function mn(t) {
-  const e = await St(t.ort, t.input, t.ortOption);
-  return { docCls: async (s) => tn(s, t.ort, e, [0, 90, 180, 270], 224, 224) };
-}
-async function gn(t) {
-  Nt();
-  let e = 1;
-  const o = await St(t.ort, t.input, t.ortOption);
-  t.ratio !== void 0 && (e = t.ratio);
-  async function s(a) {
-    var x;
-    const r = a;
-    if (L) {
-      const b = H(r);
-      ot(b);
-    }
-    G.l("pre_det");
-    const { data: i, width: u, height: m } = In(r, e), { transposedData: h, image: l } = i;
-    G.l("det");
-    const d = await pn(h, l, o, t.ort);
-    G.l("aft_det");
-    const y = wn(
-      { data: d.data, width: d.dims[3], height: d.dims[2] },
-      u,
-      m,
-      r
-    );
-    return (x = t == null ? void 0 : t.on) == null || x.call(t, y), y;
-  }
-  return { det: s };
-}
-async function bn(t) {
-  var i;
-  Nt();
-  let e = 48;
-  const o = await St(t.ort, t.input, t.ortOption), s = t.decodeDic.split(/\r\n|\r|\n/) || [];
-  s.at(-1) === "" ? s[s.length - 1] = " " : s.push(" "), t.imgh && (e = t.imgh);
-  const a = ((i = t.optimize) == null ? void 0 : i.space) === void 0 ? !0 : t.optimize.space;
-  async function r(u) {
-    var l;
-    const m = [];
-    G.l("bf_rec");
-    const h = Pn(u, e);
-    for (const [d, y] of h.entries()) {
-      const { b: x, imgH: b, imgW: p } = y, I = await yn(x, b, p, o, t.ort), k = An(I, s, { opm: { space: a } })[0];
-      m.push({
-        text: k.text,
-        mean: k.mean,
-        box: u[d].box,
-        style: u[d].style
-      }), (l = t == null ? void 0 : t.on) == null || l.call(t, d, k, u.length);
-    }
-    return G.l("rec_end"), m.filter((d) => d.mean >= 0.5);
-  }
-  return { rec: r };
-}
-async function pn(t, e, o, s) {
-  const a = Float32Array.from(t.flat(3)), r = new s.Tensor("float32", a, [1, 3, e.height, e.width]), i = {};
-  return i[o.inputNames[0]] = r, (await o.run(i))[o.outputNames[0]];
-}
-async function yn(t, e, o, s, a) {
-  const r = Float32Array.from(t.flat(3)), i = new a.Tensor("float32", r, [1, 3, e, o]), u = {};
-  return u[s.inputNames[0]] = i, (await s.run(u))[s.outputNames[0]];
-}
-function In(t, e) {
-  const o = Math.max(Math.round(t.height * e / 32) * 32, 32), s = Math.max(Math.round(t.width * e / 32) * 32, 32);
-  if (L) {
-    const i = H(t);
-    ot(i);
-  }
-  const a = Mt(t, s, o, "fill"), r = kt(a, [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]);
-  if (O(a), L) {
-    const i = H(a);
-    ot(i);
-  }
-  return { data: { transposedData: r, image: a }, width: s, height: o };
-}
-function wn(t, e, o, s) {
-  F.l("");
-  const a = Math.min(s.width, e), r = Math.min(s.height, o), { data: i, width: u, height: m } = t, h = new Uint8Array(u * m);
-  for (let x = 0; x < i.length; x++) {
-    const b = i[x] > 0.3 ? 255 : 0;
-    h[x] = b;
-  }
-  if (L) {
-    const x = new Uint8ClampedArray(u * m * 4);
-    for (let I = 0; I < i.length; I++) {
-      const k = I * 4, N = i[I] > 0.3 ? 255 : 0;
-      x[k] = x[k + 1] = x[k + 2] = N, x[k + 3] = 255, h[I] = N;
-    }
-    const b = ht(x, u, m), p = H(b);
-    ot(p, "det_ru");
-  }
-  F.l("edge");
-  const l = [], d = [];
-  for (let x = 0; x < m; x++)
-    d.push(Array.from(h.slice(x * u, x * u + u)));
-  const y = [];
-  if (cn(d, y), L) {
-    const x = document.querySelector("#det_ru").getContext("2d");
-    for (const b of y) {
-      x.moveTo(b[0].x, b[0].y);
-      for (const p of b)
-        x.lineTo(p.x, p.y);
-      x.strokeStyle = "red", x.closePath(), x.stroke();
-    }
-  }
-  for (let x = 0; x < y.length; x++) {
-    F.l("get_box");
-    const b = 3, p = y[x], { points: I, sside: k } = Sn(p);
-    if (k < b) continue;
-    const N = Cn(I), T = N.points;
-    if (N.sside < b + 2)
-      continue;
-    const P = s.width / a, z = s.height / r;
-    for (let _ = 0; _ < T.length; _++)
-      T[_][0] *= P, T[_][1] *= z;
-    F.l("order");
-    const v = Bn(T);
-    for (const _ of v)
-      _[0] = J(Math.round(_[0]), 0, s.width), _[1] = J(Math.round(_[1]), 0, s.height);
-    const dt = Ot(Lt(v[0], v[1])), xt = Ot(Lt(v[0], v[3]));
-    if (dt <= 3 || xt <= 3) continue;
-    zn(T, "", "red", "det_ru"), F.l("crop");
-    const W = Tn(s, T);
-    F.l("match best");
-    const { bg: A, text: $ } = Dn(W), ct = En(T, W, $);
-    l.push({ box: ct, img: W, style: { bg: A, text: $ } });
-  }
-  return F.l("e"), O(l), l;
-}
-function Mn(t) {
-  let e = -1;
-  const o = t.length;
-  let s, a = t[o - 1], r = 0;
-  for (; ++e < o; )
-    s = a, a = t[e], r += s[1] * a[0] - s[0] * a[1];
-  return r / 2;
-}
-function kn(t) {
-  let e = -1;
-  const o = t.length;
-  let s = t[o - 1], a, r, i = s[0], u = s[1], m = 0;
-  for (; ++e < o; )
-    a = i, r = u, s = t[e], i = s[0], u = s[1], a -= i, r -= u, m += Math.hypot(a, r);
-  return m;
-}
-function Cn(t) {
-  const o = Math.abs(Mn(t)), s = kn(t), a = o * 1.5 / s, r = [];
-  for (const [h, l] of t.entries()) {
-    const d = t.at((h - 1) % 4), y = t.at((h + 1) % 4), x = l[0] - d[0], b = l[1] - d[1], p = Math.sqrt(x ** 2 + b ** 2), I = x / p * a, k = b / p * a, N = l[0] - y[0], T = l[1] - y[1], P = Math.sqrt(N ** 2 + T ** 2), z = N / P * a, v = T / P * a;
-    r.push([l[0] + I + z, l[1] + k + v]);
-  }
-  const i = [r[0][0] - r[1][0], r[0][1] - r[1][1]], u = [r[2][0] - r[1][0], r[2][1] - r[1][1]], m = i[0] * u[1] - i[1] * u[0];
-  return { points: r, sside: Math.abs(m) };
-}
-function Nn(t, e, o) {
-  const s = e.width, a = e.height, r = o * Math.PI / 180, i = Math.cos(r), u = Math.sin(r), m = t.x, h = t.y, l = s * 0.5, d = a * 0.5, y = [], x = m - l * i + d * u, b = h - l * u - d * i;
-  y.push([x, b]);
-  const p = m + l * i + d * u, I = h + l * u - d * i;
-  y.push([p, I]);
-  const k = m + l * i - d * u, N = h + l * u + d * i;
-  y.push([k, N]);
-  const T = m - l * i - d * u, P = h - l * u + d * i;
-  return y.push([T, P]), y;
-}
-function Sn(t) {
-  const o = on(t), s = Array.from(Nn(o.center, o.size, o.angle)).sort(
-    (l, d) => l[0] - d[0]
-  );
-  let a = 0, r = 1, i = 2, u = 3;
-  s[1][1] > s[0][1] ? (a = 0, u = 1) : (a = 1, u = 0), s[3][1] > s[2][1] ? (r = 2, i = 3) : (r = 3, i = 2);
-  const m = [s[a], s[r], s[i], s[u]], h = Math.min(o.size.height, o.size.width);
-  return { points: m, sside: h };
-}
-function Lt(t, e) {
-  return Math.sqrt((t[0] - e[0]) ** 2 + (t[1] - e[1]) ** 2);
-}
-function Bn(t) {
-  const e = [
-    [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, 0]
-  ], o = t.map((r) => r[0] + r[1]);
-  e[0] = t[o.indexOf(Math.min(...o))], e[2] = t[o.indexOf(Math.max(...o))];
-  const s = t.filter((r) => r !== e[0] && r !== e[2]), a = s[1].map((r, i) => r - s[0][i]);
-  return e[1] = s[a.indexOf(Math.min(...a))], e[3] = s[a.indexOf(Math.max(...a))], e;
-}
-function Tn(t, e) {
-  const [o, s, a, r] = e.map((v) => ({ x: v[0], y: v[1] })), i = Math.sqrt((s.x - o.x) ** 2 + (s.y - o.y) ** 2), u = Math.sqrt((r.x - o.x) ** 2 + (r.y - o.y) ** 2), m = s.x - o.x, h = s.y - o.y, l = r.x - o.x, d = r.y - o.y, y = m * d - l * h;
-  if (y === 0) throw new Error("点共线，无法形成矩形");
-  const x = i * d / y, b = -l * i / y, p = -u * h / y, I = m * u / y, k = -x * o.x - b * o.y, N = -p * o.x - I * o.y, T = H(t), P = st(Math.ceil(i), Math.ceil(u)), z = P.getContext("2d");
-  return z.setTransform(x, p, b, I, k, N), z.drawImage(T, 0, 0), z.resetTransform(), z.getImageData(0, 0, P.width, P.height);
-}
-function Dn(t) {
-  var m, h;
-  const e = /* @__PURE__ */ new Map(), o = t.data;
-  for (let l = 0; l < o.length; l += 4) {
-    if (l / 4 % t.width > t.height * 4) continue;
-    const y = o[l], x = o[l + 1], b = o[l + 2], p = [y, x, b].join(",");
-    e.set(p, (e.get(p) || 0) + 1);
-  }
-  const s = vn(e, 20).map((l) => ({
-    el: l.el.split(",").map(Number),
-    count: l.count
-  })), a = ((m = s.at(0)) == null ? void 0 : m.el) || [255, 255, 255], r = ((h = s.at(1)) == null ? void 0 : h.el) || [0, 0, 0];
-  let i = r;
-  const u = 100;
-  if (at(r, a) < u) {
-    const l = s.slice(1).filter((d) => at(d.el, a) > 50);
-    l.length > 0 && (i = [0, 1, 2].map(
-      (d) => Math.round(jt(l.map((y) => [y.el[d], y.count])))
-    )), (l.length === 0 || at(i, a) < u) && (i = a.map((d) => 255 - d)), fn(`rgb(${i.join(",")})`);
-  }
-  return {
-    bg: a,
-    text: i,
-    textEdge: r
-  };
-}
-function at(t, e) {
-  const o = t, s = e;
-  return Math.sqrt((o[0] - s[0]) ** 2 + (o[1] - s[1]) ** 2 + (o[2] - s[2]) ** 2);
-}
-function vn(t, e = 1) {
-  let o = [];
-  return t.forEach((s, a) => {
-    o.length === 0 ? o.push({ el: a, count: s }) : (o.length < e ? o.push({ el: a, count: s }) : o.find((r) => r.count <= s) && o.push({ el: a, count: s }), o.sort((r, i) => i.count - r.count), o.length > e && (o = o.slice(0, e)));
-  }), o;
-}
-function En(t, e, o) {
-  let s = 0, a = e.height, r = 0, i = e.width;
-  function u(x) {
-    return at(x, o) < 200;
-  }
-  t: for (let x = s; x < e.height; x++)
-    for (let b = 0; b < e.width; b++) {
-      const p = lt(e, b, x);
-      if (u(p)) {
-        s = x;
-        break t;
-      }
-    }
-  t: for (let x = a - 1; x >= 0; x--)
-    for (let b = 0; b < e.width; b++) {
-      const p = lt(e, b, x);
-      if (u(p)) {
-        a = x;
-        break t;
-      }
-    }
-  t: for (let x = r; x < e.width; x++)
-    for (let b = s; b <= a; b++) {
-      const p = lt(e, x, b);
-      if (u(p)) {
-        r = x;
-        break t;
-      }
-    }
-  t: for (let x = i - 1; x >= 0; x--)
-    for (let b = s; b <= a; b++) {
-      const p = lt(e, x, b);
-      if (u(p)) {
-        i = x;
-        break t;
-      }
-    }
-  const m = J(s - 1, 0, 4), h = J(e.height - a - 1, 0, 4), l = J(r - 1, 0, 4), d = J(e.width - i - 1, 0, 4);
-  return [
-    [t[0][0] + l, t[0][1] + m],
-    [t[1][0] - d, t[1][1] + m],
-    [t[2][0] - d, t[2][1] - h],
-    [t[3][0] + l, t[3][1] - h]
-  ];
-}
-function lt(t, e, o) {
-  const s = (o * t.width + e) * 4;
-  return Array.from(t.data.slice(s, s + 4));
-}
-function Pn(t, e) {
-  const o = [];
-  function s(a) {
-    const r = Math.floor(e * (a.width / a.height)), i = Mt(a, r, e, void 0, !1);
-    return L && ot(H(i, r, e)), { data: i, w: r, h: e };
-  }
-  for (const a of t) {
-    let r = a.img;
-    r.width < r.height && (r = Gt(r, -90));
-    const i = s(r);
-    o.push({ b: kt(i.data, [0.5, 0.5, 0.5], [0.5, 0.5, 0.5]), imgH: i.h, imgW: i.w });
-  }
-  return O(o), o;
-}
-function An(t, e, o) {
-  const s = t.dims[2], a = [];
-  let r = t.dims[0] - 1;
-  function i(m) {
-    return e.at(m - 1) ?? "";
-  }
-  for (let m = 0; m < t.data.length; m += s * t.dims[1]) {
-    const h = [], l = [];
-    for (let d = m; d < m + s * t.dims[1]; d += s) {
-      const y = t.data.slice(d, d + s);
-      let x = Number.NEGATIVE_INFINITY, b = -1, p = Number.NEGATIVE_INFINITY, I = -1;
-      for (let k = 0; k < y.length; k++) {
-        const N = y[k];
-        N > x ? (p = x, x = N, b = k) : N > p && N < x && (p = N, I = k);
-      }
-      o.opm.space && b === 0 && i(I) === " " && p > 1e-3 && (x = p, b = I), l.push(x), h.push(b);
-    }
-    a[r] = u(h, l), r--;
-  }
-  function u(m, h) {
-    const l = [], d = [];
-    for (let b = 0; b < m.length; b++)
-      m[b] !== 0 && (b > 0 && m[b - 1] === m[b] || (l.push(i(m[b])), d.push(h[b])));
-    let y = "", x = 0;
-    if (l.length) {
-      y = l.join("").trim();
-      let b = 0;
-      for (const p of d)
-        b += p;
-      x = b / d.length;
-    }
-    return { text: y, mean: x };
-  }
-  return a;
-}
-function _n(t, e) {
-  var _t;
-  O(t);
-  const o = (e == null ? void 0 : e.docDirs) ?? [
-    { block: "tb", inline: "lr" },
-    { block: "rl", inline: "tb" }
-  ], s = { block: "tb", inline: "lr" }, a = {
-    inline: [1, 0],
-    block: [0, 1]
-  }, r = {
-    inline: [1, 0],
-    block: [0, 1]
-  };
-  if (t.length === 0)
-    return {
-      columns: [],
-      parragraphs: [],
-      readingDir: s,
-      angle: { reading: { inline: 0, block: 90 }, angle: 0 }
-    };
-  const i = [
-    {
-      box: [
-        [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
-        [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY],
-        [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
-        [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY]
-      ],
-      type: "none"
-    }
-  ], u = 0;
-  function m(n) {
-    const c = l.center(n);
-    for (let f = i.length - 1; f >= 0; f--) {
-      const w = i[f].box;
-      if (c[0] >= w[0][0] && c[0] <= w[1][0] && c[1] >= w[0][1] && c[1] <= w[3][1])
-        return f;
-    }
-    return u;
-  }
-  const h = {
-    center: (n, c) => [(n[0] + c[0]) / 2, (n[1] + c[1]) / 2],
-    disByV: (n, c, f) => Math.abs(f === "block" ? d.dotMup(n, r.block) - d.dotMup(c, r.block) : d.dotMup(n, r.inline) - d.dotMup(c, r.inline)),
-    compare: (n, c, f) => f === "block" ? d.dotMup(n, r.block) - d.dotMup(c, r.block) : d.dotMup(n, r.inline) - d.dotMup(c, r.inline),
-    toInline: (n) => d.dotMup(n, r.inline),
-    toBlock: (n) => d.dotMup(n, r.block)
-  }, l = {
-    inlineStart: (n) => h.center(n[0], n[3]),
-    inlineEnd: (n) => h.center(n[1], n[2]),
-    blockStart: (n) => h.center(n[0], n[1]),
-    blockEnd: (n) => h.center(n[2], n[3]),
-    inlineSize: (n) => n[1][0] - n[0][0],
-    blockSize: (n) => n[3][1] - n[0][1],
-    inlineStartDis: (n, c) => h.disByV(n[0], c[0], "inline"),
-    inlineEndDis: (n, c) => h.disByV(n[1], c[1], "inline"),
-    blockGap: (n, c) => h.disByV(n[0], c[3], "block"),
-    inlineCenter: (n) => (n[2][0] + n[0][0]) / 2,
-    blockCenter: (n) => (n[2][1] + n[0][1]) / 2,
-    inlineStartCenter: (n) => l.inlineStart(n),
-    center: (n) => h.center(n[0], n[2])
-  }, d = {
-    fromPonts: (n, c) => [n[0] - c[0], n[1] - c[1]],
-    dotMup: (n, c) => n[0] * c[0] + n[1] * c[1],
-    numMup: (n, c) => [n[0] * c, n[1] * c],
-    add: (n, c) => [n[0] + c[0], n[1] + c[1]]
-  };
-  function y(n) {
-    let c = 0, f = 0;
-    const g = [];
-    for (const [w, M] of n.entries()) {
-      const C = M > 180 ? M - 180 : M, B = C - 180, E = w === 0 ? C : Math.abs(B - c) < Math.abs(C - c) ? B : C;
-      g.push(E), c = (c * f + E) / (f + 1), f++;
-    }
-    return { av: c, l: g };
-  }
-  function x(n, c) {
-    return Math.abs(n - c) < 45 || Math.abs(n - (c - 180)) < 45 || Math.abs(n - 180 - c) < 45;
-  }
-  function b(n) {
-    n.sort((f, g) => f - g);
-    const c = Math.floor(n.length / 2);
-    return n.length % 2 === 0 ? (n[c - 1] + n[c]) / 2 : n[c];
-  }
-  function p(n) {
-    return n === "lr" || n === "rl" ? "x" : "y";
-  }
-  function I(n, c) {
-    let f = Number.POSITIVE_INFINITY, g = -1;
-    for (let w = 0; w < n.length; w++) {
-      const M = c(n[w]);
-      M < f && (f = M, g = w);
-    }
-    return n[g];
-  }
-  const k = {
-    lr: [1, 0],
-    rl: [-1, 0],
-    tb: [0, 1],
-    bt: [0, -1]
-  };
-  function N(n, c) {
-    const f = k[n.inline], g = k[n.block], w = k[c.inline], M = k[c.block], C = [d.dotMup(w, f), d.dotMup(w, g)], B = [d.dotMup(M, f), d.dotMup(M, g)];
-    return (E) => [d.dotMup(E, C), d.dotMup(E, B)];
-  }
-  function T(n, c) {
-    const f = N(n, c);
-    return {
-      b: (g) => {
-        for (const w of g) {
-          const [M, C] = f(w);
-          w[0] = M, w[1] = C;
-        }
-      },
-      p: f
-    };
-  }
-  function P(n) {
-    return (c) => {
-      const f = [
-        [0, 0],
-        [0, 0],
-        [0, 0],
-        [0, 0]
-      ];
-      for (let g = 0; g < n.length; g++)
-        f[g] = c[n[g]];
-      return f;
-    };
-  }
-  function z(n, c) {
-    return Math.sqrt((n[0] - c[0]) ** 2 + (n[1] - c[1]) ** 2);
-  }
-  function v(n) {
-    const c = n.flatMap((D) => D.map((S) => S)), f = Math.min(...c.map((D) => d.dotMup(D, r.inline))), g = Math.max(...c.map((D) => d.dotMup(D, r.inline))), w = Math.min(...c.map((D) => d.dotMup(D, r.block))), M = Math.max(...c.map((D) => d.dotMup(D, r.block))), C = d.add(d.numMup(r.inline, f), d.numMup(r.block, w)), B = d.numMup(r.inline, g - f), E = d.numMup(r.block, M - w);
-    return [C, d.add(C, B), d.add(d.add(C, B), E), d.add(C, E)];
-  }
-  function dt(n) {
-    let c = null, f = Number.POSITIVE_INFINITY;
-    for (const E in Y) {
-      const D = Y[E].src.at(-1);
-      if (!D) continue;
-      const S = z(n.box[0], D.box[0]);
-      S < f && (c = Number(E), f = S);
-    }
-    if (c === null) {
-      Y.push({ src: [n] });
-      return;
-    }
-    const g = Y[c].src.at(-1), w = l.inlineSize(n.box), M = l.inlineSize(g.box), C = Math.min(w, M), B = l.blockSize(n.box);
-    if (
-      // 左右至少有一边是相近的，中心距离要相近
-      // 行之间也不要离太远
-      !((l.inlineStartDis(n.box, g.box) < 3 * B || l.inlineEndDis(n.box, g.box) < 3 * B || h.disByV(l.center(n.box), l.center(g.box), "inline") < C * 0.4) && l.blockGap(n.box, g.box) < B * 1.1)
-    ) {
-      Y.push({ src: [n] });
-      return;
-    }
-    Y[c].src.push(n);
-  }
-  function xt(n) {
-    var w, M;
-    const c = new RegExp("\\p{Ideographic}", "u"), f = /[。，！？；：“”‘’《》、【】（）…—]/, g = {
-      box: v(n.map((C) => C.box)),
-      text: "",
-      mean: jt(n.map((C) => [C.mean, C.text.length])),
-      style: n[0].style
-    };
-    for (const C of n) {
-      const B = g.text.at(-1);
-      B && (!B.match(c) && !B.match(f) || !((w = C.text.at(0)) != null && w.match(c)) && !((M = C.text.at(0)) != null && M.match(f))) && (g.text += " "), g.text += C.text;
-    }
-    return g;
-  }
-  function W(n) {
-    n.sort((c, f) => {
-      const g = c.src.at(0) ? l.blockSize(c.src.at(0).box) : 2;
-      return h.disByV(l.blockStart(c.outerBox), l.blockStart(f.outerBox), "block") < g ? h.compare(l.inlineStart(c.outerBox), l.inlineStart(f.outerBox), "inline") : h.compare(l.blockStart(c.outerBox), l.blockStart(f.outerBox), "block");
-    });
-  }
-  if (e != null && e.columnsTip)
-    for (const n of e.columnsTip) i.push(structuredClone(n));
-  const A = {
-    inline: 0,
-    block: 90
-  }, $ = t.map((n) => {
-    const c = n.box, f = c[1][0] - c[0][0], g = c[3][1] - c[0][1];
-    let w = { x: 0, y: 0 };
-    if (f < g) {
-      const C = d.fromPonts(h.center(c[2], c[3]), h.center(c[0], c[1]));
-      w = { x: C[0], y: C[1] };
-    } else {
-      const C = d.fromPonts(h.center(c[1], c[2]), h.center(c[0], c[3]));
-      w = { x: C[0], y: C[1] };
-    }
-    return ut(Math.atan2(w.y, w.x) * (180 / Math.PI));
-  }), ct = y($), _ = $.filter((n) => x(n, ct.av)), Bt = b(_), Ht = b(_.map((n) => Math.abs(n - Bt))), Tt = _.filter((n) => Math.abs((n - Bt) / (Ht * 1.4826)) < 2), R = ut(y(Tt).av);
-  O("dir0", $, ct, _, Tt, R);
-  const X = ut(R + 90), qt = x(R, 0) ? "x" : "y", Wt = x(X, 90) ? "y" : "x", mt = o.find((n) => qt === p(n.inline) && Wt === p(n.block)) ?? o.at(0);
-  mt && (s.block = mt.block, s.inline = mt.inline);
-  const Dt = {
-    lr: 0,
-    rl: 180,
-    tb: 90,
-    bt: 270
-  };
-  A.inline = I(
-    [R, R - 360, R - 180, R + 180],
-    (n) => Math.abs(n - Dt[s.inline])
-  ), A.block = I(
-    [X, X - 360, X - 180, X + 180],
-    (n) => Math.abs(n - Dt[s.block])
-  ), a.inline = [Math.cos(A.inline * (Math.PI / 180)), Math.sin(A.inline * (Math.PI / 180))], a.block = [Math.cos(A.block * (Math.PI / 180)), Math.sin(A.block * (Math.PI / 180))], O("dir", s, A, a, R, X);
-  const vt = [
-    [s.inline[0], s.block[0]],
-    [s.inline[1], s.block[0]],
-    [s.inline[1], s.block[1]],
-    [s.inline[0], s.block[1]]
-  ].map(
-    ([n, c]) => ({
-      lt: 0,
-      rt: 1,
-      rb: 2,
-      lb: 3
-    })[n === "l" || n === "r" ? n + c : c + n]
-  ), rt = T({ inline: "lr", block: "tb" }, s), Et = P(vt), $t = t.map((n) => {
-    const c = Et(n.box);
-    return rt.b(c), {
-      ...n,
-      box: c
-    };
-  });
-  for (const n of i)
-    n.box = Et(n.box), rt.b(n.box);
-  r.inline = rt.p(a.inline), r.block = rt.p(a.block), O("相对坐标系", r);
-  const Xt = $t.sort((n, c) => h.compare(l.blockStart(n.box), l.blockStart(c.box), "block")), U = [];
-  for (const n of Xt) {
-    const c = m(n.box), f = (_t = U.at(-1)) == null ? void 0 : _t.line.at(-1);
-    if (!f) {
-      U.push({ line: [{ src: n, colId: c }] });
-      continue;
-    }
-    const g = l.center(n.box), w = l.center(f.src.box);
-    if (h.disByV(g, w, "block") < 0.5 * l.blockSize(n.box)) {
-      const M = U.at(-1);
-      M ? M.line.push({ src: n, colId: c }) : U.push({ line: [{ src: n, colId: c }] });
-    } else
-      U.push({ line: [{ src: n, colId: c }] });
-  }
-  const it = [];
-  for (const n of U) {
-    if (n.line.length === 1) {
-      it.push({ src: n.line[0].src, colId: n.line[0].colId });
-      continue;
-    }
-    const c = wt(n.line.map((g) => l.blockSize(g.src.box)));
-    n.line.sort((g, w) => h.compare(l.inlineStart(g.src.box), l.inlineStart(w.src.box), "inline"));
-    let f = n.line.at(0);
-    for (const g of n.line.slice(1)) {
-      const w = l.inlineEnd(f.src.box), M = l.inlineStart(g.src.box);
-      i[g.colId].type === "table" || g.colId !== f.colId || h.toInline(M) - h.toInline(w) > c ? (it.push({ ...f }), f = g) : (f.src.text += g.src.text, f.src.mean = (f.src.mean + g.src.mean) / 2, f.src.box = v([f.src.box, g.src.box]));
-    }
-    it.push({ ...f });
-  }
-  const Y = [], gt = [], tt = [];
-  for (const n of it)
-    if (n.colId === u)
-      gt.push(n);
-    else {
-      const c = tt.find((f) => f.colId === n.colId);
-      c ? c.src.push(n.src) : tt.push({ src: [n.src], type: i[n.colId].type, colId: n.colId });
-    }
-  gt.sort((n, c) => h.compare(l.blockStart(n.src.box), l.blockStart(c.src.box), "block"));
-  for (const n of gt)
-    dt(n.src);
-  const nt = [];
-  for (const [n, c] of Y.entries()) {
-    const f = c.src, g = v(f.map((B) => B.box)), w = l.blockCenter(g), M = l.inlineSize(g);
-    if (n === 0) {
-      nt.push({ smallCol: [{ src: f, outerBox: g, x: w, w: M }] });
-      continue;
-    }
-    const C = nt.find((B) => {
-      const E = B.smallCol.at(-1), D = l.blockSize(f.at(0).box);
-      return l.inlineStartDis(E.outerBox, g) < 3 * D && l.inlineEndDis(E.outerBox, g) < 3 * D && l.blockGap(g, E.outerBox) < D * 2.1;
-    });
-    C ? C.smallCol.push({ src: f, outerBox: g, x: w, w: M }) : nt.push({ smallCol: [{ src: f, outerBox: g, x: w, w: M }] });
-  }
-  for (const n of nt)
-    n.smallCol.sort((c, f) => h.compare(l.blockStart(c.outerBox), l.blockStart(f.outerBox), "block"));
-  for (const n of tt)
-    n.src.sort((c, f) => h.compare(l.blockStart(c.box), l.blockStart(f.box), "block"));
-  const bt = [];
-  for (const n of nt) {
-    const c = v(n.smallCol.map((g) => g.outerBox)), f = n.smallCol.flatMap((g) => g.src);
-    bt.push({ src: f, outerBox: c, type: "none" });
-  }
-  W(bt);
-  const et = [];
-  for (const n of bt) {
-    const c = et.at(-1);
-    if (!c) {
-      et.push(n);
-      continue;
-    }
-    if (c.type !== "none") {
-      et.push(n);
-      continue;
-    }
-    const f = c.outerBox, g = l.blockSize(n.src[0].box);
-    c.src.length === 1 && l.inlineStartDis(f, n.outerBox) < 3 * g || // 标题
-    n.src.length === 1 && l.inlineStartDis(f, n.outerBox) < 3 * g || // 末尾
-    l.inlineStartDis(f, n.outerBox) < 3 * g && l.inlineEndDis(f, n.outerBox) < 3 * g ? (c.src.push(...n.src), c.outerBox = v(c.src.map((w) => w.box))) : et.push(n);
-  }
-  let pt = !1;
-  const j = [];
-  for (const n of et) {
-    const c = j.at(-1), f = { ...n, reCal: !1 };
-    if (!c) {
-      j.push(f);
-      continue;
-    }
-    const g = l.blockSize(f.src.at(0).box);
-    h.compare(l.blockEnd(f.outerBox), l.blockEnd(c.outerBox), "block") < 0 && (l.inlineStartDis(c.outerBox, f.outerBox) < 3 * g || l.inlineEndDis(c.outerBox, f.outerBox) < 3 * g) ? (c.src.push(...f.src), c.reCal = !0, pt = !0) : j.push(f);
-  }
-  for (const n of j)
-    n.reCal && (n.src.sort((c, f) => h.compare(l.blockStart(c.box), l.blockStart(f.box), "block")), n.outerBox = v(n.src.map((c) => c.box)));
-  tt.length && (pt = !0);
-  for (const n of tt) {
-    const c = v(n.src.map((g) => g.box)), f = n.src;
-    j.push({ src: f, outerBox: c, type: n.type, reCal: !1 });
-  }
-  pt && W(j);
-  const Pt = T(s, { inline: "lr", block: "tb" }), At = j.map((n) => {
-    const c = n.src, f = [];
-    if (n.type === "auto" || n.type === "none") {
-      const M = {};
-      for (let S = 1; S < c.length; S++) {
-        const V = c[S - 1].box, Q = c[S].box, Z = h.disByV(l.center(Q), l.center(V), "block");
-        M[Z] || (M[Z] = 0), M[Z]++;
-      }
-      const C = wt(c.map((S) => l.blockSize(S.box))), B = [[]];
-      for (const S of Object.keys(M).map((V) => Number(V)).sort()) {
-        const V = B.at(-1), Q = V.at(-1);
-        Q !== void 0 ? Math.abs(Q - S) < C * 0.5 ? V.push(S) : B.push([]) : V.push(S);
-      }
-      const E = B.map((S) => wt(S)).sort((S, V) => S - V).at(0) || 0;
-      O("d", M, B, E), f.push([c[0]]);
-      let D = c[0];
-      for (let S = 1; S < c.length; S++) {
-        const V = d.add(
-          d.add(l.inlineStartCenter(D.box), d.numMup(r.block, E)),
-          d.numMup(r.inline, -l.inlineStartDis(D.box, n.outerBox))
-        ), Q = l.inlineStartCenter(c[S].box), Z = l.blockSize(c[S].box);
-        if (l.inlineEndDis(D.box, n.outerBox) > 2 * Z || z(V, Q) > Z * 0.5)
-          f.push([c[S]]);
-        else {
-          const zt = f.at(-1);
-          zt ? zt.push(c[S]) : f.push([c[S]]);
-        }
-        D = c[S];
-      }
-    } else (n.type === "table" || n.type === "raw" || n.type === "raw-blank") && f.push(c);
-    for (const M of c) Pt.b(M.box);
-    Pt.b(n.outerBox);
-    const g = [];
-    for (const [M, C] of vt.entries())
-      g[C] = M;
-    const w = P(g);
-    for (const M of c)
-      M.box = w(M.box);
-    return n.outerBox = w(n.outerBox), O(f), {
-      src: c,
-      outerBox: n.outerBox,
-      parragraphs: f.map((M) => ({ src: M, parse: xt(M) }))
-    };
-  }), Ut = At.flatMap((n) => n.parragraphs.map((c) => c.parse));
-  let K = 0;
-  return s.inline === "lr" && (K = A.inline), s.inline === "rl" && (K = A.inline - 180), s.block === "lr" && (K = A.block), s.block === "rl" && (K = A.block - 180), O("angle", K), {
-    columns: At,
-    parragraphs: Ut,
-    readingDir: s,
-    angle: { reading: A, angle: K }
-  };
-}
-function wt(t) {
-  return t.reduce((e, o) => e + o, 0) / t.length;
-}
-function jt(t) {
-  const e = t.map((s) => s[1]).reduce((s, a) => s + a, 0);
-  let o = 0;
-  for (const s of t)
-    o += s[0] * s[1] / e;
-  return o;
-}
-function ut(t) {
-  return (t % 360 + 360) % 360;
-}
-function Gt(t, e) {
-  const o = ut(e);
-  if (o === 0) return t;
-  if (![90, 180, 270].includes(o)) throw new Error("只支持90度的旋转");
-  const s = new Uint8ClampedArray(t.height * t.width * 4);
-  for (let i = 0; i < t.height; i++)
-    for (let u = 0; u < t.width; u++) {
-      const m = i * t.width + u, h = o === 90 ? u * t.height + (t.height - i - 1) : o === 180 ? t.width - u - 1 + (t.height - i - 1) * t.width : (t.width - u - 1) * t.height + i;
-      s.set(t.data.slice(m * 4, m * 4 + 4), h * 4);
-    }
-  const a = o === 90 || o === 270 ? t.height : t.width, r = o === 90 || o === 270 ? t.width : t.height;
-  return ht(s, a, r);
-}
-function zn(t, e = "", o, s, a) {
-  if (!L) return;
-  const i = document.querySelector(`#${s}`).getContext("2d");
-  i.beginPath(), i.strokeStyle = o, i.moveTo(t[0][0], t[0][1]), i.lineTo(t[1][0], t[1][1]), i.lineTo(t[2][0], t[2][1]), i.lineTo(t[3][0], t[3][1]), i.lineTo(t[0][0], t[0][1]), i.stroke(), i.strokeStyle = "black", i.strokeText(e, t[0][0], t[0][1]);
-}
-
-
-;// external "ort"
-const external_ort_namespaceObject = ort;
-// EXTERNAL MODULE: external "fflate"
-var external_fflate_ = __webpack_require__("fflate");
-;// ./src/lib/decoders/OCRDecoder.ts
-
-
-
-
-
-
-class OCRDecoder {
-    modelLoaded = false;
-    loadingPromise = null;
-    ocrEngine = null;
-    modelCache = {};
-    ppocrDict = "";
-    cacheKey = "paddleocr_ch_models";
-    cacheVersion = "4.0.0";
-    cacheVersionKey = "paddleocr_ch_models_version";
-    zipUrl = "https://github.com/xushengfeng/eSearch-OCR/releases/download/4.0.0/ch.zip";
-    filesToExtract = ["ppocr_keys_v1.txt", "ppocr_det.onnx", "ppocr_rec.onnx"];
-    constructor() {
-    }
-    async decode(imageData) {
-        try {
-            await this.ensureModelLoaded();
-            if (!this.modelLoaded || !this.ocrEngine) {
-                throw new Error("PaddleOCR model not available for decoding");
-            }
-            const imageDataObj = await this.uint8ArrayToImageData(imageData);
-            if (!imageDataObj) {
-                throw new Error("Failed to convert image data for OCR");
-            }
-            const result = await this.ocrEngine.ocr(imageDataObj);
-            if (result && result.parragraphs && result.parragraphs.length > 0) {
-                let bestResult = result.parragraphs[0];
-                for (const paragraph of result.parragraphs) {
-                    if (paragraph.mean && paragraph.mean > (bestResult.mean || 0)) {
-                        bestResult = paragraph;
-                    }
-                }
-                const confidence = bestResult.mean || 0;
-                const cleanText = bestResult.text
-                    .trim()
-                    .replace(/\s+/g, "")
-                    .replace(/[^\u4e00-\u9fff\u3400-\u4dbf\u3000-\u303f\uff00-\uffef]/g, "");
-                if (cleanText.length > 0) {
-                    const firstChar = cleanText.charAt(0);
-                    loglevel_default().debug(`OCR result: confidence=${Math.round(confidence * 100)}%, text="${firstChar}"`);
-                    return {
-                        text: firstChar,
-                        confidence: confidence
-                    };
-                }
-            }
-            loglevel_default().debug("No meaningful character found in OCR result");
-            return null;
-        }
-        catch (error) {
-            loglevel_default().error("Error in PaddleOCR decoding:", error);
-            throw error;
-        }
-    }
-    isAvailable() {
-        return this.modelLoaded && this.ocrEngine !== null;
-    }
-    getModelInfo() {
-        return {
-            name: "PaddleOCR",
-            version: this.cacheVersion,
-            loaded: this.modelLoaded
-        };
-    }
-    async close() {
-        this.ocrEngine = null;
-        this.modelLoaded = false;
-        this.loadingPromise = null;
-        loglevel_default().debug("PaddleOCR engine closed and cleaned up");
-    }
-    async clearModelCache() {
-        try {
-            await (0,GM/* _GM_setValue */.mN)(this.cacheKey, null);
-            await (0,GM/* _GM_setValue */.mN)(this.cacheVersionKey, null);
-            this.modelCache = {};
-            this.ppocrDict = "";
-            this.modelLoaded = false;
-            this.ocrEngine = null;
-            this.loadingPromise = null;
-            loglevel_default().debug("Cleared all OCR model cache data");
-        }
-        catch (error) {
-            loglevel_default().error("Failed to clear OCR model cache:", error);
-        }
-    }
-    async ensureModelLoaded() {
-        if (this.modelLoaded) {
-            return;
-        }
-        if (this.loadingPromise) {
-            await this.loadingPromise;
-            return;
-        }
-        this.loadingPromise = this.loadModel();
-        await this.loadingPromise;
-    }
-    async loadModel() {
-        try {
-            loglevel_default().debug("Loading PaddleOCR model...");
-            if (!eSearchOCR_es_namespaceObject || !external_ort_namespaceObject) {
-                throw new Error("PaddleOCR dependencies not loaded. Ensure esearch-ocr and onnxruntime-web are included via script tags.");
-            }
-            this.configureONNXRuntime();
-            await this.downloadAndCacheModels();
-            const dictContent = await this.loadPaddleOCRDict();
-            const detModel = this.modelCache["ppocr_det.onnx"];
-            const recModel = this.modelCache["ppocr_rec.onnx"];
-            if (!detModel || !recModel) {
-                throw new Error("Failed to download required PaddleOCR models");
-            }
-            loglevel_default().debug("Initializing PaddleOCR engine...");
-            this.ocrEngine = await Ln({
-                det: {
-                    input: await detModel.arrayBuffer(),
-                    ratio: 2.0,
-                },
-                rec: {
-                    input: await recModel.arrayBuffer(),
-                    decodeDic: dictContent,
-                    optimize: {
-                        space: false,
-                    },
-                },
-                dev: false,
-                ort: external_ort_namespaceObject,
-            });
-            this.modelLoaded = true;
-            loglevel_default().debug("PaddleOCR engine initialized successfully");
-        }
-        catch (error) {
-            loglevel_default().error("Failed to load PaddleOCR model:", error);
-            this.modelLoaded = false;
-            this.ocrEngine = null;
-            throw error;
-        }
-    }
-    configureONNXRuntime() {
-        try {
-            external_ort_namespaceObject.env.wasm.wasmPaths = "https://unpkg.com/onnxruntime-web@1.22.0/dist/";
-            external_ort_namespaceObject.env.wasm.numThreads = 1;
-            external_ort_namespaceObject.env.wasm.simd = true;
-            external_ort_namespaceObject.env.logLevel = "info";
-            loglevel_default().debug("ONNX Runtime Web configured with WASM paths:", external_ort_namespaceObject.env.wasm.wasmPaths);
-        }
-        catch (error) {
-            loglevel_default().warn("Failed to configure ONNX Runtime:", error);
-        }
-    }
-    async downloadAndCacheModels() {
-        try {
-            const storedVersion = await (0,GM/* _GM_getValue */.er)(this.cacheVersionKey, null);
-            const cachedModels = await (0,GM/* _GM_getValue */.er)(this.cacheKey, null);
-            if (storedVersion === this.cacheVersion && cachedModels) {
-                const parsedCache = JSON.parse(cachedModels);
-                for (const [filename, base64Data] of Object.entries(parsedCache)) {
-                    if (typeof base64Data === "string") {
-                        const binaryString = atob(base64Data);
-                        const bytes = new Uint8Array(binaryString.length);
-                        for (let i = 0; i < binaryString.length; i++) {
-                            bytes[i] = binaryString.charCodeAt(i);
-                        }
-                        this.modelCache[filename] = new Blob([bytes]);
-                    }
-                }
-                loglevel_default().debug("Loaded models from browser cache");
-                return;
-            }
-            else {
-                loglevel_default().debug(`Cache version mismatch, clearing old cache: ${storedVersion} vs ${this.cacheVersion}`);
-                await (0,GM/* _GM_setValue */.mN)(this.cacheKey, null);
-                await (0,GM/* _GM_setValue */.mN)(this.cacheVersionKey, null);
-                this.modelCache = {};
-                loglevel_default().debug("Cleared old model cache");
-            }
-        }
-        catch (error) {
-            loglevel_default().warn("Failed to load from cache, will download fresh:", error);
-        }
-        loglevel_default().debug("Downloading PaddleOCR models from GitHub...");
-        const cacheData = {};
-        try {
-            loglevel_default().debug(`Downloading from ${this.zipUrl}...`);
-            const response = await (0,http/* gfetch */._V)(this.zipUrl, {
-                responseType: "blob",
-                method: "GET"
-            });
-            if (response.status !== 200 || !response.response) {
-                throw new Error(`Failed to download ZIP: HTTP ${response.status} ${response.statusText}`);
-            }
-            const zipBlob = response.response;
-            loglevel_default().debug("Successfully downloaded zip file using gfetch");
-            loglevel_default().debug(`Downloaded ${zipBlob.size} bytes`);
-            await this.extractZipFiles(zipBlob, cacheData);
-            if (Object.keys(cacheData).length > 0) {
-                try {
-                    await (0,GM/* _GM_setValue */.mN)(this.cacheKey, JSON.stringify(cacheData));
-                    await (0,GM/* _GM_setValue */.mN)(this.cacheVersionKey, this.cacheVersion);
-                    loglevel_default().debug(`Cached ${Object.keys(cacheData).length} files successfully`);
-                }
-                catch (cacheError) {
-                    loglevel_default().warn("Failed to cache models (GM storage full?):", cacheError);
-                }
-            }
-        }
-        catch (error) {
-            loglevel_default().error("Failed to download models:", error);
-            throw error;
-        }
-    }
-    async extractZipFiles(zipBlob, cacheData) {
-        try {
-            loglevel_default().debug("Extracting files from zip...");
-            const zipArrayBuffer = await zipBlob.arrayBuffer();
-            const zipData = new Uint8Array(zipArrayBuffer);
-            const extracted = (0,external_fflate_.unzipSync)(zipData, {
-                filter: (file) => this.filesToExtract.includes(file.name)
-            });
-            loglevel_default().debug(`Found ${Object.keys(extracted).length} matching files in zip`);
-            for (const [filename, fileData] of Object.entries(extracted)) {
-                loglevel_default().debug(`Processing ${filename}...`);
-                const blob = new Blob([fileData]);
-                this.modelCache[filename] = blob;
-                if (fileData.length > 50 * 1024 * 1024) {
-                    loglevel_default().warn(`File ${filename} is very large (${(fileData.length / 1024 / 1024).toFixed(1)}MB), skipping GM storage cache`);
-                    continue;
-                }
-                try {
-                    const binaryString = this.uint8ArrayToBinaryString(fileData);
-                    cacheData[filename] = btoa(binaryString);
-                }
-                catch (conversionError) {
-                    loglevel_default().warn(`Failed to convert ${filename} to base64, skipping GM storage cache:`, conversionError);
-                }
-                loglevel_default().debug(`Extracted ${filename} (${blob.size} bytes)`);
-            }
-            loglevel_default().debug(`Successfully extracted ${Object.keys(cacheData).length} files from zip`);
-        }
-        catch (error) {
-            loglevel_default().error("Failed to extract zip files:", error);
-            throw error;
-        }
-    }
-    uint8ArrayToBinaryString(uint8Array) {
-        const chunkSize = 8192;
-        let binaryString = "";
-        for (let i = 0; i < uint8Array.length; i += chunkSize) {
-            const chunk = uint8Array.subarray(i, i + chunkSize);
-            binaryString += String.fromCharCode.apply(null, Array.from(chunk));
-        }
-        return binaryString;
-    }
-    async loadPaddleOCRDict() {
-        if (this.ppocrDict) {
-            return this.ppocrDict;
-        }
-        try {
-            await this.downloadAndCacheModels();
-            const dictBlob = this.modelCache["ppocr_keys_v1.txt"];
-            if (!dictBlob) {
-                throw new Error("Dictionary not found in cached models");
-            }
-            this.ppocrDict = await dictBlob.text();
-            loglevel_default().debug(`Loaded PaddleOCR dictionary from cache with ${this.ppocrDict.split("\n").length} entries`);
-            return this.ppocrDict;
-        }
-        catch (error) {
-            loglevel_default().error("Failed to load PaddleOCR dictionary from cache:", error);
-            throw error;
-        }
-    }
-    async uint8ArrayToImageData(uint8Array) {
-        try {
-            const blob = new Blob([uint8Array]);
-            const img = new Image();
-            const imageLoadPromise = new Promise((resolve, reject) => {
-                img.onload = () => resolve();
-                img.onerror = reject;
-            });
-            img.src = URL.createObjectURL(blob);
-            await imageLoadPromise;
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-            if (!ctx) {
-                throw new Error("Cannot get canvas 2D context");
-            }
-            const scaleX = Math.max(4, Math.ceil(120 / img.width));
-            const scaleY = Math.max(4, Math.ceil(120 / img.height));
-            const scale = Math.max(scaleX, scaleY);
-            const scaledWidth = img.width * scale;
-            const scaledHeight = img.height * scale;
-            canvas.width = scaledWidth;
-            canvas.height = scaledHeight;
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(0, 0, scaledWidth, scaledHeight);
-            ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
-            loglevel_default().debug(`Image scaled from ${img.width}x${img.height} to ${scaledWidth}x${scaledHeight} (${scale}x scale)`);
-            const imageData = ctx.getImageData(0, 0, scaledWidth, scaledHeight);
-            URL.revokeObjectURL(img.src);
-            return imageData;
-        }
-        catch (error) {
-            loglevel_default().error("Error converting Uint8Array to ImageData:", error);
-            return null;
-        }
-    }
-}
-
-;// ./src/lib/decoders/ImageCache.ts
-
-
-class ImageCache {
-    static instance = null;
-    cache = new Map();
-    maxCacheSize = 50;
-    accessOrder = [];
-    constructor() {
-    }
-    static getInstance() {
-        if (!ImageCache.instance) {
-            ImageCache.instance = new ImageCache();
-        }
-        return ImageCache.instance;
-    }
-    async getImageData(imageUrl) {
-        if (this.cache.has(imageUrl)) {
-            this.updateAccessOrder(imageUrl);
-            loglevel_default().debug(`Image cache hit for: ${imageUrl.substring(0, 50)}...`);
-            return this.cache.get(imageUrl);
-        }
-        try {
-            loglevel_default().debug(`Downloading image for cache: ${imageUrl.substring(0, 50)}...`);
-            const response = await (0,http/* gfetch */._V)(imageUrl, {
-                responseType: "arraybuffer",
-                method: "GET"
-            });
-            if (response.status !== 200 || !response.response) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            const uint8Array = new Uint8Array(response.response);
-            this.cacheImageData(imageUrl, uint8Array);
-            loglevel_default().debug(`Downloaded and cached image: ${uint8Array.length} bytes`);
-            return uint8Array;
-        }
-        catch (error) {
-            loglevel_default().error(`Failed to download image: ${imageUrl}`, error);
-            throw error;
-        }
-    }
-    cacheImageData(imageUrl, data) {
-        if (this.cache.size >= this.maxCacheSize) {
-            const lruUrl = this.accessOrder.shift();
-            if (lruUrl) {
-                this.cache.delete(lruUrl);
-                loglevel_default().debug(`Evicted LRU image from cache: ${lruUrl.substring(0, 50)}...`);
-            }
-        }
-        this.cache.set(imageUrl, data);
-        this.accessOrder.push(imageUrl);
-    }
-    updateAccessOrder(imageUrl) {
-        const index = this.accessOrder.indexOf(imageUrl);
-        if (index > -1) {
-            this.accessOrder.splice(index, 1);
-            this.accessOrder.push(imageUrl);
-        }
-    }
-    clearCache() {
-        this.cache.clear();
-        this.accessOrder.length = 0;
-        loglevel_default().debug("Cleared image cache");
-    }
-    getCacheStats() {
-        return {
-            size: this.cache.size,
-            maxSize: this.maxCacheSize,
-            urls: Array.from(this.cache.keys()).map(url => url.substring(0, 50) + "...")
-        };
-    }
-}
-
-// EXTERNAL MODULE: external "CryptoJS"
-var external_CryptoJS_ = __webpack_require__("crypto-js");
-;// ./src/rules/special/reprint/xiguashuwu.ts
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Xiguashuwu: () => (/* binding */ Xiguashuwu)
+/* harmony export */ });
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/attachments.ts");
+/* harmony import */ var _lib_decoders_FilenameDecoder__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/decoders/FilenameDecoder.ts");
+/* harmony import */ var _lib_decoders_HashDecoder__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/lib/decoders/HashDecoder.ts");
+/* harmony import */ var _lib_decoders_OCRDecoder__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("./src/lib/decoders/OCRDecoder.ts");
+/* harmony import */ var _lib_decoders_ImageCache__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__("./src/lib/decoders/ImageCache.ts");
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__("crypto-js");
+/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_13__);
 
 
 
@@ -42914,26 +43127,26 @@ class ImageTextDecoder {
     failedImages = [];
     PLACEHOLDER_CHAR = "▢";
     constructor() {
-        this.filenameDecoder = new FilenameDecoder("www.xiguashuwu.com");
-        this.hashDecoder = new HashDecoder("www.xiguashuwu.com");
-        this.ocrDecoder = new OCRDecoder();
+        this.filenameDecoder = new _lib_decoders_FilenameDecoder__WEBPACK_IMPORTED_MODULE_9__/* .FilenameDecoder */ .u("www.xiguashuwu.com");
+        this.hashDecoder = new _lib_decoders_HashDecoder__WEBPACK_IMPORTED_MODULE_10__/* .HashDecoder */ .J("www.xiguashuwu.com");
+        this.ocrDecoder = new _lib_decoders_OCRDecoder__WEBPACK_IMPORTED_MODULE_11__/* .OCRDecoder */ .T();
     }
     async init() {
-        loglevel_default().debug("[XiguashuwuImageDecoder] Decoder initialized");
+        _log__WEBPACK_IMPORTED_MODULE_4___default().debug("[XiguashuwuImageDecoder] Decoder initialized");
     }
     async close() {
         this.mappingCache = {};
         await this.ocrDecoder.close();
-        const imageCache = ImageCache.getInstance();
+        const imageCache = _lib_decoders_ImageCache__WEBPACK_IMPORTED_MODULE_12__/* .ImageCache */ .S.getInstance();
         imageCache.clearCache();
         if (this.failedImages.length > 0) {
-            loglevel_default().warn(`[XiguashuwuImageDecoder] ${this.failedImages.length} images failed to decode:`);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`[XiguashuwuImageDecoder] ${this.failedImages.length} images failed to decode:`);
             this.failedImages.forEach((url, index) => {
-                loglevel_default().warn(`  ${index + 1}. ${url}`);
+                _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`  ${index + 1}. ${url}`);
             });
-            loglevel_default().warn(`These images were replaced with placeholder character: "${this.PLACEHOLDER_CHAR}"`);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`These images were replaced with placeholder character: "${this.PLACEHOLDER_CHAR}"`);
         }
-        loglevel_default().debug("[XiguashuwuImageDecoder] Decoder closed and image cache cleared");
+        _log__WEBPACK_IMPORTED_MODULE_4___default().debug("[XiguashuwuImageDecoder] Decoder closed and image cache cleared");
     }
     async decodeImage(imageUrl) {
         if (this.mappingCache[imageUrl]) {
@@ -42943,42 +43156,42 @@ class ImageTextDecoder {
             const filename = this.getFilenameFromUrl(imageUrl);
             const filenameChar = await this.filenameDecoder.decodeFromFilename(filename);
             if (filenameChar) {
-                loglevel_default().debug(`[XiguashuwuImageDecoder] Filename match: ${filename} -> ${filenameChar}`);
+                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[XiguashuwuImageDecoder] Filename match: ${filename} -> ${filenameChar}`);
                 this.mappingCache[imageUrl] = filenameChar;
                 return filenameChar;
             }
             const imageData = await this.downloadImageData(imageUrl);
             const hashChar = await this.hashDecoder.decode(imageData);
             if (hashChar) {
-                loglevel_default().debug(`[XiguashuwuImageDecoder] Hash match: ${filename} -> "${hashChar}"`);
+                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[XiguashuwuImageDecoder] Hash match: ${filename} -> "${hashChar}"`);
                 this.mappingCache[imageUrl] = hashChar;
                 return hashChar;
             }
             const ocrResult = await this.ocrDecoder.decode(imageData);
             if (ocrResult && ocrResult.confidence >= 0.90) {
                 const ocrChar = ocrResult.text;
-                loglevel_default().debug(`[XiguashuwuImageDecoder] OCR success: ${filename} (${imageUrl}) -> "${ocrChar}" (confidence: ${Math.round(ocrResult.confidence * 100)}%)`);
+                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[XiguashuwuImageDecoder] OCR success: ${filename} (${imageUrl}) -> "${ocrChar}" (confidence: ${Math.round(ocrResult.confidence * 100)}%)`);
                 try {
                     await this.hashDecoder.learnMapping(imageData, ocrChar);
                     await this.filenameDecoder.learnMapping(filename, ocrChar);
-                    loglevel_default().debug(`[XiguashuwuImageDecoder] Learned both hash and filename mappings for: ${filename} -> "${ocrChar}"`);
+                    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[XiguashuwuImageDecoder] Learned both hash and filename mappings for: ${filename} -> "${ocrChar}"`);
                 }
                 catch (learningError) {
-                    loglevel_default().warn(`[XiguashuwuImageDecoder] Failed to learn mappings for ${filename}:`, learningError);
+                    _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`[XiguashuwuImageDecoder] Failed to learn mappings for ${filename}:`, learningError);
                 }
                 this.mappingCache[imageUrl] = ocrChar;
                 return ocrChar;
             }
             else if (ocrResult) {
-                loglevel_default().error(`[XiguashuwuImageDecoder] OCR confidence too low: ${Math.round(ocrResult.confidence * 100)}% < 90% for ${filename}`);
+                _log__WEBPACK_IMPORTED_MODULE_4___default().error(`[XiguashuwuImageDecoder] OCR confidence too low: ${Math.round(ocrResult.confidence * 100)}% < 90% for ${filename}`);
             }
-            loglevel_default().warn(`[XiguashuwuImageDecoder] All decoding methods failed for: ${imageUrl}`);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`[XiguashuwuImageDecoder] All decoding methods failed for: ${imageUrl}`);
             this.failedImages.push(imageUrl);
             this.mappingCache[imageUrl] = this.PLACEHOLDER_CHAR;
             return this.PLACEHOLDER_CHAR;
         }
         catch (error) {
-            loglevel_default().error(`[XiguashuwuImageDecoder] Error during decoding process for ${imageUrl}:`, error);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().error(`[XiguashuwuImageDecoder] Error during decoding process for ${imageUrl}:`, error);
             this.failedImages.push(imageUrl);
             this.mappingCache[imageUrl] = this.PLACEHOLDER_CHAR;
             return this.PLACEHOLDER_CHAR;
@@ -42988,7 +43201,7 @@ class ImageTextDecoder {
         return url.split("/").pop() || "";
     }
     async downloadImageData(imageUrl) {
-        const imageCache = ImageCache.getInstance();
+        const imageCache = _lib_decoders_ImageCache__WEBPACK_IMPORTED_MODULE_12__/* .ImageCache */ .S.getInstance();
         return await imageCache.getImageData(imageUrl);
     }
     getFailedImages() {
@@ -43033,15 +43246,15 @@ const decodeCustomBase64 = (encodedString) => {
     return decodedString;
 };
 const decryptContent = (content, key) => {
-    const key1 = external_CryptoJS_.MD5(key).toString();
-    const d = external_CryptoJS_.enc.Utf8.parse(key1.substring(0, 16));
-    const e = external_CryptoJS_.enc.Utf8.parse(key1.substring(16));
-    return external_CryptoJS_.AES.decrypt(content, e, {
+    const key1 = crypto_js__WEBPACK_IMPORTED_MODULE_13__.MD5(key).toString();
+    const d = crypto_js__WEBPACK_IMPORTED_MODULE_13__.enc.Utf8.parse(key1.substring(0, 16));
+    const e = crypto_js__WEBPACK_IMPORTED_MODULE_13__.enc.Utf8.parse(key1.substring(16));
+    return crypto_js__WEBPACK_IMPORTED_MODULE_13__.AES.decrypt(content, e, {
         iv: d,
-        padding: external_CryptoJS_.pad.Pkcs7,
-    }).toString(external_CryptoJS_.enc.Utf8);
+        padding: crypto_js__WEBPACK_IMPORTED_MODULE_13__.pad.Pkcs7,
+    }).toString(crypto_js__WEBPACK_IMPORTED_MODULE_13__.enc.Utf8);
 };
-class Xiguashuwu extends rules/* BaseRuleClass */.Q {
+class Xiguashuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "naive";
@@ -43054,23 +43267,23 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
         const author = document.querySelector("p.author > span > a")
             ?.innerText ?? "";
         const introDom = document.querySelector("#intro > p.BGsectionTwo-bottom");
-        const [introduction, introductionHTML] = await (0,rule/* introDomHandle */.HV)(introDom);
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".BGsectionOne-top-left > img")?.src || null;
         if (coverUrl) {
-            (0,attachments/* getAttachment */["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_8__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => loglevel_default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         const chapterListLink = document.querySelector("div.BGsectionOne-bottom > ul > li:nth-of-type(2) > a");
         if (!chapterListLink) {
             throw new Error("Chapter list link not found");
         }
         const chapterListUrl = chapterListLink.href;
-        loglevel_default().debug(`[chapter]请求 ${chapterListUrl}`);
-        const chapterListDoc = await (0,http.getHtmlDOM)(chapterListUrl, this.charset);
+        _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[chapter]请求 ${chapterListUrl}`);
+        const chapterListDoc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__.getHtmlDOM)(chapterListUrl, this.charset);
         const chapterLinks = chapterListDoc.querySelectorAll("li.BCsectionTwo-top-chapter > a");
         const chapters = [];
         let chapterNumber = 0;
@@ -43080,7 +43293,7 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
             const chapterUrl = aElem.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new Chapter/* Chapter */.I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -43097,7 +43310,7 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
             });
             chapters.push(chapter);
         }
-        return new Book/* Book */.E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -43113,10 +43326,10 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
         try {
             const contentRaw = await this.getContentFromMultiplePages(chapterUrl, charset, decoder);
             if (contentRaw) {
-                const { dom, text, images } = await (0,cleanDOM/* cleanDOM */.an)(contentRaw, this.attachmentMode, { keepImageName: true });
+                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .cleanDOM */ .an)(contentRaw, this.attachmentMode, { keepImageName: true });
                 const failedCount = decoder.getFailedImagesCount();
                 if (failedCount > 0) {
-                    loglevel_default().warn(`[Xiguashuwu] Chapter "${chapterName}" has ${failedCount} failed image(s) replaced with "${decoder.getPlaceholderChar()}"`);
+                    _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`[Xiguashuwu] Chapter "${chapterName}" has ${failedCount} failed image(s) replaced with "${decoder.getPlaceholderChar()}"`);
                 }
                 return {
                     chapterName,
@@ -43150,9 +43363,9 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
         const lastParagraphIndexes = [];
         let totalParagraphs = 0;
         while (currentUrl) {
-            loglevel_default().debug(`Processing page ${pageNumber}: ${currentUrl}`);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Processing page ${pageNumber}: ${currentUrl}`);
             try {
-                const doc = await (0,http.getHtmlDOM)(currentUrl, charset);
+                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__.getHtmlDOM)(currentUrl, charset);
                 const pageContent = await this.processPageContent(doc, decoder, pageNumber);
                 if (pageContent) {
                     const pageParaCount = pageContent.children.length;
@@ -43161,17 +43374,17 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
                     for (const child of Array.from(pageContent.children)) {
                         content.appendChild(child.cloneNode(true));
                     }
-                    loglevel_default().debug(`Page ${pageNumber} processed: ${pageParaCount} paragraphs, total: ${totalParagraphs}`);
+                    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Page ${pageNumber} processed: ${pageParaCount} paragraphs, total: ${totalParagraphs}`);
                 }
                 currentUrl = this.getNextPageUrl(doc);
                 pageNumber++;
                 if (pageNumber > 50) {
-                    loglevel_default().warn("Too many pages detected, stopping to prevent infinite loop");
+                    _log__WEBPACK_IMPORTED_MODULE_4___default().warn("Too many pages detected, stopping to prevent infinite loop");
                     break;
                 }
             }
             catch (error) {
-                loglevel_default().error(`Failed to process page ${pageNumber}: ${currentUrl}`, error);
+                _log__WEBPACK_IMPORTED_MODULE_4___default().error(`Failed to process page ${pageNumber}: ${currentUrl}`, error);
                 break;
             }
         }
@@ -43181,7 +43394,7 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
     async processPageContent(doc, decoder, pageNumber) {
         if (pageNumber === 1) {
             const contentDiv = doc.querySelector("#C0NTENT");
-            loglevel_default().debug("Processing first page - using direct C0NTENT (no image processing)");
+            _log__WEBPACK_IMPORTED_MODULE_4___default().debug("Processing first page - using direct C0NTENT (no image processing)");
             if (contentDiv) {
                 return await this.processFirstPageContent(contentDiv);
             }
@@ -43190,7 +43403,7 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
             }
         }
         else if (pageNumber === 2) {
-            loglevel_default().debug("Processing second page - using nrid/codeurl method (with image processing)");
+            _log__WEBPACK_IMPORTED_MODULE_4___default().debug("Processing second page - using nrid/codeurl method (with image processing)");
             try {
                 const decryptedDiv = await this.decryptSecondPageContent(doc);
                 if (decryptedDiv) {
@@ -43201,12 +43414,12 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
                 }
             }
             catch (error) {
-                loglevel_default().error("Failed to decrypt second page content:", error);
+                _log__WEBPACK_IMPORTED_MODULE_4___default().error("Failed to decrypt second page content:", error);
                 throw error;
             }
         }
         else {
-            loglevel_default().debug(`Processing page ${pageNumber} - using AES decryption (with image processing)`);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Processing page ${pageNumber} - using AES decryption (with image processing)`);
             try {
                 const decryptedDiv = await this.decryptAESPageContent(doc);
                 if (decryptedDiv) {
@@ -43217,7 +43430,7 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
                 }
             }
             catch (error) {
-                loglevel_default().error(`Failed to decrypt page ${pageNumber} content:`, error);
+                _log__WEBPACK_IMPORTED_MODULE_4___default().error(`Failed to decrypt page ${pageNumber} content:`, error);
                 throw error;
             }
         }
@@ -43238,14 +43451,14 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
                 const nridMatch = scriptContent.match(nridRegex);
                 if (nridMatch) {
                     nrid = nridMatch[1];
-                    loglevel_default().debug(`Found nrid: ${nrid}`);
+                    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Found nrid: ${nrid}`);
                 }
             }
             if (!codeurl) {
                 const simpleMatch = scriptContent.match(simpleCodeurlVarRegex);
                 if (simpleMatch && simpleMatch[1]) {
                     codeurl = simpleMatch[1];
-                    loglevel_default().debug(`Found simple codeurl: ${codeurl}`);
+                    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Found simple codeurl: ${codeurl}`);
                 }
             }
             if (nrid && codeurl) {
@@ -43289,7 +43502,7 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
                 standardContentDiv.appendChild(node);
             }
         });
-        loglevel_default().debug("Successfully decrypted second page content using nrid/codeurl method");
+        _log__WEBPACK_IMPORTED_MODULE_4___default().debug("Successfully decrypted second page content using nrid/codeurl method");
         return standardContentDiv;
     }
     async decryptAESPageContent(doc) {
@@ -43308,14 +43521,14 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
                 if (newcomMatch && newcomMatch.groups) {
                     newconEncryptedContent = decodeURIComponent(newcomMatch.groups.content);
                     newconEncryptionKey = newcomMatch.groups.key;
-                    loglevel_default().debug(`Found AES encrypted content with key: ${newconEncryptionKey}`);
+                    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Found AES encrypted content with key: ${newconEncryptionKey}`);
                 }
             }
             if (!nrid) {
                 const nridMatch = scriptContent.match(nridRegex);
                 if (nridMatch) {
                     nrid = nridMatch[1];
-                    loglevel_default().debug(`Found nrid: ${nrid}`);
+                    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Found nrid: ${nrid}`);
                 }
             }
             if (nrid && newconEncryptedContent && newconEncryptionKey) {
@@ -43335,11 +43548,11 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
             throw new Error("AES decryption produced empty content");
         }
         standardContentDiv.innerHTML = decryptedContent;
-        loglevel_default().debug("Successfully decrypted AES page content");
+        _log__WEBPACK_IMPORTED_MODULE_4___default().debug("Successfully decrypted AES page content");
         return standardContentDiv;
     }
     async processImages(content, decoder) {
-        (0,dom.rm)("div.s_m", true, content);
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("div.s_m", true, content);
         const images = content.querySelectorAll("img.hz");
         for (const img of Array.from(images)) {
             try {
@@ -43351,14 +43564,14 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
                 const textNode = document.createTextNode(decodedText);
                 img.parentNode?.replaceChild(textNode, img);
                 if (decodedText === decoder.getPlaceholderChar()) {
-                    loglevel_default().debug(`Used placeholder for failed image: ${imageUrl.substring(0, 50)}...`);
+                    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Used placeholder for failed image: ${imageUrl.substring(0, 50)}...`);
                 }
                 else {
-                    loglevel_default().debug(`Decoded image: ${imageUrl.substring(0, 50)}...`);
+                    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Decoded image: ${imageUrl.substring(0, 50)}...`);
                 }
             }
             catch (error) {
-                loglevel_default().error("Unexpected error during image processing:", img.src, error);
+                _log__WEBPACK_IMPORTED_MODULE_4___default().error("Unexpected error during image processing:", img.src, error);
                 const textNode = document.createTextNode(decoder.getPlaceholderChar());
                 img.parentNode?.replaceChild(textNode, img);
             }
@@ -43370,7 +43583,7 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
         if (nextPageLink && nextPageLink.innerText.includes("下一页")) {
             const nextUrl = nextPageLink.href;
             if (nextUrl.includes(".html")) {
-                loglevel_default().debug(`Found next page: ${nextUrl}`);
+                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Found next page: ${nextUrl}`);
                 return nextUrl;
             }
         }
@@ -43383,17 +43596,17 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
                 linkText.match(/^下.*页$/)) &&
                 link.href.includes(".html")) {
                 const nextUrl = link.href;
-                loglevel_default().debug(`Found fallback next page: ${nextUrl}`);
+                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Found fallback next page: ${nextUrl}`);
                 return nextUrl;
             }
         }
-        loglevel_default().debug("No next page found");
+        _log__WEBPACK_IMPORTED_MODULE_4___default().debug("No next page found");
         return "";
     }
     mergeParagraphsAcrossPages(content, lastParagraphIndexes) {
         if (lastParagraphIndexes.length <= 1)
             return;
-        loglevel_default().debug(`Merging paragraphs across ${lastParagraphIndexes.length} pages`);
+        _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Merging paragraphs across ${lastParagraphIndexes.length} pages`);
         for (let i = lastParagraphIndexes.length - 2; i >= 0; i--) {
             const currentPageLastIndex = lastParagraphIndexes[i];
             let lastParagraph = null;
@@ -43423,13 +43636,13 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
                 }
                 lastParagraph.textContent += "\r\n";
                 nextParagraph.remove();
-                loglevel_default().debug(`Merged paragraphs: "${lastText.substring(0, 30)}..." + "${nextText.substring(0, 30)}..." (with newline separator)`);
+                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Merged paragraphs: "${lastText.substring(0, 30)}..." + "${nextText.substring(0, 30)}..." (with newline separator)`);
             }
         }
     }
     async processFirstPageContent(content) {
-        (0,dom.rm)("div.s_m", true, content);
-        loglevel_default().debug("First page processed without image decoding");
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("div.s_m", true, content);
+        _log__WEBPACK_IMPORTED_MODULE_4___default().debug("First page processed without image decoding");
         return content;
     }
 }
