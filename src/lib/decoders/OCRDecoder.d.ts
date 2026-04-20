@@ -15,6 +15,7 @@ export declare class OCRDecoder {
     private readonly filesToExtract;
     constructor();
     decode(imageData: Uint8Array): Promise<OCRResult | null>;
+    decodeFullText(imageData: Uint8Array): Promise<string>;
     isAvailable(): boolean;
     getModelInfo(): {
         name: string;

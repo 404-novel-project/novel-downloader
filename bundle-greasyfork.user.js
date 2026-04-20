@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1242
+// @version        5.2.1243
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -9422,545 +9422,6 @@ function isFixWidth(node, width = 35) {
 
 /***/ },
 
-/***/ "./src/lib/decoders/FilenameDecoder.ts"
-(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   u: () => (/* binding */ FilenameDecoder)
-/* harmony export */ });
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _GM__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/GM.ts");
-/* harmony import */ var _SessionMappingCache__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/SessionMappingCache.ts");
-
-
-
-
-class FilenameDecoder {
-    domain;
-    remoteUrl;
-    learnedCacheKey;
-    sessionId;
-    mappings = null;
-    learnedMappings = null;
-    loading = null;
-    constructor(domain, sessionId) {
-        if (!domain) {
-            throw new Error("Domain name is required for FilenameDecoder initialization");
-        }
-        this.domain = domain;
-        this.sessionId = sessionId || window.workerId;
-        this.remoteUrl = `https://fastly.jsdelivr.net/gh/404-novel-project/novel-downloader-image-to-text-mapping@master/filename-mappings/${domain}.min.json`;
-        this.learnedCacheKey = `filename-mappings-learned-${domain}`;
-        this.loadLearnedMappings().catch(error => {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().error("Failed to initialize learned mappings:", error);
-        });
-        _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`FilenameDecoder initialized for domain: ${domain}, session: ${this.sessionId}`);
-    }
-    async decode(imageData) {
-        _log__WEBPACK_IMPORTED_MODULE_0___default().warn("FilenameDecoder.decode() called with imageData - this decoder requires filename context from URL");
-        return null;
-    }
-    async decodeFromFilename(filename) {
-        try {
-            await this.ensureMappingsLoaded();
-            if (this.mappings?.has(filename)) {
-                const character = this.mappings.get(filename);
-                _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Decoded character from server mappings: ${character} for filename: ${filename}`);
-                return character;
-            }
-            if (this.learnedMappings?.has(filename)) {
-                const character = this.learnedMappings.get(filename);
-                _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Decoded character from learned mappings: ${character} for filename: ${filename}`);
-                return character;
-            }
-            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`No character mapping found for filename: ${filename}`);
-            return null;
-        }
-        catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().error("Error in filename decoding:", error);
-            return null;
-        }
-    }
-    getMappingsCount() {
-        return {
-            remote: this.mappings?.size ?? 0,
-            learned: this.learnedMappings?.size ?? 0
-        };
-    }
-    async clearCache() {
-        const sessionCache = _SessionMappingCache__WEBPACK_IMPORTED_MODULE_3__/* .SessionMappingCache */ .j.getInstance();
-        sessionCache.clearSession(this.sessionId);
-        this.mappings = null;
-        this.loading = null;
-    }
-    async ensureMappingsLoaded() {
-        if (this.mappings) {
-            return;
-        }
-        if (this.loading) {
-            await this.loading;
-            return;
-        }
-        this.loading = this.loadMappings();
-        await this.loading;
-    }
-    async loadMappings() {
-        try {
-            const sessionCache = _SessionMappingCache__WEBPACK_IMPORTED_MODULE_3__/* .SessionMappingCache */ .j.getInstance();
-            this.mappings = await sessionCache.getMappingsWithLoading(this.sessionId, this.domain, _SessionMappingCache__WEBPACK_IMPORTED_MODULE_3__/* .MAPPING_TYPES */ .$.FILENAME, () => this.fetchRemoteMappings());
-            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Loaded ${this.mappings.size} filename mappings for session ${this.sessionId}`);
-        }
-        catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().error("Failed to load filename mappings:", error);
-            throw error;
-        }
-    }
-    async fetchRemoteMappings() {
-        try {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().debug("Fetching filename mappings from remote");
-            const response = await (0,_http__WEBPACK_IMPORTED_MODULE_1__/* .ggetText */ .bx)(this.remoteUrl);
-            if (!response) {
-                throw new Error("Empty response from remote URL");
-            }
-            const data = JSON.parse(response);
-            if (typeof data !== 'object' || !data) {
-                throw new Error("Invalid mapping data format");
-            }
-            const mappings = new Map();
-            for (const [key, value] of Object.entries(data)) {
-                if (typeof value === 'string') {
-                    mappings.set(key, value);
-                }
-                else {
-                    _log__WEBPACK_IMPORTED_MODULE_0___default().warn(`Skipping invalid mapping entry: ${key} -> ${value} (not a string)`);
-                }
-            }
-            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Successfully loaded ${mappings.size} filename mappings from remote`);
-            return mappings;
-        }
-        catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().error("Failed to fetch filename mappings:", error);
-            throw error;
-        }
-    }
-    async loadLearnedMappings() {
-        try {
-            const cached = await (0,_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_getValue */ .er)(this.learnedCacheKey);
-            if (cached) {
-                const data = JSON.parse(cached);
-                this.learnedMappings = new Map(Object.entries(data));
-                _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Loaded ${this.learnedMappings.size} learned filename mappings from cache`);
-            }
-            else {
-                this.learnedMappings = new Map();
-            }
-        }
-        catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().error("Failed to load learned filename mappings:", error);
-            this.learnedMappings = new Map();
-        }
-    }
-    async learnMapping(filename, character) {
-        try {
-            if (!this.learnedMappings) {
-                this.learnedMappings = new Map();
-            }
-            this.learnedMappings.set(filename, character);
-            await this.saveLearnedMappings();
-            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Learned new filename mapping: ${filename} -> ${character}`);
-        }
-        catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().error("Error learning filename mapping:", error);
-        }
-    }
-    async clearLearnedMappings() {
-        await (0,_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_deleteValue */ .JU)(this.learnedCacheKey);
-        this.learnedMappings = new Map();
-        _log__WEBPACK_IMPORTED_MODULE_0___default().debug("Cleared all learned filename mappings");
-    }
-    exportLearnedMappings() {
-        if (!this.learnedMappings) {
-            return {};
-        }
-        return Object.fromEntries(this.learnedMappings);
-    }
-    async importLearnedMappings(mappings) {
-        this.learnedMappings = new Map(Object.entries(mappings));
-        await this.saveLearnedMappings();
-        _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Imported ${this.learnedMappings.size} learned filename mappings`);
-    }
-    async saveLearnedMappings() {
-        try {
-            if (this.learnedMappings) {
-                const data = Object.fromEntries(this.learnedMappings);
-                await (0,_GM__WEBPACK_IMPORTED_MODULE_2__/* ._GM_setValue */ .mN)(this.learnedCacheKey, JSON.stringify(data));
-                _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Saved ${this.learnedMappings.size} learned filename mappings to storage`);
-            }
-        }
-        catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().error("Failed to save learned filename mappings:", error);
-        }
-    }
-}
-
-
-/***/ },
-
-/***/ "./src/lib/decoders/HashDecoder.ts"
-(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  J: () => (/* binding */ HashDecoder)
-});
-
-// EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
-var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
-// EXTERNAL MODULE: ./src/lib/http.ts
-var http = __webpack_require__("./src/lib/http.ts");
-// EXTERNAL MODULE: ./src/lib/GM.ts
-var GM = __webpack_require__("./src/lib/GM.ts");
-;// ./src/lib/imageHasher.ts
-class ImageHasher {
-    hashSize;
-    constructor(hashSize = 8) {
-        this.hashSize = hashSize;
-    }
-    async hash(imageBlob) {
-        const grayscalePixels = await this.preprocessImage(imageBlob);
-        return this.calculateDHash(grayscalePixels);
-    }
-    static hammingDistance(hash1, hash2) {
-        if (hash1.length !== hash2.length) {
-            throw new Error("Hashes must be of equal length.");
-        }
-        const xorResult = BigInt(`0b${hash1}`) ^ BigInt(`0b${hash2}`);
-        return (xorResult.toString(2).match(/1/g) || []).length;
-    }
-    async preprocessImage(imageBlob) {
-        const image = await this.loadImageFromBlob(imageBlob);
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
-        if (!context)
-            throw new Error("Could not get 2D canvas context.");
-        const scaledWidth = this.hashSize + 1;
-        const scaledHeight = this.hashSize;
-        canvas.width = scaledWidth;
-        canvas.height = scaledHeight;
-        context.drawImage(image, 0, 0, scaledWidth, scaledHeight);
-        const imageData = context.getImageData(0, 0, scaledWidth, scaledHeight).data;
-        const grayscale = new Uint8ClampedArray(scaledWidth * scaledHeight);
-        for (let i = 0, j = 0; i < imageData.length; i += 4, j++) {
-            grayscale[j] =
-                0.299 * imageData[i] +
-                    0.587 * imageData[i + 1] +
-                    0.114 * imageData[i + 2];
-        }
-        return grayscale;
-    }
-    calculateDHash(pixels) {
-        let hash = "";
-        const width = this.hashSize + 1;
-        for (let y = 0; y < this.hashSize; y++) {
-            for (let x = 0; x < this.hashSize; x++) {
-                const left = pixels[y * width + x];
-                const right = pixels[y * width + x + 1];
-                hash += left < right ? "1" : "0";
-            }
-        }
-        return hash;
-    }
-    loadImageFromBlob(blob) {
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            const url = URL.createObjectURL(blob);
-            img.onload = () => {
-                URL.revokeObjectURL(url);
-                resolve(img);
-            };
-            img.onerror = (err) => {
-                URL.revokeObjectURL(url);
-                reject(new Error(`Failed to load image from blob`));
-            };
-            img.src = url;
-        });
-    }
-}
-/* harmony default export */ const imageHasher = (ImageHasher);
-
-// EXTERNAL MODULE: ./src/lib/SessionMappingCache.ts
-var SessionMappingCache = __webpack_require__("./src/lib/SessionMappingCache.ts");
-;// ./src/lib/decoders/HashDecoder.ts
-
-
-
-
-
-class HashDecoder {
-    domain;
-    remoteUrl;
-    learnedCacheKey;
-    sessionId;
-    mappings = null;
-    learnedMappings = null;
-    loading = null;
-    imageHasher;
-    constructor(domain, sessionId) {
-        if (!domain) {
-            throw new Error("Domain name is required for HashDecoder initialization");
-        }
-        this.domain = domain;
-        this.sessionId = sessionId || window.workerId;
-        this.remoteUrl = `https://fastly.jsdelivr.net/gh/404-novel-project/novel-downloader-image-to-text-mapping@master/hash-mappings/${domain}.min.json`;
-        this.learnedCacheKey = `hash-mappings-learned-${domain}`;
-        this.imageHasher = new imageHasher();
-        this.loadLearnedMappings().catch(error => {
-            loglevel_default().error("Failed to initialize learned mappings:", error);
-        });
-        loglevel_default().debug(`HashDecoder initialized for domain: ${domain}, session: ${this.sessionId}`);
-    }
-    async decode(imageData) {
-        try {
-            await this.ensureMappingsLoaded();
-            const hash = await this.generateImageHash(imageData);
-            if (this.mappings?.has(hash)) {
-                const text = this.mappings.get(hash);
-                loglevel_default().debug(`Decoded text from server mappings: ${text} for hash: ${hash}`);
-                return text;
-            }
-            if (this.learnedMappings?.has(hash)) {
-                const text = this.learnedMappings.get(hash);
-                loglevel_default().debug(`Decoded text from learned mappings: ${text} for hash: ${hash}`);
-                return text;
-            }
-            loglevel_default().debug(`No mapping found for hash: ${hash}`);
-            return null;
-        }
-        catch (error) {
-            loglevel_default().error("Error in hash decoding:", error);
-            return null;
-        }
-    }
-    async learnMapping(imageData, text) {
-        try {
-            const hash = await this.generateImageHash(imageData);
-            if (!this.learnedMappings) {
-                this.learnedMappings = new Map();
-            }
-            this.learnedMappings.set(hash, text);
-            await this.saveLearnedMappings();
-            loglevel_default().debug(`Learned new mapping: ${hash} -> ${text}`);
-        }
-        catch (error) {
-            loglevel_default().error("Error learning mapping:", error);
-        }
-    }
-    getMappingsCount() {
-        return {
-            remote: this.mappings?.size ?? 0,
-            learned: this.learnedMappings?.size ?? 0
-        };
-    }
-    async clearCache() {
-        const sessionCache = SessionMappingCache/* SessionMappingCache */.j.getInstance();
-        sessionCache.clearSession(this.sessionId);
-        this.mappings = null;
-        this.loading = null;
-    }
-    async clearLearnedMappings() {
-        await (0,GM/* _GM_deleteValue */.JU)(this.learnedCacheKey);
-        this.learnedMappings = new Map();
-    }
-    exportLearnedMappings() {
-        if (!this.learnedMappings) {
-            return {};
-        }
-        return Object.fromEntries(this.learnedMappings);
-    }
-    async importLearnedMappings(mappings) {
-        this.learnedMappings = new Map(Object.entries(mappings));
-        await this.saveLearnedMappings();
-        loglevel_default().debug(`Imported ${this.learnedMappings.size} learned mappings`);
-    }
-    async ensureMappingsLoaded() {
-        if (this.mappings) {
-            return;
-        }
-        if (this.loading) {
-            await this.loading;
-            return;
-        }
-        this.loading = this.loadMappings();
-        await this.loading;
-    }
-    async loadMappings() {
-        try {
-            const sessionCache = SessionMappingCache/* SessionMappingCache */.j.getInstance();
-            this.mappings = await sessionCache.getMappingsWithLoading(this.sessionId, this.domain, SessionMappingCache/* MAPPING_TYPES */.$.HASH, () => this.fetchRemoteMappings());
-            loglevel_default().debug(`Loaded ${this.mappings.size} hash mappings for session ${this.sessionId}`);
-        }
-        catch (error) {
-            loglevel_default().error("Failed to load hash mappings:", error);
-            throw error;
-        }
-    }
-    async fetchRemoteMappings() {
-        try {
-            loglevel_default().debug("Fetching hash mappings from remote");
-            const response = await (0,http/* ggetText */.bx)(this.remoteUrl);
-            if (!response) {
-                throw new Error("Empty response from remote URL");
-            }
-            const data = JSON.parse(response);
-            if (typeof data !== 'object' || !data) {
-                throw new Error("Invalid mapping data format");
-            }
-            const mappings = new Map();
-            for (const [key, value] of Object.entries(data)) {
-                if (typeof value === 'string') {
-                    mappings.set(key, value);
-                }
-                else {
-                    loglevel_default().warn(`Skipping invalid mapping entry: ${key} -> ${value} (not a string)`);
-                }
-            }
-            loglevel_default().debug(`Successfully loaded ${mappings.size} hash mappings from remote`);
-            return mappings;
-        }
-        catch (error) {
-            loglevel_default().error("Failed to fetch hash mappings:", error);
-            throw error;
-        }
-    }
-    async loadLearnedMappings() {
-        try {
-            const cached = await (0,GM/* _GM_getValue */.er)(this.learnedCacheKey);
-            if (cached) {
-                const data = JSON.parse(cached);
-                this.learnedMappings = new Map(Object.entries(data));
-                loglevel_default().debug(`Loaded ${this.learnedMappings.size} learned hash mappings from storage`);
-            }
-            else {
-                this.learnedMappings = new Map();
-            }
-        }
-        catch (error) {
-            loglevel_default().error("Failed to load learned mappings:", error);
-            this.learnedMappings = new Map();
-        }
-    }
-    async saveLearnedMappings() {
-        try {
-            if (this.learnedMappings) {
-                const data = Object.fromEntries(this.learnedMappings);
-                await (0,GM/* _GM_setValue */.mN)(this.learnedCacheKey, JSON.stringify(data));
-                loglevel_default().debug(`Saved ${this.learnedMappings.size} learned mappings to storage`);
-            }
-        }
-        catch (error) {
-            loglevel_default().error("Failed to save learned mappings:", error);
-        }
-    }
-    async generateImageHash(imageData) {
-        const blob = new Blob([imageData]);
-        return await this.imageHasher.hash(blob);
-    }
-}
-
-
-/***/ },
-
-/***/ "./src/lib/decoders/ImageCache.ts"
-(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   S: () => (/* binding */ ImageCache)
-/* harmony export */ });
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
-
-
-class ImageCache {
-    static instance = null;
-    cache = new Map();
-    maxCacheSize = 50;
-    accessOrder = [];
-    constructor() {
-    }
-    static getInstance() {
-        if (!ImageCache.instance) {
-            ImageCache.instance = new ImageCache();
-        }
-        return ImageCache.instance;
-    }
-    async getImageData(imageUrl) {
-        if (this.cache.has(imageUrl)) {
-            this.updateAccessOrder(imageUrl);
-            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Image cache hit for: ${imageUrl.substring(0, 50)}...`);
-            return this.cache.get(imageUrl);
-        }
-        try {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Downloading image for cache: ${imageUrl.substring(0, 50)}...`);
-            const response = await (0,_http__WEBPACK_IMPORTED_MODULE_1__/* .gfetch */ ._V)(imageUrl, {
-                responseType: "arraybuffer",
-                method: "GET"
-            });
-            if (response.status !== 200 || !response.response) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            const uint8Array = new Uint8Array(response.response);
-            this.cacheImageData(imageUrl, uint8Array);
-            _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Downloaded and cached image: ${uint8Array.length} bytes`);
-            return uint8Array;
-        }
-        catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_0___default().error(`Failed to download image: ${imageUrl}`, error);
-            throw error;
-        }
-    }
-    cacheImageData(imageUrl, data) {
-        if (this.cache.size >= this.maxCacheSize) {
-            const lruUrl = this.accessOrder.shift();
-            if (lruUrl) {
-                this.cache.delete(lruUrl);
-                _log__WEBPACK_IMPORTED_MODULE_0___default().debug(`Evicted LRU image from cache: ${lruUrl.substring(0, 50)}...`);
-            }
-        }
-        this.cache.set(imageUrl, data);
-        this.accessOrder.push(imageUrl);
-    }
-    updateAccessOrder(imageUrl) {
-        const index = this.accessOrder.indexOf(imageUrl);
-        if (index > -1) {
-            this.accessOrder.splice(index, 1);
-            this.accessOrder.push(imageUrl);
-        }
-    }
-    clearCache() {
-        this.cache.clear();
-        this.accessOrder.length = 0;
-        _log__WEBPACK_IMPORTED_MODULE_0___default().debug("Cleared image cache");
-    }
-    getCacheStats() {
-        return {
-            size: this.cache.size,
-            maxSize: this.maxCacheSize,
-            urls: Array.from(this.cache.keys()).map(url => url.substring(0, 50) + "...")
-        };
-    }
-}
-
-
-/***/ },
-
 /***/ "./src/lib/decoders/OCRDecoder.ts"
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
@@ -11095,10 +10556,10 @@ class OCRDecoder {
     modelCache = {};
     ppocrDict = "";
     cacheKey = "paddleocr_ch_models";
-    cacheVersion = "4.0.0";
+    cacheVersion = "4.0.0-v5-mobile";
     cacheVersionKey = "paddleocr_ch_models_version";
-    zipUrl = "https://github.com/xushengfeng/eSearch-OCR/releases/download/4.0.0/ch.zip";
-    filesToExtract = ["ppocr_keys_v1.txt", "ppocr_det.onnx", "ppocr_rec.onnx"];
+    zipUrl = "https://github.com/xushengfeng/eSearch-OCR/releases/download/4.0.0/ppocr_v5_mobile.zip";
+    filesToExtract = ["ppocrv5_dict.txt", "ppocr_v5_mobile_det.onnx", "ppocr_v5_mobile_rec.onnx"];
     constructor() {
     }
     async decode(imageData) {
@@ -11137,7 +10598,46 @@ class OCRDecoder {
             return null;
         }
         catch (error) {
-            loglevel_default().error("Error in PaddleOCR decoding:", error);
+            const errMsg = error instanceof Error
+                ? `${error.message}\n${error.stack ?? ""}`
+                : String(error);
+            loglevel_default().error(`Error in PaddleOCR decoding: ${errMsg}`);
+            throw error;
+        }
+    }
+    async decodeFullText(imageData) {
+        try {
+            await this.ensureModelLoaded();
+            if (!this.modelLoaded || !this.ocrEngine) {
+                throw new Error("PaddleOCR model not available for decoding");
+            }
+            const imageDataObj = await this.uint8ArrayToImageData(imageData);
+            if (!imageDataObj) {
+                throw new Error("Failed to convert image data for OCR");
+            }
+            const result = await this.ocrEngine.ocr(imageDataObj);
+            if (result && result.parragraphs && result.parragraphs.length > 0) {
+                const sorted = [...result.parragraphs].sort((a, b) => {
+                    const aY = a.box?.[0]?.[1] ?? a.mean ?? 0;
+                    const bY = b.box?.[0]?.[1] ?? b.mean ?? 0;
+                    return aY - bY;
+                });
+                const lines = [];
+                for (const paragraph of sorted) {
+                    const text = (paragraph.text || "").trim();
+                    if (text) {
+                        lines.push(text);
+                    }
+                }
+                return lines.join("\n");
+            }
+            return "";
+        }
+        catch (error) {
+            const errMsg = error instanceof Error
+                ? `${error.message}\n${error.stack ?? ""}`
+                : String(error);
+            loglevel_default().error(`Error in PaddleOCR full text decoding: ${errMsg}`);
             throw error;
         }
     }
@@ -11192,12 +10692,19 @@ class OCRDecoder {
             this.configureONNXRuntime();
             await this.downloadAndCacheModels();
             const dictContent = await this.loadPaddleOCRDict();
-            const detModel = this.modelCache["ppocr_det.onnx"];
-            const recModel = this.modelCache["ppocr_rec.onnx"];
+            const detModel = this.modelCache["ppocr_v5_mobile_det.onnx"];
+            const recModel = this.modelCache["ppocr_v5_mobile_rec.onnx"];
             if (!detModel || !recModel) {
                 throw new Error("Failed to download required PaddleOCR models");
             }
             loglevel_default().debug("Initializing PaddleOCR engine...");
+            try {
+                loglevel_default().debug(`[OCR] ort.env.wasm.wasmPaths: ${external_ort_namespaceObject.env.wasm.wasmPaths}`);
+                loglevel_default().debug(`[OCR] ort.env.wasm.numThreads: ${external_ort_namespaceObject.env.wasm.numThreads}`);
+                loglevel_default().debug(`[OCR] ort.env.wasm.simd: ${external_ort_namespaceObject.env.wasm.simd}`);
+                loglevel_default().debug(`[OCR] eSearchOCR type: ${typeof eSearchOCR_es_namespaceObject}, init type: ${typeof eSearchOCR_es_namespaceObject?.init}`);
+            }
+            catch (_) { }
             this.ocrEngine = await Ln({
                 det: {
                     input: await detModel.arrayBuffer(),
@@ -11207,7 +10714,7 @@ class OCRDecoder {
                     input: await recModel.arrayBuffer(),
                     decodeDic: dictContent,
                     optimize: {
-                        space: false,
+                        space: true,
                     },
                 },
                 dev: false,
@@ -11217,7 +10724,10 @@ class OCRDecoder {
             loglevel_default().debug("PaddleOCR engine initialized successfully");
         }
         catch (error) {
-            loglevel_default().error("Failed to load PaddleOCR model:", error);
+            const errMsg = error instanceof Error
+                ? `${error.message}\n${error.stack ?? ""}`
+                : String(error);
+            loglevel_default().error(`Failed to load PaddleOCR model: ${errMsg}`);
             this.modelLoaded = false;
             this.ocrEngine = null;
             throw error;
@@ -11344,7 +10854,7 @@ class OCRDecoder {
         }
         try {
             await this.downloadAndCacheModels();
-            const dictBlob = this.modelCache["ppocr_keys_v1.txt"];
+            const dictBlob = this.modelCache["ppocrv5_dict.txt"];
             if (!dictBlob) {
                 throw new Error("Dictionary not found in cached models");
             }
@@ -11372,17 +10882,23 @@ class OCRDecoder {
             if (!ctx) {
                 throw new Error("Cannot get canvas 2D context");
             }
-            const scaleX = Math.max(4, Math.ceil(120 / img.width));
-            const scaleY = Math.max(4, Math.ceil(120 / img.height));
-            const scale = Math.max(scaleX, scaleY);
-            const scaledWidth = img.width * scale;
-            const scaledHeight = img.height * scale;
+            const MIN_WIDTH = 50;
+            const MIN_HEIGHT = 20;
+            let scaledWidth = img.width;
+            let scaledHeight = img.height;
+            if (img.width < MIN_WIDTH || img.height < MIN_HEIGHT) {
+                const scaleX = Math.max(4, Math.ceil(MIN_WIDTH / img.width));
+                const scaleY = Math.max(4, Math.ceil(MIN_HEIGHT / img.height));
+                const scale = Math.max(scaleX, scaleY);
+                scaledWidth = img.width * scale;
+                scaledHeight = img.height * scale;
+                loglevel_default().debug(`Image scaled from ${img.width}x${img.height} to ${scaledWidth}x${scaledHeight} (${scale}x scale)`);
+            }
             canvas.width = scaledWidth;
             canvas.height = scaledHeight;
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(0, 0, scaledWidth, scaledHeight);
             ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
-            loglevel_default().debug(`Image scaled from ${img.width}x${img.height} to ${scaledWidth}x${scaledHeight} (${scale}x scale)`);
             const imageData = ctx.getImageData(0, 0, scaledWidth, scaledHeight);
             URL.revokeObjectURL(img.src);
             return imageData;
@@ -12859,7 +12375,12 @@ isNull:${!this.contentHTML} 解析成功。`);
     }
     async parse() {
         this.status = _main__WEBPACK_IMPORTED_MODULE_3__/* .Status */ .nW.downloading;
-        return this.chapterParse(this.chapterUrl, this.chapterName, this.isVIP, this.isPaid, this.charset, this.options)
+        const timeoutMs = 10 * 60 * 1000;
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error(`[Chapter]${this.chapterName ?? "未知章节"}解析超时（${timeoutMs / 1000}秒）`)), timeoutMs));
+        return Promise.race([
+            this.chapterParse(this.chapterUrl, this.chapterName, this.isVIP, this.isPaid, this.charset, this.options),
+            timeoutPromise,
+        ])
             .then(async (obj) => {
             const contentImages = obj.contentImages;
             if (contentImages) {
@@ -37318,10 +36839,7 @@ class po18 extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
 /* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Chapter.ts");
 /* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/main/Book.ts");
 /* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _lib_decoders_FilenameDecoder__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("./src/lib/decoders/FilenameDecoder.ts");
-/* harmony import */ var _lib_decoders_HashDecoder__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__("./src/lib/decoders/HashDecoder.ts");
-/* harmony import */ var _lib_decoders_OCRDecoder__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__("./src/lib/decoders/OCRDecoder.ts");
-/* harmony import */ var _lib_decoders_ImageCache__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__("./src/lib/decoders/ImageCache.ts");
+/* harmony import */ var _lib_decoders_OCRDecoder__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("./src/lib/decoders/OCRDecoder.ts");
 
 
 
@@ -37334,100 +36852,486 @@ class po18 extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
 
 
 
-
-
-
-class QidianImageDecoder {
-    filenameDecoder;
-    hashDecoder;
-    ocrDecoder;
-    mappingCache = {};
-    failedImages = [];
-    PLACEHOLDER_CHAR = "▢";
-    constructor() {
-        this.filenameDecoder = new _lib_decoders_FilenameDecoder__WEBPACK_IMPORTED_MODULE_11__/* .FilenameDecoder */ .u("www.qidian.com");
-        this.hashDecoder = new _lib_decoders_HashDecoder__WEBPACK_IMPORTED_MODULE_12__/* .HashDecoder */ .J("www.qidian.com");
-        this.ocrDecoder = new _lib_decoders_OCRDecoder__WEBPACK_IMPORTED_MODULE_13__/* .OCRDecoder */ .T();
-    }
-    async init() {
-        _log__WEBPACK_IMPORTED_MODULE_6___default().debug("[QidianImageDecoder] Decoder initialized");
-    }
-    async close() {
-        this.mappingCache = {};
-        await this.ocrDecoder.close();
-        const imageCache = _lib_decoders_ImageCache__WEBPACK_IMPORTED_MODULE_14__/* .ImageCache */ .S.getInstance();
-        imageCache.clearCache();
-        if (this.failedImages.length > 0) {
-            _log__WEBPACK_IMPORTED_MODULE_6___default().warn(`[QidianImageDecoder] ${this.failedImages.length} images failed to decode:`);
-            this.failedImages.forEach((url, index) => {
-                _log__WEBPACK_IMPORTED_MODULE_6___default().warn(`  ${index + 1}. ${url}`);
-            });
-            _log__WEBPACK_IMPORTED_MODULE_6___default().warn(`These images were replaced with placeholder character: "${this.PLACEHOLDER_CHAR}"`);
+async function ocrContent(contentMain) {
+    try {
+        const ownerDoc = contentMain.ownerDocument;
+        const ownerWin = ownerDoc?.defaultView;
+        if (!ownerWin) {
+            _log__WEBPACK_IMPORTED_MODULE_6___default().error("[QidianOCR] No window available for content document");
+            return null;
         }
-        _log__WEBPACK_IMPORTED_MODULE_6___default().debug("[QidianImageDecoder] Decoder closed and image cache cleared");
-    }
-    async decodeImage(imageUrl) {
-        if (this.mappingCache[imageUrl]) {
-            return this.mappingCache[imageUrl];
+        if (ownerWin.document.fonts) {
+            await ownerWin.document.fonts.ready;
+            _log__WEBPACK_IMPORTED_MODULE_6___default().info("[QidianOCR] Fonts ready in content document");
         }
+        const contentStyle = ownerWin.getComputedStyle(contentMain);
+        const fontFamily = contentStyle.fontFamily || "sans-serif";
+        _log__WEBPACK_IMPORTED_MODULE_6___default().info(`[QidianOCR] Content font-family: ${fontFamily.substring(0, 80)}`);
+        const paragraphs = contentMain.querySelectorAll("p");
+        if (paragraphs.length === 0) {
+            _log__WEBPACK_IMPORTED_MODULE_6___default().warn("[QidianOCR] No paragraphs found in contentMain");
+            return null;
+        }
+        const pseudoRules = collectPseudoContentRules(ownerDoc);
+        _log__WEBPACK_IMPORTED_MODULE_6___default().info(`[QidianOCR] Collected ${pseudoRules.length} pseudo content rules`);
+        const paraTexts = [];
+        for (const p of Array.from(paragraphs)) {
+            const text = extractRenderedText(p, ownerWin, pseudoRules);
+            paraTexts.push(text);
+        }
+        const allText = paraTexts.join("");
+        const uniqueChars = [...new Set(allText)].filter((ch) => {
+            const code = ch.charCodeAt(0);
+            return (code >= 0x4E00 && code <= 0x9FA5) || (code >= 0x3400 && code <= 0x4DB5);
+        });
+        if (uniqueChars.length === 0) {
+            _log__WEBPACK_IMPORTED_MODULE_6___default().warn("[QidianOCR] No CJK characters found in extracted text");
+            return null;
+        }
+        _log__WEBPACK_IMPORTED_MODULE_6___default().info(`[QidianOCR] ${paraTexts.filter((t) => t.trim()).length} paragraphs, ${uniqueChars.length} unique CJK chars`);
+        const decodeMap = await buildFontDecodeMap(ownerDoc, ownerWin, fontFamily, uniqueChars);
+        if (decodeMap.size === 0) {
+            _log__WEBPACK_IMPORTED_MODULE_6___default().error("[QidianOCR] Failed to build font decode map");
+            return null;
+        }
+        _log__WEBPACK_IMPORTED_MODULE_6___default().info(`[QidianOCR] Decode map: ${decodeMap.size}/${uniqueChars.length} chars mapped`);
+        const allDecoded = [];
+        for (const text of paraTexts) {
+            if (!text.trim())
+                continue;
+            const decoded = [...text].map((ch) => decodeMap.get(ch) || ch).join("");
+            const trimmed = decoded.trim();
+            if (trimmed) {
+                allDecoded.push(trimmed);
+            }
+        }
+        if (allDecoded.length === 0) {
+            _log__WEBPACK_IMPORTED_MODULE_6___default().error("[QidianOCR] No decoded paragraphs produced");
+            return null;
+        }
+        const fullText = allDecoded.join("\n");
+        _log__WEBPACK_IMPORTED_MODULE_6___default().info(`[QidianOCR] Decoded: ${fullText.length} chars from ${allDecoded.length} paragraphs`);
+        const contentHTML = document.createElement("div");
+        for (const line of allDecoded) {
+            const pEl = document.createElement("p");
+            pEl.textContent = line;
+            contentHTML.appendChild(pEl);
+        }
+        return { contentText: fullText, contentHTML };
+    }
+    catch (e) {
+        _log__WEBPACK_IMPORTED_MODULE_6___default().error(`[QidianOCR] Error: ${e instanceof Error ? `${e.message}\n${e.stack}` : String(e)}`);
+        return null;
+    }
+}
+async function buildFontDecodeMap(ownerDoc, ownerWin, fontFamily, uniqueChars) {
+    const map = new Map();
+    const ocrDecoder = new _lib_decoders_OCRDecoder__WEBPACK_IMPORTED_MODULE_11__/* .OCRDecoder */ .T();
+    try {
+        const BATCH_SIZE = 30;
+        const CHAR_SIZE = 48;
+        const ROW_HEIGHT = 64;
+        const PADDING = 16;
+        const CANVAS_WIDTH = CHAR_SIZE + PADDING * 2;
+        const SCALE = 2;
+        const canvas = ownerDoc.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        for (let i = 0; i < uniqueChars.length; i += BATCH_SIZE) {
+            const batch = uniqueChars.slice(i, i + BATCH_SIZE);
+            const canvasHeight = batch.length * ROW_HEIGHT + PADDING * 2;
+            canvas.width = CANVAS_WIDTH * SCALE;
+            canvas.height = canvasHeight * SCALE;
+            ctx.setTransform(SCALE, 0, 0, SCALE, 0, 0);
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, CANVAS_WIDTH, canvasHeight);
+            ctx.font = `${CHAR_SIZE}px ${fontFamily}`;
+            ctx.fillStyle = "black";
+            ctx.textBaseline = "middle";
+            ctx.textAlign = "center";
+            for (let j = 0; j < batch.length; j++) {
+                const x = CANVAS_WIDTH / 2;
+                const y = PADDING + j * ROW_HEIGHT + ROW_HEIGHT / 2;
+                ctx.fillText(batch[j], x, y);
+            }
+            const pngData = canvasToUint8Array(canvas);
+            const ocrText = await ocrDecoder.decodeFullText(pngData);
+            const ocrChars = [...ocrText.replace(/[\s\n\r]/g, "")];
+            if (ocrChars.length === batch.length) {
+                for (let j = 0; j < batch.length; j++) {
+                    map.set(batch[j], ocrChars[j]);
+                }
+            }
+            else {
+                _log__WEBPACK_IMPORTED_MODULE_6___default().warn(`[QidianFont] Batch ${i}: expected ${batch.length} chars, got ${ocrChars.length}. Falling back to per-char OCR.`);
+                for (const ch of batch) {
+                    if (map.has(ch))
+                        continue;
+                    const single = await ocrSingleChar(canvas, ctx, ch, fontFamily, CHAR_SIZE, SCALE, ocrDecoder);
+                    if (single) {
+                        map.set(ch, single);
+                    }
+                }
+            }
+            if ((i + BATCH_SIZE) % 150 === 0 || i + BATCH_SIZE >= uniqueChars.length) {
+                _log__WEBPACK_IMPORTED_MODULE_6___default().info(`[QidianFont] Mapping: ${Math.min(i + BATCH_SIZE, uniqueChars.length)}/${uniqueChars.length}`);
+            }
+        }
+        canvas.width = 0;
+        canvas.height = 0;
+        return map;
+    }
+    catch (e) {
+        _log__WEBPACK_IMPORTED_MODULE_6___default().error(`[QidianFont] Error building decode map: ${e instanceof Error ? e.message : String(e)}`);
+        return map;
+    }
+    finally {
+        await ocrDecoder.close();
+    }
+}
+async function ocrSingleChar(canvas, ctx, ch, fontFamily, charSize, scale, ocrDecoder) {
+    const SIZE = charSize + 32;
+    canvas.width = SIZE * scale;
+    canvas.height = SIZE * scale;
+    ctx.setTransform(scale, 0, 0, scale, 0, 0);
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, SIZE, SIZE);
+    ctx.font = `${charSize}px ${fontFamily}`;
+    ctx.fillStyle = "black";
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "center";
+    ctx.fillText(ch, SIZE / 2, SIZE / 2);
+    try {
+        const pngData = canvasToUint8Array(canvas);
+        const result = await ocrDecoder.decode(pngData);
+        return result?.text || null;
+    }
+    catch {
+        return null;
+    }
+}
+function extractRenderedText(element, ownerWin, pseudoRules) {
+    const parts = [];
+    collectRenderedText(element, ownerWin, pseudoRules, parts);
+    return parts.join("");
+}
+function collectRenderedText(node, ownerWin, pseudoRules, parts) {
+    if (node.nodeType === Node.TEXT_NODE) {
+        const parent = node.parentElement;
+        if (!parent)
+            return;
+        const style = ownerWin.getComputedStyle(parent);
+        if (isHiddenStyle(style))
+            return;
+        const text = normalizeRenderedText(node.textContent || "");
+        if (text)
+            parts.push(text);
+        return;
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE)
+        return;
+    const element = node;
+    if (["SCRIPT", "STYLE", "NOSCRIPT"].includes(element.tagName))
+        return;
+    const style = ownerWin.getComputedStyle(element);
+    if (isHiddenStyle(style))
+        return;
+    pushPseudoText(element, ownerWin, pseudoRules, "::before", parts);
+    const childNodes = Array.from(element.childNodes);
+    if (style.display === "flex" || style.display === "inline-flex") {
+        const ordered = [];
+        for (let i = 0; i < childNodes.length; i++) {
+            const child = childNodes[i];
+            let order = 0;
+            if (child.nodeType === Node.ELEMENT_NODE) {
+                const childStyle = ownerWin.getComputedStyle(child);
+                order = parseInt(childStyle.order, 10) || 0;
+            }
+            ordered.push({ node: child, order, domIndex: i });
+        }
+        ordered.sort((a, b) => a.order - b.order || a.domIndex - b.domIndex);
+        for (const entry of ordered) {
+            collectRenderedText(entry.node, ownerWin, pseudoRules, parts);
+        }
+    }
+    else {
+        for (const child of childNodes) {
+            collectRenderedText(child, ownerWin, pseudoRules, parts);
+        }
+    }
+    pushPseudoText(element, ownerWin, pseudoRules, "::after", parts);
+}
+function pushPseudoText(element, ownerWin, pseudoRules, pseudo, parts) {
+    const style = ownerWin.getComputedStyle(element, pseudo);
+    if (isHiddenStyle(style))
+        return;
+    const text = resolvePseudoContentFromRules(element, pseudo, pseudoRules)
+        || parsePseudoContent(style.content);
+    if (text)
+        parts.push(text);
+}
+function isHiddenStyle(style) {
+    return (style.display === "none" ||
+        style.visibility === "hidden" ||
+        style.visibility === "collapse" ||
+        style.opacity === "0");
+}
+function parsePseudoContent(content) {
+    const trimmed = content.trim();
+    if (!trimmed || trimmed === "none" || trimmed === "normal") {
+        return "";
+    }
+    const matches = [...trimmed.matchAll(/"((?:\\.|[^"])*)"|'((?:\\.|[^'])*)'/g)];
+    if (matches.length > 0) {
+        return matches
+            .map((match) => decodeCssString(match[1] ?? match[2] ?? ""))
+            .join("");
+    }
+    return decodeCssString(trimmed);
+}
+function collectPseudoContentRules(doc) {
+    const results = [];
+    let order = 0;
+    for (const styleSheet of Array.from(doc.styleSheets)) {
         try {
-            const filename = this.getFilenameFromUrl(imageUrl);
-            const filenameChar = await this.filenameDecoder.decodeFromFilename(filename);
-            if (filenameChar) {
-                _log__WEBPACK_IMPORTED_MODULE_6___default().debug(`[QidianImageDecoder] Filename match: ${filename} -> ${filenameChar}`);
-                this.mappingCache[imageUrl] = filenameChar;
-                return filenameChar;
-            }
-            const imageData = await this.downloadImageData(imageUrl);
-            const hashChar = await this.hashDecoder.decode(imageData);
-            if (hashChar) {
-                _log__WEBPACK_IMPORTED_MODULE_6___default().debug(`[QidianImageDecoder] Hash match: ${filename} -> "${hashChar}"`);
-                this.mappingCache[imageUrl] = hashChar;
-                return hashChar;
-            }
-            const ocrResult = await this.ocrDecoder.decode(imageData);
-            if (ocrResult && ocrResult.confidence >= 0.90) {
-                const ocrChar = ocrResult.text;
-                _log__WEBPACK_IMPORTED_MODULE_6___default().debug(`[QidianImageDecoder] OCR success: ${filename} (${imageUrl}) -> "${ocrChar}" (confidence: ${Math.round(ocrResult.confidence * 100)}%)`);
-                try {
-                    await this.hashDecoder.learnMapping(imageData, ocrChar);
-                    await this.filenameDecoder.learnMapping(filename, ocrChar);
-                    _log__WEBPACK_IMPORTED_MODULE_6___default().debug(`[QidianImageDecoder] Learned both hash and filename mappings for: ${filename} -> "${ocrChar}"`);
-                }
-                catch (learningError) {
-                    _log__WEBPACK_IMPORTED_MODULE_6___default().warn(`[QidianImageDecoder] Failed to learn mappings for ${filename}:`, learningError);
-                }
-                this.mappingCache[imageUrl] = ocrChar;
-                return ocrChar;
-            }
-            else if (ocrResult) {
-                _log__WEBPACK_IMPORTED_MODULE_6___default().error(`[QidianImageDecoder] OCR confidence too low: ${Math.round(ocrResult.confidence * 100)}% < 90% for ${filename}`);
-            }
-            _log__WEBPACK_IMPORTED_MODULE_6___default().warn(`[QidianImageDecoder] All decoding methods failed for: ${imageUrl}`);
-            this.failedImages.push(imageUrl);
-            this.mappingCache[imageUrl] = this.PLACEHOLDER_CHAR;
-            return this.PLACEHOLDER_CHAR;
+            collectPseudoContentRulesFromRuleList(styleSheet.cssRules, results, () => order++);
         }
-        catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_6___default().error(`[QidianImageDecoder] Error during decoding process for ${imageUrl}:`, error);
-            this.failedImages.push(imageUrl);
-            this.mappingCache[imageUrl] = this.PLACEHOLDER_CHAR;
-            return this.PLACEHOLDER_CHAR;
+        catch {
         }
     }
-    getFilenameFromUrl(url) {
-        return url.split("/").pop() || "";
+    return results;
+}
+function collectPseudoContentRulesFromRuleList(ruleList, results, nextOrder) {
+    for (const rule of Array.from(ruleList)) {
+        if (rule instanceof CSSStyleRule) {
+            const content = rule.style.getPropertyValue("content").trim();
+            if (!content)
+                continue;
+            for (const entry of splitPseudoSelectors(rule.selectorText)) {
+                results.push({
+                    selector: entry.selector,
+                    pseudo: entry.pseudo,
+                    content,
+                    important: rule.style.getPropertyPriority("content") === "important",
+                    specificity: getSelectorSpecificity(entry.selector),
+                    order: nextOrder(),
+                });
+            }
+            continue;
+        }
+        if (rule instanceof CSSMediaRule ||
+            rule instanceof CSSSupportsRule) {
+            collectPseudoContentRulesFromRuleList(rule.cssRules, results, nextOrder);
+            continue;
+        }
+        if (rule instanceof CSSImportRule && rule.styleSheet?.cssRules) {
+            try {
+                collectPseudoContentRulesFromRuleList(rule.styleSheet.cssRules, results, nextOrder);
+            }
+            catch {
+            }
+        }
     }
-    async downloadImageData(imageUrl) {
-        const imageCache = _lib_decoders_ImageCache__WEBPACK_IMPORTED_MODULE_14__/* .ImageCache */ .S.getInstance();
-        return await imageCache.getImageData(imageUrl);
+}
+function splitPseudoSelectors(selectorText) {
+    const selectors = splitSelectorList(selectorText);
+    const results = [];
+    for (const selector of selectors) {
+        const trimmed = selector.trim();
+        const pseudoMatch = trimmed.match(/::?(before|after)(?![\w-])/i);
+        if (!pseudoMatch)
+            continue;
+        const pseudo = pseudoMatch[1].toLowerCase() === "before" ? "::before" : "::after";
+        const baseSelector = trimmed.replace(/::?(before|after)(?![\w-])/ig, "").trim();
+        if (!baseSelector)
+            continue;
+        results.push({ selector: baseSelector, pseudo });
     }
-    getFailedImagesCount() {
-        return this.failedImages.length;
+    return results;
+}
+function splitSelectorList(selectorText) {
+    const selectors = [];
+    let current = "";
+    let roundDepth = 0;
+    let squareDepth = 0;
+    let quote = null;
+    for (let i = 0; i < selectorText.length; i++) {
+        const ch = selectorText[i];
+        const prev = selectorText[i - 1];
+        if (quote) {
+            current += ch;
+            if (ch === quote && prev !== "\\") {
+                quote = null;
+            }
+            continue;
+        }
+        if (ch === '"' || ch === "'") {
+            quote = ch;
+            current += ch;
+            continue;
+        }
+        if (ch === "(")
+            roundDepth++;
+        if (ch === ")")
+            roundDepth = Math.max(0, roundDepth - 1);
+        if (ch === "[")
+            squareDepth++;
+        if (ch === "]")
+            squareDepth = Math.max(0, squareDepth - 1);
+        if (ch === "," && roundDepth === 0 && squareDepth === 0) {
+            if (current.trim())
+                selectors.push(current.trim());
+            current = "";
+            continue;
+        }
+        current += ch;
     }
-    getPlaceholderChar() {
-        return this.PLACEHOLDER_CHAR;
+    if (current.trim())
+        selectors.push(current.trim());
+    return selectors;
+}
+function getSelectorSpecificity(selector) {
+    const idCount = (selector.match(/#[\w-]+/g) || []).length;
+    const classCount = (selector.match(/\.[\w-]+/g) || []).length
+        + (selector.match(/\[[^\]]+\]/g) || []).length
+        + (selector.match(/:(?!:)[\w-]+(?:\([^)]*\))?/g) || []).length;
+    const elementCount = (selector.match(/(^|[\s>+~])([a-zA-Z][\w-]*)/g) || []).length;
+    return [idCount, classCount, elementCount];
+}
+function resolvePseudoContentFromRules(element, pseudo, rules) {
+    const matched = rules.filter((rule) => {
+        if (rule.pseudo !== pseudo)
+            return false;
+        try {
+            return element.matches(rule.selector);
+        }
+        catch {
+            return false;
+        }
+    });
+    if (matched.length === 0) {
+        return "";
     }
+    matched.sort((left, right) => {
+        if (left.important !== right.important) {
+            return left.important ? 1 : -1;
+        }
+        for (let i = 0; i < left.specificity.length; i++) {
+            if (left.specificity[i] !== right.specificity[i]) {
+                return left.specificity[i] - right.specificity[i];
+            }
+        }
+        return left.order - right.order;
+    });
+    const rule = matched[matched.length - 1];
+    return evaluatePseudoContent(rule.content, element);
+}
+function evaluatePseudoContent(content, element) {
+    const trimmed = content.trim();
+    if (!trimmed || trimmed === "none" || trimmed === "normal") {
+        return "";
+    }
+    let result = "";
+    let hasSupportedToken = false;
+    for (const token of tokenizeContentValue(trimmed)) {
+        if (token.type === "string") {
+            result += decodeCssString(token.value);
+            hasSupportedToken = true;
+            continue;
+        }
+        if (token.type === "function" && token.name === "attr") {
+            const attrName = token.value.trim().split(/\s+/)[0];
+            if (attrName) {
+                result += element.getAttribute(attrName) || "";
+                hasSupportedToken = true;
+            }
+        }
+    }
+    return hasSupportedToken ? result : "";
+}
+function tokenizeContentValue(content) {
+    const tokens = [];
+    let index = 0;
+    while (index < content.length) {
+        const ch = content[index];
+        if (/\s/.test(ch)) {
+            index++;
+            continue;
+        }
+        if (ch === '"' || ch === "'") {
+            const quote = ch;
+            let value = "";
+            index++;
+            while (index < content.length) {
+                const current = content[index];
+                if (current === quote && content[index - 1] !== "\\") {
+                    index++;
+                    break;
+                }
+                value += current;
+                index++;
+            }
+            tokens.push({ type: "string", value });
+            continue;
+        }
+        const identMatch = content.slice(index).match(/^[a-zA-Z-]+/);
+        if (!identMatch) {
+            index++;
+            continue;
+        }
+        const name = identMatch[0];
+        index += name.length;
+        if (content[index] === "(") {
+            let depth = 1;
+            let value = "";
+            index++;
+            while (index < content.length && depth > 0) {
+                const current = content[index];
+                const prev = content[index - 1];
+                if (current === "(" && prev !== "\\") {
+                    depth++;
+                }
+                else if (current === ")" && prev !== "\\") {
+                    depth--;
+                    if (depth === 0) {
+                        index++;
+                        break;
+                    }
+                }
+                if (depth > 0) {
+                    value += current;
+                }
+                index++;
+            }
+            tokens.push({ type: "function", name: name.toLowerCase(), value });
+            continue;
+        }
+        tokens.push({ type: "word", value: name.toLowerCase() });
+    }
+    return tokens;
+}
+function decodeCssString(value) {
+    return value
+        .replace(/\\([0-9a-fA-F]{1,6})\s?/g, (_, hex) => {
+        const codePoint = Number.parseInt(hex, 16);
+        return Number.isNaN(codePoint) ? "" : String.fromCodePoint(codePoint);
+    })
+        .replace(/\\([\\"'])/g, "$1")
+        .replace(/\\n/g, "\n")
+        .replace(/\\r/g, "\r")
+        .replace(/\\t/g, "\t");
+}
+function normalizeRenderedText(text) {
+    return text.replace(/\u200b/g, "");
+}
+function canvasToUint8Array(canvas) {
+    const dataUrl = canvas.toDataURL("image/png");
+    const base64 = dataUrl.split(",")[1];
+    const binaryString = atob(base64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes;
 }
 class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_10__/* .BaseRuleClass */ .Q {
     constructor() {
@@ -37700,33 +37604,20 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_10__/* .BaseRuleClass */ .Q
             contentImages: null,
             additionalMetadate: null,
         };
-        const decoder = new QidianImageDecoder();
-        await decoder.init();
-        try {
-            return await getChapter();
-        }
-        finally {
-            await decoder.close();
-        }
         async function getChapter() {
             let doc;
+            let html = null;
             if (isVIP) {
-                doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
-                if (!doc.querySelector(".content-text") ||
-                    (doc.querySelector(".content-text")?.childElementCount ?? 0) < 10) {
-                    doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getFrameContentCondition */ .eF)(chapterUrl, (frame) => {
-                        const doc = frame.contentWindow?.document ?? null;
-                        if (doc) {
-                            return doc.querySelectorAll(".content-text").length !== 0;
-                        }
-                        else {
-                            return false;
-                        }
-                    });
+                html = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .getFrameContentConditionWithWindow */ .Q2)(chapterUrl, (frame) => {
+                    const doc = frame.contentWindow?.document ?? null;
                     if (doc) {
-                        doc = new DOMParser().parseFromString(doc.documentElement.outerHTML, "text/html");
+                        return doc.querySelectorAll(".content-text").length !== 0;
                     }
-                }
+                    else {
+                        return false;
+                    }
+                });
+                doc = html?.contentWindow?.document ?? null;
             }
             else {
                 doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
@@ -37739,10 +37630,51 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_10__/* .BaseRuleClass */ .Q
                 const content = document.createElement("div");
                 let contentText = "";
                 const contentMain = doc.querySelector("main");
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("span.review-count", true, contentMain);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("span.review", true, contentMain);
                 const authorSayWrap = doc.querySelector("#r-authorSay");
                 if (contentMain) {
-                    await processCharacterImages(contentMain, decoder);
+                    if (isVIP) {
+                        _log__WEBPACK_IMPORTED_MODULE_6___default().info(`[Qidian] VIP chapter, using rendered-text OCR`);
+                        const ocrResult = await ocrContent(contentMain);
+                        if (ocrResult) {
+                            contentText = ocrResult.contentText;
+                            content.appendChild(ocrResult.contentHTML);
+                            if (authorSayWrap) {
+                                const authorSay = authorSayWrap.querySelector("div");
+                                if (authorSay) {
+                                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("a.avatar", false, authorSay);
+                                    (0,_lib_dom__WEBPACK_IMPORTED_MODULE_4__.rm)("h4", false, authorSay);
+                                    const { dom: authorDom, text: authorText, images: authorImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(authorSayWrap, "TM");
+                                    (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .htmlTrim */ .is)(authorDom);
+                                    authorDom.className = "authorSay";
+                                    const hr = document.createElement("hr");
+                                    content.appendChild(hr);
+                                    content.appendChild(authorSay);
+                                    contentText =
+                                        contentText + "\n\n" + "-".repeat(10) + "\n\n" + authorText;
+                                    html?.remove();
+                                    return {
+                                        chapterName,
+                                        contentRaw: content,
+                                        contentText,
+                                        contentHTML: content,
+                                        contentImages: authorImages,
+                                        additionalMetadate: null,
+                                    };
+                                }
+                            }
+                            html?.remove();
+                            return {
+                                chapterName,
+                                contentRaw: content,
+                                contentText,
+                                contentHTML: content,
+                                contentImages: [],
+                                additionalMetadate: null,
+                            };
+                        }
+                        _log__WEBPACK_IMPORTED_MODULE_6___default().warn("[Qidian] Rendered-text OCR failed, falling back to normal processing");
+                    }
                     const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(contentMain, "TM");
                     (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .htmlTrim */ .is)(dom);
                     content.appendChild(dom);
@@ -37764,10 +37696,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_10__/* .BaseRuleClass */ .Q
                             images.push(...authorImages);
                         }
                     }
-                    const failedCount = decoder.getFailedImagesCount();
-                    if (failedCount > 0) {
-                        _log__WEBPACK_IMPORTED_MODULE_6___default().warn(`[Qidian] Chapter "${chapterName}" has ${failedCount} failed image(s) replaced with "${decoder.getPlaceholderChar()}"`);
-                    }
+                    html?.remove();
                     return {
                         chapterName,
                         contentRaw: content,
@@ -37780,52 +37709,7 @@ class Qidian extends _rules__WEBPACK_IMPORTED_MODULE_10__/* .BaseRuleClass */ .Q
             }
             return nullObj;
         }
-    }
-}
-async function processCharacterImages(content, decoder) {
-    const images = content.querySelectorAll("img");
-    for (const img of Array.from(images)) {
-        try {
-            const parentElement = img.parentElement;
-            const isInlineImage = parentElement?.tagName === "P" ||
-                parentElement?.closest("p") !== null;
-            const hasImgClass = img.classList.contains("lazy") ||
-                img.classList.contains("content-image");
-            if (img.classList.contains("avatar") ||
-                img.classList.contains("review-count") ||
-                img.alt && img.alt.length > 2) {
-                continue;
-            }
-            if (!isInlineImage && !hasImgClass) {
-                const isInTextContainer = img.closest("p, span, div.content-text");
-                if (!isInTextContainer) {
-                    continue;
-                }
-            }
-            let imageUrl = img.src;
-            if (!imageUrl || imageUrl.startsWith("data:")) {
-                continue;
-            }
-            if (imageUrl.startsWith("http://")) {
-                imageUrl = imageUrl.replace("http://", "https://");
-            }
-            const decodedText = await decoder.decodeImage(imageUrl);
-            if (decodedText !== decoder.getPlaceholderChar()) {
-                const textNode = document.createTextNode(decodedText);
-                img.parentNode?.replaceChild(textNode, img);
-                _log__WEBPACK_IMPORTED_MODULE_6___default().debug(`[Qidian] Decoded character image: ${imageUrl.substring(0, 60)}... -> "${decodedText}"`);
-            }
-            else {
-                const textNode = document.createTextNode(decodedText);
-                img.parentNode?.replaceChild(textNode, img);
-                _log__WEBPACK_IMPORTED_MODULE_6___default().debug(`[Qidian] Image decoding failed, using placeholder: ${imageUrl.substring(0, 60)}...`);
-            }
-        }
-        catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_6___default().error("[Qidian] Unexpected error during image processing:", img.src, error);
-            const textNode = document.createTextNode(decoder.getPlaceholderChar());
-            img.parentNode?.replaceChild(textNode, img);
-        }
+        return getChapter();
     }
 }
 
@@ -43086,25 +42970,531 @@ class Ttkan extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Xiguashuwu: () => (/* binding */ Xiguashuwu)
-/* harmony export */ });
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_decoders_FilenameDecoder__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/decoders/FilenameDecoder.ts");
-/* harmony import */ var _lib_decoders_HashDecoder__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("./src/lib/decoders/HashDecoder.ts");
-/* harmony import */ var _lib_decoders_OCRDecoder__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("./src/lib/decoders/OCRDecoder.ts");
-/* harmony import */ var _lib_decoders_ImageCache__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__("./src/lib/decoders/ImageCache.ts");
-/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__("crypto-js");
-/* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_13__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  Xiguashuwu: () => (/* binding */ Xiguashuwu)
+});
+
+// EXTERNAL MODULE: ./src/lib/cleanDOM.ts
+var cleanDOM = __webpack_require__("./src/lib/cleanDOM.ts");
+// EXTERNAL MODULE: ./src/lib/http.ts
+var http = __webpack_require__("./src/lib/http.ts");
+// EXTERNAL MODULE: ./src/lib/dom.ts
+var dom = __webpack_require__("./src/lib/dom.ts");
+// EXTERNAL MODULE: ./src/lib/rule.ts
+var rule = __webpack_require__("./src/lib/rule.ts");
+// EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
+var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
+// EXTERNAL MODULE: ./src/main/Chapter.ts
+var Chapter = __webpack_require__("./src/main/Chapter.ts");
+// EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
+var Book = __webpack_require__("./src/main/Book.ts");
+// EXTERNAL MODULE: ./src/rules.ts + 11 modules
+var rules = __webpack_require__("./src/rules.ts");
+// EXTERNAL MODULE: ./src/lib/attachments.ts + 1 modules
+var attachments = __webpack_require__("./src/lib/attachments.ts");
+// EXTERNAL MODULE: ./src/lib/GM.ts
+var GM = __webpack_require__("./src/lib/GM.ts");
+// EXTERNAL MODULE: ./src/lib/SessionMappingCache.ts
+var SessionMappingCache = __webpack_require__("./src/lib/SessionMappingCache.ts");
+;// ./src/lib/decoders/FilenameDecoder.ts
+
+
+
+
+class FilenameDecoder {
+    domain;
+    remoteUrl;
+    learnedCacheKey;
+    sessionId;
+    mappings = null;
+    learnedMappings = null;
+    loading = null;
+    constructor(domain, sessionId) {
+        if (!domain) {
+            throw new Error("Domain name is required for FilenameDecoder initialization");
+        }
+        this.domain = domain;
+        this.sessionId = sessionId || window.workerId;
+        this.remoteUrl = `https://fastly.jsdelivr.net/gh/404-novel-project/novel-downloader-image-to-text-mapping@master/filename-mappings/${domain}.min.json`;
+        this.learnedCacheKey = `filename-mappings-learned-${domain}`;
+        this.loadLearnedMappings().catch(error => {
+            loglevel_default().error("Failed to initialize learned mappings:", error);
+        });
+        loglevel_default().debug(`FilenameDecoder initialized for domain: ${domain}, session: ${this.sessionId}`);
+    }
+    async decode(imageData) {
+        loglevel_default().warn("FilenameDecoder.decode() called with imageData - this decoder requires filename context from URL");
+        return null;
+    }
+    async decodeFromFilename(filename) {
+        try {
+            await this.ensureMappingsLoaded();
+            if (this.mappings?.has(filename)) {
+                const character = this.mappings.get(filename);
+                loglevel_default().debug(`Decoded character from server mappings: ${character} for filename: ${filename}`);
+                return character;
+            }
+            if (this.learnedMappings?.has(filename)) {
+                const character = this.learnedMappings.get(filename);
+                loglevel_default().debug(`Decoded character from learned mappings: ${character} for filename: ${filename}`);
+                return character;
+            }
+            loglevel_default().debug(`No character mapping found for filename: ${filename}`);
+            return null;
+        }
+        catch (error) {
+            loglevel_default().error("Error in filename decoding:", error);
+            return null;
+        }
+    }
+    getMappingsCount() {
+        return {
+            remote: this.mappings?.size ?? 0,
+            learned: this.learnedMappings?.size ?? 0
+        };
+    }
+    async clearCache() {
+        const sessionCache = SessionMappingCache/* SessionMappingCache */.j.getInstance();
+        sessionCache.clearSession(this.sessionId);
+        this.mappings = null;
+        this.loading = null;
+    }
+    async ensureMappingsLoaded() {
+        if (this.mappings) {
+            return;
+        }
+        if (this.loading) {
+            await this.loading;
+            return;
+        }
+        this.loading = this.loadMappings();
+        await this.loading;
+    }
+    async loadMappings() {
+        try {
+            const sessionCache = SessionMappingCache/* SessionMappingCache */.j.getInstance();
+            this.mappings = await sessionCache.getMappingsWithLoading(this.sessionId, this.domain, SessionMappingCache/* MAPPING_TYPES */.$.FILENAME, () => this.fetchRemoteMappings());
+            loglevel_default().debug(`Loaded ${this.mappings.size} filename mappings for session ${this.sessionId}`);
+        }
+        catch (error) {
+            loglevel_default().error("Failed to load filename mappings:", error);
+            throw error;
+        }
+    }
+    async fetchRemoteMappings() {
+        try {
+            loglevel_default().debug("Fetching filename mappings from remote");
+            const response = await (0,http/* ggetText */.bx)(this.remoteUrl);
+            if (!response) {
+                throw new Error("Empty response from remote URL");
+            }
+            const data = JSON.parse(response);
+            if (typeof data !== 'object' || !data) {
+                throw new Error("Invalid mapping data format");
+            }
+            const mappings = new Map();
+            for (const [key, value] of Object.entries(data)) {
+                if (typeof value === 'string') {
+                    mappings.set(key, value);
+                }
+                else {
+                    loglevel_default().warn(`Skipping invalid mapping entry: ${key} -> ${value} (not a string)`);
+                }
+            }
+            loglevel_default().debug(`Successfully loaded ${mappings.size} filename mappings from remote`);
+            return mappings;
+        }
+        catch (error) {
+            loglevel_default().error("Failed to fetch filename mappings:", error);
+            throw error;
+        }
+    }
+    async loadLearnedMappings() {
+        try {
+            const cached = await (0,GM/* _GM_getValue */.er)(this.learnedCacheKey);
+            if (cached) {
+                const data = JSON.parse(cached);
+                this.learnedMappings = new Map(Object.entries(data));
+                loglevel_default().debug(`Loaded ${this.learnedMappings.size} learned filename mappings from cache`);
+            }
+            else {
+                this.learnedMappings = new Map();
+            }
+        }
+        catch (error) {
+            loglevel_default().error("Failed to load learned filename mappings:", error);
+            this.learnedMappings = new Map();
+        }
+    }
+    async learnMapping(filename, character) {
+        try {
+            if (!this.learnedMappings) {
+                this.learnedMappings = new Map();
+            }
+            this.learnedMappings.set(filename, character);
+            await this.saveLearnedMappings();
+            loglevel_default().debug(`Learned new filename mapping: ${filename} -> ${character}`);
+        }
+        catch (error) {
+            loglevel_default().error("Error learning filename mapping:", error);
+        }
+    }
+    async clearLearnedMappings() {
+        await (0,GM/* _GM_deleteValue */.JU)(this.learnedCacheKey);
+        this.learnedMappings = new Map();
+        loglevel_default().debug("Cleared all learned filename mappings");
+    }
+    exportLearnedMappings() {
+        if (!this.learnedMappings) {
+            return {};
+        }
+        return Object.fromEntries(this.learnedMappings);
+    }
+    async importLearnedMappings(mappings) {
+        this.learnedMappings = new Map(Object.entries(mappings));
+        await this.saveLearnedMappings();
+        loglevel_default().debug(`Imported ${this.learnedMappings.size} learned filename mappings`);
+    }
+    async saveLearnedMappings() {
+        try {
+            if (this.learnedMappings) {
+                const data = Object.fromEntries(this.learnedMappings);
+                await (0,GM/* _GM_setValue */.mN)(this.learnedCacheKey, JSON.stringify(data));
+                loglevel_default().debug(`Saved ${this.learnedMappings.size} learned filename mappings to storage`);
+            }
+        }
+        catch (error) {
+            loglevel_default().error("Failed to save learned filename mappings:", error);
+        }
+    }
+}
+
+;// ./src/lib/imageHasher.ts
+class ImageHasher {
+    hashSize;
+    constructor(hashSize = 8) {
+        this.hashSize = hashSize;
+    }
+    async hash(imageBlob) {
+        const grayscalePixels = await this.preprocessImage(imageBlob);
+        return this.calculateDHash(grayscalePixels);
+    }
+    static hammingDistance(hash1, hash2) {
+        if (hash1.length !== hash2.length) {
+            throw new Error("Hashes must be of equal length.");
+        }
+        const xorResult = BigInt(`0b${hash1}`) ^ BigInt(`0b${hash2}`);
+        return (xorResult.toString(2).match(/1/g) || []).length;
+    }
+    async preprocessImage(imageBlob) {
+        const image = await this.loadImageFromBlob(imageBlob);
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        if (!context)
+            throw new Error("Could not get 2D canvas context.");
+        const scaledWidth = this.hashSize + 1;
+        const scaledHeight = this.hashSize;
+        canvas.width = scaledWidth;
+        canvas.height = scaledHeight;
+        context.drawImage(image, 0, 0, scaledWidth, scaledHeight);
+        const imageData = context.getImageData(0, 0, scaledWidth, scaledHeight).data;
+        const grayscale = new Uint8ClampedArray(scaledWidth * scaledHeight);
+        for (let i = 0, j = 0; i < imageData.length; i += 4, j++) {
+            grayscale[j] =
+                0.299 * imageData[i] +
+                    0.587 * imageData[i + 1] +
+                    0.114 * imageData[i + 2];
+        }
+        return grayscale;
+    }
+    calculateDHash(pixels) {
+        let hash = "";
+        const width = this.hashSize + 1;
+        for (let y = 0; y < this.hashSize; y++) {
+            for (let x = 0; x < this.hashSize; x++) {
+                const left = pixels[y * width + x];
+                const right = pixels[y * width + x + 1];
+                hash += left < right ? "1" : "0";
+            }
+        }
+        return hash;
+    }
+    loadImageFromBlob(blob) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            const url = URL.createObjectURL(blob);
+            img.onload = () => {
+                URL.revokeObjectURL(url);
+                resolve(img);
+            };
+            img.onerror = (err) => {
+                URL.revokeObjectURL(url);
+                reject(new Error(`Failed to load image from blob`));
+            };
+            img.src = url;
+        });
+    }
+}
+/* harmony default export */ const imageHasher = (ImageHasher);
+
+;// ./src/lib/decoders/HashDecoder.ts
+
+
+
+
+
+class HashDecoder {
+    domain;
+    remoteUrl;
+    learnedCacheKey;
+    sessionId;
+    mappings = null;
+    learnedMappings = null;
+    loading = null;
+    imageHasher;
+    constructor(domain, sessionId) {
+        if (!domain) {
+            throw new Error("Domain name is required for HashDecoder initialization");
+        }
+        this.domain = domain;
+        this.sessionId = sessionId || window.workerId;
+        this.remoteUrl = `https://fastly.jsdelivr.net/gh/404-novel-project/novel-downloader-image-to-text-mapping@master/hash-mappings/${domain}.min.json`;
+        this.learnedCacheKey = `hash-mappings-learned-${domain}`;
+        this.imageHasher = new imageHasher();
+        this.loadLearnedMappings().catch(error => {
+            loglevel_default().error("Failed to initialize learned mappings:", error);
+        });
+        loglevel_default().debug(`HashDecoder initialized for domain: ${domain}, session: ${this.sessionId}`);
+    }
+    async decode(imageData) {
+        try {
+            await this.ensureMappingsLoaded();
+            const hash = await this.generateImageHash(imageData);
+            if (this.mappings?.has(hash)) {
+                const text = this.mappings.get(hash);
+                loglevel_default().debug(`Decoded text from server mappings: ${text} for hash: ${hash}`);
+                return text;
+            }
+            if (this.learnedMappings?.has(hash)) {
+                const text = this.learnedMappings.get(hash);
+                loglevel_default().debug(`Decoded text from learned mappings: ${text} for hash: ${hash}`);
+                return text;
+            }
+            loglevel_default().debug(`No mapping found for hash: ${hash}`);
+            return null;
+        }
+        catch (error) {
+            loglevel_default().error("Error in hash decoding:", error);
+            return null;
+        }
+    }
+    async learnMapping(imageData, text) {
+        try {
+            const hash = await this.generateImageHash(imageData);
+            if (!this.learnedMappings) {
+                this.learnedMappings = new Map();
+            }
+            this.learnedMappings.set(hash, text);
+            await this.saveLearnedMappings();
+            loglevel_default().debug(`Learned new mapping: ${hash} -> ${text}`);
+        }
+        catch (error) {
+            loglevel_default().error("Error learning mapping:", error);
+        }
+    }
+    getMappingsCount() {
+        return {
+            remote: this.mappings?.size ?? 0,
+            learned: this.learnedMappings?.size ?? 0
+        };
+    }
+    async clearCache() {
+        const sessionCache = SessionMappingCache/* SessionMappingCache */.j.getInstance();
+        sessionCache.clearSession(this.sessionId);
+        this.mappings = null;
+        this.loading = null;
+    }
+    async clearLearnedMappings() {
+        await (0,GM/* _GM_deleteValue */.JU)(this.learnedCacheKey);
+        this.learnedMappings = new Map();
+    }
+    exportLearnedMappings() {
+        if (!this.learnedMappings) {
+            return {};
+        }
+        return Object.fromEntries(this.learnedMappings);
+    }
+    async importLearnedMappings(mappings) {
+        this.learnedMappings = new Map(Object.entries(mappings));
+        await this.saveLearnedMappings();
+        loglevel_default().debug(`Imported ${this.learnedMappings.size} learned mappings`);
+    }
+    async ensureMappingsLoaded() {
+        if (this.mappings) {
+            return;
+        }
+        if (this.loading) {
+            await this.loading;
+            return;
+        }
+        this.loading = this.loadMappings();
+        await this.loading;
+    }
+    async loadMappings() {
+        try {
+            const sessionCache = SessionMappingCache/* SessionMappingCache */.j.getInstance();
+            this.mappings = await sessionCache.getMappingsWithLoading(this.sessionId, this.domain, SessionMappingCache/* MAPPING_TYPES */.$.HASH, () => this.fetchRemoteMappings());
+            loglevel_default().debug(`Loaded ${this.mappings.size} hash mappings for session ${this.sessionId}`);
+        }
+        catch (error) {
+            loglevel_default().error("Failed to load hash mappings:", error);
+            throw error;
+        }
+    }
+    async fetchRemoteMappings() {
+        try {
+            loglevel_default().debug("Fetching hash mappings from remote");
+            const response = await (0,http/* ggetText */.bx)(this.remoteUrl);
+            if (!response) {
+                throw new Error("Empty response from remote URL");
+            }
+            const data = JSON.parse(response);
+            if (typeof data !== 'object' || !data) {
+                throw new Error("Invalid mapping data format");
+            }
+            const mappings = new Map();
+            for (const [key, value] of Object.entries(data)) {
+                if (typeof value === 'string') {
+                    mappings.set(key, value);
+                }
+                else {
+                    loglevel_default().warn(`Skipping invalid mapping entry: ${key} -> ${value} (not a string)`);
+                }
+            }
+            loglevel_default().debug(`Successfully loaded ${mappings.size} hash mappings from remote`);
+            return mappings;
+        }
+        catch (error) {
+            loglevel_default().error("Failed to fetch hash mappings:", error);
+            throw error;
+        }
+    }
+    async loadLearnedMappings() {
+        try {
+            const cached = await (0,GM/* _GM_getValue */.er)(this.learnedCacheKey);
+            if (cached) {
+                const data = JSON.parse(cached);
+                this.learnedMappings = new Map(Object.entries(data));
+                loglevel_default().debug(`Loaded ${this.learnedMappings.size} learned hash mappings from storage`);
+            }
+            else {
+                this.learnedMappings = new Map();
+            }
+        }
+        catch (error) {
+            loglevel_default().error("Failed to load learned mappings:", error);
+            this.learnedMappings = new Map();
+        }
+    }
+    async saveLearnedMappings() {
+        try {
+            if (this.learnedMappings) {
+                const data = Object.fromEntries(this.learnedMappings);
+                await (0,GM/* _GM_setValue */.mN)(this.learnedCacheKey, JSON.stringify(data));
+                loglevel_default().debug(`Saved ${this.learnedMappings.size} learned mappings to storage`);
+            }
+        }
+        catch (error) {
+            loglevel_default().error("Failed to save learned mappings:", error);
+        }
+    }
+    async generateImageHash(imageData) {
+        const blob = new Blob([imageData]);
+        return await this.imageHasher.hash(blob);
+    }
+}
+
+// EXTERNAL MODULE: ./src/lib/decoders/OCRDecoder.ts + 2 modules
+var OCRDecoder = __webpack_require__("./src/lib/decoders/OCRDecoder.ts");
+;// ./src/lib/decoders/ImageCache.ts
+
+
+class ImageCache {
+    static instance = null;
+    cache = new Map();
+    maxCacheSize = 50;
+    accessOrder = [];
+    constructor() {
+    }
+    static getInstance() {
+        if (!ImageCache.instance) {
+            ImageCache.instance = new ImageCache();
+        }
+        return ImageCache.instance;
+    }
+    async getImageData(imageUrl) {
+        if (this.cache.has(imageUrl)) {
+            this.updateAccessOrder(imageUrl);
+            loglevel_default().debug(`Image cache hit for: ${imageUrl.substring(0, 50)}...`);
+            return this.cache.get(imageUrl);
+        }
+        try {
+            loglevel_default().debug(`Downloading image for cache: ${imageUrl.substring(0, 50)}...`);
+            const response = await (0,http/* gfetch */._V)(imageUrl, {
+                responseType: "arraybuffer",
+                method: "GET"
+            });
+            if (response.status !== 200 || !response.response) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            const uint8Array = new Uint8Array(response.response);
+            this.cacheImageData(imageUrl, uint8Array);
+            loglevel_default().debug(`Downloaded and cached image: ${uint8Array.length} bytes`);
+            return uint8Array;
+        }
+        catch (error) {
+            loglevel_default().error(`Failed to download image: ${imageUrl}`, error);
+            throw error;
+        }
+    }
+    cacheImageData(imageUrl, data) {
+        if (this.cache.size >= this.maxCacheSize) {
+            const lruUrl = this.accessOrder.shift();
+            if (lruUrl) {
+                this.cache.delete(lruUrl);
+                loglevel_default().debug(`Evicted LRU image from cache: ${lruUrl.substring(0, 50)}...`);
+            }
+        }
+        this.cache.set(imageUrl, data);
+        this.accessOrder.push(imageUrl);
+    }
+    updateAccessOrder(imageUrl) {
+        const index = this.accessOrder.indexOf(imageUrl);
+        if (index > -1) {
+            this.accessOrder.splice(index, 1);
+            this.accessOrder.push(imageUrl);
+        }
+    }
+    clearCache() {
+        this.cache.clear();
+        this.accessOrder.length = 0;
+        loglevel_default().debug("Cleared image cache");
+    }
+    getCacheStats() {
+        return {
+            size: this.cache.size,
+            maxSize: this.maxCacheSize,
+            urls: Array.from(this.cache.keys()).map(url => url.substring(0, 50) + "...")
+        };
+    }
+}
+
+// EXTERNAL MODULE: external "CryptoJS"
+var external_CryptoJS_ = __webpack_require__("crypto-js");
+;// ./src/rules/special/reprint/xiguashuwu.ts
 
 
 
@@ -43127,26 +43517,26 @@ class ImageTextDecoder {
     failedImages = [];
     PLACEHOLDER_CHAR = "▢";
     constructor() {
-        this.filenameDecoder = new _lib_decoders_FilenameDecoder__WEBPACK_IMPORTED_MODULE_9__/* .FilenameDecoder */ .u("www.xiguashuwu.com");
-        this.hashDecoder = new _lib_decoders_HashDecoder__WEBPACK_IMPORTED_MODULE_10__/* .HashDecoder */ .J("www.xiguashuwu.com");
-        this.ocrDecoder = new _lib_decoders_OCRDecoder__WEBPACK_IMPORTED_MODULE_11__/* .OCRDecoder */ .T();
+        this.filenameDecoder = new FilenameDecoder("www.xiguashuwu.com");
+        this.hashDecoder = new HashDecoder("www.xiguashuwu.com");
+        this.ocrDecoder = new OCRDecoder/* OCRDecoder */.T();
     }
     async init() {
-        _log__WEBPACK_IMPORTED_MODULE_4___default().debug("[XiguashuwuImageDecoder] Decoder initialized");
+        loglevel_default().debug("[XiguashuwuImageDecoder] Decoder initialized");
     }
     async close() {
         this.mappingCache = {};
         await this.ocrDecoder.close();
-        const imageCache = _lib_decoders_ImageCache__WEBPACK_IMPORTED_MODULE_12__/* .ImageCache */ .S.getInstance();
+        const imageCache = ImageCache.getInstance();
         imageCache.clearCache();
         if (this.failedImages.length > 0) {
-            _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`[XiguashuwuImageDecoder] ${this.failedImages.length} images failed to decode:`);
+            loglevel_default().warn(`[XiguashuwuImageDecoder] ${this.failedImages.length} images failed to decode:`);
             this.failedImages.forEach((url, index) => {
-                _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`  ${index + 1}. ${url}`);
+                loglevel_default().warn(`  ${index + 1}. ${url}`);
             });
-            _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`These images were replaced with placeholder character: "${this.PLACEHOLDER_CHAR}"`);
+            loglevel_default().warn(`These images were replaced with placeholder character: "${this.PLACEHOLDER_CHAR}"`);
         }
-        _log__WEBPACK_IMPORTED_MODULE_4___default().debug("[XiguashuwuImageDecoder] Decoder closed and image cache cleared");
+        loglevel_default().debug("[XiguashuwuImageDecoder] Decoder closed and image cache cleared");
     }
     async decodeImage(imageUrl) {
         if (this.mappingCache[imageUrl]) {
@@ -43156,42 +43546,42 @@ class ImageTextDecoder {
             const filename = this.getFilenameFromUrl(imageUrl);
             const filenameChar = await this.filenameDecoder.decodeFromFilename(filename);
             if (filenameChar) {
-                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[XiguashuwuImageDecoder] Filename match: ${filename} -> ${filenameChar}`);
+                loglevel_default().debug(`[XiguashuwuImageDecoder] Filename match: ${filename} -> ${filenameChar}`);
                 this.mappingCache[imageUrl] = filenameChar;
                 return filenameChar;
             }
             const imageData = await this.downloadImageData(imageUrl);
             const hashChar = await this.hashDecoder.decode(imageData);
             if (hashChar) {
-                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[XiguashuwuImageDecoder] Hash match: ${filename} -> "${hashChar}"`);
+                loglevel_default().debug(`[XiguashuwuImageDecoder] Hash match: ${filename} -> "${hashChar}"`);
                 this.mappingCache[imageUrl] = hashChar;
                 return hashChar;
             }
             const ocrResult = await this.ocrDecoder.decode(imageData);
             if (ocrResult && ocrResult.confidence >= 0.90) {
                 const ocrChar = ocrResult.text;
-                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[XiguashuwuImageDecoder] OCR success: ${filename} (${imageUrl}) -> "${ocrChar}" (confidence: ${Math.round(ocrResult.confidence * 100)}%)`);
+                loglevel_default().debug(`[XiguashuwuImageDecoder] OCR success: ${filename} (${imageUrl}) -> "${ocrChar}" (confidence: ${Math.round(ocrResult.confidence * 100)}%)`);
                 try {
                     await this.hashDecoder.learnMapping(imageData, ocrChar);
                     await this.filenameDecoder.learnMapping(filename, ocrChar);
-                    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[XiguashuwuImageDecoder] Learned both hash and filename mappings for: ${filename} -> "${ocrChar}"`);
+                    loglevel_default().debug(`[XiguashuwuImageDecoder] Learned both hash and filename mappings for: ${filename} -> "${ocrChar}"`);
                 }
                 catch (learningError) {
-                    _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`[XiguashuwuImageDecoder] Failed to learn mappings for ${filename}:`, learningError);
+                    loglevel_default().warn(`[XiguashuwuImageDecoder] Failed to learn mappings for ${filename}:`, learningError);
                 }
                 this.mappingCache[imageUrl] = ocrChar;
                 return ocrChar;
             }
             else if (ocrResult) {
-                _log__WEBPACK_IMPORTED_MODULE_4___default().error(`[XiguashuwuImageDecoder] OCR confidence too low: ${Math.round(ocrResult.confidence * 100)}% < 90% for ${filename}`);
+                loglevel_default().error(`[XiguashuwuImageDecoder] OCR confidence too low: ${Math.round(ocrResult.confidence * 100)}% < 90% for ${filename}`);
             }
-            _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`[XiguashuwuImageDecoder] All decoding methods failed for: ${imageUrl}`);
+            loglevel_default().warn(`[XiguashuwuImageDecoder] All decoding methods failed for: ${imageUrl}`);
             this.failedImages.push(imageUrl);
             this.mappingCache[imageUrl] = this.PLACEHOLDER_CHAR;
             return this.PLACEHOLDER_CHAR;
         }
         catch (error) {
-            _log__WEBPACK_IMPORTED_MODULE_4___default().error(`[XiguashuwuImageDecoder] Error during decoding process for ${imageUrl}:`, error);
+            loglevel_default().error(`[XiguashuwuImageDecoder] Error during decoding process for ${imageUrl}:`, error);
             this.failedImages.push(imageUrl);
             this.mappingCache[imageUrl] = this.PLACEHOLDER_CHAR;
             return this.PLACEHOLDER_CHAR;
@@ -43201,7 +43591,7 @@ class ImageTextDecoder {
         return url.split("/").pop() || "";
     }
     async downloadImageData(imageUrl) {
-        const imageCache = _lib_decoders_ImageCache__WEBPACK_IMPORTED_MODULE_12__/* .ImageCache */ .S.getInstance();
+        const imageCache = ImageCache.getInstance();
         return await imageCache.getImageData(imageUrl);
     }
     getFailedImages() {
@@ -43246,15 +43636,15 @@ const decodeCustomBase64 = (encodedString) => {
     return decodedString;
 };
 const decryptContent = (content, key) => {
-    const key1 = crypto_js__WEBPACK_IMPORTED_MODULE_13__.MD5(key).toString();
-    const d = crypto_js__WEBPACK_IMPORTED_MODULE_13__.enc.Utf8.parse(key1.substring(0, 16));
-    const e = crypto_js__WEBPACK_IMPORTED_MODULE_13__.enc.Utf8.parse(key1.substring(16));
-    return crypto_js__WEBPACK_IMPORTED_MODULE_13__.AES.decrypt(content, e, {
+    const key1 = external_CryptoJS_.MD5(key).toString();
+    const d = external_CryptoJS_.enc.Utf8.parse(key1.substring(0, 16));
+    const e = external_CryptoJS_.enc.Utf8.parse(key1.substring(16));
+    return external_CryptoJS_.AES.decrypt(content, e, {
         iv: d,
-        padding: crypto_js__WEBPACK_IMPORTED_MODULE_13__.pad.Pkcs7,
-    }).toString(crypto_js__WEBPACK_IMPORTED_MODULE_13__.enc.Utf8);
+        padding: external_CryptoJS_.pad.Pkcs7,
+    }).toString(external_CryptoJS_.enc.Utf8);
 };
-class Xiguashuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */ .Q {
+class Xiguashuwu extends rules/* BaseRuleClass */.Q {
     constructor() {
         super();
         this.attachmentMode = "naive";
@@ -43267,23 +43657,23 @@ class Xiguashuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */
         const author = document.querySelector("p.author > span > a")
             ?.innerText ?? "";
         const introDom = document.querySelector("#intro > p.BGsectionTwo-bottom");
-        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(introDom);
+        const [introduction, introductionHTML] = await (0,rule/* introDomHandle */.HV)(introDom);
         const additionalMetadate = {};
         const coverUrl = document.querySelector(".BGsectionOne-top-left > img")?.src || null;
         if (coverUrl) {
-            (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_8__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-")
+            (0,attachments/* getAttachment */["if"])(coverUrl, this.attachmentMode, "cover-")
                 .then((coverClass) => {
                 additionalMetadate.cover = coverClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+                .catch((error) => loglevel_default().error(error));
         }
         const chapterListLink = document.querySelector("div.BGsectionOne-bottom > ul > li:nth-of-type(2) > a");
         if (!chapterListLink) {
             throw new Error("Chapter list link not found");
         }
         const chapterListUrl = chapterListLink.href;
-        _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[chapter]请求 ${chapterListUrl}`);
-        const chapterListDoc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__.getHtmlDOM)(chapterListUrl, this.charset);
+        loglevel_default().debug(`[chapter]请求 ${chapterListUrl}`);
+        const chapterListDoc = await (0,http.getHtmlDOM)(chapterListUrl, this.charset);
         const chapterLinks = chapterListDoc.querySelectorAll("li.BCsectionTwo-top-chapter > a");
         const chapters = [];
         let chapterNumber = 0;
@@ -43293,7 +43683,7 @@ class Xiguashuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */
             const chapterUrl = aElem.href;
             const isVIP = false;
             const isPaid = false;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
+            const chapter = new Chapter/* Chapter */.I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -43310,7 +43700,7 @@ class Xiguashuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */
             });
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
+        return new Book/* Book */.E({
             bookUrl,
             bookname,
             author,
@@ -43326,10 +43716,10 @@ class Xiguashuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */
         try {
             const contentRaw = await this.getContentFromMultiplePages(chapterUrl, charset, decoder);
             if (contentRaw) {
-                const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .cleanDOM */ .an)(contentRaw, this.attachmentMode, { keepImageName: true });
+                const { dom, text, images } = await (0,cleanDOM/* cleanDOM */.an)(contentRaw, this.attachmentMode, { keepImageName: true });
                 const failedCount = decoder.getFailedImagesCount();
                 if (failedCount > 0) {
-                    _log__WEBPACK_IMPORTED_MODULE_4___default().warn(`[Xiguashuwu] Chapter "${chapterName}" has ${failedCount} failed image(s) replaced with "${decoder.getPlaceholderChar()}"`);
+                    loglevel_default().warn(`[Xiguashuwu] Chapter "${chapterName}" has ${failedCount} failed image(s) replaced with "${decoder.getPlaceholderChar()}"`);
                 }
                 return {
                     chapterName,
@@ -43363,9 +43753,9 @@ class Xiguashuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */
         const lastParagraphIndexes = [];
         let totalParagraphs = 0;
         while (currentUrl) {
-            _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Processing page ${pageNumber}: ${currentUrl}`);
+            loglevel_default().debug(`Processing page ${pageNumber}: ${currentUrl}`);
             try {
-                const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__.getHtmlDOM)(currentUrl, charset);
+                const doc = await (0,http.getHtmlDOM)(currentUrl, charset);
                 const pageContent = await this.processPageContent(doc, decoder, pageNumber);
                 if (pageContent) {
                     const pageParaCount = pageContent.children.length;
@@ -43374,17 +43764,17 @@ class Xiguashuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */
                     for (const child of Array.from(pageContent.children)) {
                         content.appendChild(child.cloneNode(true));
                     }
-                    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Page ${pageNumber} processed: ${pageParaCount} paragraphs, total: ${totalParagraphs}`);
+                    loglevel_default().debug(`Page ${pageNumber} processed: ${pageParaCount} paragraphs, total: ${totalParagraphs}`);
                 }
                 currentUrl = this.getNextPageUrl(doc);
                 pageNumber++;
                 if (pageNumber > 50) {
-                    _log__WEBPACK_IMPORTED_MODULE_4___default().warn("Too many pages detected, stopping to prevent infinite loop");
+                    loglevel_default().warn("Too many pages detected, stopping to prevent infinite loop");
                     break;
                 }
             }
             catch (error) {
-                _log__WEBPACK_IMPORTED_MODULE_4___default().error(`Failed to process page ${pageNumber}: ${currentUrl}`, error);
+                loglevel_default().error(`Failed to process page ${pageNumber}: ${currentUrl}`, error);
                 break;
             }
         }
@@ -43394,7 +43784,7 @@ class Xiguashuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */
     async processPageContent(doc, decoder, pageNumber) {
         if (pageNumber === 1) {
             const contentDiv = doc.querySelector("#C0NTENT");
-            _log__WEBPACK_IMPORTED_MODULE_4___default().debug("Processing first page - using direct C0NTENT (no image processing)");
+            loglevel_default().debug("Processing first page - using direct C0NTENT (no image processing)");
             if (contentDiv) {
                 return await this.processFirstPageContent(contentDiv);
             }
@@ -43403,7 +43793,7 @@ class Xiguashuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */
             }
         }
         else if (pageNumber === 2) {
-            _log__WEBPACK_IMPORTED_MODULE_4___default().debug("Processing second page - using nrid/codeurl method (with image processing)");
+            loglevel_default().debug("Processing second page - using nrid/codeurl method (with image processing)");
             try {
                 const decryptedDiv = await this.decryptSecondPageContent(doc);
                 if (decryptedDiv) {
@@ -43414,12 +43804,12 @@ class Xiguashuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */
                 }
             }
             catch (error) {
-                _log__WEBPACK_IMPORTED_MODULE_4___default().error("Failed to decrypt second page content:", error);
+                loglevel_default().error("Failed to decrypt second page content:", error);
                 throw error;
             }
         }
         else {
-            _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Processing page ${pageNumber} - using AES decryption (with image processing)`);
+            loglevel_default().debug(`Processing page ${pageNumber} - using AES decryption (with image processing)`);
             try {
                 const decryptedDiv = await this.decryptAESPageContent(doc);
                 if (decryptedDiv) {
@@ -43430,7 +43820,7 @@ class Xiguashuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */
                 }
             }
             catch (error) {
-                _log__WEBPACK_IMPORTED_MODULE_4___default().error(`Failed to decrypt page ${pageNumber} content:`, error);
+                loglevel_default().error(`Failed to decrypt page ${pageNumber} content:`, error);
                 throw error;
             }
         }
@@ -43451,14 +43841,14 @@ class Xiguashuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */
                 const nridMatch = scriptContent.match(nridRegex);
                 if (nridMatch) {
                     nrid = nridMatch[1];
-                    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Found nrid: ${nrid}`);
+                    loglevel_default().debug(`Found nrid: ${nrid}`);
                 }
             }
             if (!codeurl) {
                 const simpleMatch = scriptContent.match(simpleCodeurlVarRegex);
                 if (simpleMatch && simpleMatch[1]) {
                     codeurl = simpleMatch[1];
-                    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Found simple codeurl: ${codeurl}`);
+                    loglevel_default().debug(`Found simple codeurl: ${codeurl}`);
                 }
             }
             if (nrid && codeurl) {
@@ -43502,7 +43892,7 @@ class Xiguashuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */
                 standardContentDiv.appendChild(node);
             }
         });
-        _log__WEBPACK_IMPORTED_MODULE_4___default().debug("Successfully decrypted second page content using nrid/codeurl method");
+        loglevel_default().debug("Successfully decrypted second page content using nrid/codeurl method");
         return standardContentDiv;
     }
     async decryptAESPageContent(doc) {
@@ -43521,14 +43911,14 @@ class Xiguashuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */
                 if (newcomMatch && newcomMatch.groups) {
                     newconEncryptedContent = decodeURIComponent(newcomMatch.groups.content);
                     newconEncryptionKey = newcomMatch.groups.key;
-                    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Found AES encrypted content with key: ${newconEncryptionKey}`);
+                    loglevel_default().debug(`Found AES encrypted content with key: ${newconEncryptionKey}`);
                 }
             }
             if (!nrid) {
                 const nridMatch = scriptContent.match(nridRegex);
                 if (nridMatch) {
                     nrid = nridMatch[1];
-                    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Found nrid: ${nrid}`);
+                    loglevel_default().debug(`Found nrid: ${nrid}`);
                 }
             }
             if (nrid && newconEncryptedContent && newconEncryptionKey) {
@@ -43548,11 +43938,11 @@ class Xiguashuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */
             throw new Error("AES decryption produced empty content");
         }
         standardContentDiv.innerHTML = decryptedContent;
-        _log__WEBPACK_IMPORTED_MODULE_4___default().debug("Successfully decrypted AES page content");
+        loglevel_default().debug("Successfully decrypted AES page content");
         return standardContentDiv;
     }
     async processImages(content, decoder) {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("div.s_m", true, content);
+        (0,dom.rm)("div.s_m", true, content);
         const images = content.querySelectorAll("img.hz");
         for (const img of Array.from(images)) {
             try {
@@ -43564,14 +43954,14 @@ class Xiguashuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */
                 const textNode = document.createTextNode(decodedText);
                 img.parentNode?.replaceChild(textNode, img);
                 if (decodedText === decoder.getPlaceholderChar()) {
-                    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Used placeholder for failed image: ${imageUrl.substring(0, 50)}...`);
+                    loglevel_default().debug(`Used placeholder for failed image: ${imageUrl.substring(0, 50)}...`);
                 }
                 else {
-                    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Decoded image: ${imageUrl.substring(0, 50)}...`);
+                    loglevel_default().debug(`Decoded image: ${imageUrl.substring(0, 50)}...`);
                 }
             }
             catch (error) {
-                _log__WEBPACK_IMPORTED_MODULE_4___default().error("Unexpected error during image processing:", img.src, error);
+                loglevel_default().error("Unexpected error during image processing:", img.src, error);
                 const textNode = document.createTextNode(decoder.getPlaceholderChar());
                 img.parentNode?.replaceChild(textNode, img);
             }
@@ -43583,7 +43973,7 @@ class Xiguashuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */
         if (nextPageLink && nextPageLink.innerText.includes("下一页")) {
             const nextUrl = nextPageLink.href;
             if (nextUrl.includes(".html")) {
-                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Found next page: ${nextUrl}`);
+                loglevel_default().debug(`Found next page: ${nextUrl}`);
                 return nextUrl;
             }
         }
@@ -43596,17 +43986,17 @@ class Xiguashuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */
                 linkText.match(/^下.*页$/)) &&
                 link.href.includes(".html")) {
                 const nextUrl = link.href;
-                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Found fallback next page: ${nextUrl}`);
+                loglevel_default().debug(`Found fallback next page: ${nextUrl}`);
                 return nextUrl;
             }
         }
-        _log__WEBPACK_IMPORTED_MODULE_4___default().debug("No next page found");
+        loglevel_default().debug("No next page found");
         return "";
     }
     mergeParagraphsAcrossPages(content, lastParagraphIndexes) {
         if (lastParagraphIndexes.length <= 1)
             return;
-        _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Merging paragraphs across ${lastParagraphIndexes.length} pages`);
+        loglevel_default().debug(`Merging paragraphs across ${lastParagraphIndexes.length} pages`);
         for (let i = lastParagraphIndexes.length - 2; i >= 0; i--) {
             const currentPageLastIndex = lastParagraphIndexes[i];
             let lastParagraph = null;
@@ -43636,13 +44026,13 @@ class Xiguashuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */
                 }
                 lastParagraph.textContent += "\r\n";
                 nextParagraph.remove();
-                _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`Merged paragraphs: "${lastText.substring(0, 30)}..." + "${nextText.substring(0, 30)}..." (with newline separator)`);
+                loglevel_default().debug(`Merged paragraphs: "${lastText.substring(0, 30)}..." + "${nextText.substring(0, 30)}..." (with newline separator)`);
             }
         }
     }
     async processFirstPageContent(content) {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_2__.rm)("div.s_m", true, content);
-        _log__WEBPACK_IMPORTED_MODULE_4___default().debug("First page processed without image decoding");
+        (0,dom.rm)("div.s_m", true, content);
+        loglevel_default().debug("First page processed without image decoding");
         return content;
     }
 }
