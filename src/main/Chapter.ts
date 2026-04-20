@@ -121,14 +121,25 @@ isNull:${!this.contentHTML} 解析成功。`);
   private async parse(): Promise<ChapterParseObject> {
     this.status = Status.downloading;
 
-    return this.chapterParse(
-      this.chapterUrl,
-      this.chapterName,
-      this.isVIP,
-      this.isPaid,
-      this.charset,
-      this.options
-    )
+    const timeoutMs = 10 * 60 * 1000;
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(
+        () => reject(new Error(`[Chapter]${this.chapterName ?? "未知章节"}解析超时（${timeoutMs / 1000}秒）`)),
+        timeoutMs
+      )
+    );
+
+    return Promise.race([
+      this.chapterParse(
+        this.chapterUrl,
+        this.chapterName,
+        this.isVIP,
+        this.isPaid,
+        this.charset,
+        this.options
+      ),
+      timeoutPromise,
+    ])
       .then(async (obj) => {
         const contentImages = obj.contentImages;
         if (contentImages) {

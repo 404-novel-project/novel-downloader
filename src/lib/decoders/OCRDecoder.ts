@@ -25,10 +25,10 @@ export class OCRDecoder {
   private ppocrDict: string = "";
 
   private readonly cacheKey = "paddleocr_ch_models";
-  private readonly cacheVersion = "4.0.0";
+  private readonly cacheVersion = "4.0.0-v5-mobile";
   private readonly cacheVersionKey = "paddleocr_ch_models_version";
-  private readonly zipUrl = "https://github.com/xushengfeng/eSearch-OCR/releases/download/4.0.0/ch.zip";
-  private readonly filesToExtract = ["ppocr_keys_v1.txt", "ppocr_det.onnx", "ppocr_rec.onnx"];
+  private readonly zipUrl = "https://github.com/xushengfeng/eSearch-OCR/releases/download/4.0.0/ppocr_v5_mobile.zip";
+  private readonly filesToExtract = ["ppocrv5_dict.txt", "ppocr_v5_mobile_det.onnx", "ppocr_v5_mobile_rec.onnx"];
 
   constructor() {
     // No initialization needed
@@ -85,8 +85,59 @@ export class OCRDecoder {
       log.debug("No meaningful character found in OCR result");
       return null;
     } catch (error) {
-      log.error("Error in PaddleOCR decoding:", error);
+      const errMsg = error instanceof Error
+        ? `${error.message}\n${error.stack ?? ""}`
+        : String(error);
+      log.error(`Error in PaddleOCR decoding: ${errMsg}`);
       throw error; // Fail fast - no fallback
+    }
+  }
+
+  /**
+   * Decode full text from an image using PaddleOCR.
+   * Unlike decode() which returns a single character, this returns all detected text,
+   * preserving line structure and punctuation. Used for full-text OCR such as font deobfuscation.
+   */
+  async decodeFullText(imageData: Uint8Array): Promise<string> {
+    try {
+      await this.ensureModelLoaded();
+      
+      if (!this.modelLoaded || !this.ocrEngine) {
+        throw new Error("PaddleOCR model not available for decoding");
+      }
+
+      const imageDataObj = await this.uint8ArrayToImageData(imageData);
+      if (!imageDataObj) {
+        throw new Error("Failed to convert image data for OCR");
+      }
+
+      const result = await this.ocrEngine.ocr(imageDataObj);
+      
+      if (result && result.parragraphs && result.parragraphs.length > 0) {
+        // Sort paragraphs by vertical position (top to bottom)
+        const sorted = [...result.parragraphs].sort((a: any, b: any) => {
+          const aY = a.box?.[0]?.[1] ?? a.mean ?? 0;
+          const bY = b.box?.[0]?.[1] ?? b.mean ?? 0;
+          return aY - bY;
+        });
+
+        const lines: string[] = [];
+        for (const paragraph of sorted) {
+          const text = (paragraph.text || "").trim();
+          if (text) {
+            lines.push(text);
+          }
+        }
+        return lines.join("\n");
+      }
+
+      return "";
+    } catch (error) {
+      const errMsg = error instanceof Error
+        ? `${error.message}\n${error.stack ?? ""}`
+        : String(error);
+      log.error(`Error in PaddleOCR full text decoding: ${errMsg}`);
+      throw error;
     }
   }
 
@@ -178,15 +229,23 @@ export class OCRDecoder {
       // Load the dictionary content
       const dictContent = await this.loadPaddleOCRDict();
 
-      const detModel = this.modelCache["ppocr_det.onnx"];
-      const recModel = this.modelCache["ppocr_rec.onnx"];
+      const detModel = this.modelCache["ppocr_v5_mobile_det.onnx"];
+      const recModel = this.modelCache["ppocr_v5_mobile_rec.onnx"];
 
       if (!detModel || !recModel) {
         throw new Error("Failed to download required PaddleOCR models");
       }
 
       log.debug("Initializing PaddleOCR engine...");
-      
+
+      // Log ONNX Runtime state before init
+      try {
+        log.debug(`[OCR] ort.env.wasm.wasmPaths: ${ort.env.wasm.wasmPaths}`);
+        log.debug(`[OCR] ort.env.wasm.numThreads: ${ort.env.wasm.numThreads}`);
+        log.debug(`[OCR] ort.env.wasm.simd: ${ort.env.wasm.simd}`);
+        log.debug(`[OCR] eSearchOCR type: ${typeof eSearchOCR}, init type: ${typeof eSearchOCR?.init}`);
+      } catch (_) { /* ignore diagnostic errors */ }
+
       this.ocrEngine = await eSearchOCR.init({
         det: {
           input: await detModel.arrayBuffer(), // Detection model ArrayBuffer
@@ -196,7 +255,7 @@ export class OCRDecoder {
           input: await recModel.arrayBuffer(), // Recognition model ArrayBuffer
           decodeDic: dictContent, // Dictionary content
           optimize: {
-            space: false, // v3 v4识别时英文空格不理想，但v5得到了改善，默认为true，需要传入false来关闭
+            space: true, // v5空格识别已改善，启用空格识别
           },
         },
         dev: false, // Set to true for debugging
@@ -206,7 +265,10 @@ export class OCRDecoder {
       this.modelLoaded = true;
       log.debug("PaddleOCR engine initialized successfully");
     } catch (error) {
-      log.error("Failed to load PaddleOCR model:", error);
+      const errMsg = error instanceof Error
+        ? `${error.message}\n${error.stack ?? ""}`
+        : String(error);
+      log.error(`Failed to load PaddleOCR model: ${errMsg}`);
       this.modelLoaded = false;
       this.ocrEngine = null;
       throw error;
@@ -412,7 +474,7 @@ export class OCRDecoder {
       await this.downloadAndCacheModels();
 
       // Get dictionary from cache
-      const dictBlob = this.modelCache["ppocr_keys_v1.txt"];
+      const dictBlob = this.modelCache["ppocrv5_dict.txt"];
       if (!dictBlob) {
         throw new Error("Dictionary not found in cached models");
       }
@@ -453,25 +515,30 @@ export class OCRDecoder {
         throw new Error("Cannot get canvas 2D context");
       }
 
-      // Calculate scaled dimensions (minimum 4x scale, at least 120x120)
-      const scaleX = Math.max(4, Math.ceil(120 / img.width));
-      const scaleY = Math.max(4, Math.ceil(120 / img.height));
-      const scale = Math.max(scaleX, scaleY);
-      
-      const scaledWidth = img.width * scale;
-      const scaledHeight = img.height * scale;
-      
+      // Only upscale small images. Large images (e.g. paragraph canvases)
+      // are already at sufficient resolution for OCR and scaling would waste memory.
+      const MIN_WIDTH = 50;
+      const MIN_HEIGHT = 20;
+      let scaledWidth = img.width;
+      let scaledHeight = img.height;
+      if (img.width < MIN_WIDTH || img.height < MIN_HEIGHT) {
+        const scaleX = Math.max(4, Math.ceil(MIN_WIDTH / img.width));
+        const scaleY = Math.max(4, Math.ceil(MIN_HEIGHT / img.height));
+        const scale = Math.max(scaleX, scaleY);
+        scaledWidth = img.width * scale;
+        scaledHeight = img.height * scale;
+        log.debug(`Image scaled from ${img.width}x${img.height} to ${scaledWidth}x${scaledHeight} (${scale}x scale)`);
+      }
+
       canvas.width = scaledWidth;
       canvas.height = scaledHeight;
-      
+
       // Fill with white background to handle transparent images
-      ctx.fillStyle = "#ffffff"; 
+      ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, scaledWidth, scaledHeight);
-      
-      // Draw the image scaled up on top of the white background
+
+      // Draw the image on top of the white background
       ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
-      
-      log.debug(`Image scaled from ${img.width}x${img.height} to ${scaledWidth}x${scaledHeight} (${scale}x scale)`);
 
       // Get ImageData from canvas
       const imageData = ctx.getImageData(0, 0, scaledWidth, scaledHeight);
