@@ -9,6 +9,131 @@ import { Status } from "../../../main/main";
 import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
+import { FilenameDecoder } from "../../../lib/decoders/FilenameDecoder";
+import { HashDecoder } from "../../../lib/decoders/HashDecoder";
+import { OCRDecoder, OCRResult } from "../../../lib/decoders/OCRDecoder";
+import { ImageCache } from "../../../lib/decoders/ImageCache";
+
+/**
+ * Image text decoder for Qidian that implements 3-step decoding logic:
+ * 1. Filename-based mapping (fastest, no download needed)
+ * 2. Hash-based mapping (fast, requires download)
+ * 3. OCR (slowest, most accurate)
+ */
+class QidianImageDecoder {
+  private filenameDecoder: FilenameDecoder;
+  private hashDecoder: HashDecoder;
+  private ocrDecoder: OCRDecoder;
+  private mappingCache: { [imageUrl: string]: string } = {};
+  private failedImages: string[] = [];
+  private readonly PLACEHOLDER_CHAR = "▢";
+
+  constructor() {
+    this.filenameDecoder = new FilenameDecoder("www.qidian.com");
+    this.hashDecoder = new HashDecoder("www.qidian.com");
+    this.ocrDecoder = new OCRDecoder();
+  }
+
+  async init(): Promise<void> {
+    log.debug("[QidianImageDecoder] Decoder initialized");
+  }
+
+  async close(): Promise<void> {
+    this.mappingCache = {};
+    await this.ocrDecoder.close();
+    const imageCache = ImageCache.getInstance();
+    imageCache.clearCache();
+
+    if (this.failedImages.length > 0) {
+      log.warn(`[QidianImageDecoder] ${this.failedImages.length} images failed to decode:`);
+      this.failedImages.forEach((url, index) => {
+        log.warn(`  ${index + 1}. ${url}`);
+      });
+      log.warn(`These images were replaced with placeholder character: "${this.PLACEHOLDER_CHAR}"`);
+    }
+
+    log.debug("[QidianImageDecoder] Decoder closed and image cache cleared");
+  }
+
+  async decodeImage(imageUrl: string): Promise<string> {
+    if (this.mappingCache[imageUrl]) {
+      return this.mappingCache[imageUrl];
+    }
+
+    try {
+      // Step 1: Try filename-based mapping first (fastest)
+      const filename = this.getFilenameFromUrl(imageUrl);
+
+      const filenameChar = await this.filenameDecoder.decodeFromFilename(filename);
+      if (filenameChar) {
+        log.debug(`[QidianImageDecoder] Filename match: ${filename} -> ${filenameChar}`);
+        this.mappingCache[imageUrl] = filenameChar;
+        return filenameChar;
+      }
+
+      // Download image data only if filename mapping fails
+      const imageData = await this.downloadImageData(imageUrl);
+
+      // Step 2: Try hash-based mapping (fast, requires download)
+      const hashChar = await this.hashDecoder.decode(imageData);
+      if (hashChar) {
+        log.debug(`[QidianImageDecoder] Hash match: ${filename} -> "${hashChar}"`);
+        this.mappingCache[imageUrl] = hashChar;
+        return hashChar;
+      }
+
+      // Step 3: Try OCR as final method (slowest, most accurate)
+      const ocrResult = await this.ocrDecoder.decode(imageData);
+      if (ocrResult && ocrResult.confidence >= 0.90) {
+        const ocrChar = ocrResult.text;
+        log.debug(`[QidianImageDecoder] OCR success: ${filename} (${imageUrl}) -> "${ocrChar}" (confidence: ${Math.round(ocrResult.confidence * 100)}%)`);
+
+        // Learn the successful OCR result for future use
+        try {
+          await this.hashDecoder.learnMapping(imageData, ocrChar);
+          await this.filenameDecoder.learnMapping(filename, ocrChar);
+          log.debug(`[QidianImageDecoder] Learned both hash and filename mappings for: ${filename} -> "${ocrChar}"`);
+        } catch (learningError) {
+          log.warn(`[QidianImageDecoder] Failed to learn mappings for ${filename}:`, learningError);
+        }
+
+        this.mappingCache[imageUrl] = ocrChar;
+        return ocrChar;
+      } else if (ocrResult) {
+        log.error(`[QidianImageDecoder] OCR confidence too low: ${Math.round(ocrResult.confidence * 100)}% < 90% for ${filename}`);
+      }
+
+      // All methods failed - use placeholder and track failed image
+      log.warn(`[QidianImageDecoder] All decoding methods failed for: ${imageUrl}`);
+      this.failedImages.push(imageUrl);
+      this.mappingCache[imageUrl] = this.PLACEHOLDER_CHAR;
+      return this.PLACEHOLDER_CHAR;
+    } catch (error) {
+      log.error(`[QidianImageDecoder] Error during decoding process for ${imageUrl}:`, error);
+
+      this.failedImages.push(imageUrl);
+      this.mappingCache[imageUrl] = this.PLACEHOLDER_CHAR;
+      return this.PLACEHOLDER_CHAR;
+    }
+  }
+
+  private getFilenameFromUrl(url: string): string {
+    return url.split("/").pop() || "";
+  }
+
+  private async downloadImageData(imageUrl: string): Promise<Uint8Array> {
+    const imageCache = ImageCache.getInstance();
+    return await imageCache.getImageData(imageUrl);
+  }
+
+  getFailedImagesCount(): number {
+    return this.failedImages.length;
+  }
+
+  getPlaceholderChar(): string {
+    return this.PLACEHOLDER_CHAR;
+  }
+}
 
 export class Qidian extends BaseRuleClass {
   public constructor() {
@@ -339,6 +464,16 @@ export class Qidian extends BaseRuleClass {
       additionalMetadate: null,
     };
 
+    // Initialize image decoder for OCR-based character decoding
+    const decoder = new QidianImageDecoder();
+    await decoder.init();
+
+    try {
+      return await getChapter();
+    } finally {
+      await decoder.close();
+    }
+
     async function getChapter(): Promise<ChapterParseObject> {
       let doc;
       if (isVIP) {
@@ -385,6 +520,9 @@ export class Qidian extends BaseRuleClass {
           "#r-authorSay"
         ) as HTMLElement;
         if (contentMain) {
+          // Decode character-replacement images before cleanDOM processing
+          await processCharacterImages(contentMain, decoder);
+
           const { dom, text, images } = await cleanDOM(contentMain, "TM");
           htmlTrim(dom);
           content.appendChild(dom);
@@ -416,6 +554,12 @@ export class Qidian extends BaseRuleClass {
             }
           }
 
+          // Report failed images for this chapter
+          const failedCount = decoder.getFailedImagesCount();
+          if (failedCount > 0) {
+            log.warn(`[Qidian] Chapter "${chapterName}" has ${failedCount} failed image(s) replaced with "${decoder.getPlaceholderChar()}"`);
+          }
+
           return {
             chapterName,
             contentRaw: content,
@@ -429,8 +573,82 @@ export class Qidian extends BaseRuleClass {
 
       return nullObj;
     }
+  }
+}
 
-    return getChapter();
+/**
+ * Process character-replacement images in content using the decoder.
+ * Finds images that represent text characters and replaces them with decoded text.
+ */
+async function processCharacterImages(
+  content: HTMLElement,
+  decoder: QidianImageDecoder,
+): Promise<void> {
+  // Find all images in the content that are likely character replacements
+  // Qidian character images are typically small inline images within paragraph text
+  const images = content.querySelectorAll(
+    "img",
+  ) as NodeListOf<HTMLImageElement>;
+
+  for (const img of Array.from(images)) {
+    try {
+      // Skip cover images, illustration images, and other non-character images
+      // Character images in Qidian typically have:
+      // - Small dimensions (single character size)
+      // - Are inline with text (not block-level)
+      // - May have specific class names or data attributes
+
+      // Check if this is likely a character image
+      const parentElement = img.parentElement;
+      const isInlineImage = parentElement?.tagName === "P" ||
+        parentElement?.closest("p") !== null;
+      const hasImgClass = img.classList.contains("lazy") ||
+        img.classList.contains("content-image");
+
+      // Skip obvious non-character images (large images, avatar images, ad images)
+      if (img.classList.contains("avatar") ||
+          img.classList.contains("review-count") ||
+          img.alt && img.alt.length > 2) {
+        continue;
+      }
+
+      // Only process images that are inline with text content or have character-like class
+      if (!isInlineImage && !hasImgClass) {
+        // Check if the image is inside a paragraph-like container
+        const isInTextContainer = img.closest("p, span, div.content-text");
+        if (!isInTextContainer) {
+          continue;
+        }
+      }
+
+      let imageUrl = img.src;
+      if (!imageUrl || imageUrl.startsWith("data:")) {
+        continue;
+      }
+
+      // Convert to HTTPS if needed
+      if (imageUrl.startsWith("http://")) {
+        imageUrl = imageUrl.replace("http://", "https://");
+      }
+
+      const decodedText = await decoder.decodeImage(imageUrl);
+      if (decodedText !== decoder.getPlaceholderChar()) {
+        // Successfully decoded - replace image with text
+        const textNode = document.createTextNode(decodedText);
+        img.parentNode?.replaceChild(textNode, img);
+        log.debug(`[Qidian] Decoded character image: ${imageUrl.substring(0, 60)}... -> "${decodedText}"`);
+      } else {
+        // Decoding failed - still replace image with placeholder
+        const textNode = document.createTextNode(decodedText);
+        img.parentNode?.replaceChild(textNode, img);
+        log.debug(`[Qidian] Image decoding failed, using placeholder: ${imageUrl.substring(0, 60)}...`);
+      }
+    } catch (error) {
+      log.error("[Qidian] Unexpected error during image processing:", img.src, error);
+      // As a fallback, replace with placeholder
+      const textNode = document.createTextNode(decoder.getPlaceholderChar());
+      img.parentNode?.replaceChild(textNode, img);
+    }
   }
 }
 
