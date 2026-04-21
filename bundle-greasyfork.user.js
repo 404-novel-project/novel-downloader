@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1243
+// @version        5.2.1244
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -20639,6 +20639,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .
         let sectionNumber = 0;
         let sectionName = null;
         let sectionChapterNumber = 0;
+        let chapterNumber = 0;
         for (const chapterObj of _chapterList) {
             if (chapterObj.type === "volume") {
                 sectionNumber = chapterObj.vid;
@@ -20650,7 +20651,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .
                     document.location.origin,
                     `read-${chapterObj.id}.html`,
                 ].join("/");
-                const chapterNumber = parseInt(chapterObj.order);
+                chapterNumber++;
                 const chapterName = chapterObj.name;
                 const isVIP = chapterObj.pay;
                 const isPaid = chapterObj.is_sub || chapterObj.is_free_limit === 1;
@@ -20734,8 +20735,8 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .
             else if (document.location.pathname.includes("read")) {
                 const rightMenu = document.querySelector(".right-menu");
                 const rightMenuCount = rightMenu.childElementCount;
-                const btn1 = document.querySelector(`.right-menu > div:nth-child(${rightMenuCount - 1}) > a:nth-child(1)`);
-                const btn2 = document.querySelector(`.right-menu > div:nth-child(${rightMenuCount}) > a:nth-child(1)`);
+                const btn1 = document.querySelector(`.right-menu > div:nth-child(${rightMenuCount - 1}) > a`);
+                const btn2 = document.querySelector(`.right-menu > div:nth-child(${rightMenuCount}) > a`);
                 if (btn1 && btn1.textContent?.includes("一章")) {
                     if (Math.random() < 0.3) {
                         btn1.click();
@@ -20776,7 +20777,8 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .
                 })
                     .then((resp) => resp.json())
                     .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
-                if (resultI.data.chapterInfo.content.length !== 0 &&
+                const isPaid = resultI.data.chapterInfo.isSub !== 0 || resultI.data.chapterInfo.is_free_limit !== 0;
+                if (isPaid &&
                     resultI.data.chapterInfo.content.length < 30) {
                     retryTime++;
                     if (retryTime > _setting__WEBPACK_IMPORTED_MODULE_9__/* .retryLimit */ .Iz) {
@@ -20800,8 +20802,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .
             const result = await getChapterInfo(chapterGetInfoUrl.toString());
             if (result.code === 200) {
                 const chapterInfo = result.data.chapterInfo;
-                if (chapterInfo.chapterPrice !== 0 &&
-                    chapterInfo.content.length === 0) {
+                if (chapterInfo.content.length === 0) {
                     return {
                         chapterName,
                         contentRaw: null,
@@ -20811,8 +20812,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .
                         additionalMetadate: null,
                     };
                 }
-                else if (chapterInfo.chapterPrice === 0 ||
-                    (chapterInfo.chapterPrice !== 0 && chapterInfo.content.length !== 0)) {
+                else {
                     const content = cpDecrypt(chapterInfo.content);
                     const contentRaw = document.createElement("pre");
                     contentRaw.innerHTML = content;
@@ -20867,7 +20867,6 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .
                             chapterInfo.postscript,
                         ].join("\n\n");
                     }
-                    await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ .yy)(3000 + Math.round(Math.random() * 5000));
                     return {
                         chapterName,
                         contentRaw,
@@ -45592,10 +45591,14 @@ function formatETA(ms) {
     if (totalSeconds < 1) {
         return "<1s";
     }
-    const hours = Math.floor(totalSeconds / 3600);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
     const parts = [];
+    if (days > 0) {
+        parts.push(`${days}d`);
+    }
     if (hours > 0) {
         parts.push(`${hours}h`);
     }
