@@ -12,15 +12,21 @@ function register() {
 
 export function init() {
   register();
-  buttonVm.mount(buttonEl);
-  document.body.appendChild(buttonEl);
-  document.body.appendChild(progressEl);
-  document.body.appendChild(settingEl);
 
-  document.head.appendChild(buttonStyel);
-  document.head.appendChild(progressStyel);
-  document.head.appendChild(settingStyle);
-  document.head.appendChild(filterTabStyel);
-  document.head.appendChild(chapterListStyel);
-  document.head.appendChild(testUIStyle);
+  const shadowHost = document.createElement("div");
+  shadowHost.id = "nd-shadow-host";
+  document.body.appendChild(shadowHost);
+  const shadowRoot = shadowHost.attachShadow({ mode: "open" });
+
+  buttonVm.mount(buttonEl);
+  shadowRoot.appendChild(buttonEl);
+  shadowRoot.appendChild(progressEl);
+  shadowRoot.appendChild(settingEl);
+
+  shadowRoot.appendChild(buttonStyel);
+  shadowRoot.appendChild(progressStyel);
+  shadowRoot.appendChild(settingStyle);
+  shadowRoot.appendChild(filterTabStyel);
+  shadowRoot.appendChild(chapterListStyel);
+  shadowRoot.appendChild(testUIStyle);
 }
