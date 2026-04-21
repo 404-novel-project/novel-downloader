@@ -22,11 +22,76 @@ import { _GM_xmlhttpRequest } from "../../../lib/GM";
 
 import * as csstree from "css-tree";
 import * as CryptoJS from "crypto-js";
-import { version } from "node:os";
 
 type JJWindow = UnsafeWindow & { getCookie: (key: string) => string };
 
 const AUTHOR_SAY_PREFIX = "作者有话说："; // before it was "-".repeat(20)
+const JJWXC_TOKEN_STORAGE_KEY = "nd-jjwxc-token";
+
+function normalizeJjwxcToken(token: string): string {
+  return String(token).replace(/undefined|token=|\s|&.*$/g, "").trim();
+}
+
+function isValidJjwxcToken(token: string): boolean {
+  return /^\d+_[\w\d]{16,}$/.test(token);
+}
+
+function getJjwxcTokenFromOptions(): string | null {
+  const raw = (unsafeWindow as UnsafeWindow).tokenOptions?.Jjwxc;
+  if (!raw) {
+    return null;
+  }
+  const token = normalizeJjwxcToken(
+    typeof raw === "string" ? raw : raw.token ?? ""
+  );
+  return token.length > 0 ? token : null;
+}
+
+function getStoredJjwxcToken(): string | null {
+  const fromOptions = getJjwxcTokenFromOptions();
+  if (fromOptions) {
+    return fromOptions;
+  }
+  try {
+    const fromStorage = normalizeJjwxcToken(
+      localStorage.getItem(JJWXC_TOKEN_STORAGE_KEY) ?? ""
+    );
+    if (fromStorage.length > 0) {
+      return fromStorage;
+    }
+  } catch (error) {
+    log.debug(`[jjwxc-token] read localStorage failed: ${String(error)}`);
+  }
+  return null;
+}
+
+function setStoredJjwxcToken(token: string): string | null {
+  const normalized = normalizeJjwxcToken(token);
+  if (!normalized) {
+    return null;
+  }
+  const tokenOptions =
+    typeof (unsafeWindow as UnsafeWindow).tokenOptions === "object"
+      ? (unsafeWindow as UnsafeWindow).tokenOptions
+      : undefined;
+  (unsafeWindow as UnsafeWindow).tokenOptions = {
+    ...(tokenOptions ?? {}),
+    Jjwxc: normalized,
+  } as NonNullable<UnsafeWindow["tokenOptions"]>;
+  try {
+    localStorage.setItem(JJWXC_TOKEN_STORAGE_KEY, normalized);
+  } catch (error) {
+    log.debug(`[jjwxc-token] write localStorage failed: ${String(error)}`);
+  }
+  return normalized;
+}
+
+function hydrateJjwxcTokenFromStorage() {
+  const token = getStoredJjwxcToken();
+  if (token) {
+    setStoredJjwxcToken(token);
+  }
+}
 
 export class Jjwxc extends BaseRuleClass {
   public constructor() {
@@ -34,14 +99,7 @@ export class Jjwxc extends BaseRuleClass {
     this.attachmentMode = "TM";
     this.concurrencyLimit = 1;
     this.charset = "GB18030";
-    // 获取nd-setting-tab-1的第一个子元素
-    const firstChild = document.querySelector('#nd-setting-tab-1')?.firstElementChild;
-    // 创建一个按钮元素
-    const button = document.createElement('button');
-    button.innerText = '获取token';
-    button.style.marginLeft = '10px'; // 添加一些样式
-    // 插入按钮到第一个子元素后面
-    firstChild?.parentNode?.insertBefore(button, firstChild.nextSibling);
+    hydrateJjwxcTokenFromStorage();
     function encode(data: string) {
       const key = CryptoJS.enc.Utf8.parse("KW8Dvm2N");
       const iv = CryptoJS.enc.Utf8.parse("1ae2c94b");
@@ -87,6 +145,22 @@ export class Jjwxc extends BaseRuleClass {
     }
 
     async function login() {
+      const manualToken = normalizeJjwxcToken(
+        (document.getElementById("nd-jj-manual-token") as HTMLInputElement)
+          ?.value ?? ""
+      );
+      if (manualToken.length > 0) {
+        const savedToken = setStoredJjwxcToken(manualToken);
+        if (savedToken) {
+          const tokenElement = document.getElementById("nd-jj-token");
+          if (tokenElement) {
+            tokenElement.textContent = savedToken;
+          }
+          alert("token 保存成功");
+        }
+        return;
+      }
+
       const account = (document.getElementById("nd-jj-account") as HTMLInputElement)?.value;
       const password = (document.getElementById("nd-jj-password") as HTMLInputElement)?.value;
       const verificationCode = (document.getElementById("nd-jj-verificationCode") as HTMLInputElement)?.value;
@@ -180,7 +254,16 @@ export class Jjwxc extends BaseRuleClass {
             if (!msg) msg = responseJson.message;
             alert(msg);
           } else {
-            alert(resJson.message);
+            const token = setStoredJjwxcToken(resJson.token ?? "");
+            if (token) {
+              const tokenElement = document.getElementById("nd-jj-token");
+              if (tokenElement) {
+                tokenElement.textContent = token;
+              }
+              alert("登录成功，token 已更新");
+            } else {
+              alert(resJson.message);
+            }
           }
         } else if (CheckLogin === 2) {
           loginUrl = loginUrl + "&checktype=" + t + "&checkdevicecode=" + verificationCode;
@@ -204,22 +287,32 @@ export class Jjwxc extends BaseRuleClass {
               },
             });
           });
-          const token = tokenJson.token;
+          const token = setStoredJjwxcToken(tokenJson.token ?? "");
           const tokenelement = document.getElementById("nd-jj-token");
-          if (tokenelement) {
+          if (tokenelement && token) {
             tokenelement.textContent = token;
+          }
+          if (!token) {
+            alert(tokenJson.message ?? "登录失败，请检查账号密码和验证码");
           }
         }
       }
     }
-    // 添加按钮点击事件处理程序
-    button.addEventListener('click', () => {
+
+    function openTokenDialog() {
       // 创建一个新的页面元素
       const page = document.createElement('div');
       // 设置页面的内容
+      const existingToken = getStoredJjwxcToken() ?? "";
       page.innerHTML = `
         <h1 class="center-align">JJ获取token</h1>
         <div>
+            <div class="row">
+                <div class="input-field">
+                    <label for="manualToken">已有token（可直接粘贴保存）</label>
+                    <input type="text" id="nd-jj-manual-token" name="manualToken" value="${existingToken}">
+                </div>
+            </div>
             <div class="row">
                 <div class="input-field">
                     <label for="account">账号</label>
@@ -239,11 +332,11 @@ export class Jjwxc extends BaseRuleClass {
                 </div>
             </div>
             <div class="row">
-                <button type="click" id="nd-jj-login">登录</button>
+              <button type="click" id="nd-jj-login">登录/保存token</button>
             </div>
         </div>
         <h2 class="center-align">生成的Token:</h2>
-        <p id="nd-jj-token" class="center-align"></p>
+          <p id="nd-jj-token" class="center-align">${existingToken}</p>
       `;
 
       page.style.position = 'fixed';
@@ -266,7 +359,38 @@ export class Jjwxc extends BaseRuleClass {
       // 将页面添加到body
       document.body.appendChild(page);
       document.getElementById("nd-jj-login")?.addEventListener('click', () => login());
-    });
+
+      const tokenInput = document.getElementById("nd-jj-manual-token") as HTMLInputElement;
+      if (tokenInput && !isValidJjwxcToken(existingToken) && existingToken.length > 0) {
+        tokenInput.style.borderColor = "#f44336";
+      }
+    }
+
+    function injectTokenButton(): boolean {
+      if (document.getElementById("nd-jj-token-entry")) {
+        return true;
+      }
+      const firstChild = document.querySelector('#nd-setting-tab-1')?.firstElementChild;
+      if (!firstChild || !firstChild.parentNode) {
+        return false;
+      }
+      const button = document.createElement('button');
+      button.id = "nd-jj-token-entry";
+      button.innerText = '获取token';
+      button.style.marginLeft = '10px';
+      firstChild.parentNode.insertBefore(button, firstChild.nextSibling);
+      button.addEventListener('click', () => openTokenDialog());
+      return true;
+    }
+
+    if (!injectTokenButton()) {
+      const observer = new MutationObserver(() => {
+        if (injectTokenButton()) {
+          observer.disconnect();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
   }  
 
   /**
@@ -623,7 +747,7 @@ export class Jjwxc extends BaseRuleClass {
                 options: {},
               });
               const isLogin = () => {
-                if (typeof (unsafeWindow as UnsafeWindow).tokenOptions === "object")
+                if (getStoredJjwxcToken())
                   return true;
                 return !document.getElementById("jj_login");
               };
@@ -651,7 +775,7 @@ export class Jjwxc extends BaseRuleClass {
               options: {},
             });
             const isLogin = () => {
-              if (typeof (unsafeWindow as UnsafeWindow).tokenOptions === "object")
+              if (getStoredJjwxcToken())
                 return true;
               return !document.getElementById("jj_login");
             };
@@ -1507,18 +1631,9 @@ export class Jjwxc extends BaseRuleClass {
       //let sid = getCookieObj("token");
       chapterGetInfoUrl += "&versionCode=381";
       // if (isVIP) {
-      let sid = (unsafeWindow as UnsafeWindow).tokenOptions?.Jjwxc;
+      let sid = getStoredJjwxcToken();
       if (sid) {
-        if (typeof sid !== "string") {
-          sid = sid as {
-            token: string;
-            user_key: string;
-          };
-          // if (sid.user_key)
-          //   sid = sid.token + "&user_key=" + sid.user_key;
-          // else
-          sid = sid.token;
-        }
+        sid = normalizeJjwxcToken(sid);
         chapterGetInfoUrl +=
           "&token=" + sid;
       } else {
@@ -1672,7 +1787,7 @@ export class Jjwxc extends BaseRuleClass {
         };
       }
     }
-    if (((unsafeWindow as UnsafeWindow).tokenOptions?.Jjwxc ?? null) != null) {
+    if (getStoredJjwxcToken() != null) {
       return getChapterByApi();
     } else {
       log.warn(`当前我们更推荐手动捕获android版app token以下载章节,详见github主页说明,脚本将继续尝试使用远程字体下载，但可能会失败`);
