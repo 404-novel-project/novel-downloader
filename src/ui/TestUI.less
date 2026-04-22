@@ -6,11 +6,11 @@
 #test-page-div {
   table {
     text-align: center;
+    width: 100%;
   }
 
   td {
-    all: revert;
-    padding-top: 0.3em;
+    padding: 6px 8px;
   }
 
   td > img {
@@ -18,8 +18,9 @@
   }
 
   tr > td:nth-child(1) {
-    font-weight: bold;
+    font-weight: 500;
     min-width: 7em;
+    color: rgb(var(--mdui-color-on-surface, 28,27,31));
   }
 
   tr > td:nth-child(2) {
@@ -29,14 +30,9 @@
     }
   }
 
-  hr {
-    margin-top: 1.5em;
-    margin-bottom: 1.5em;
-  }
-
   h2 {
     text-align: center;
-    margin-bottom: 1.3em;
+    margin-bottom: 1em;
   }
 
   h4 {
@@ -54,39 +50,31 @@
   }
 
   .preview-chapter-setting {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 12px;
     margin-bottom: 1em;
-
-    button {
-      cursor: pointer;
-      margin-left: 0.5em;
-      padding: 0px 10px;
-    }
-
-    button:disabled {
-      cursor: not-allowed;
-    }
   }
 
   .loading-spinner {
     text-align: center;
     margin: 1em 0;
-
-    .spinner {
-      display: inline-block;
-      width: 30px;
-      height: 30px;
-      border: 3px solid rgba(0, 0, 0, 0.3);
-      border-radius: 50%;
-      border-top-color: #000;
-      animation: spin 1s ease-in-out infinite;
-      margin-bottom: 0.5em;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
   }
+
+  .nd-spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid rgba(var(--mdui-color-surface-variant, 231,224,236), 0.5);
+    border-top-color: rgb(var(--mdui-color-primary, 103,80,164));
+    border-radius: 50%;
+    animation: nd-spin 0.8s linear infinite;
+  }
+}
+
+@keyframes nd-spin {
+  to { transform: rotate(360deg); }
 }

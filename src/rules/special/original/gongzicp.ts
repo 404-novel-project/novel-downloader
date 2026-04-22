@@ -25,12 +25,20 @@ export class Gongzicp extends BaseRuleClass {
   public async bookParse() {
     const bookUrl = document.location.href;
 
-    const bookId = (
-      document.querySelector("span.c-light-gray") as HTMLSpanElement
-    ).innerText.replace("CP", "");
-    if (!bookId) {
-      throw new Error("获取bookID出错");
+    // 长佩可能是动态渲染或加载较慢，增加轮询等待元素
+    let bookIdSpan = document.querySelector("span.c-light-gray") as HTMLSpanElement | null;
+    let retry = 0;
+    while (!bookIdSpan && retry < 50) { // 最多等 25 秒
+      await new Promise(r => setTimeout(r, 500));
+      bookIdSpan = document.querySelector("span.c-light-gray") as HTMLSpanElement | null;
+      retry++;
     }
+
+    if (!bookIdSpan) {
+      throw new Error("获取bookID出错: 找不到对应元素(span.c-light-gray)");
+    }
+    const bookId = bookIdSpan.innerText.replace("CP", "");
+
     const novelGetInfoBaseUrl =
       "https://www.gongzicp.com/webapi/novel/novelInfo";
     const novelGetInfoUrl = new URL(novelGetInfoBaseUrl);

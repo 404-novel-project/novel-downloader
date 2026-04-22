@@ -28,7 +28,7 @@ export default defineComponent({
     }
 
     interface MetaData {
-      封面: string;
+      封面: [string, string];
       题名: string;
       作者: string;
       网址: string;
@@ -145,6 +145,26 @@ export default defineComponent({
       const cn = getInitChapterNumber();
       if (cn) {
         chapterNumber.value = cn;
+      }
+
+      // 封面附件是异步下载的，可能尚未就绪，轮询等待其可用
+      if (!coverSrc) {
+        const maxWait = 10000;
+        const startTime = Date.now();
+        const pollCover = async () => {
+          if (Date.now() - startTime > maxWait) return;
+          const newCoverUrl = (book as Book)?.additionalMetadate?.cover?.url ?? "";
+          if (newCoverUrl) {
+            const newCoverSrc = getObjectUrl(newCoverUrl);
+            if (newCoverSrc) {
+              metaData["封面"] = [newCoverSrc, newCoverUrl];
+              return;
+            }
+          }
+          await sleep(300);
+          pollCover();
+        };
+        pollCover();
       }
     });
 

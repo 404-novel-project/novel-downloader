@@ -3,77 +3,90 @@
   bottom: 8%;
   right: 3%;
   z-index: 2147483647;
-  border-style: none;
-  text-align: center;
-  vertical-align: baseline;
-  background-color: rgba(210, 210, 210, 0.2);
-  padding: 6px;
-  border-radius: 12px;
+  background-color: rgba(var(--mdui-color-surface-container, 243,237,247), 0.92);
+  padding: 16px 20px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08); /* Stronger shadow */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(var(--mdui-color-outline-variant, 202,196,208), 0.5);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 #chapter-progress-wrapper {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  gap: 12px;
 }
 
-#chapter-progress {
-  --color: green;
-  --position: 0%;
-  width: 200px;
-  height: 10px;
-  border-radius: 30px;
-  background-color: #ccc;
-  background-image: radial-gradient(
-      closest-side circle at var(--position),
-      var(--color),
-      var(--color) 100%,
-      transparent
-    ),
-    linear-gradient(var(--color), var(--color));
-  background-image: -webkit-radial-gradient(
-      var(--position),
-      circle closest-side,
-      var(--color),
-      var(--color) 100%,
-      transparent
-    ),
-    -webkit-linear-gradient(var(--color), var(--color));
-  background-size: 100%, var(--position);
-  background-repeat: no-repeat;
+.nd-progress-text-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  color: rgb(var(--mdui-color-on-surface-variant, 73,69,78));
+  font-weight: 500;
+}
+
+#chapter-progress-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nd-progress-bar {
+  --progress: 0%;
+  width: 220px;
+  height: 8px;
+  border-radius: 4px;
+  background-color: rgba(var(--mdui-color-on-surface, 28,27,31), 0.12);
+  overflow: hidden;
+  position: relative;
+}
+
+.nd-progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: var(--progress);
+  background: linear-gradient(90deg, 
+    rgb(var(--mdui-color-primary, 103,80,164)) 0%, 
+    rgb(var(--mdui-color-tertiary, 125,82,96)) 100%);
+  border-radius: 4px;
+  transition: width 0.4s cubic-bezier(0.2, 0, 0, 1);
+  box-shadow: 0 0 8px rgba(var(--mdui-color-primary, 103,80,164), 0.4);
+}
+
+#chapter-count {
+  line-height: 1;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  color: rgb(var(--mdui-color-on-surface-variant, 73,69,78));
+}
+
+#chapter-percent-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgb(var(--mdui-color-primary, 103,80,164));
+  min-width: 2.5em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 #chapter-eta {
-  color: #555;
-  font-size: 12px;
+  color: rgb(var(--mdui-color-primary, 103,80,164));
+  font-weight: 600;
   line-height: 1;
   white-space: nowrap;
-  font-family: monospace;
-}
-
-#zip-progress {
-  --color: yellow;
-  --position: 0%;
-  width: 200px;
-  height: 10px;
-  border-radius: 30px;
-  background-color: #ccc;
-  background-image: radial-gradient(
-      closest-side circle at var(--position),
-      var(--color),
-      var(--color) 100%,
-      transparent
-    ),
-    linear-gradient(var(--color), var(--color));
-  background-image: -webkit-radial-gradient(
-      var(--position),
-      circle closest-side,
-      var(--color),
-      var(--color) 100%,
-      transparent
-    ),
-    -webkit-linear-gradient(var(--color), var(--color));
-  background-size: 100%, var(--position);
-  background-repeat: no-repeat;
-  margin-top: 5px;
+  font-variant-numeric: tabular-nums;
+  background: rgba(var(--mdui-color-primary, 103,80,164), 0.1);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
 }

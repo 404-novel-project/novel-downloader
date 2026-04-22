@@ -1,14 +1,19 @@
-.filter-setting {
+﻿.filter-setting {
   padding-top: 0.4em;
   padding-bottom: 0.8em;
   text-align: center;
 }
 
-.filter-input + .filter-setter {
-  margin-top: 1em;
+.filter-input {
+  margin-bottom: 12px;
 }
 
 .filter-description {
-  font-size: larger;
-  color: cornflowerblue;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgb(var(--mdui-color-on-surface-variant, 73,69,79));
+  background-color: rgba(var(--mdui-color-surface-container, 243,237,247), 0.5);
+  padding: 12px;
+  border-radius: 12px;
+  text-align: left;
 }

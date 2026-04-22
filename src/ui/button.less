@@ -1,28 +1,87 @@
-.button-div {
+﻿.button-div {
   position: fixed;
   top: 15%;
   right: 5%;
   z-index: 10000;
-}
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-end;
 
-.button-div {
-  button {
-    border-style: none;
-    text-align: center;
-    vertical-align: baseline;
-    background-color: rgba(128, 128, 128, 0.2);
-    padding: 3px;
+  .download {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-end;
+  }
+
+  .nd-fab {
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(var(--mdui-color-primary-container, 234,221,255));
+    color: rgb(var(--mdui-color-on-primary-container, 33,0,94));
+    box-shadow: var(--mdui-elevation-level3, 0 1.25px 5px 0 rgba(0,0,0,0.19));
+    transition: box-shadow 0.28s cubic-bezier(0.2, 0, 0, 1),
+                background-color 0.28s cubic-bezier(0.2, 0, 0, 1),
+                transform 0.14s cubic-bezier(0.2, 0, 0, 1);
+    position: relative;
+    overflow: hidden;
+
+    // Normal FAB size
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+
+    // Material Design state layer
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-color: rgb(var(--mdui-color-on-primary-container, 33,0,94));
+      opacity: 0;
+      transition: opacity 0.2s cubic-bezier(0.2, 0, 0, 1);
+      border-radius: inherit;
+    }
+
+    &:hover::after {
+      opacity: 0.08;
+    }
+
+    &:active::after {
+      opacity: 0.12;
+    }
+
+    &:hover {
+      box-shadow: var(--mdui-elevation-level4, 0 1.85px 6.25px 0 rgba(0,0,0,0.19));
+    }
+
+    &:active {
+      transform: scale(0.96);
+      box-shadow: var(--mdui-elevation-level2, 0 0.85px 3px 0 rgba(0,0,0,0.19));
+    }
+
+    img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      pointer-events: none;
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  // Small icon-only FAB
+  .nd-fab-small {
+    width: 40px;
+    height: 40px;
     border-radius: 12px;
-    min-width: auto;
-    min-height: auto;
-  }
 
-  img.start,
-  img.jump {
-    height: 2em;
-  }
-
-  img.setting {
-    height: 1em;
+    img {
+      width: 20px;
+      height: 20px;
+    }
   }
 }

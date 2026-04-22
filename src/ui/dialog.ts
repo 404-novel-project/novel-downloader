@@ -19,6 +19,13 @@ export default defineCustomElement({
       this.myPrivateStatus = false;
       this.$emit("dialogclose");
     },
+    onDialogClosed(event?: Event) {
+      if (event && event.target !== event.currentTarget) {
+        return;
+      }
+      this.myPrivateStatus = false;
+      this.$emit("dialogclose");
+    },
   },
   mounted() {
     this.myPrivateStatus = this.status === "true";

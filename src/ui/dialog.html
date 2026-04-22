@@ -1,16 +1,15 @@
-<div
-  v-if="myPrivateStatus"
-  class="overlay"
-  v-bind:class="{ open: myPrivateStatus }"
-></div>
-<div v-if="myPrivateStatus" class="out">
-  <div id="dialog" class="dialog" v-bind:class="{ open: myPrivateStatus }">
-    <div class="titlebar">
-      <h1 class="dialog-title">{{ dialogTitle }}</h1>
-      <button class="dialog-close" v-on:click="dialogClose">❌</button>
-    </div>
-    <div class="body">
-      <slot></slot>
-    </div>
-  </div>
-</div>
+<mdui-dialog
+  v-bind:open="myPrivateStatus"
+  v-bind:headline="dialogTitle"
+  close-on-overlay-click
+  close-on-esc
+  v-on:closed="onDialogClosed($event)"
+>
+  <slot></slot>
+  <button
+    slot="header"
+    v-on:click="dialogClose"
+    class="nd-dialog-close"
+    title="关闭"
+  >&times;</button>
+</mdui-dialog>

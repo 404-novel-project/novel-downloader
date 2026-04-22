@@ -1,23 +1,36 @@
 <div>
   <div id="test-page-div">
     <h2>元数据</h2>
-    <table>
-      <tbody>
-        <tr v-for="(value, key) in metaData">
-          <td>{{ key }}</td>
-          <td v-html="getData(key, value)"></td>
-        </tr>
-      </tbody>
-    </table>
-    <hr class="hr-edge-weak" />
+    <mdui-card variant="outlined" style="padding: 12px; margin-bottom: 16px;">
+      <table>
+        <tbody>
+          <tr v-for="(value, key) in metaData">
+            <td>{{ key }}</td>
+            <td v-html="getData(key, value)"></td>
+          </tr>
+        </tbody>
+      </table>
+    </mdui-card>
+
+    <mdui-divider></mdui-divider>
+
     <h2>章节测试</h2>
     <div class="preview-chapter-setting">
-      <label for="chapterNumber">预览章节序号：</label>
-      <input id="chapterNumber" v-model="chapterNumber" type="text" />
-      <button @click="previewChapter" type="button" :disabled="isLoading">预览</button>
+      <mdui-text-field
+        v-model="chapterNumber"
+        label="预览章节序号"
+        type="text"
+        variant="outlined"
+        style="flex: 1;"
+      ></mdui-text-field>
+      <mdui-button
+        @click="previewChapter"
+        :disabled="isLoading"
+        variant="tonal"
+      >预览</mdui-button>
     </div>
     <div v-if="isLoading" class="loading-spinner">
-      <div class="spinner"></div>
+      <div class="nd-spinner"></div>
       <p>正在加载章节中...</p>
     </div>
     <div v-else-if="this.isSeenChapter(chapter)">

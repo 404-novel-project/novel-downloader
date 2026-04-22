@@ -10,9 +10,21 @@ div.chapter-list-loading {
   text-align: center;
 }
 
+.nd-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(var(--mdui-color-surface-variant, 231,224,236), 0.5);
+  border-top-color: rgb(var(--mdui-color-primary, 103,80,164));
+  border-radius: 50%;
+  animation: nd-spin 0.8s linear infinite;
+}
+
+@keyframes nd-spin {
+  to { transform: rotate(360deg); }
+}
+
 div.chapter-list {
-  max-height: 200px;
-  overflow-y: scroll;
+  /* removed inner scroll constraints to let the outer container handle vertical scrolling */
 }
 
 div.chapter-list {
@@ -20,6 +32,7 @@ div.chapter-list {
     margin-top: 1.5em;
     display: grid;
     grid-template-columns: 32% 32% 32%;
+    gap: 4px;
   }
 
   .section > h3:first-child {
@@ -29,43 +42,53 @@ div.chapter-list {
 
   .section > div.chapter {
     text-align: center;
-    padding-top: 0.5em;
-    padding-bottom: 0.3em;
-    padding-left: 23px;
-    padding-right: 20px;
-    border: 1px solid #d9d9d9;
-    border-radius: 5px;
-    margin-left: 10px;
-    margin-top: 5px;
-    margin-right: 0;
-    margin-bottom: 0;
+    border-radius: 6px;
+    margin-left: 8px;
+    margin-top: 6px;
+    overflow: hidden;
+    transition: transform 0.2s ease, filter 0.2s ease;
+  }
+
+  .section > div.chapter:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 
   .section a.disabled {
     pointer-events: none;
     cursor: default;
+    opacity: 0.6;
   }
 
   .section a {
     text-decoration: none;
+    color: inherit;
+    display: block;
+    padding: 0.5em 12px;
+    font-size: 0.9em;
+    font-weight: 500;
   }
 
   div.chapter.good {
     background: var(--good-chapter-color);
+    color: white;
   }
 
   div.chapter.bad {
     background: var(--bad-chapter-color);
+    color: white;
   }
 
   div.chapter.good.warning {
     background: var(--warning-chapter-color);
+    color: white;
   }
 
   div.chapter.bad a,
-  div.chapter.good a {
+  div.chapter.good a,
+  div.chapter.warning a {
     color: white;
-    font-size: 0.9em;
   }
 }
 

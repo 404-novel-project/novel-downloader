@@ -1,23 +1,38 @@
 <div>
-  <div class="filter-setting">
+  <div class="setting-section filter-setting">
     <div v-if="filterType !== 'null'" class="filter-input">
-      <p>请输入过滤的条件：<input v-model="arg" type="text" /></p>
+      <mdui-text-field
+        :value="arg"
+        @input="arg = $event.target.value"
+        label="请输入过滤的条件"
+        variant="outlined"
+        style="width: 100%;"
+      ></mdui-text-field>
     </div>
+    
     <div class="filter-setter">
-      <div>
-        <span>当前过滤方法：</span>
-        <select v-model="filterType">
-          <option
+<div class="setting-item">
+        <span class="setting-label">当前过滤方法：</span>
+        <mdui-select
+          :value="filterType"
+          @change="filterType = $event.target.value"
+          variant="outlined"
+        >
+          <mdui-menu-item
             v-for="filterOption in filterOptionList"
             v-bind:value="filterOption[0]"
-          >
-            {{ filterOption[1]["abbreviation"] }}
-          </option>
-        </select>
+          >{{ filterOption[1]["abbreviation"] }}</mdui-menu-item>
+        </mdui-select>
       </div>
-      <input id="hiddenBad" v-model="hiddenBad" type="checkbox" />
-      <label for="hiddenBad">只显示符合条件章节</label>
-      <div class="filter-description" v-html="filterDescription"></div>
+
+      <div class="setting-switches" style="margin-top: 12px;">
+        <div class="setting-item" @click="hiddenBad = !hiddenBad">
+          <span class="setting-label">只显示符合条件章节</span>
+          <mdui-switch :checked="hiddenBad" @change="hiddenBad = $event.target.checked" @click.stop></mdui-switch>
+        </div>
+      </div>
+
+      <div class="filter-description" v-html="filterDescription" style="margin-top: 16px;"></div>
       <div v-if="false">
         <span class="good"></span>
         <span class="warning"></span>

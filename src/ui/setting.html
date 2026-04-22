@@ -1,127 +1,114 @@
 <div>
-  <dialog-ui
-    v-if="openStatus === 'true'"
-    dialog-title="设置"
-    v-bind:status="openStatus"
-    v-on:dialogclose="closeSetting"
+  <mdui-dialog
+    v-bind:open="openStatus === 'true'"
+    headline="设置"
+    close-on-esc
+    v-on:closed="onSettingClosed($event)"
+    class="nd-setting-dialog"
   >
     <div id="nd-setting" class="nd-setting">
-      <div class="nd-setting-tab">
-        <button
-          v-bind:class="['tab-button', { active: setting.currentTab === 'tab-1'}]"
-          v-on:click="setting.currentTab = 'tab-1'"
-        >
-          基本设置
-        </button>
-        <button
-          v-bind:class="['tab-button', { active: setting.currentTab === 'tab-2'}]"
-          v-on:click="setting.currentTab = 'tab-2'"
-        >
-          自定义筛选条件
-        </button>
-        <button
-          v-if="setting.enableTestPage"
-          v-bind:class="['tab-button', { active: setting.currentTab === 'tab-3'}]"
-          v-on:click="setting.currentTab = 'tab-3'"
-        >
-          抓取测试
-        </button>
-        <button
-          v-if="setting.enableTestPage"
-          v-bind:class="['tab-button', { active: setting.currentTab === 'tab-4'}]"
-          v-on:click="setting.currentTab = 'tab-4'"
-        >
-          日志
-        </button>
-      </div>
-      <div class="nd-setting-body">
-        <div
-          v-show="setting.currentTab === 'tab-1'"
-          id="nd-setting-tab-1"
-          class="tab-page"
-        >
-          <div>
-            <input id="debug" v-model="setting.enableDebug" type="checkbox" />
-            <label for="debug">启用调试模式。（输出更详细日志）</label>
-            <input id="txtDownload" v-model="setting.TxtDownload" type="checkbox" />
-            <label for="txtDownload">下载Txt文件</label>
-            <input id="EpubDownload" v-model="setting.EpubDownload" type="checkbox" />
-            <label for="EpubDownload">下载Epub文件</label>
-            <input
-              id="test-page"
-              v-model="setting.enableTestPage"
-              type="checkbox"
-            />
-            <label for="test-page">启用测试视图</label>
+      <mdui-tabs
+        v-bind:value="setting.currentTab"
+        v-on:change="onTabChange"
+        variant="secondary"
+        full-width
+      >
+        <mdui-tab value="tab-1">基本设置</mdui-tab>
+        <mdui-tab value="tab-2">自定义筛选条件</mdui-tab>
+        <mdui-tab v-if="setting.enableTestPage" value="tab-3">抓取测试</mdui-tab>
+        <mdui-tab v-if="setting.enableTestPage" value="tab-4">日志</mdui-tab>
+
+        <mdui-tab-panel id="nd-setting-tab-1" slot="panel" value="tab-1" class="tab-panel">
+          <div class="setting-section">
+            <div class="setting-switches">
+              <div class="setting-item" @click="setting.enableDebug = !setting.enableDebug">
+                <span class="setting-label">启用调试模式（输出更详细日志）</span>
+                <mdui-switch :checked="setting.enableDebug" @change="setting.enableDebug = $event.target.checked" @click.stop></mdui-switch>
+              </div>
+              <div class="setting-item" @click="setting.TxtDownload = !setting.TxtDownload">
+                <span class="setting-label">下载 Txt 文件</span>
+                <mdui-switch :checked="setting.TxtDownload" @change="setting.TxtDownload = $event.target.checked" @click.stop></mdui-switch>
+              </div>
+              <div class="setting-item" @click="setting.EpubDownload = !setting.EpubDownload">
+                <span class="setting-label">下载 Epub 文件</span>
+                <mdui-switch :checked="setting.EpubDownload" @change="setting.EpubDownload = $event.target.checked" @click.stop></mdui-switch>
+              </div>
+              <div class="setting-item" @click="setting.enableTestPage = !setting.enableTestPage">
+                <span class="setting-label">启用测试视图</span>
+                <mdui-switch :checked="setting.enableTestPage" @change="setting.enableTestPage = $event.target.checked" @click.stop></mdui-switch>
+              </div>
+
+          <mdui-divider></mdui-divider>
+
+          <div class="setting-section">
+            <h3 class="section-title">自定义下载参数</h3>
+            <div class="setting-item" @click="setting.customDownload = !setting.customDownload">
+              <span class="setting-label">启用自定义下载设置</span>
+              <mdui-switch :checked="setting.customDownload" @change="setting.customDownload = $event.target.checked" @click.stop></mdui-switch>
+            </div>
+            <div class="setting-grid" v-show="setting.customDownload">
+              <mdui-text-field
+                :value="setting.concurrencyLimit"
+                @input="setting.concurrencyLimit = Number($event.target.value)"
+                label="并行下载线程数"
+                type="number"
+                variant="outlined"
+              ></mdui-text-field>
+              <mdui-text-field
+                :value="setting.sleepTime"
+                @input="setting.sleepTime = Number($event.target.value)"
+                label="下载间隔 (ms)"
+                type="number"
+                variant="outlined"
+              ></mdui-text-field>
+              <mdui-text-field
+                :value="setting.maxSleepTime"
+                @input="setting.maxSleepTime = Number($event.target.value)"
+                variant="outlined"
+                class="full-width-field"
+              ></mdui-text-field>
+            </div>
           </div>
-          <hr class="hr-twill-colorful" />
-          <div>
-            <h3>自定义下载参数</h3>
-            <table style="border:0px">
-              <tr>
-                <th>
-                <input id="customDownload" v-model="setting.customDownload" type="checkbox" />
-                <label for="customDownload">启用自定义下载设置</label></th>
-                <th>
-                <input
-                  id="downloadConcurrency"
-                  v-model="setting.concurrencyLimit"
-                  type="number" 
-                />
-                <label for="downloadConcurrency">并行下载线程数</label></th>
-              </tr><th>
-                <input id="downloadSleeptime" v-model="setting.sleepTime" type="number"  />
-                <label for="downloadSleeptime">下载间隔</label>
-                </th><th>
-                <input id="downloadMaxsleeptime" v-model="setting.maxSleepTime" type="number" />
-                <label for="downloadMaxsleeptime">最大下载间隔</label>
-                </th>
-              </table>
+
+          <mdui-divider></mdui-divider>
+
+          <div class="setting-section">
+            <h3 class="section-title">自定义保存参数</h3>
+            <mdui-radio-group :value="setting.chooseSaveOption" @change="setting.chooseSaveOption = $event.target.value">
+              <mdui-radio
+                v-for="item of saveOptions"
+                v-bind:key="item.key"
+                v-bind:value="item.key"
+              >{{ item.value }}</mdui-radio>
+            </mdui-radio-group>
           </div>
-          <hr class="hr-twill-colorful" />
-          <div>
-            <h3>自定义保存参数</h3>
-            <ul>
-              <li v-for="item of saveOptions">
-                <input
-                  v-bind:id="item.key"
-                  v-model="setting.chooseSaveOption"
-                  type="radio"
-                  v-bind:value="item.key"
-                />
-                <label v-bind:for="item.key">{{ item.value }}</label>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div
-          v-show="setting.currentTab === 'tab-2'"
-          id="nd-setting-tab-2"
-          class="tab-page"
-        >
+        </mdui-tab-panel>
+
+        <mdui-tab-panel slot="panel" value="tab-2" class="tab-panel">
           <filter-tab v-on:filterupdate="saveFilter" />
-        </div>
-        <div
+        </mdui-tab-panel>
+
+        <mdui-tab-panel
           v-if="setting.enableTestPage"
-          v-show="setting.currentTab === 'tab-3'"
-          id="nd-setting-tab-3"
-          class="tab-page"
+          slot="panel"
+          value="tab-3"
+          class="tab-panel"
         >
           <test-ui></test-ui>
-        </div>
-        <div
+        </mdui-tab-panel>
+
+        <mdui-tab-panel
           v-if="setting.enableTestPage"
-          v-show="setting.currentTab === 'tab-4'"
-          id="nd-setting-tab-4"
-          class="tab-page"
+          slot="panel"
+          value="tab-4"
+          class="tab-panel"
         >
           <log-ui></log-ui>
-        </div>
-      </div>
-      <div class="nd-setting-footer">
-        <button v-on:click="closeAndSaveSetting">Save</button>
-        <button v-on:click="closeSetting">Cancel</button>
-      </div>
+        </mdui-tab-panel>
+      </mdui-tabs>
     </div>
-  </dialog-ui>
+
+    <mdui-button slot="action" variant="text" v-on:click="closeSetting">取消</mdui-button>
+    <mdui-button slot="action" variant="tonal" v-on:click="closeAndSaveSetting">保存</mdui-button>
+  </mdui-dialog>
 </div>

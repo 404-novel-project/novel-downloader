@@ -4,12 +4,18 @@
       v-if="chapterProgressSeen"
       id="chapter-progress-wrapper"
     >
-      <div
-        id="chapter-progress"
-        v-bind:style="{'--position': chapterPercent+'%'}"
-        v-bind:title="chapterProgressTitle"
-      ></div>
-      <span v-if="etaText" id="chapter-eta">{{ etaText }}</span>
+      <div class="nd-progress-text-container">
+        <span id="chapter-count">下载进度：{{ finishedChapterNumber }} / {{ totalChapterNumber }}</span>
+        <span v-if="etaText" id="chapter-eta">{{ etaText }}</span>
+      </div>
+      <div id="chapter-progress-inner">
+        <div
+          class="nd-progress-bar"
+          v-bind:style="{'--progress': chapterPercent+'%'}"
+          v-bind:title="chapterProgressTitle"
+        ></div>
+        <span id="chapter-percent-text">{{ Math.floor(chapterPercent) }}%</span>
+      </div>
     </div>
   </div>
 </div>

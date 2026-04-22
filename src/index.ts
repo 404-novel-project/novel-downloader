@@ -18,7 +18,7 @@ async function main(ev?: Event) {
 
   globalInit();
   await printEnvironments();
-  uiInit();
+  await uiInit();
 }
 
 if (document.readyState === "loading") {

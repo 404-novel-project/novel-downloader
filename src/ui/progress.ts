@@ -71,7 +71,7 @@ function estimateSerialSleepTime(
   return total;
 }
 
-export const vm = createApp({
+export const app = createApp({
   data() {
     return {
       totalChapterNumber: 0,
@@ -144,4 +144,7 @@ export const vm = createApp({
     },
   },
   template: progressHtml,
-}).mount(el);
+});
+
+app.config.compilerOptions.isCustomElement = (tag: string) => tag.startsWith("mdui-");
+export const vm = app.mount(el) as ProgressVM;

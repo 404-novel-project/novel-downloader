@@ -1,107 +1,124 @@
-.nd-setting-body {
-  background: #e0e0e0;
-  padding: 1em;
-  border-top-right-radius: 3px;
+/* MDUI Material 3 风格设置页面 */
+
+.nd-setting-dialog {
+  --z-index: 100000;
 }
 
-.nd-setting-body {
-  hr {
-    margin-top: 0.8em;
-    margin-bottom: 0.8em;
-  }
-
-  input[type="checkbox"],
-  input[type="radio"],
-  input[type="text"] {
-    position: static;
-    opacity: 1;
-    margin: auto;
-    padding: initial;
-    appearance: revert !important;
-    -webkit-appearance: revert !important;
-    all: revert;
-  }
+.nd-setting-dialog::part(overlay) {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
-dialog-ui {
-  .tab-button {
-    padding: 6px 10px;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    border: 1px solid #ccc;
-    cursor: pointer;
-    background: #f0f0f0;
-    margin-bottom: -1px;
-    margin-right: -1px;
-    color: black;
-    line-height: normal;
-    display: inline-block;
-    text-align: center;
-    font-weight: bold;
-    max-width: 9em;
-    box-sizing: initial;
-  }
+.nd-setting-dialog::part(panel) {
+  max-width: 780px;
+  width: 90vw;
+  max-height: 90vh;
+  background-color: rgb(var(--mdui-color-surface-container-high, 236,230,240));
+}
 
-  .tab-button:hover {
-    background: #e0e0e0;
-  }
+.nd-setting {
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+}
 
-  .tab-button.active {
-    background: #e0e0e0;
-  }
+.tab-panel {
+  padding: 16px 8px;
+  max-height: 70vh;
+  overflow-y: auto;
 
-  #nd-setting-tab-1 {
-    input + label {
-      all: revert;
-    }
+  &::-webkit-scrollbar {
+    width: 8px;
   }
-
-  #nd-setting-tab-2 {
-    select {
-      all: revert;
-    }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(var(--mdui-color-on-surface-variant, 73,69,78), 0.3);
+    border-radius: 4px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(var(--mdui-color-on-surface-variant, 73,69,78), 0.5);
   }
 }
 
-.nd-setting-footer {
-  background: #e0e0e0;
-  padding-bottom: 0.7em;
-  text-align: center;
-  border-bottom-left-radius: 3px;
-  border-bottom-right-radius: 3px;
+.setting-section {
+  margin: 12px 0;
 }
 
-.nd-setting-footer > button {
-  all: revert;
+.section-title {
+  font-size: 1em;
+  font-weight: 500;
+  margin: 12px 0 8px 0;
+  color: rgb(var(--mdui-color-on-surface, 28,27,31));
+}
+
+.setting-switches {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: rgba(var(--mdui-color-surface-container, 243,237,247), 0.5);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
+  user-select: none;
+}
+
+.setting-item:hover {
+  background-color: rgba(var(--mdui-color-surface-container-highest, 229,224,236), 0.8);
+}
+
+.setting-label {
+  font-size: 15px;
+  font-weight: 400;
+  color: rgb(var(--mdui-color-on-surface, 28,27,31));
+  flex-grow: 1;
+}
+
+.setting-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+  align-items: center;
+}
+
+.full-width-field {
+  grid-column: span 2;
+}
+
+.setting-grid mdui-text-field {
+  width: 100%;
+}
+
+mdui-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+mdui-radio {
+  padding: 8px 12px;
+  border-radius: 12px;
+  transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+
+mdui-radio:hover {
+  background-color: rgba(var(--mdui-color-surface-container-highest, 229,224,236), 0.5);
 }
 
 /* 日志页面 */
 #novel-downloader-log {
   max-height: 300px;
   overflow: scroll;
-}
-
-/* 彩色斜纹 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */
-.hr-twill-colorful {
-  all: revert;
-  border: 0;
-  padding: 3px;
-  background: linear-gradient(135deg, red, orange, green, blue, purple);
-  --mask-image: repeating-linear-gradient(
-    135deg,
-    #000 0px,
-    #000 1px,
-    transparent 1px,
-    transparent 6px
-  );
-  -webkit-mask-image: var(--mask-image);
-  mask-image: var(--mask-image);
-}
-
-/* 两头虚 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */
-.hr-edge-weak {
-  all: revert;
-  border: 0;
-  padding-top: 1px;
-  background: linear-gradient(to right, transparent, #d0d0d5, transparent);
 }

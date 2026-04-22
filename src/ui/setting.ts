@@ -27,10 +27,11 @@ import { createEl, createStyle } from "../lib/dom";
 
 declare const GM_setValue: (key: string, value: any) => void;
 declare const GM_getValue: (key: string, defaultValue?: any) => any;
+declare const unsafeWindow: any;
 
 export const style = createStyle(settingCss);
 export const el = createEl(`<div id="setting"></div>`);
-export const vm = createApp({
+export const app = createApp({
   name: "nd-setting",
   components: { "filter-tab": FilterTab, "log-ui": LogUI, "test-ui": TestUI },
   setup() {
@@ -159,9 +160,13 @@ export const vm = createApp({
     };
     if (isOverWriteSaveOptions)
       (unsafeWindow as UnsafeWindow).saveOptions = curSaveOption();
+    const closeDialog = () => {
+      document.querySelector("#nd-shadow-host")?.shadowRoot?.querySelector("dialog-ui")?.setAttribute("status", "false");
+    };
     const saveFilter = (filterSetting: filterSettingGlobal) => {
       setting.filterSetting = deepcopy(filterSetting);
       GM_setValue('filterSetting', setting.filterSetting);
+      closeDialog();
     };
     const getFilterSetting = () => {
       if (setting.filterSetting) {
@@ -270,13 +275,25 @@ export const vm = createApp({
       settingBackup = deepcopy(setting) as Setting;
       openStatus.value = "true";
     };
-    const closeSetting = (keep: PointerEvent | boolean) => {
+    const closeSetting = (keep?: PointerEvent | boolean) => {
       if (keep === true) {
         settingBackup = deepcopy(setting);
       } else {
         Object.assign(setting, settingBackup);
       }
       openStatus.value = "false";
+    };
+    const onSettingClosed = (event?: Event) => {
+      if (event && event.target !== event.currentTarget) {
+        return;
+      }
+      closeSetting();
+    };
+    const onTabChange = (event: Event) => {
+      const detail = (event as CustomEvent).detail;
+      if (detail?.value) {
+        setting.currentTab = detail.value;
+      }
     };
     const closeAndSaveSetting = async () => {
       closeSetting(true);
@@ -289,6 +306,8 @@ export const vm = createApp({
       openStatus,
       openSetting,
       closeSetting,
+      onSettingClosed,
+      onTabChange,
       closeAndSaveSetting,
       saveFilter,
       setting,
@@ -296,4 +315,7 @@ export const vm = createApp({
     };
   },
   template: settingHtml,
-}).mount(el);
+});
+
+app.config.compilerOptions.isCustomElement = (tag: string) => tag.startsWith("mdui-");
+export const vm = app.mount(el);

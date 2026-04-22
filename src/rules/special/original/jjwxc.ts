@@ -213,7 +213,7 @@ export class Jjwxc extends BaseRuleClass {
               fetch: true,
               responseType: "json",
               onload: function (response) {
-                const resultI: LoginResponse = JSON.parse(response.responseText);
+                const resultI: LoginResponse = typeof response.response === "object" ? response.response : JSON.parse((response.responseText || response.response) as string);
                 log.debug(`LoginResponse url ${loginUrl}`);
                 if (response.status === 200) {
                   resolve(resultI);
@@ -237,7 +237,7 @@ export class Jjwxc extends BaseRuleClass {
                 responseType: "json",
                 // fetch: true,
                 onload: function (response) {
-                  const resultI: CodeResponse = JSON.parse(response.responseText);
+                  const resultI: CodeResponse = typeof response.response === "object" ? response.response : JSON.parse((response.responseText || response.response) as string);
                   log.debug(`CodeResponse url ${verifyUrl}`);
                   log.debug(`${response.responseText}`);
                   log.debug(`${body}`);
@@ -250,7 +250,7 @@ export class Jjwxc extends BaseRuleClass {
                 },
               });
             });
-            let msg = responseJson.data.message;
+            let msg = responseJson.data ? responseJson.data.message : "";
             if (!msg) msg = responseJson.message;
             alert(msg);
           } else {
@@ -276,7 +276,7 @@ export class Jjwxc extends BaseRuleClass {
               responseType: "json",
               fetch: true,
               onload: function (response) {
-                const resultI: LoginResponse = JSON.parse(response.responseText);
+                const resultI: LoginResponse = typeof response.response === "object" ? response.response : JSON.parse((response.responseText || response.response) as string);
                 log.debug(`LoginResponse url ${loginUrl}`);
                 if (response.status === 200) {
                   resolve(resultI);
@@ -305,91 +305,110 @@ export class Jjwxc extends BaseRuleClass {
       // 设置页面的内容
       const existingToken = getStoredJjwxcToken() ?? "";
       page.innerHTML = `
-        <h1 class="center-align">JJ获取token</h1>
-        <div>
+        <h2 style="margin-top:0;font-size:1.25rem;">JJ获取token</h2>
+        <div style="display:flex;flex-direction:column;gap:16px;">
             <div class="row">
-                <div class="input-field">
-                    <label for="manualToken">已有token（可直接粘贴保存）</label>
-                    <input type="text" id="nd-jj-manual-token" name="manualToken" value="${existingToken}">
-                </div>
+                <mdui-text-field id="nd-jj-manual-token" label="已有token（可直接粘贴保存）" value="${existingToken}" variant="outlined"></mdui-text-field>
             </div>
             <div class="row">
-                <div class="input-field">
-                    <label for="account">账号</label>
-                    <input type="text" id="nd-jj-account" name="account" required>
-                </div>
+                <mdui-text-field id="nd-jj-account" label="账号" required variant="outlined"></mdui-text-field>
             </div>
             <div class="row">
-                <div class="input-field">
-                    <label for="password">密码</label>
-                    <input type="password" id="nd-jj-password" name="password" required>
-                </div>
+                <mdui-text-field id="nd-jj-password" label="密码" type="password" required variant="outlined"></mdui-text-field>
             </div>
             <div class="row">
-                <div class="input-field">
-                    <label for="verificationCode">验证码</label>
-                    <input type="text" id="nd-jj-verificationCode" name="verificationCode">
-                </div>
+                <mdui-text-field id="nd-jj-verificationCode" label="验证码" variant="outlined"></mdui-text-field>
             </div>
-            <div class="row">
-              <button type="click" id="nd-jj-login">登录/保存token</button>
+            <div class="row" style="text-align: right;">
+              <mdui-button id="nd-jj-login" variant="filled">登录/保存token</mdui-button>
             </div>
         </div>
-        <h2 class="center-align">生成的Token:</h2>
-          <p id="nd-jj-token" class="center-align">${existingToken}</p>
+        <h3 style="font-size:1rem;margin-top:16px;">生成的Token:</h3>
+        <p id="nd-jj-token" style="word-break: break-all; opacity: 0.8; user-select: all;">${existingToken}</p>
       `;
 
       page.style.position = 'fixed';
       page.style.top = '50%';
       page.style.left = '50%';
       page.style.transform = 'translate(-50%, -50%)';
-      page.style.padding = '20px';
-      page.style.backgroundColor = 'white';
-      page.style.border = '1px solid black';
-      page.style.zIndex = '1000';
+      page.style.padding = '24px';
+      page.style.backgroundColor = 'rgb(var(--mdui-color-surface-container-high, 236,230,240))';
+      page.style.color = 'rgb(var(--mdui-color-on-surface, 28,27,31))';
+      page.style.borderRadius = '16px';
+      page.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+      page.style.zIndex = '100001';
+      page.style.minWidth = '300px';
+
       // 添加关闭按钮
-      const closeButton = document.createElement('button');
+      const closeButton = document.createElement('mdui-button');
       closeButton.innerText = '关闭';
+      closeButton.setAttribute('variant', 'text');
       closeButton.style.display = 'block';
-      closeButton.style.marginTop = '10px';
+      closeButton.style.marginTop = '16px';
+      closeButton.style.width = '100%';
       closeButton.addEventListener('click', () => {
         document.body.removeChild(page);
       });
       page.appendChild(closeButton);
+      
       // 将页面添加到body
       document.body.appendChild(page);
+
+      // login button event listeners
       document.getElementById("nd-jj-login")?.addEventListener('click', () => login());
 
-      const tokenInput = document.getElementById("nd-jj-manual-token") as HTMLInputElement;
+      const tokenInput = document.getElementById("nd-jj-manual-token");
       if (tokenInput && !isValidJjwxcToken(existingToken) && existingToken.length > 0) {
-        tokenInput.style.borderColor = "#f44336";
+        tokenInput.setAttribute('error', '无效的 token');
       }
     }
 
     function injectTokenButton(): boolean {
-      if (document.getElementById("nd-jj-token-entry")) {
+      const shadowRoot = document.querySelector('#nd-shadow-host')?.shadowRoot;
+      if (!shadowRoot) return false;
+      if (shadowRoot.querySelector("#nd-jj-token-entry")) {
         return true;
       }
-      const firstChild = document.querySelector('#nd-setting-tab-1')?.firstElementChild;
+      const firstChild = shadowRoot.querySelector('#nd-setting-tab-1')?.firstElementChild;
       if (!firstChild || !firstChild.parentNode) {
         return false;
       }
-      const button = document.createElement('button');
+      const button = document.createElement('mdui-button');
       button.id = "nd-jj-token-entry";
       button.innerText = '获取token';
-      button.style.marginLeft = '10px';
-      firstChild.parentNode.insertBefore(button, firstChild.nextSibling);
-      button.addEventListener('click', () => openTokenDialog());
+      button.setAttribute('variant', 'tonal');
+      button.style.marginBottom = '16px';
+      button.style.width = '100%';
+      firstChild.parentNode.insertBefore(button, firstChild);
+      button.addEventListener('click', () => {
+        // Because shadow dom takes over click sometimes, we can delay logic
+        openTokenDialog();
+      });
       return true;
     }
 
     if (!injectTokenButton()) {
+      let isObservingShadow = false;
       const observer = new MutationObserver(() => {
         if (injectTokenButton()) {
           observer.disconnect();
+        } else {
+          const host = document.querySelector('#nd-shadow-host');
+          if (host && host.shadowRoot && !isObservingShadow) {
+            observer.disconnect();
+            observer.observe(host.shadowRoot, { childList: true, subtree: true });
+            isObservingShadow = true;
+          }
         }
       });
-      observer.observe(document.body, { childList: true, subtree: true });
+      
+      const host = document.querySelector('#nd-shadow-host');
+      if (host && host.shadowRoot) {
+        observer.observe(host.shadowRoot, { childList: true, subtree: true });
+        isObservingShadow = true;
+      } else {
+        observer.observe(document.body, { childList: true, subtree: true });
+      }
     }
   }  
 
@@ -554,15 +573,28 @@ export class Jjwxc extends BaseRuleClass {
 
     // Append additional metadata to the intro DOM if any were found
     if (descriptionElements.length > 0) {
-      // Add a separator line before additional metadata
-      const separator = document.createElement('hr');
-      separator.style.margin = '10px 0';
-      introDom.appendChild(separator);
+      // Add a styled container for additional metadata
+      const metadataContainer = document.createElement('div');
+      metadataContainer.setAttribute('data-keep', 'style');
+      metadataContainer.style.marginTop = '1.5em';
+      metadataContainer.style.marginBottom = '1.5em';
+      metadataContainer.style.padding = '1.2em';
+      metadataContainer.style.backgroundColor = 'rgba(121, 85, 72, 0.04)';
+      metadataContainer.style.border = '1px solid rgba(121, 85, 72, 0.2)';
+      metadataContainer.style.borderRadius = '8px';
+      metadataContainer.style.color = 'inherit';
       
       // Add each metadata element
-      descriptionElements.forEach(element => {
-        introDom.appendChild(element);
+      descriptionElements.forEach((element, index) => {
+        element.setAttribute('data-keep', 'style');
+        element.style.lineHeight = '1.6';
+        if (index < descriptionElements.length - 1) {
+          element.style.marginBottom = '0.6em';
+        }
+        metadataContainer.appendChild(element);
       });
+      
+      introDom.appendChild(metadataContainer);
     }
 
     return introDom;

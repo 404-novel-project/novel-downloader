@@ -12,7 +12,7 @@ import { vm as settingVM } from "./setting";
 
 export const style = createStyle(buttonCss, "button-div-style");
 export const el = createEl('<div id="nd-button"></div>');
-export const vm = createApp({
+export const app = createApp({
   data(): {
     imgStart: string;
     imgSetting: string;
@@ -66,3 +66,6 @@ export const vm = createApp({
   },
   template: buttonHtml,
 });
+
+app.config.compilerOptions.isCustomElement = (tag: string) => tag.startsWith("mdui-");
+export const vm = app.mount(el);
