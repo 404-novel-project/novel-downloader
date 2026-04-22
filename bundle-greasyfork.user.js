@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1244
+// @version        5.2.1247
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -488,6 +488,7 @@
 // @require        https://unpkg.com/onnxruntime-web@1.22.0/dist/ort.min.js#sha512-at7pWj/BAyQT89+V/9BiuAa/WeHjsf87fLwrcgD+uzlgsvM8/kgKOgHV/xxzcWiB98XvSTezWc0bgKjCqZwjGw==
 // @require        https://unpkg.com/@oovz/esearch-ocr/dist/eSearchOCR.umd.js#sha512-UvCk39TnG39qAlff1bfsl3J5s8TrKVkNN14cyf2cDmnON+VOWZvHxYmFIvbw/GRmLz0M2CLs/oaVDdwuG5WS7Q==
 // @require        https://unpkg.com/@techstark/opencv-js@4.11.0-release.1/dist/opencv.js#sha512-6Rb1LoaC9dHPLtrQhND5lLcLe2u3hh92yKTvIRQkMSj2A1EDhK0O4aptnEXAuKQcKtKZwACDoQnrrEKCFt5WdA==
+// @require        https://unpkg.com/mdui@2/mdui.global.js#sha512-pVCG7X/2X4pMmIFT+0w0HX6XjT26xcSxH6jNLOI0Sv3lzd9s3sVZFnS6GUk8ZWcVtqF3kZ6yQcJDZDuXcbM25w==
 // @run-at         document-start
 // @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.meta.js
 // ==/UserScript==
@@ -3448,7 +3449,8 @@ module.exports = {
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, `:root {
+___CSS_LOADER_EXPORT___.push([module.id, `:host,
+:root {
   --good-chapter-color: #41b883;
   --bad-chapter-color: #e73838;
   --warning-chapter-color: #ff9900;
@@ -3458,14 +3460,27 @@ div.chapter-list-loading {
   padding-bottom: 5em;
   text-align: center;
 }
+.nd-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(var(--mdui-color-surface-variant, 231, 224, 236), 0.5);
+  border-top-color: rgb(var(--mdui-color-primary, 103, 80, 164));
+  border-radius: 50%;
+  animation: nd-spin 0.8s linear infinite;
+}
+@keyframes nd-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 div.chapter-list {
-  max-height: 200px;
-  overflow-y: scroll;
+  /* removed inner scroll constraints to let the outer container handle vertical scrolling */
 }
 div.chapter-list .section {
   margin-top: 1.5em;
   display: grid;
   grid-template-columns: 32% 32% 32%;
+  gap: 4px;
 }
 div.chapter-list .section > h3:first-child {
   grid-column-end: span 3;
@@ -3473,37 +3488,46 @@ div.chapter-list .section > h3:first-child {
 }
 div.chapter-list .section > div.chapter {
   text-align: center;
-  padding-top: 0.5em;
-  padding-bottom: 0.3em;
-  padding-left: 23px;
-  padding-right: 20px;
-  border: 1px solid #d9d9d9;
-  border-radius: 5px;
-  margin-left: 10px;
-  margin-top: 5px;
-  margin-right: 0;
-  margin-bottom: 0;
+  border-radius: 6px;
+  margin-left: 8px;
+  margin-top: 6px;
+  overflow: hidden;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+div.chapter-list .section > div.chapter:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 div.chapter-list .section a.disabled {
   pointer-events: none;
   cursor: default;
+  opacity: 0.6;
 }
 div.chapter-list .section a {
   text-decoration: none;
+  color: inherit;
+  display: block;
+  padding: 0.5em 12px;
+  font-size: 0.9em;
+  font-weight: 500;
 }
 div.chapter-list div.chapter.good {
   background: var(--good-chapter-color);
+  color: white;
 }
 div.chapter-list div.chapter.bad {
   background: var(--bad-chapter-color);
+  color: white;
 }
 div.chapter-list div.chapter.good.warning {
   background: var(--warning-chapter-color);
+  color: white;
 }
 div.chapter-list div.chapter.bad a,
-div.chapter-list div.chapter.good a {
+div.chapter-list div.chapter.good a,
+div.chapter-list div.chapter.warning a {
   color: white;
-  font-size: 0.9em;
 }
 .nd-setting-body span.good {
   color: var(--good-chapter-color);
@@ -3543,29 +3567,26 @@ ___CSS_LOADER_EXPORT___.push([module.id, `#test-page-div {
 }
 #test-page-div table {
   text-align: center;
+  width: 100%;
 }
 #test-page-div td {
-  all: revert;
-  padding-top: 0.3em;
+  padding: 6px 8px;
 }
 #test-page-div td > img {
   max-height: 15em;
 }
 #test-page-div tr > td:nth-child(1) {
-  font-weight: bold;
+  font-weight: 500;
   min-width: 7em;
+  color: rgb(var(--mdui-color-on-surface, 28, 27, 31));
 }
 #test-page-div tr > td:nth-child(2) div,
 #test-page-div tr > td:nth-child(2) p {
   text-align: left;
 }
-#test-page-div hr {
-  margin-top: 1.5em;
-  margin-bottom: 1.5em;
-}
 #test-page-div h2 {
   text-align: center;
-  margin-bottom: 1.3em;
+  margin-bottom: 1em;
 }
 #test-page-div h4 {
   text-align: center;
@@ -3577,32 +3598,28 @@ ___CSS_LOADER_EXPORT___.push([module.id, `#test-page-div {
   max-width: 95%;
 }
 #test-page-div .preview-chapter-setting {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 1em;
-}
-#test-page-div .preview-chapter-setting button {
-  cursor: pointer;
-  margin-left: 0.5em;
-  padding: 0px 10px;
-}
-#test-page-div .preview-chapter-setting button:disabled {
-  cursor: not-allowed;
 }
 #test-page-div .loading-spinner {
   text-align: center;
   margin: 1em 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
-#test-page-div .loading-spinner .spinner {
-  display: inline-block;
+#test-page-div .nd-spinner {
   width: 30px;
   height: 30px;
-  border: 3px solid rgba(0, 0, 0, 0.3);
+  border: 3px solid rgba(var(--mdui-color-surface-variant, 231, 224, 236), 0.5);
+  border-top-color: rgb(var(--mdui-color-primary, 103, 80, 164));
   border-radius: 50%;
-  border-top-color: #000;
-  animation: spin 1s ease-in-out infinite;
-  margin-bottom: 0.5em;
+  animation: nd-spin 0.8s linear infinite;
 }
-@keyframes spin {
+@keyframes nd-spin {
   to {
     transform: rotate(360deg);
   }
@@ -3635,23 +3652,71 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.button-div {
   top: 15%;
   right: 5%;
   z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-end;
 }
-.button-div button {
-  border-style: none;
-  text-align: center;
-  vertical-align: baseline;
-  background-color: rgba(128, 128, 128, 0.2);
-  padding: 3px;
+.button-div .download {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-end;
+}
+.button-div .nd-fab {
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(var(--mdui-color-primary-container, 234, 221, 255));
+  color: rgb(var(--mdui-color-on-primary-container, 33, 0, 94));
+  box-shadow: var(--mdui-elevation-level3, 0 1.25px 5px 0 rgba(0, 0, 0, 0.19));
+  transition: box-shadow 0.28s cubic-bezier(0.2, 0, 0, 1), background-color 0.28s cubic-bezier(0.2, 0, 0, 1), transform 0.14s cubic-bezier(0.2, 0, 0, 1);
+  position: relative;
+  overflow: hidden;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+}
+.button-div .nd-fab::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgb(var(--mdui-color-on-primary-container, 33, 0, 94));
+  opacity: 0;
+  transition: opacity 0.2s cubic-bezier(0.2, 0, 0, 1);
+  border-radius: inherit;
+}
+.button-div .nd-fab:hover::after {
+  opacity: 0.08;
+}
+.button-div .nd-fab:active::after {
+  opacity: 0.12;
+}
+.button-div .nd-fab:hover {
+  box-shadow: var(--mdui-elevation-level4, 0 1.85px 6.25px 0 rgba(0, 0, 0, 0.19));
+}
+.button-div .nd-fab:active {
+  transform: scale(0.96);
+  box-shadow: var(--mdui-elevation-level2, 0 0.85px 3px 0 rgba(0, 0, 0, 0.19));
+}
+.button-div .nd-fab img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  pointer-events: none;
+  position: relative;
+  z-index: 1;
+}
+.button-div .nd-fab-small {
+  width: 40px;
+  height: 40px;
   border-radius: 12px;
-  min-width: auto;
-  min-height: auto;
 }
-.button-div img.start,
-.button-div img.jump {
-  height: 2em;
-}
-.button-div img.setting {
-  height: 1em;
+.button-div .nd-fab-small img {
+  width: 20px;
+  height: 20px;
 }
 `, ""]);
 // Exports
@@ -3676,86 +3741,110 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.button-div {
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, `.nd-setting-body {
-  background: #e0e0e0;
-  padding: 1em;
-  border-top-right-radius: 3px;
+___CSS_LOADER_EXPORT___.push([module.id, `/* MDUI Material 3 风格设置页面 */
+.nd-setting-dialog {
+  --z-index: 100000;
 }
-.nd-setting-body hr {
-  margin-top: 0.8em;
-  margin-bottom: 0.8em;
+.nd-setting-dialog::part(overlay) {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
-.nd-setting-body input[type="checkbox"],
-.nd-setting-body input[type="radio"],
-.nd-setting-body input[type="text"] {
-  position: static;
-  opacity: 1;
-  margin: auto;
-  padding: initial;
-  appearance: revert !important;
-  -webkit-appearance: revert !important;
-  all: revert;
+.nd-setting-dialog::part(panel) {
+  max-width: 780px;
+  width: 90vw;
+  max-height: 90vh;
+  background-color: rgb(var(--mdui-color-surface-container-high, 236, 230, 240));
 }
-dialog-ui .tab-button {
-  padding: 6px 10px;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-  border: 1px solid #ccc;
+.nd-setting {
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+.tab-panel {
+  padding: 16px 8px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+.tab-panel::-webkit-scrollbar {
+  width: 8px;
+}
+.tab-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+.tab-panel::-webkit-scrollbar-thumb {
+  background-color: rgba(var(--mdui-color-on-surface-variant, 73, 69, 78), 0.3);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.tab-panel::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(var(--mdui-color-on-surface-variant, 73, 69, 78), 0.5);
+}
+.setting-section {
+  margin: 12px 0;
+}
+.section-title {
+  font-size: 1em;
+  font-weight: 500;
+  margin: 12px 0 8px 0;
+  color: rgb(var(--mdui-color-on-surface, 28, 27, 31));
+}
+.setting-switches {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: rgba(var(--mdui-color-surface-container, 243, 237, 247), 0.5);
+  border-radius: 12px;
   cursor: pointer;
-  background: #f0f0f0;
-  margin-bottom: -1px;
-  margin-right: -1px;
-  color: black;
-  line-height: normal;
-  display: inline-block;
-  text-align: center;
-  font-weight: bold;
-  max-width: 9em;
-  box-sizing: initial;
+  transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
+  user-select: none;
 }
-dialog-ui .tab-button:hover {
-  background: #e0e0e0;
+.setting-item:hover {
+  background-color: rgba(var(--mdui-color-surface-container-highest, 229, 224, 236), 0.8);
 }
-dialog-ui .tab-button.active {
-  background: #e0e0e0;
+.setting-label {
+  font-size: 15px;
+  font-weight: 400;
+  color: rgb(var(--mdui-color-on-surface, 28, 27, 31));
+  flex-grow: 1;
 }
-dialog-ui #nd-setting-tab-1 input + label {
-  all: revert;
+.setting-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+  align-items: center;
 }
-dialog-ui #nd-setting-tab-2 select {
-  all: revert;
+.full-width-field {
+  grid-column: span 2;
 }
-.nd-setting-footer {
-  background: #e0e0e0;
-  padding-bottom: 0.7em;
-  text-align: center;
-  border-bottom-left-radius: 3px;
-  border-bottom-right-radius: 3px;
+.setting-grid mdui-text-field {
+  width: 100%;
 }
-.nd-setting-footer > button {
-  all: revert;
+mdui-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+mdui-radio {
+  padding: 8px 12px;
+  border-radius: 12px;
+  transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+mdui-radio:hover {
+  background-color: rgba(var(--mdui-color-surface-container-highest, 229, 224, 236), 0.5);
 }
 /* 日志页面 */
 #novel-downloader-log {
   max-height: 300px;
   overflow: scroll;
-}
-/* 彩色斜纹 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */
-.hr-twill-colorful {
-  all: revert;
-  border: 0;
-  padding: 3px;
-  background: linear-gradient(135deg, red, orange, green, blue, purple);
-  --mask-image: repeating-linear-gradient(135deg, #000 0px, #000 1px, transparent 1px, transparent 6px);
-  -webkit-mask-image: var(--mask-image);
-  mask-image: var(--mask-image);
-}
-/* 两头虚 来自：https://www.zhangxinxu.com/wordpress/2021/05/css-html-hr/ */
-.hr-edge-weak {
-  all: revert;
-  border: 0;
-  padding-top: 1px;
-  background: linear-gradient(to right, transparent, #d0d0d5, transparent);
 }
 `, ""]);
 // Exports
@@ -4039,13 +4128,18 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.filter-setting {
   text-align: center;
 }
 
-.filter-input + .filter-setter {
-  margin-top: 1em;
+.filter-input {
+  margin-bottom: 12px;
 }
 
 .filter-description {
-  font-size: larger;
-  color: cornflowerblue;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgb(var(--mdui-color-on-surface-variant, 73,69,79));
+  background-color: rgba(var(--mdui-color-surface-container, 243,237,247), 0.5);
+  padding: 12px;
+  border-radius: 12px;
+  text-align: left;
 }
 `, ""]);
 // Exports
@@ -4070,109 +4164,48 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.filter-setting {
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, `.overlay {
-  visibility: hidden;
-  opacity: 0;
-  z-index: 100000;
-  position: fixed;
-  top: -50%;
-  left: -50%;
-  height: 200%;
-  width: 200%;
-  background-color: black;
+___CSS_LOADER_EXPORT___.push([module.id, `/* MDUI dialog 自定义样式 */
+mdui-dialog {
+  --z-index: 100000;
 }
 
-.overlay.open {
-  opacity: 0.8;
-  visibility: visible;
-  transition: opacity 0.2s ease-in;
+mdui-dialog::part(panel) {
+  max-height: 85vh;
+  background-color: rgb(var(--mdui-color-surface-container-high, 236,230,240));
 }
 
-.overlay:not(.open) {
-  transition: visibility 0.2s step-end, opacity 0.2s ease-in;
-}
-
-.out {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  z-index: 100001;
-}
-
-.dialog {
-  width: 720px;
-  max-height: 70%;
-  display: none;
-  opacity: 0;
-  z-index: 100100;
-  position: fixed;
-  margin: 0;
-  padding: 0;
-}
-
-.dialog.open {
-  opacity: 1;
-  display: block;
-  transition: opacity 0.2s ease-in;
-}
-
-.dialog > * {
-  box-sizing: border-box;
-}
-
-.dialog > .titlebar {
-  background-color: white;
-  min-height: 24px;
-  position: relative;
-}
-
-.dialog-title {
-  padding: 10px;
-  text-transform: uppercase;
-  background: #ff7bac;
-  color: #ffffff;
-  margin: 0;
-  font-size: 1.5em;
-  text-align: center;
-}
-
-.dialog-close {
-  background: #ff7bac;
-  color: #ffffff;
-
-  font-style: normal;
-  font-weight: 400;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-  user-select: none;
-
-  cursor: pointer;
-  font-size: 120%;
-  margin: 0;
-  padding: 0;
-  width: 3.6em;
-  height: 92%;
-  border: 1px solid transparent;
-  transition-duration: 0.2s;
-  display: block;
-
+.nd-dialog-close {
   position: absolute;
-  right: 0;
-  top: 0;
-  white-space: nowrap;
+  right: 8px;
+  top: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  line-height: 1;
+  color: rgb(var(--mdui-color-on-surface-variant, 73,69,78));
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.nd-dialog-close:hover {
+  background-color: rgba(var(--mdui-color-on-surface-variant, 73,69,78), 0.08);
+}
+
+.nd-dialog-close:active {
+  background-color: rgba(var(--mdui-color-on-surface-variant, 73,69,78), 0.12);
 }
 
 .dialog > .body {
-  background-color: white;
-  border: 1px solid rgb(255 125 175 / 80%);
+  background-color: rgb(var(--mdui-color-surface-container-high, 236,230,240));
+  border: 1px solid rgba(var(--mdui-color-outline-variant, 196,199,197), 0.5);
   text-align: left;
 
   line-height: 1.5;
@@ -4185,6 +4218,29 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.overlay {
   max-height: 900px;
 }
 `, ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ },
+
+/***/ "./src/ui/mdui.css"
+(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/css-loader/dist/runtime/noSourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `:host{--mdui-breakpoint-xs:0px;--mdui-breakpoint-sm:600px;--mdui-breakpoint-md:840px;--mdui-breakpoint-lg:1080px;--mdui-breakpoint-xl:1440px;--mdui-breakpoint-xxl:1920px}:host{--mdui-color-primary-light:103,80,164;--mdui-color-primary-container-light:234,221,255;--mdui-color-on-primary-light:255,255,255;--mdui-color-on-primary-container-light:33,0,94;--mdui-color-inverse-primary-light:208,188,255;--mdui-color-secondary-light:98,91,113;--mdui-color-secondary-container-light:232,222,248;--mdui-color-on-secondary-light:255,255,255;--mdui-color-on-secondary-container-light:30,25,43;--mdui-color-tertiary-light:125,82,96;--mdui-color-tertiary-container-light:255,216,228;--mdui-color-on-tertiary-light:255,255,255;--mdui-color-on-tertiary-container-light:55,11,30;--mdui-color-surface-light:254,247,255;--mdui-color-surface-dim-light:222,216,225;--mdui-color-surface-bright-light:254,247,255;--mdui-color-surface-container-lowest-light:255,255,255;--mdui-color-surface-container-low-light:247,242,250;--mdui-color-surface-container-light:243,237,247;--mdui-color-surface-container-high-light:236,230,240;--mdui-color-surface-container-highest-light:230,224,233;--mdui-color-surface-variant-light:231,224,236;--mdui-color-on-surface-light:28,27,31;--mdui-color-on-surface-variant-light:73,69,78;--mdui-color-inverse-surface-light:49,48,51;--mdui-color-inverse-on-surface-light:244,239,244;--mdui-color-background-light:254,247,255;--mdui-color-on-background-light:28,27,31;--mdui-color-error-light:179,38,30;--mdui-color-error-container-light:249,222,220;--mdui-color-on-error-light:255,255,255;--mdui-color-on-error-container-light:65,14,11;--mdui-color-outline-light:121,116,126;--mdui-color-outline-variant-light:196,199,197;--mdui-color-shadow-light:0,0,0;--mdui-color-surface-tint-color-light:103,80,164;--mdui-color-scrim-light:0,0,0;--mdui-color-primary-dark:208,188,255;--mdui-color-primary-container-dark:79,55,139;--mdui-color-on-primary-dark:55,30,115;--mdui-color-on-primary-container-dark:234,221,255;--mdui-color-inverse-primary-dark:103,80,164;--mdui-color-secondary-dark:204,194,220;--mdui-color-secondary-container-dark:74,68,88;--mdui-color-on-secondary-dark:51,45,65;--mdui-color-on-secondary-container-dark:232,222,248;--mdui-color-tertiary-dark:239,184,200;--mdui-color-tertiary-container-dark:99,59,72;--mdui-color-on-tertiary-dark:73,37,50;--mdui-color-on-tertiary-container-dark:255,216,228;--mdui-color-surface-dark:20,18,24;--mdui-color-surface-dim-dark:20,18,24;--mdui-color-surface-bright-dark:59,56,62;--mdui-color-surface-container-lowest-dark:15,13,19;--mdui-color-surface-container-low-dark:29,27,32;--mdui-color-surface-container-dark:33,31,38;--mdui-color-surface-container-high-dark:43,41,48;--mdui-color-surface-container-highest-dark:54,52,59;--mdui-color-surface-variant-dark:73,69,79;--mdui-color-on-surface-dark:230,225,229;--mdui-color-on-surface-variant-dark:202,196,208;--mdui-color-inverse-surface-dark:230,225,229;--mdui-color-inverse-on-surface-dark:49,48,51;--mdui-color-background-dark:20,18,24;--mdui-color-on-background-dark:230,225,229;--mdui-color-error-dark:242,184,181;--mdui-color-error-container-dark:140,29,24;--mdui-color-on-error-dark:96,20,16;--mdui-color-on-error-container-dark:249,222,220;--mdui-color-outline-dark:147,143,153;--mdui-color-outline-variant-dark:68,71,70;--mdui-color-shadow-dark:0,0,0;--mdui-color-surface-tint-color-dark:208,188,255;--mdui-color-scrim-dark:0,0,0;font-size:16px}.mdui-theme-light,:host{color-scheme:light;--mdui-color-primary:var(--mdui-color-primary-light);--mdui-color-primary-container:var(--mdui-color-primary-container-light);--mdui-color-on-primary:var(--mdui-color-on-primary-light);--mdui-color-on-primary-container:var(--mdui-color-on-primary-container-light);--mdui-color-inverse-primary:var(--mdui-color-inverse-primary-light);--mdui-color-secondary:var(--mdui-color-secondary-light);--mdui-color-secondary-container:var(--mdui-color-secondary-container-light);--mdui-color-on-secondary:var(--mdui-color-on-secondary-light);--mdui-color-on-secondary-container:var(--mdui-color-on-secondary-container-light);--mdui-color-tertiary:var(--mdui-color-tertiary-light);--mdui-color-tertiary-container:var(--mdui-color-tertiary-container-light);--mdui-color-on-tertiary:var(--mdui-color-on-tertiary-light);--mdui-color-on-tertiary-container:var(--mdui-color-on-tertiary-container-light);--mdui-color-surface:var(--mdui-color-surface-light);--mdui-color-surface-dim:var(--mdui-color-surface-dim-light);--mdui-color-surface-bright:var(--mdui-color-surface-bright-light);--mdui-color-surface-container-lowest:var(--mdui-color-surface-container-lowest-light);--mdui-color-surface-container-low:var(--mdui-color-surface-container-low-light);--mdui-color-surface-container:var(--mdui-color-surface-container-light);--mdui-color-surface-container-high:var(--mdui-color-surface-container-high-light);--mdui-color-surface-container-highest:var(--mdui-color-surface-container-highest-light);--mdui-color-surface-variant:var(--mdui-color-surface-variant-light);--mdui-color-on-surface:var(--mdui-color-on-surface-light);--mdui-color-on-surface-variant:var(--mdui-color-on-surface-variant-light);--mdui-color-inverse-surface:var(--mdui-color-inverse-surface-light);--mdui-color-inverse-on-surface:var(--mdui-color-inverse-on-surface-light);--mdui-color-background:var(--mdui-color-background-light);--mdui-color-on-background:var(--mdui-color-on-background-light);--mdui-color-error:var(--mdui-color-error-light);--mdui-color-error-container:var(--mdui-color-error-container-light);--mdui-color-on-error:var(--mdui-color-on-error-light);--mdui-color-on-error-container:var(--mdui-color-on-error-container-light);--mdui-color-outline:var(--mdui-color-outline-light);--mdui-color-outline-variant:var(--mdui-color-outline-variant-light);--mdui-color-shadow:var(--mdui-color-shadow-light);--mdui-color-surface-tint-color:var(--mdui-color-surface-tint-color-light);--mdui-color-scrim:var(--mdui-color-scrim-light);color:rgb(var(--mdui-color-on-background));background-color:rgb(var(--mdui-color-background))}.mdui-theme-dark{color-scheme:dark;--mdui-color-primary:var(--mdui-color-primary-dark);--mdui-color-primary-container:var(--mdui-color-primary-container-dark);--mdui-color-on-primary:var(--mdui-color-on-primary-dark);--mdui-color-on-primary-container:var(--mdui-color-on-primary-container-dark);--mdui-color-inverse-primary:var(--mdui-color-inverse-primary-dark);--mdui-color-secondary:var(--mdui-color-secondary-dark);--mdui-color-secondary-container:var(--mdui-color-secondary-container-dark);--mdui-color-on-secondary:var(--mdui-color-on-secondary-dark);--mdui-color-on-secondary-container:var(--mdui-color-on-secondary-container-dark);--mdui-color-tertiary:var(--mdui-color-tertiary-dark);--mdui-color-tertiary-container:var(--mdui-color-tertiary-container-dark);--mdui-color-on-tertiary:var(--mdui-color-on-tertiary-dark);--mdui-color-on-tertiary-container:var(--mdui-color-on-tertiary-container-dark);--mdui-color-surface:var(--mdui-color-surface-dark);--mdui-color-surface-dim:var(--mdui-color-surface-dim-dark);--mdui-color-surface-bright:var(--mdui-color-surface-bright-dark);--mdui-color-surface-container-lowest:var(--mdui-color-surface-container-lowest-dark);--mdui-color-surface-container-low:var(--mdui-color-surface-container-low-dark);--mdui-color-surface-container:var(--mdui-color-surface-container-dark);--mdui-color-surface-container-high:var(--mdui-color-surface-container-high-dark);--mdui-color-surface-container-highest:var(--mdui-color-surface-container-highest-dark);--mdui-color-surface-variant:var(--mdui-color-surface-variant-dark);--mdui-color-on-surface:var(--mdui-color-on-surface-dark);--mdui-color-on-surface-variant:var(--mdui-color-on-surface-variant-dark);--mdui-color-inverse-surface:var(--mdui-color-inverse-surface-dark);--mdui-color-inverse-on-surface:var(--mdui-color-inverse-on-surface-dark);--mdui-color-background:var(--mdui-color-background-dark);--mdui-color-on-background:var(--mdui-color-on-background-dark);--mdui-color-error:var(--mdui-color-error-dark);--mdui-color-error-container:var(--mdui-color-error-container-dark);--mdui-color-on-error:var(--mdui-color-on-error-dark);--mdui-color-on-error-container:var(--mdui-color-on-error-container-dark);--mdui-color-outline:var(--mdui-color-outline-dark);--mdui-color-outline-variant:var(--mdui-color-outline-variant-dark);--mdui-color-shadow:var(--mdui-color-shadow-dark);--mdui-color-surface-tint-color:var(--mdui-color-surface-tint-color-dark);--mdui-color-scrim:var(--mdui-color-scrim-dark);color:rgb(var(--mdui-color-on-background));background-color:rgb(var(--mdui-color-background))}@media (prefers-color-scheme:dark){.mdui-theme-auto{color-scheme:dark;--mdui-color-primary:var(--mdui-color-primary-dark);--mdui-color-primary-container:var(--mdui-color-primary-container-dark);--mdui-color-on-primary:var(--mdui-color-on-primary-dark);--mdui-color-on-primary-container:var(--mdui-color-on-primary-container-dark);--mdui-color-inverse-primary:var(--mdui-color-inverse-primary-dark);--mdui-color-secondary:var(--mdui-color-secondary-dark);--mdui-color-secondary-container:var(--mdui-color-secondary-container-dark);--mdui-color-on-secondary:var(--mdui-color-on-secondary-dark);--mdui-color-on-secondary-container:var(--mdui-color-on-secondary-container-dark);--mdui-color-tertiary:var(--mdui-color-tertiary-dark);--mdui-color-tertiary-container:var(--mdui-color-tertiary-container-dark);--mdui-color-on-tertiary:var(--mdui-color-on-tertiary-dark);--mdui-color-on-tertiary-container:var(--mdui-color-on-tertiary-container-dark);--mdui-color-surface:var(--mdui-color-surface-dark);--mdui-color-surface-dim:var(--mdui-color-surface-dim-dark);--mdui-color-surface-bright:var(--mdui-color-surface-bright-dark);--mdui-color-surface-container-lowest:var(--mdui-color-surface-container-lowest-dark);--mdui-color-surface-container-low:var(--mdui-color-surface-container-low-dark);--mdui-color-surface-container:var(--mdui-color-surface-container-dark);--mdui-color-surface-container-high:var(--mdui-color-surface-container-high-dark);--mdui-color-surface-container-highest:var(--mdui-color-surface-container-highest-dark);--mdui-color-surface-variant:var(--mdui-color-surface-variant-dark);--mdui-color-on-surface:var(--mdui-color-on-surface-dark);--mdui-color-on-surface-variant:var(--mdui-color-on-surface-variant-dark);--mdui-color-inverse-surface:var(--mdui-color-inverse-surface-dark);--mdui-color-inverse-on-surface:var(--mdui-color-inverse-on-surface-dark);--mdui-color-background:var(--mdui-color-background-dark);--mdui-color-on-background:var(--mdui-color-on-background-dark);--mdui-color-error:var(--mdui-color-error-dark);--mdui-color-error-container:var(--mdui-color-error-container-dark);--mdui-color-on-error:var(--mdui-color-on-error-dark);--mdui-color-on-error-container:var(--mdui-color-on-error-container-dark);--mdui-color-outline:var(--mdui-color-outline-dark);--mdui-color-outline-variant:var(--mdui-color-outline-variant-dark);--mdui-color-shadow:var(--mdui-color-shadow-dark);--mdui-color-surface-tint-color:var(--mdui-color-surface-tint-color-dark);--mdui-color-scrim:var(--mdui-color-scrim-dark);color:rgb(var(--mdui-color-on-background));background-color:rgb(var(--mdui-color-background))}}:host{--mdui-elevation-level0:none;--mdui-elevation-level1:0 0.5px 1.5px 0 rgba(var(--mdui-color-shadow), 19%),0 0 1px 0 rgba(var(--mdui-color-shadow), 3.9%);--mdui-elevation-level2:0 0.85px 3px 0 rgba(var(--mdui-color-shadow), 19%),0 0.25px 1px 0 rgba(var(--mdui-color-shadow), 3.9%);--mdui-elevation-level3:0 1.25px 5px 0 rgba(var(--mdui-color-shadow), 19%),0 0.3333px 1.5px 0 rgba(var(--mdui-color-shadow), 3.9%);--mdui-elevation-level4:0 1.85px 6.25px 0 rgba(var(--mdui-color-shadow), 19%),0 0.5px 1.75px 0 rgba(var(--mdui-color-shadow), 3.9%);--mdui-elevation-level5:0 2.75px 9px 0 rgba(var(--mdui-color-shadow), 19%),0 0.25px 3px 0 rgba(var(--mdui-color-shadow), 3.9%)}:host{--mdui-motion-easing-linear:cubic-bezier(0, 0, 1, 1);--mdui-motion-easing-standard:cubic-bezier(0.2, 0, 0, 1);--mdui-motion-easing-standard-accelerate:cubic-bezier(0.3, 0, 1, 1);--mdui-motion-easing-standard-decelerate:cubic-bezier(0, 0, 0, 1);--mdui-motion-easing-emphasized:var(--mdui-motion-easing-standard);--mdui-motion-easing-emphasized-accelerate:cubic-bezier(0.3, 0, 0.8, 0.15);--mdui-motion-easing-emphasized-decelerate:cubic-bezier(0.05, 0.7, 0.1, 1);--mdui-motion-duration-short1:50ms;--mdui-motion-duration-short2:100ms;--mdui-motion-duration-short3:150ms;--mdui-motion-duration-short4:200ms;--mdui-motion-duration-medium1:250ms;--mdui-motion-duration-medium2:300ms;--mdui-motion-duration-medium3:350ms;--mdui-motion-duration-medium4:400ms;--mdui-motion-duration-long1:450ms;--mdui-motion-duration-long2:500ms;--mdui-motion-duration-long3:550ms;--mdui-motion-duration-long4:600ms;--mdui-motion-duration-extra-long1:700ms;--mdui-motion-duration-extra-long2:800ms;--mdui-motion-duration-extra-long3:900ms;--mdui-motion-duration-extra-long4:1000ms}.mdui-prose{line-height:1.75;word-wrap:break-word}.mdui-prose :first-child{margin-top:0}.mdui-prose :last-child{margin-bottom:0}.mdui-prose code,.mdui-prose kbd,.mdui-prose pre,.mdui-prose pre tt,.mdui-prose samp{font-family:Consolas,Courier,"Courier New",monospace}.mdui-prose caption{text-align:left}.mdui-prose [draggable=true],.mdui-prose [draggable]{cursor:move}.mdui-prose [draggable=false]{cursor:inherit}.mdui-prose dl,.mdui-prose form,.mdui-prose ol,.mdui-prose p,.mdui-prose ul{margin-top:1.25em;margin-bottom:1.25em}.mdui-prose a{text-decoration:none;outline:0;color:rgb(var(--mdui-color-primary))}.mdui-prose a:focus,.mdui-prose a:hover{border-bottom:.0625rem solid rgb(var(--mdui-color-primary))}.mdui-prose small{font-size:.875em}.mdui-prose strong{font-weight:600}.mdui-prose blockquote{margin:1.6em 2em;padding-left:1em;border-left:.25rem solid rgb(var(--mdui-color-surface-variant))}@media only screen and (max-width:599.98px){.mdui-prose blockquote{margin:1.6em 0}}.mdui-prose blockquote footer{font-size:86%;color:rgb(var(--mdui-color-on-surface-variant))}.mdui-prose mark{color:inherit;background-color:rgb(var(--mdui-color-secondary-container));border-bottom:.0625rem solid rgb(var(--mdui-color-secondary));margin:0 .375rem;padding:.125rem}.mdui-prose h1,.mdui-prose h2,.mdui-prose h3,.mdui-prose h4,.mdui-prose h5,.mdui-prose h6{font-weight:400}.mdui-prose h1 small,.mdui-prose h2 small,.mdui-prose h3 small,.mdui-prose h4 small,.mdui-prose h5 small,.mdui-prose h6 small{font-weight:inherit;font-size:65%;color:rgb(var(--mdui-color-on-surface-variant))}.mdui-prose h1 strong,.mdui-prose h2 strong,.mdui-prose h3 strong,.mdui-prose h4 strong,.mdui-prose h5 strong,.mdui-prose h6 strong{font-weight:600}.mdui-prose h1{font-size:2.5em;margin-top:0;margin-bottom:1.25em;line-height:1.1111}.mdui-prose h2{font-size:1.875em;margin-top:2.25em;margin-bottom:1.125em;line-height:1.3333}.mdui-prose h3{font-size:1.5em;margin-top:2em;margin-bottom:1em;line-height:1.6}.mdui-prose h4{font-size:1.25em;margin-top:1.875em;margin-bottom:.875em;line-height:1.5}.mdui-prose h2+*,.mdui-prose h3+*,.mdui-prose h4+*,.mdui-prose hr+*{margin-top:0}.mdui-prose code,.mdui-prose kbd{font-size:.875em;color:rgb(var(--mdui-color-on-surface-container));background-color:rgba(var(--mdui-color-surface-variant),.28);padding:.125rem .375rem;border-radius:var(--mdui-shape-corner-extra-small)}.mdui-prose kbd{font-size:.9em}.mdui-prose abbr[title]{text-decoration:none;cursor:help;border-bottom:.0625rem dotted rgb(var(--mdui-color-on-surface-variant))}.mdui-prose ins,.mdui-prose u{text-decoration:none;border-bottom:.0625rem solid rgb(var(--mdui-color-on-surface-variant))}.mdui-prose del{text-decoration:line-through}.mdui-prose hr{margin-top:3em;margin-bottom:3em;border:none;border-bottom:.0625rem solid rgb(var(--mdui-color-surface-variant))}.mdui-prose pre{margin-top:1.7143em;margin-bottom:1.7143em}.mdui-prose pre code{padding:.8571em 1.1429em;overflow-x:auto;-webkit-overflow-scrolling:touch;background-color:rgb(var(--mdui-color-surface-container));color:rgb(var(--mdui-color-on-surface-container));border-radius:var(--mdui-shape-corner-extra-small)}.mdui-prose ol,.mdui-prose ul{padding-left:1.625em}.mdui-prose ul{list-style-type:disc}.mdui-prose ol{list-style-type:decimal}.mdui-prose ol[type="A"]{list-style-type:upper-alpha}.mdui-prose ol[type="a"]{list-style-type:lower-alpha}.mdui-prose ol[type="I"]{list-style-type:upper-roman}.mdui-prose ol[type="i"]{list-style-type:lower-roman}.mdui-prose ol[type="1"]{list-style-type:decimal}.mdui-prose li{margin-top:.5em;margin-bottom:.5em}.mdui-prose ol>li,.mdui-prose ul>li{padding-left:.375em}.mdui-prose ol>li>p,.mdui-prose ul>li>p{margin-top:.75em;margin-bottom:.75em}.mdui-prose ol>li>:first-child,.mdui-prose ul>li>:first-child{margin-top:1.25em}.mdui-prose ol>li>:last-child,.mdui-prose ul>li>:last-child{margin-bottom:1.25em}.mdui-prose ol>li::marker{font-weight:400;color:rgb(var(--mdui-color-on-surface-variant))}.mdui-prose ul>li::marker{color:rgb(var(--mdui-color-on-surface-variant))}.mdui-prose ol ol,.mdui-prose ol ul,.mdui-prose ul ol,.mdui-prose ul ul{margin-top:.75em;margin-bottom:.75em}.mdui-prose fieldset,.mdui-prose img{border:none}.mdui-prose figure,.mdui-prose img,.mdui-prose video{margin-top:2em;margin-bottom:2em;max-width:100%}.mdui-prose figure>*{margin-top:0;margin-bottom:0}.mdui-prose figcaption{font-size:.875em;line-height:1.4286;margin-top:.8571em;color:rgb(var(--mdui-color-on-surface-variant))}.mdui-prose figcaption:empty::before{z-index:-1;cursor:text;content:attr(placeholder);color:rgb(var(--mdui-color-on-surface-variant))}.mdui-prose table{margin-top:2em;margin-bottom:2em;border:.0625rem solid rgb(var(--mdui-color-surface-variant));border-radius:var(--mdui-shape-corner-large)}.mdui-table{width:100%;overflow-x:auto;margin-top:2em;margin-bottom:2em;border:.0625rem solid rgb(var(--mdui-color-surface-variant));border-radius:var(--mdui-shape-corner-large)}.mdui-table table{margin-top:0;margin-bottom:0;border:none;border-radius:0}.mdui-prose table,.mdui-table table{width:100%;text-align:left;border-collapse:collapse;border-spacing:0}.mdui-prose td,.mdui-prose th,.mdui-table td,.mdui-table th{border-top:.0625rem solid rgb(var(--mdui-color-surface-variant))}.mdui-prose td:not(:first-child),.mdui-prose th:not(:first-child),.mdui-table td:not(:first-child),.mdui-table th:not(:first-child){border-left:.0625rem solid rgb(var(--mdui-color-surface-variant))}.mdui-prose td:not(:last-child),.mdui-prose th:not(:last-child),.mdui-table td:not(:last-child),.mdui-table th:not(:last-child){border-right:.0625rem solid rgb(var(--mdui-color-surface-variant))}.mdui-prose tfoot td,.mdui-prose tfoot th,.mdui-prose thead td,.mdui-prose thead th,.mdui-table tfoot td,.mdui-table tfoot th,.mdui-table thead td,.mdui-table thead th{position:relative;vertical-align:middle;padding:1.125rem 1rem;font-weight:var(--mdui-typescale-title-medium-weight);letter-spacing:var(--mdui-typescale-title-medium-tracking);line-height:var(--mdui-typescale-title-medium-line-height);color:rgb(var(--mdui-color-on-surface-variant));box-shadow:var(--mdui-elevation-level1)}.mdui-prose tbody td,.mdui-prose tbody th,.mdui-table tbody td,.mdui-table tbody th{padding:.875rem 1rem}.mdui-prose tbody th,.mdui-table tbody th{vertical-align:middle;font-weight:inherit}.mdui-prose tbody td,.mdui-table tbody td{vertical-align:baseline}.mdui-prose tbody:first-child tr:first-child td,.mdui-prose thead:first-child tr:first-child th,.mdui-table tbody:first-child tr:first-child td,.mdui-table thead:first-child tr:first-child th{border-top:0}:host{--mdui-shape-corner-none:0;--mdui-shape-corner-extra-small:0.25rem;--mdui-shape-corner-small:0.5rem;--mdui-shape-corner-medium:0.75rem;--mdui-shape-corner-large:1rem;--mdui-shape-corner-extra-large:1.75rem;--mdui-shape-corner-full:1000rem}:host{--mdui-state-layer-hover:0.08;--mdui-state-layer-focus:0.12;--mdui-state-layer-pressed:0.12;--mdui-state-layer-dragged:0.16}:host{--mdui-typescale-display-large-weight:400;--mdui-typescale-display-medium-weight:400;--mdui-typescale-display-small-weight:400;--mdui-typescale-display-large-line-height:4rem;--mdui-typescale-display-medium-line-height:3.25rem;--mdui-typescale-display-small-line-height:2.75rem;--mdui-typescale-display-large-size:3.5625rem;--mdui-typescale-display-medium-size:2.8125rem;--mdui-typescale-display-small-size:2.25rem;--mdui-typescale-display-large-tracking:0rem;--mdui-typescale-display-medium-tracking:0rem;--mdui-typescale-display-small-tracking:0rem;--mdui-typescale-headline-large-weight:400;--mdui-typescale-headline-medium-weight:400;--mdui-typescale-headline-small-weight:400;--mdui-typescale-headline-large-line-height:2.5rem;--mdui-typescale-headline-medium-line-height:2.25rem;--mdui-typescale-headline-small-line-height:2rem;--mdui-typescale-headline-large-size:2rem;--mdui-typescale-headline-medium-size:1.75rem;--mdui-typescale-headline-small-size:1.5rem;--mdui-typescale-headline-large-tracking:0rem;--mdui-typescale-headline-medium-tracking:0rem;--mdui-typescale-headline-small-tracking:0rem;--mdui-typescale-title-large-weight:400;--mdui-typescale-title-medium-weight:500;--mdui-typescale-title-small-weight:500;--mdui-typescale-title-large-line-height:1.75rem;--mdui-typescale-title-medium-line-height:1.5rem;--mdui-typescale-title-small-line-height:1.25rem;--mdui-typescale-title-large-size:1.375rem;--mdui-typescale-title-medium-size:1rem;--mdui-typescale-title-small-size:0.875rem;--mdui-typescale-title-large-tracking:0rem;--mdui-typescale-title-medium-tracking:0.009375rem;--mdui-typescale-title-small-tracking:0.00625rem;--mdui-typescale-label-large-weight:500;--mdui-typescale-label-medium-weight:500;--mdui-typescale-label-small-weight:500;--mdui-typescale-label-large-line-height:1.25rem;--mdui-typescale-label-medium-line-height:1rem;--mdui-typescale-label-small-line-height:0.375rem;--mdui-typescale-label-large-size:0.875rem;--mdui-typescale-label-medium-size:0.75rem;--mdui-typescale-label-small-size:0.6875rem;--mdui-typescale-label-large-tracking:0.00625rem;--mdui-typescale-label-medium-tracking:0.03125rem;--mdui-typescale-label-small-tracking:0.03125rem;--mdui-typescale-body-large-weight:400;--mdui-typescale-body-medium-weight:400;--mdui-typescale-body-small-weight:400;--mdui-typescale-body-large-line-height:1.5rem;--mdui-typescale-body-medium-line-height:1.25rem;--mdui-typescale-body-small-line-height:1rem;--mdui-typescale-body-large-size:1rem;--mdui-typescale-body-medium-size:0.875rem;--mdui-typescale-body-small-size:0.75rem;--mdui-typescale-body-large-tracking:0.009375rem;--mdui-typescale-body-medium-tracking:0.015625rem;--mdui-typescale-body-small-tracking:0.025rem}.mdui-lock-screen{overflow:hidden!important}`, ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -4212,79 +4268,92 @@ ___CSS_LOADER_EXPORT___.push([module.id, `#nd-progress {
   bottom: 8%;
   right: 3%;
   z-index: 2147483647;
-  border-style: none;
-  text-align: center;
-  vertical-align: baseline;
-  background-color: rgba(210, 210, 210, 0.2);
-  padding: 6px;
-  border-radius: 12px;
+  background-color: rgba(var(--mdui-color-surface-container, 243,237,247), 0.92);
+  padding: 16px 20px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08); /* Stronger shadow */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(var(--mdui-color-outline-variant, 202,196,208), 0.5);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 #chapter-progress-wrapper {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  gap: 12px;
 }
 
-#chapter-progress {
-  --color: green;
-  --position: 0%;
-  width: 200px;
-  height: 10px;
-  border-radius: 30px;
-  background-color: #ccc;
-  background-image: radial-gradient(
-      closest-side circle at var(--position),
-      var(--color),
-      var(--color) 100%,
-      transparent
-    ),
-    linear-gradient(var(--color), var(--color));
-  background-image: -webkit-radial-gradient(
-      var(--position),
-      circle closest-side,
-      var(--color),
-      var(--color) 100%,
-      transparent
-    ),
-    -webkit-linear-gradient(var(--color), var(--color));
-  background-size: 100%, var(--position);
-  background-repeat: no-repeat;
+.nd-progress-text-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  color: rgb(var(--mdui-color-on-surface-variant, 73,69,78));
+  font-weight: 500;
+}
+
+#chapter-progress-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nd-progress-bar {
+  --progress: 0%;
+  width: 220px;
+  height: 8px;
+  border-radius: 4px;
+  background-color: rgba(var(--mdui-color-on-surface, 28,27,31), 0.12);
+  overflow: hidden;
+  position: relative;
+}
+
+.nd-progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: var(--progress);
+  background: linear-gradient(90deg, 
+    rgb(var(--mdui-color-primary, 103,80,164)) 0%, 
+    rgb(var(--mdui-color-tertiary, 125,82,96)) 100%);
+  border-radius: 4px;
+  transition: width 0.4s cubic-bezier(0.2, 0, 0, 1);
+  box-shadow: 0 0 8px rgba(var(--mdui-color-primary, 103,80,164), 0.4);
+}
+
+#chapter-count {
+  line-height: 1;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  color: rgb(var(--mdui-color-on-surface-variant, 73,69,78));
+}
+
+#chapter-percent-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgb(var(--mdui-color-primary, 103,80,164));
+  min-width: 2.5em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 #chapter-eta {
-  color: #555;
-  font-size: 12px;
+  color: rgb(var(--mdui-color-primary, 103,80,164));
+  font-weight: 600;
   line-height: 1;
   white-space: nowrap;
-  font-family: monospace;
-}
-
-#zip-progress {
-  --color: yellow;
-  --position: 0%;
-  width: 200px;
-  height: 10px;
-  border-radius: 30px;
-  background-color: #ccc;
-  background-image: radial-gradient(
-      closest-side circle at var(--position),
-      var(--color),
-      var(--color) 100%,
-      transparent
-    ),
-    linear-gradient(var(--color), var(--color));
-  background-image: -webkit-radial-gradient(
-      var(--position),
-      circle closest-side,
-      var(--color),
-      var(--color) 100%,
-      transparent
-    ),
-    -webkit-linear-gradient(var(--color), var(--color));
-  background-size: 100%, var(--position);
-  background-repeat: no-repeat;
-  margin-top: 5px;
+  font-variant-numeric: tabular-nums;
+  background: rgba(var(--mdui-color-primary, 103,80,164), 0.1);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
 }
 `, ""]);
 // Exports
@@ -20555,10 +20624,17 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .
     }
     async bookParse() {
         const bookUrl = document.location.href;
-        const bookId = document.querySelector("span.c-light-gray").innerText.replace("CP", "");
-        if (!bookId) {
-            throw new Error("获取bookID出错");
+        let bookIdSpan = document.querySelector("span.c-light-gray");
+        let retry = 0;
+        while (!bookIdSpan && retry < 50) {
+            await new Promise(r => setTimeout(r, 500));
+            bookIdSpan = document.querySelector("span.c-light-gray");
+            retry++;
         }
+        if (!bookIdSpan) {
+            throw new Error("获取bookID出错: 找不到对应元素(span.c-light-gray)");
+        }
+        const bookId = bookIdSpan.innerText.replace("CP", "");
         const novelGetInfoBaseUrl = "https://www.gongzicp.com/webapi/novel/novelInfo";
         const novelGetInfoUrl = new URL(novelGetInfoBaseUrl);
         novelGetInfoUrl.searchParams.set("id", bookId);
@@ -33624,17 +33700,70 @@ var external_CryptoJS_ = __webpack_require__("crypto-js");
 
 
 const AUTHOR_SAY_PREFIX = "作者有话说：";
+const JJWXC_TOKEN_STORAGE_KEY = "nd-jjwxc-token";
+function normalizeJjwxcToken(token) {
+    return String(token).replace(/undefined|token=|\s|&.*$/g, "").trim();
+}
+function isValidJjwxcToken(token) {
+    return /^\d+_[\w\d]{16,}$/.test(token);
+}
+function getJjwxcTokenFromOptions() {
+    const raw = unsafeWindow.tokenOptions?.Jjwxc;
+    if (!raw) {
+        return null;
+    }
+    const token = normalizeJjwxcToken(typeof raw === "string" ? raw : raw.token ?? "");
+    return token.length > 0 ? token : null;
+}
+function getStoredJjwxcToken() {
+    const fromOptions = getJjwxcTokenFromOptions();
+    if (fromOptions) {
+        return fromOptions;
+    }
+    try {
+        const fromStorage = normalizeJjwxcToken(localStorage.getItem(JJWXC_TOKEN_STORAGE_KEY) ?? "");
+        if (fromStorage.length > 0) {
+            return fromStorage;
+        }
+    }
+    catch (error) {
+        loglevel_default().debug(`[jjwxc-token] read localStorage failed: ${String(error)}`);
+    }
+    return null;
+}
+function setStoredJjwxcToken(token) {
+    const normalized = normalizeJjwxcToken(token);
+    if (!normalized) {
+        return null;
+    }
+    const tokenOptions = typeof unsafeWindow.tokenOptions === "object"
+        ? unsafeWindow.tokenOptions
+        : undefined;
+    unsafeWindow.tokenOptions = {
+        ...(tokenOptions ?? {}),
+        Jjwxc: normalized,
+    };
+    try {
+        localStorage.setItem(JJWXC_TOKEN_STORAGE_KEY, normalized);
+    }
+    catch (error) {
+        loglevel_default().debug(`[jjwxc-token] write localStorage failed: ${String(error)}`);
+    }
+    return normalized;
+}
+function hydrateJjwxcTokenFromStorage() {
+    const token = getStoredJjwxcToken();
+    if (token) {
+        setStoredJjwxcToken(token);
+    }
+}
 class Jjwxc extends rules/* BaseRuleClass */.Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
         this.concurrencyLimit = 1;
         this.charset = "GB18030";
-        const firstChild = document.querySelector('#nd-setting-tab-1')?.firstElementChild;
-        const button = document.createElement('button');
-        button.innerText = '获取token';
-        button.style.marginLeft = '10px';
-        firstChild?.parentNode?.insertBefore(button, firstChild.nextSibling);
+        hydrateJjwxcTokenFromStorage();
         function encode(data) {
             const key = external_CryptoJS_.enc.Utf8.parse("KW8Dvm2N");
             const iv = external_CryptoJS_.enc.Utf8.parse("1ae2c94b");
@@ -33676,6 +33805,19 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             }
         }
         async function login() {
+            const manualToken = normalizeJjwxcToken(document.getElementById("nd-jj-manual-token")
+                ?.value ?? "");
+            if (manualToken.length > 0) {
+                const savedToken = setStoredJjwxcToken(manualToken);
+                if (savedToken) {
+                    const tokenElement = document.getElementById("nd-jj-token");
+                    if (tokenElement) {
+                        tokenElement.textContent = savedToken;
+                    }
+                    alert("token 保存成功");
+                }
+                return;
+            }
             const account = document.getElementById("nd-jj-account")?.value;
             const password = document.getElementById("nd-jj-password")?.value;
             const verificationCode = document.getElementById("nd-jj-verificationCode")?.value;
@@ -33711,7 +33853,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                             fetch: true,
                             responseType: "json",
                             onload: function (response) {
-                                const resultI = JSON.parse(response.responseText);
+                                const resultI = typeof response.response === "object" ? response.response : JSON.parse((response.responseText || response.response));
                                 loglevel_default().debug(`LoginResponse url ${loginUrl}`);
                                 if (response.status === 200) {
                                     resolve(resultI);
@@ -33735,7 +33877,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                                 anonymous: true,
                                 responseType: "json",
                                 onload: function (response) {
-                                    const resultI = JSON.parse(response.responseText);
+                                    const resultI = typeof response.response === "object" ? response.response : JSON.parse((response.responseText || response.response));
                                     loglevel_default().debug(`CodeResponse url ${verifyUrl}`);
                                     loglevel_default().debug(`${response.responseText}`);
                                     loglevel_default().debug(`${body}`);
@@ -33749,13 +33891,23 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                                 },
                             });
                         });
-                        let msg = responseJson.data.message;
+                        let msg = responseJson.data ? responseJson.data.message : "";
                         if (!msg)
                             msg = responseJson.message;
                         alert(msg);
                     }
                     else {
-                        alert(resJson.message);
+                        const token = setStoredJjwxcToken(resJson.token ?? "");
+                        if (token) {
+                            const tokenElement = document.getElementById("nd-jj-token");
+                            if (tokenElement) {
+                                tokenElement.textContent = token;
+                            }
+                            alert("登录成功，token 已更新");
+                        }
+                        else {
+                            alert(resJson.message);
+                        }
                     }
                 }
                 else if (CheckLogin === 2) {
@@ -33769,7 +33921,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                             responseType: "json",
                             fetch: true,
                             onload: function (response) {
-                                const resultI = JSON.parse(response.responseText);
+                                const resultI = typeof response.response === "object" ? response.response : JSON.parse((response.responseText || response.response));
                                 loglevel_default().debug(`LoginResponse url ${loginUrl}`);
                                 if (response.status === 200) {
                                     resolve(resultI);
@@ -33781,63 +33933,117 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                             },
                         });
                     });
-                    const token = tokenJson.token;
+                    const token = setStoredJjwxcToken(tokenJson.token ?? "");
                     const tokenelement = document.getElementById("nd-jj-token");
-                    if (tokenelement) {
+                    if (tokenelement && token) {
                         tokenelement.textContent = token;
+                    }
+                    if (!token) {
+                        alert(tokenJson.message ?? "登录失败，请检查账号密码和验证码");
                     }
                 }
             }
         }
-        button.addEventListener('click', () => {
+        function openTokenDialog() {
             const page = document.createElement('div');
+            const existingToken = getStoredJjwxcToken() ?? "";
             page.innerHTML = `
-        <h1 class="center-align">JJ获取token</h1>
-        <div>
+        <h2 style="margin-top:0;font-size:1.25rem;">JJ获取token</h2>
+        <div style="display:flex;flex-direction:column;gap:16px;">
             <div class="row">
-                <div class="input-field">
-                    <label for="account">账号</label>
-                    <input type="text" id="nd-jj-account" name="account" required>
-                </div>
+                <mdui-text-field id="nd-jj-manual-token" label="已有token（可直接粘贴保存）" value="${existingToken}" variant="outlined"></mdui-text-field>
             </div>
             <div class="row">
-                <div class="input-field">
-                    <label for="password">密码</label>
-                    <input type="password" id="nd-jj-password" name="password" required>
-                </div>
+                <mdui-text-field id="nd-jj-account" label="账号" required variant="outlined"></mdui-text-field>
             </div>
             <div class="row">
-                <div class="input-field">
-                    <label for="verificationCode">验证码</label>
-                    <input type="text" id="nd-jj-verificationCode" name="verificationCode">
-                </div>
+                <mdui-text-field id="nd-jj-password" label="密码" type="password" required variant="outlined"></mdui-text-field>
             </div>
             <div class="row">
-                <button type="click" id="nd-jj-login">登录</button>
+                <mdui-text-field id="nd-jj-verificationCode" label="验证码" variant="outlined"></mdui-text-field>
+            </div>
+            <div class="row" style="text-align: right;">
+              <mdui-button id="nd-jj-login" variant="filled">登录/保存token</mdui-button>
             </div>
         </div>
-        <h2 class="center-align">生成的Token:</h2>
-        <p id="nd-jj-token" class="center-align"></p>
+        <h3 style="font-size:1rem;margin-top:16px;">生成的Token:</h3>
+        <p id="nd-jj-token" style="word-break: break-all; opacity: 0.8; user-select: all;">${existingToken}</p>
       `;
             page.style.position = 'fixed';
             page.style.top = '50%';
             page.style.left = '50%';
             page.style.transform = 'translate(-50%, -50%)';
-            page.style.padding = '20px';
-            page.style.backgroundColor = 'white';
-            page.style.border = '1px solid black';
-            page.style.zIndex = '1000';
-            const closeButton = document.createElement('button');
+            page.style.padding = '24px';
+            page.style.backgroundColor = 'rgb(var(--mdui-color-surface-container-high, 236,230,240))';
+            page.style.color = 'rgb(var(--mdui-color-on-surface, 28,27,31))';
+            page.style.borderRadius = '16px';
+            page.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            page.style.zIndex = '100001';
+            page.style.minWidth = '300px';
+            const closeButton = document.createElement('mdui-button');
             closeButton.innerText = '关闭';
+            closeButton.setAttribute('variant', 'text');
             closeButton.style.display = 'block';
-            closeButton.style.marginTop = '10px';
+            closeButton.style.marginTop = '16px';
+            closeButton.style.width = '100%';
             closeButton.addEventListener('click', () => {
                 document.body.removeChild(page);
             });
             page.appendChild(closeButton);
             document.body.appendChild(page);
             document.getElementById("nd-jj-login")?.addEventListener('click', () => login());
-        });
+            const tokenInput = document.getElementById("nd-jj-manual-token");
+            if (tokenInput && !isValidJjwxcToken(existingToken) && existingToken.length > 0) {
+                tokenInput.setAttribute('error', '无效的 token');
+            }
+        }
+        function injectTokenButton() {
+            const shadowRoot = document.querySelector('#nd-shadow-host')?.shadowRoot;
+            if (!shadowRoot)
+                return false;
+            if (shadowRoot.querySelector("#nd-jj-token-entry")) {
+                return true;
+            }
+            const firstChild = shadowRoot.querySelector('#nd-setting-tab-1')?.firstElementChild;
+            if (!firstChild || !firstChild.parentNode) {
+                return false;
+            }
+            const button = document.createElement('mdui-button');
+            button.id = "nd-jj-token-entry";
+            button.innerText = '获取token';
+            button.setAttribute('variant', 'tonal');
+            button.style.marginBottom = '16px';
+            button.style.width = '100%';
+            firstChild.parentNode.insertBefore(button, firstChild);
+            button.addEventListener('click', () => {
+                openTokenDialog();
+            });
+            return true;
+        }
+        if (!injectTokenButton()) {
+            let isObservingShadow = false;
+            const observer = new MutationObserver(() => {
+                if (injectTokenButton()) {
+                    observer.disconnect();
+                }
+                else {
+                    const host = document.querySelector('#nd-shadow-host');
+                    if (host && host.shadowRoot && !isObservingShadow) {
+                        observer.disconnect();
+                        observer.observe(host.shadowRoot, { childList: true, subtree: true });
+                        isObservingShadow = true;
+                    }
+                }
+            });
+            const host = document.querySelector('#nd-shadow-host');
+            if (host && host.shadowRoot) {
+                observer.observe(host.shadowRoot, { childList: true, subtree: true });
+                isObservingShadow = true;
+            }
+            else {
+                observer.observe(document.body, { childList: true, subtree: true });
+            }
+        }
     }
     extractProtagonistInfo() {
         try {
@@ -33954,12 +34160,24 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             }
         }
         if (descriptionElements.length > 0) {
-            const separator = document.createElement('hr');
-            separator.style.margin = '10px 0';
-            introDom.appendChild(separator);
-            descriptionElements.forEach(element => {
-                introDom.appendChild(element);
+            const metadataContainer = document.createElement('div');
+            metadataContainer.setAttribute('data-keep', 'style');
+            metadataContainer.style.marginTop = '1.5em';
+            metadataContainer.style.marginBottom = '1.5em';
+            metadataContainer.style.padding = '1.2em';
+            metadataContainer.style.backgroundColor = 'rgba(121, 85, 72, 0.04)';
+            metadataContainer.style.border = '1px solid rgba(121, 85, 72, 0.2)';
+            metadataContainer.style.borderRadius = '8px';
+            metadataContainer.style.color = 'inherit';
+            descriptionElements.forEach((element, index) => {
+                element.setAttribute('data-keep', 'style');
+                element.style.lineHeight = '1.6';
+                if (index < descriptionElements.length - 1) {
+                    element.style.marginBottom = '0.6em';
+                }
+                metadataContainer.appendChild(element);
             });
+            introDom.appendChild(metadataContainer);
         }
         return introDom;
     }
@@ -34089,7 +34307,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                                 options: {},
                             });
                             const isLogin = () => {
-                                if (typeof unsafeWindow.tokenOptions === "object")
+                                if (getStoredJjwxcToken())
                                     return true;
                                 return !document.getElementById("jj_login");
                             };
@@ -34118,7 +34336,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                             options: {},
                         });
                         const isLogin = () => {
-                            if (typeof unsafeWindow.tokenOptions === "object")
+                            if (getStoredJjwxcToken())
                                 return true;
                             return !document.getElementById("jj_login");
                         };
@@ -34737,12 +34955,9 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             chapterGetInfoUrl = chapterGetInfoUrl.replace("http://my.jjwxc.net/onebook_vip.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
             chapterGetInfoUrl = chapterGetInfoUrl.replace("https://my.jjwxc.net/onebook_vip.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
             chapterGetInfoUrl += "&versionCode=381";
-            let sid = unsafeWindow.tokenOptions?.Jjwxc;
+            let sid = getStoredJjwxcToken();
             if (sid) {
-                if (typeof sid !== "string") {
-                    sid = sid;
-                    sid = sid.token;
-                }
+                sid = normalizeJjwxcToken(sid);
                 chapterGetInfoUrl +=
                     "&token=" + sid;
             }
@@ -34876,7 +35091,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                 };
             }
         }
-        if ((unsafeWindow.tokenOptions?.Jjwxc ?? null) != null) {
+        if (getStoredJjwxcToken() != null) {
             return getChapterByApi();
         }
         else {
@@ -45557,6 +45772,8 @@ __webpack_require__.d(__webpack_exports__, {
   vm: () => (/* binding */ vm)
 });
 
+// UNUSED EXPORTS: app
+
 // EXTERNAL MODULE: external "Vue"
 var external_Vue_ = __webpack_require__("vue");
 // EXTERNAL MODULE: ./src/lib/dom.ts
@@ -45568,8 +45785,14 @@ var progress = __webpack_require__("./src/ui/progress.css");
 var code = `<div>
   <div v-if="ntProgressSeen" id="nd-progress">
     <div v-if="chapterProgressSeen" id="chapter-progress-wrapper">
-      <div id="chapter-progress" v-bind:style="{'--position': chapterPercent+'%'}" v-bind:title="chapterProgressTitle"></div>
-      <span v-if="etaText" id="chapter-eta">{{ etaText }}</span>
+      <div class="nd-progress-text-container">
+        <span id="chapter-count">下载进度：{{ finishedChapterNumber }} / {{ totalChapterNumber }}</span>
+        <span v-if="etaText" id="chapter-eta">{{ etaText }}</span>
+      </div>
+      <div id="chapter-progress-inner">
+        <div class="nd-progress-bar" v-bind:style="{'--progress': chapterPercent+'%'}" v-bind:title="chapterProgressTitle"></div>
+        <span id="chapter-percent-text">{{ Math.floor(chapterPercent) }}%</span>
+      </div>
     </div>
   </div>
 </div>
@@ -45620,7 +45843,7 @@ function estimateSerialSleepTime(nextIndex, remainingCount, sleepTime, maxSleepT
     }
     return total;
 }
-const vm = (0,external_Vue_.createApp)({
+const app = (0,external_Vue_.createApp)({
     data() {
         return {
             totalChapterNumber: 0,
@@ -45684,7 +45907,9 @@ const vm = (0,external_Vue_.createApp)({
         },
     },
     template: ui_progress,
-}).mount(el);
+});
+app.config.compilerOptions.isCustomElement = (tag) => tag.startsWith("mdui-");
+const vm = app.mount(el);
 
 
 /***/ },
@@ -47692,16 +47917,16 @@ function getUI() {
 var code = `<div id="button-div" class="button-div">
   <div v-if="uiObj.type !== 'error'">
     <div v-if="uiObj.type === 'jump'" class="jump">
-      <button class="jump">
-        <img alt="jump" class="jump" v-bind:src="imgJump" v-on:click="jumpButtonClick">
+      <button class="nd-fab" v-on:click="jumpButtonClick">
+        <img v-bind:src="imgJump" alt="jump">
       </button>
     </div>
     <div v-if="uiObj.type === 'download'" class="download">
-      <button class="start">
-        <img alt="start" class="start" v-bind:src="imgStart" v-on:click="startButtonClick">
+      <button class="nd-fab" v-on:click="startButtonClick">
+        <img v-bind:src="imgStart" alt="start">
       </button>
-      <button v-if="isSettingSeen" class="setting">
-        <img alt="setting" class="setting" v-bind:src="imgSetting" v-on:click="settingButtonClick">
+      <button v-if="isSettingSeen" class="nd-fab nd-fab-small" v-on:click="settingButtonClick" title="设置">
+        <img v-bind:src="imgSetting" alt="setting">
       </button>
     </div>
   </div>
@@ -47748,8 +47973,11 @@ var save_misc = __webpack_require__("./src/save/misc.ts");
 var ChapterList_code = `<div>
   <div v-if="loading">
     <div class="chapter-list-loading">
-      <h2 v-if="failed">加载章节失败！</h2>
-      <h2 v-else>正在载入章节列表中，请耐心等待……</h2>
+      <h2 v-if="failed" style="color: rgb(var(--mdui-color-error, 179,38,30));">加载章节失败！</h2>
+      <div v-else style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+        <div class="nd-spinner"></div>
+        <h2>正在载入章节列表中，请耐心等待……</h2>
+      </div>
     </div>
   </div>
   <div v-else class="chapter-list" style="display: block;position: relative;">
@@ -47868,22 +48096,27 @@ var FilterTab = __webpack_require__("./src/ui/FilterTab.css");
 ;// ./src/ui/FilterTab.html
 // Module
 var FilterTab_code = `<div>
-  <div class="filter-setting">
+  <div class="setting-section filter-setting">
     <div v-if="filterType !== 'null'" class="filter-input">
-      <p>请输入过滤的条件：<input v-model="arg" type="text"></p>
+      <mdui-text-field :value="arg" @input="arg = \$event.target.value" label="请输入过滤的条件" variant="outlined" style="width: 100%;"></mdui-text-field>
     </div>
+    
     <div class="filter-setter">
-      <div>
-        <span>当前过滤方法：</span>
-        <select v-model="filterType">
-          <option v-for="filterOption in filterOptionList" v-bind:value="filterOption[0]">
-            {{ filterOption[1]["abbreviation"] }}
-          </option>
-        </select>
+<div class="setting-item">
+        <span class="setting-label">当前过滤方法：</span>
+        <mdui-select :value="filterType" @change="filterType = \$event.target.value" variant="outlined">
+          <mdui-menu-item v-for="filterOption in filterOptionList" v-bind:value="filterOption[0]">{{ filterOption[1]["abbreviation"] }}</mdui-menu-item>
+        </mdui-select>
       </div>
-      <input id="hiddenBad" v-model="hiddenBad" type="checkbox">
-      <label for="hiddenBad">只显示符合条件章节</label>
-      <div class="filter-description" v-html="filterDescription"></div>
+
+      <div class="setting-switches" style="margin-top: 12px;">
+        <div class="setting-item" @click="hiddenBad = !hiddenBad">
+          <span class="setting-label">只显示符合条件章节</span>
+          <mdui-switch :checked="hiddenBad" @change="hiddenBad = \$event.target.checked" @click.stop></mdui-switch>
+        </div>
+      </div>
+
+      <div class="filter-description" v-html="filterDescription" style="margin-top: 16px;"></div>
       <div v-if="false">
         <span class="good"></span>
         <span class="warning"></span>
@@ -48074,81 +48307,76 @@ var log = __webpack_require__("./src/log.ts");
 ;// ./src/ui/setting.html
 // Module
 var setting_code = `<div>
-  <dialog-ui v-if="openStatus === 'true'" dialog-title="设置" v-bind:status="openStatus" v-on:dialogclose="closeSetting">
+  <mdui-dialog v-bind:open="openStatus === 'true'" headline="设置" close-on-esc v-on:closed="onSettingClosed(\$event)" class="nd-setting-dialog">
     <div id="nd-setting" class="nd-setting">
-      <div class="nd-setting-tab">
-        <button v-bind:class="['tab-button', { active: setting.currentTab === 'tab-1'}]" v-on:click="setting.currentTab = 'tab-1'">
-          基本设置
-        </button>
-        <button v-bind:class="['tab-button', { active: setting.currentTab === 'tab-2'}]" v-on:click="setting.currentTab = 'tab-2'">
-          自定义筛选条件
-        </button>
-        <button v-if="setting.enableTestPage" v-bind:class="['tab-button', { active: setting.currentTab === 'tab-3'}]" v-on:click="setting.currentTab = 'tab-3'">
-          抓取测试
-        </button>
-        <button v-if="setting.enableTestPage" v-bind:class="['tab-button', { active: setting.currentTab === 'tab-4'}]" v-on:click="setting.currentTab = 'tab-4'">
-          日志
-        </button>
-      </div>
-      <div class="nd-setting-body">
-        <div v-show="setting.currentTab === 'tab-1'" id="nd-setting-tab-1" class="tab-page">
-          <div>
-            <input id="debug" v-model="setting.enableDebug" type="checkbox">
-            <label for="debug">启用调试模式。（输出更详细日志）</label>
-            <input id="txtDownload" v-model="setting.TxtDownload" type="checkbox">
-            <label for="txtDownload">下载Txt文件</label>
-            <input id="EpubDownload" v-model="setting.EpubDownload" type="checkbox">
-            <label for="EpubDownload">下载Epub文件</label>
-            <input id="test-page" v-model="setting.enableTestPage" type="checkbox">
-            <label for="test-page">启用测试视图</label>
+      <mdui-tabs v-bind:value="setting.currentTab" v-on:change="onTabChange" variant="secondary" full-width>
+        <mdui-tab value="tab-1">基本设置</mdui-tab>
+        <mdui-tab value="tab-2">自定义筛选条件</mdui-tab>
+        <mdui-tab v-if="setting.enableTestPage" value="tab-3">抓取测试</mdui-tab>
+        <mdui-tab v-if="setting.enableTestPage" value="tab-4">日志</mdui-tab>
+
+        <mdui-tab-panel id="nd-setting-tab-1" slot="panel" value="tab-1" class="tab-panel">
+          <div class="setting-section">
+            <div class="setting-switches">
+              <div class="setting-item" @click="setting.enableDebug = !setting.enableDebug">
+                <span class="setting-label">启用调试模式（输出更详细日志）</span>
+                <mdui-switch :checked="setting.enableDebug" @change="setting.enableDebug = \$event.target.checked" @click.stop></mdui-switch>
+              </div>
+              <div class="setting-item" @click="setting.TxtDownload = !setting.TxtDownload">
+                <span class="setting-label">下载 Txt 文件</span>
+                <mdui-switch :checked="setting.TxtDownload" @change="setting.TxtDownload = \$event.target.checked" @click.stop></mdui-switch>
+              </div>
+              <div class="setting-item" @click="setting.EpubDownload = !setting.EpubDownload">
+                <span class="setting-label">下载 Epub 文件</span>
+                <mdui-switch :checked="setting.EpubDownload" @change="setting.EpubDownload = \$event.target.checked" @click.stop></mdui-switch>
+              </div>
+              <div class="setting-item" @click="setting.enableTestPage = !setting.enableTestPage">
+                <span class="setting-label">启用测试视图</span>
+                <mdui-switch :checked="setting.enableTestPage" @change="setting.enableTestPage = \$event.target.checked" @click.stop></mdui-switch>
+              </div>
+
+          <mdui-divider></mdui-divider>
+
+          <div class="setting-section">
+            <h3 class="section-title">自定义下载参数</h3>
+            <div class="setting-item" @click="setting.customDownload = !setting.customDownload">
+              <span class="setting-label">启用自定义下载设置</span>
+              <mdui-switch :checked="setting.customDownload" @change="setting.customDownload = \$event.target.checked" @click.stop></mdui-switch>
+            </div>
+            <div class="setting-grid" v-show="setting.customDownload">
+              <mdui-text-field :value="setting.concurrencyLimit" @input="setting.concurrencyLimit = Number(\$event.target.value)" label="并行下载线程数" type="number" variant="outlined"></mdui-text-field>
+              <mdui-text-field :value="setting.sleepTime" @input="setting.sleepTime = Number(\$event.target.value)" label="下载间隔 (ms)" type="number" variant="outlined"></mdui-text-field>
+              <mdui-text-field :value="setting.maxSleepTime" @input="setting.maxSleepTime = Number(\$event.target.value)" variant="outlined" class="full-width-field"></mdui-text-field>
+            </div>
           </div>
-          <hr class="hr-twill-colorful">
-          <div>
-            <h3>自定义下载参数</h3>
-            <table style="border:0px">
-              <tr>
-                <th>
-                <input id="customDownload" v-model="setting.customDownload" type="checkbox">
-                <label for="customDownload">启用自定义下载设置</label></th>
-                <th>
-                <input id="downloadConcurrency" v-model="setting.concurrencyLimit" type="number">
-                <label for="downloadConcurrency">并行下载线程数</label></th>
-              </tr><th>
-                <input id="downloadSleeptime" v-model="setting.sleepTime" type="number">
-                <label for="downloadSleeptime">下载间隔</label>
-                </th><th>
-                <input id="downloadMaxsleeptime" v-model="setting.maxSleepTime" type="number">
-                <label for="downloadMaxsleeptime">最大下载间隔</label>
-                </th>
-              </table>
+
+          <mdui-divider></mdui-divider>
+
+          <div class="setting-section">
+            <h3 class="section-title">自定义保存参数</h3>
+            <mdui-radio-group :value="setting.chooseSaveOption" @change="setting.chooseSaveOption = \$event.target.value">
+              <mdui-radio v-for="item of saveOptions" v-bind:key="item.key" v-bind:value="item.key">{{ item.value }}</mdui-radio>
+            </mdui-radio-group>
           </div>
-          <hr class="hr-twill-colorful">
-          <div>
-            <h3>自定义保存参数</h3>
-            <ul>
-              <li v-for="item of saveOptions">
-                <input v-bind:id="item.key" v-model="setting.chooseSaveOption" type="radio" v-bind:value="item.key">
-                <label v-bind:for="item.key">{{ item.value }}</label>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div v-show="setting.currentTab === 'tab-2'" id="nd-setting-tab-2" class="tab-page">
+        </div></div></mdui-tab-panel>
+
+        <mdui-tab-panel slot="panel" value="tab-2" class="tab-panel">
           <filter-tab v-on:filterupdate="saveFilter">
-        </div>
-        <div v-if="setting.enableTestPage" v-show="setting.currentTab === 'tab-3'" id="nd-setting-tab-3" class="tab-page">
+        </mdui-tab-panel>
+
+        <mdui-tab-panel v-if="setting.enableTestPage" slot="panel" value="tab-3" class="tab-panel">
           <test-ui></test-ui>
-        </div>
-        <div v-if="setting.enableTestPage" v-show="setting.currentTab === 'tab-4'" id="nd-setting-tab-4" class="tab-page">
+        </mdui-tab-panel>
+
+        <mdui-tab-panel v-if="setting.enableTestPage" slot="panel" value="tab-4" class="tab-panel">
           <log-ui></log-ui>
-        </div>
-      </div>
-      <div class="nd-setting-footer">
-        <button v-on:click="closeAndSaveSetting">Save</button>
-        <button v-on:click="closeSetting">Cancel</button>
-      </div>
+        </mdui-tab-panel>
+      </mdui-tabs>
     </div>
-  </dialog-ui>
+
+    <mdui-button slot="action" variant="text" v-on:click="closeSetting">取消</mdui-button>
+    <mdui-button slot="action" variant="tonal" v-on:click="closeAndSaveSetting">保存</mdui-button>
+  </mdui-dialog>
 </div>
 `;
 // Exports
@@ -48162,23 +48390,26 @@ var attachments = __webpack_require__("./src/lib/attachments.ts");
 var TestUI_code = `<div>
   <div id="test-page-div">
     <h2>元数据</h2>
-    <table>
-      <tbody>
-        <tr v-for="(value, key) in metaData">
-          <td>{{ key }}</td>
-          <td v-html="getData(key, value)"></td>
-        </tr>
-      </tbody>
-    </table>
-    <hr class="hr-edge-weak">
+    <mdui-card variant="outlined" style="padding: 12px; margin-bottom: 16px;">
+      <table>
+        <tbody>
+          <tr v-for="(value, key) in metaData">
+            <td>{{ key }}</td>
+            <td v-html="getData(key, value)"></td>
+          </tr>
+        </tbody>
+      </table>
+    </mdui-card>
+
+    <mdui-divider></mdui-divider>
+
     <h2>章节测试</h2>
     <div class="preview-chapter-setting">
-      <label for="chapterNumber">预览章节序号：</label>
-      <input id="chapterNumber" v-model="chapterNumber" type="text">
-      <button @click="previewChapter" type="button" :disabled="isLoading">预览</button>
+      <mdui-text-field v-model="chapterNumber" label="预览章节序号" type="text" variant="outlined" style="flex: 1;"></mdui-text-field>
+      <mdui-button @click="previewChapter" :disabled="isLoading" variant="tonal">预览</mdui-button>
     </div>
     <div v-if="isLoading" class="loading-spinner">
-      <div class="spinner"></div>
+      <div class="nd-spinner"></div>
       <p>正在加载章节中...</p>
     </div>
     <div v-else-if="this.isSeenChapter(chapter)">
@@ -48314,6 +48545,25 @@ var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
             if (cn) {
                 chapterNumber.value = cn;
             }
+            if (!coverSrc) {
+                const maxWait = 10000;
+                const startTime = Date.now();
+                const pollCover = async () => {
+                    if (Date.now() - startTime > maxWait)
+                        return;
+                    const newCoverUrl = book?.additionalMetadate?.cover?.url ?? "";
+                    if (newCoverUrl) {
+                        const newCoverSrc = getObjectUrl(newCoverUrl);
+                        if (newCoverSrc) {
+                            metaData["封面"] = [newCoverSrc, newCoverUrl];
+                            return;
+                        }
+                    }
+                    await (0,misc/* sleep */.yy)(300);
+                    pollCover();
+                };
+                pollCover();
+            }
         });
         function getObjectUrl(url) {
             const attachment = (0,attachments/* getAttachmentClassCache */._s)(url);
@@ -48355,7 +48605,7 @@ const TestUI_style = (0,dom/* createStyle */._r)(ui_TestUI/* default */.A);
 
 const setting_style = (0,dom/* createStyle */._r)(ui_setting/* default */.A);
 const el = (0,dom/* createEl */.a_)(`<div id="setting"></div>`);
-const vm = (0,external_Vue_.createApp)({
+const app = (0,external_Vue_.createApp)({
     name: "nd-setting",
     components: { "filter-tab": src_ui_FilterTab, "log-ui": LogUI, "test-ui": src_ui_TestUI },
     setup() {
@@ -48462,9 +48712,13 @@ const vm = (0,external_Vue_.createApp)({
         };
         if (isOverWriteSaveOptions)
             unsafeWindow.saveOptions = curSaveOption();
+        const closeDialog = () => {
+            document.querySelector("#nd-shadow-host")?.shadowRoot?.querySelector("dialog-ui")?.setAttribute("status", "false");
+        };
         const saveFilter = (filterSetting) => {
             setting.filterSetting = (0,misc/* deepcopy */.OJ)(filterSetting);
             GM_setValue('filterSetting', setting.filterSetting);
+            closeDialog();
         };
         const getFilterSetting = () => {
             if (setting.filterSetting) {
@@ -48572,6 +48826,18 @@ const vm = (0,external_Vue_.createApp)({
             }
             openStatus.value = "false";
         };
+        const onSettingClosed = (event) => {
+            if (event && event.target !== event.currentTarget) {
+                return;
+            }
+            closeSetting();
+        };
+        const onTabChange = (event) => {
+            const detail = event.detail;
+            if (detail?.value) {
+                setting.currentTab = detail.value;
+            }
+        };
         const closeAndSaveSetting = async () => {
             closeSetting(true);
             await (0,misc/* sleep */.yy)(30);
@@ -48582,6 +48848,8 @@ const vm = (0,external_Vue_.createApp)({
             openStatus,
             openSetting,
             closeSetting,
+            onSettingClosed,
+            onTabChange,
             closeAndSaveSetting,
             saveFilter,
             setting,
@@ -48589,7 +48857,9 @@ const vm = (0,external_Vue_.createApp)({
         };
     },
     template: setting,
-}).mount(el);
+});
+app.config.compilerOptions.isCustomElement = (tag) => tag.startsWith("mdui-");
+const vm = app.mount(el);
 
 ;// ./src/ui/button.ts
 
@@ -48604,7 +48874,7 @@ const vm = (0,external_Vue_.createApp)({
 
 const button_style = (0,dom/* createStyle */._r)(src_ui_button/* default */.A, "button-div-style");
 const button_el = (0,dom/* createEl */.a_)('<div id="nd-button"></div>');
-const button_vm = (0,external_Vue_.createApp)({
+const button_app = (0,external_Vue_.createApp)({
     data() {
         return {
             imgStart: src_setting/* iconStart0 */.Og,
@@ -48647,23 +48917,17 @@ const button_vm = (0,external_Vue_.createApp)({
     },
     template: ui_button,
 });
+button_app.config.compilerOptions.isCustomElement = (tag) => tag.startsWith("mdui-");
+const button_vm = button_app.mount(button_el);
 
 // EXTERNAL MODULE: ./src/ui/dialog.css
 var dialog = __webpack_require__("./src/ui/dialog.css");
 ;// ./src/ui/dialog.html
 // Module
-var dialog_code = `<div v-if="myPrivateStatus" class="overlay" v-bind:class="{ open: myPrivateStatus }"></div>
-<div v-if="myPrivateStatus" class="out">
-  <div id="dialog" class="dialog" v-bind:class="{ open: myPrivateStatus }">
-    <div class="titlebar">
-      <h1 class="dialog-title">{{ dialogTitle }}</h1>
-      <button class="dialog-close" v-on:click="dialogClose">❌</button>
-    </div>
-    <div class="body">
-      <slot></slot>
-    </div>
-  </div>
-</div>
+var dialog_code = `<mdui-dialog v-bind:open="myPrivateStatus" v-bind:headline="dialogTitle" close-on-overlay-click close-on-esc v-on:closed="onDialogClosed(\$event)">
+  <slot></slot>
+  <button slot="header" v-on:click="dialogClose" class="nd-dialog-close" title="关闭">&times;</button>
+</mdui-dialog>
 `;
 // Exports
 /* harmony default export */ const ui_dialog = (dialog_code);
@@ -48688,6 +48952,13 @@ var dialog_code = `<div v-if="myPrivateStatus" class="overlay" v-bind:class="{ o
             this.myPrivateStatus = false;
             this.$emit("dialogclose");
         },
+        onDialogClosed(event) {
+            if (event && event.target !== event.currentTarget) {
+                return;
+            }
+            this.myPrivateStatus = false;
+            this.$emit("dialogclose");
+        },
     },
     mounted() {
         this.myPrivateStatus = this.status === "true";
@@ -48701,9 +48972,122 @@ var dialog_code = `<div v-if="myPrivateStatus" class="overlay" v-bind:class="{ o
     styles: [dialog/* default */.A],
 }));
 
+// EXTERNAL MODULE: ./src/ui/mdui.css
+var ui_mdui = __webpack_require__("./src/ui/mdui.css");
 // EXTERNAL MODULE: ./src/ui/progress.ts + 1 modules
 var progress = __webpack_require__("./src/ui/progress.ts");
+;// ./src/ui/theme.ts
+async function initTheme(shadowHost) {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const updateTheme = () => {
+        try {
+            if (mediaQuery.matches) {
+                mdui.setTheme("dark", shadowHost);
+            }
+            else {
+                mdui.setTheme("light", shadowHost);
+            }
+        }
+        catch (e) {
+            console.warn("Failed to set theme:", e);
+        }
+    };
+    updateTheme();
+    try {
+        const color = await extractPagePrimaryColor();
+        if (color) {
+            mdui.setColorScheme(color, { target: shadowHost });
+        }
+    }
+    catch {
+    }
+    mediaQuery.addEventListener("change", updateTheme);
+}
+async function extractPagePrimaryColor() {
+    function isVibrantStr(colorStr) {
+        if (!colorStr)
+            return false;
+        let r = 0, g = 0, b = 0;
+        if (colorStr.startsWith("#")) {
+            let hex = colorStr.slice(1);
+            if (hex.length === 3)
+                hex = hex.split("").map(c => c + c).join("");
+            r = parseInt(hex.substring(0, 2), 16);
+            g = parseInt(hex.substring(2, 4), 16);
+            b = parseInt(hex.substring(4, 6), 16);
+        }
+        else {
+            const match = colorStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+            if (match) {
+                r = parseInt(match[1], 10);
+                g = parseInt(match[2], 10);
+                b = parseInt(match[3], 10);
+            }
+            else {
+                return false;
+            }
+        }
+        const max = Math.max(r, g, b) / 255;
+        const min = Math.min(r, g, b) / 255;
+        const l = (max + min) / 2;
+        if (l < 0.15 || l > 0.85)
+            return false;
+        const d = max - min;
+        const s = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
+        return s > 0.15;
+    }
+    const iconLinks = Array.from(document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"], link[rel*="icon"]'));
+    for (const link of iconLinks) {
+        if (link.href) {
+            try {
+                const color = await mdui.getColorFromImage(link.href);
+                if (isVibrantStr(color))
+                    return color;
+            }
+            catch {
+            }
+        }
+    }
+    const coverUrl = document.querySelector('meta[property="og:image"]')?.content
+        || Array.from(document.querySelectorAll('img')).find(img => {
+            const s = (img.src + img.className + img.alt + img.id).toLowerCase();
+            return s.includes('cover') || s.includes('fengmian') || s.includes('封面');
+        })?.src;
+    if (coverUrl) {
+        try {
+            const color = await mdui.getColorFromImage(coverUrl);
+            if (isVibrantStr(color))
+                return color;
+        }
+        catch {
+        }
+    }
+    const themeColorMeta = document.querySelector('meta[name="theme-color"], meta[name="msapplication-TileColor"]');
+    if (themeColorMeta) {
+        const color = themeColorMeta.getAttribute("content");
+        if (isVibrantStr(color))
+            return color;
+    }
+    try {
+        const bodyBg = window.getComputedStyle(document.body).backgroundColor;
+        if (isVibrantStr(bodyBg))
+            return bodyBg;
+        const links = document.querySelectorAll("a");
+        for (let i = 0; i < Math.min(links.length, 10); i++) {
+            const linkColor = window.getComputedStyle(links[i]).color;
+            if (isVibrantStr(linkColor))
+                return linkColor;
+        }
+    }
+    catch {
+        console.warn("Failed to extract page color");
+    }
+    return undefined;
+}
+
 ;// ./src/ui/ui.ts
+
+
 
 
 
@@ -48714,18 +49098,28 @@ var progress = __webpack_require__("./src/ui/progress.ts");
 function register() {
     customElements.define("dialog-ui", src_ui_dialog);
 }
-function ui_init() {
+function injectMduiStyles(shadowRoot) {
+    const styleEl = document.createElement("style");
+    styleEl.textContent = ui_mdui/* default */.A;
+    shadowRoot.prepend(styleEl);
+}
+async function ui_init() {
     register();
-    button_vm.mount(button_el);
-    document.body.appendChild(button_el);
-    document.body.appendChild(progress.el);
-    document.body.appendChild(el);
-    document.head.appendChild(button_style);
-    document.head.appendChild(progress/* style */.i);
-    document.head.appendChild(setting_style);
-    document.head.appendChild(FilterTab_style);
-    document.head.appendChild(style);
-    document.head.appendChild(TestUI_style);
+    const shadowHost = document.createElement("div");
+    shadowHost.id = "nd-shadow-host";
+    document.body.appendChild(shadowHost);
+    const shadowRoot = shadowHost.attachShadow({ mode: "open" });
+    injectMduiStyles(shadowRoot);
+    shadowRoot.appendChild(button_el);
+    shadowRoot.appendChild(progress.el);
+    shadowRoot.appendChild(el);
+    shadowRoot.appendChild(button_style);
+    shadowRoot.appendChild(progress/* style */.i);
+    shadowRoot.appendChild(setting_style);
+    shadowRoot.appendChild(FilterTab_style);
+    shadowRoot.appendChild(style);
+    shadowRoot.appendChild(TestUI_style);
+    initTheme(shadowHost);
 }
 
 ;// ./src/index.ts
@@ -48744,7 +49138,7 @@ async function src_main(ev) {
     }
     init();
     await printEnvironments();
-    ui_init();
+    await ui_init();
 }
 if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", src_main);

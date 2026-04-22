@@ -12,4 +12,5 @@ export interface ProgressVM extends ComponentPublicInstance {
     updateRequestTime: (ms: number) => void;
     reset: () => void;
 }
-export declare const vm: ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, import("vue").ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string, {}>, {}, {}>;
+export declare const app: import("vue").App<Element>;
+export declare const vm: ProgressVM;
