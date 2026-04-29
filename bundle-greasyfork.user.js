@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1247
+// @version        5.2.1248
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -33792,6 +33792,9 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             }
             return androidId;
         }
+        function getDialogElement(id) {
+            return (document.querySelector('#nd-shadow-host')?.shadowRoot?.querySelector('#' + id) ?? document.getElementById(id));
+        }
         function checkLogin(account, password, verificationCode) {
             if (account === "" || password === "") {
                 alert("账号或密码不能为空");
@@ -33805,12 +33808,12 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             }
         }
         async function login() {
-            const manualToken = normalizeJjwxcToken(document.getElementById("nd-jj-manual-token")
+            const manualToken = normalizeJjwxcToken(getDialogElement("nd-jj-manual-token")
                 ?.value ?? "");
             if (manualToken.length > 0) {
                 const savedToken = setStoredJjwxcToken(manualToken);
                 if (savedToken) {
-                    const tokenElement = document.getElementById("nd-jj-token");
+                    const tokenElement = getDialogElement("nd-jj-token");
                     if (tokenElement) {
                         tokenElement.textContent = savedToken;
                     }
@@ -33818,9 +33821,9 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                 }
                 return;
             }
-            const account = document.getElementById("nd-jj-account")?.value;
-            const password = document.getElementById("nd-jj-password")?.value;
-            const verificationCode = document.getElementById("nd-jj-verificationCode")?.value;
+            const account = getDialogElement("nd-jj-account")?.value;
+            const password = getDialogElement("nd-jj-password")?.value;
+            const verificationCode = getDialogElement("nd-jj-verificationCode")?.value;
             const CheckLogin = checkLogin(account, password, verificationCode);
             let t = 'phone';
             if (account.indexOf("@") !== -1) {
@@ -33899,7 +33902,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                     else {
                         const token = setStoredJjwxcToken(resJson.token ?? "");
                         if (token) {
-                            const tokenElement = document.getElementById("nd-jj-token");
+                            const tokenElement = getDialogElement("nd-jj-token");
                             if (tokenElement) {
                                 tokenElement.textContent = token;
                             }
@@ -33934,7 +33937,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                         });
                     });
                     const token = setStoredJjwxcToken(tokenJson.token ?? "");
-                    const tokenelement = document.getElementById("nd-jj-token");
+                    const tokenelement = getDialogElement("nd-jj-token");
                     if (tokenelement && token) {
                         tokenelement.textContent = token;
                     }
@@ -33945,57 +33948,44 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             }
         }
         function openTokenDialog() {
-            const page = document.createElement('div');
+            const shadowRoot = document.querySelector('#nd-shadow-host')?.shadowRoot;
+            if (!shadowRoot) {
+                alert("无法打开token对话框，请刷新页面重试");
+                return;
+            }
             const existingToken = getStoredJjwxcToken() ?? "";
+            const backdrop = document.createElement('div');
+            backdrop.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100000;';
+            shadowRoot.appendChild(backdrop);
+            const page = document.createElement('div');
             page.innerHTML = `
         <h2 style="margin-top:0;font-size:1.25rem;">JJ获取token</h2>
         <div style="display:flex;flex-direction:column;gap:16px;">
-            <div class="row">
-                <mdui-text-field id="nd-jj-manual-token" label="已有token（可直接粘贴保存）" value="${existingToken}" variant="outlined"></mdui-text-field>
-            </div>
-            <div class="row">
-                <mdui-text-field id="nd-jj-account" label="账号" required variant="outlined"></mdui-text-field>
-            </div>
-            <div class="row">
-                <mdui-text-field id="nd-jj-password" label="密码" type="password" required variant="outlined"></mdui-text-field>
-            </div>
-            <div class="row">
-                <mdui-text-field id="nd-jj-verificationCode" label="验证码" variant="outlined"></mdui-text-field>
-            </div>
-            <div class="row" style="text-align: right;">
+            <mdui-text-field id="nd-jj-manual-token" label="已有token（可直接粘贴保存）" value="${existingToken}" variant="outlined"></mdui-text-field>
+            <mdui-text-field id="nd-jj-account" label="账号" required variant="outlined"></mdui-text-field>
+            <mdui-text-field id="nd-jj-password" label="密码" type="password" required variant="outlined"></mdui-text-field>
+            <mdui-text-field id="nd-jj-verificationCode" label="验证码" variant="outlined"></mdui-text-field>
+            <div style="text-align:right;">
               <mdui-button id="nd-jj-login" variant="filled">登录/保存token</mdui-button>
             </div>
         </div>
         <h3 style="font-size:1rem;margin-top:16px;">生成的Token:</h3>
-        <p id="nd-jj-token" style="word-break: break-all; opacity: 0.8; user-select: all;">${existingToken}</p>
+        <p id="nd-jj-token" style="word-break:break-all;opacity:0.8;user-select:all;">${existingToken}</p>
       `;
-            page.style.position = 'fixed';
-            page.style.top = '50%';
-            page.style.left = '50%';
-            page.style.transform = 'translate(-50%, -50%)';
-            page.style.padding = '24px';
-            page.style.backgroundColor = 'rgb(var(--mdui-color-surface-container-high, 236,230,240))';
-            page.style.color = 'rgb(var(--mdui-color-on-surface, 28,27,31))';
-            page.style.borderRadius = '16px';
-            page.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-            page.style.zIndex = '100001';
-            page.style.minWidth = '300px';
+            page.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:24px;background-color:rgb(var(--mdui-color-surface-container-high,236,230,240));color:rgb(var(--mdui-color-on-surface,28,27,31));border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:100001;min-width:300px;max-width:90vw;max-height:90vh;overflow-y:auto;';
+            const close = () => {
+                page.remove();
+                backdrop.remove();
+            };
             const closeButton = document.createElement('mdui-button');
             closeButton.innerText = '关闭';
             closeButton.setAttribute('variant', 'text');
-            closeButton.style.display = 'block';
-            closeButton.style.marginTop = '16px';
-            closeButton.style.width = '100%';
-            closeButton.addEventListener('click', () => {
-                document.body.removeChild(page);
-            });
+            closeButton.style.cssText = 'display:block;margin-top:16px;width:100%;';
+            closeButton.addEventListener('click', close);
             page.appendChild(closeButton);
-            document.body.appendChild(page);
-            document.getElementById("nd-jj-login")?.addEventListener('click', () => login());
-            const tokenInput = document.getElementById("nd-jj-manual-token");
-            if (tokenInput && !isValidJjwxcToken(existingToken) && existingToken.length > 0) {
-                tokenInput.setAttribute('error', '无效的 token');
-            }
+            backdrop.addEventListener('click', close);
+            shadowRoot.appendChild(page);
+            shadowRoot.querySelector("#nd-jj-login")?.addEventListener('click', () => login());
         }
         function injectTokenButton() {
             const shadowRoot = document.querySelector('#nd-shadow-host')?.shadowRoot;
