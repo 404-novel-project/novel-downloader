@@ -27,8 +27,8 @@ export const alicesw = () =>
     getContent: (doc) =>
       doc.querySelector("div.read-content") as HTMLElement,
     contentPatch: (content) => content,
-    // concurrencyLimit: 3,
-    // sleepTime: 1000,
+    concurrencyLimit: 3,
+    sleepTime: 1000,
     language: "zh",
     nsfw: true,
   });
