@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1249
+// @version        5.2.1251
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -35133,18 +35133,21 @@ class kadokado extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
     async bookParse() {
         const bookUrl = document.location.href;
         const bookIDMatch = bookUrl.match(/book\/(\d+)/);
-        const bookID = bookIDMatch ? bookIDMatch[1] : '000';
-        const bookname = document.querySelector("main > section div h1")?.innerText;
-        const authorDom = document.querySelector("main > section > div > div > span > a");
-        const author = authorDom ? authorDom.innerText : "佚名";
-        const authorIDMatch = authorDom?.href.match(/user\/(\d+)/);
-        const authorID = authorIDMatch ? authorIDMatch[1] : '000';
-        const introduction = document.querySelector("section#introduction p")?.innerText;
+        const bookID = bookIDMatch ? bookIDMatch[1] : "000";
+        const titleInfoUrl = `https://api.kadokado.com.tw/v2/titles/${bookID}`;
+        const titleInfoText = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .ggetText */ .bx)(titleInfoUrl);
+        if (!titleInfoText) {
+            throw new Error("抓取作品資訊失敗！");
+        }
+        const titleInfo = JSON.parse(titleInfoText);
+        const bookname = titleInfo.displayName;
+        const author = titleInfo.ownerDisplayName;
+        const introduction = titleInfo.logline;
         const introductionHTML = document.createElement("div");
         introductionHTML.innerText = introduction;
-        const coverUrl = document.querySelector("main > section img")?.src;
+        const coverUrl = titleInfo.coverUrls?.[0];
         const additionalMetadate = {
-            tags: Array.from(document.querySelectorAll("main > section > div > div > div > a")).map((e) => e.innerText),
+            tags: titleInfo.tags,
             language: "zh",
         };
         if (coverUrl) {
@@ -35154,38 +35157,41 @@ class kadokado extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
             })
                 .catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
         }
-        const sectionList = Array.from(document.querySelectorAll("section#chapter > div >div"));
+        const collectionUrl = `https://api.kadokado.com.tw/v3/title/${bookID}/collection`;
+        const collectionText = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .ggetText */ .bx)(collectionUrl);
+        if (!collectionText) {
+            throw new Error("抓取章節目錄失敗！");
+        }
+        const collections = JSON.parse(collectionText);
         let chapterNumber = 0;
         let sectionNumber = 0;
         let sectionChapterNumber = 0;
         const chapters = [];
-        sectionList.forEach((e) => {
+        for (const collection of collections) {
             sectionChapterNumber = 0;
             sectionNumber++;
-            const sectionName = e.querySelector("h3")?.innerText;
-            const chapterList = Array.from(e.querySelectorAll("ul li"));
-            chapterList.forEach((c) => {
-                const chapterUrl = c.querySelector("a").href + `?titleId=${bookID}&ownerId=${authorID}`;
-                const ChapterName = c.querySelector("h4").innerText;
+            const sectionName = collection.collectionDisplayName;
+            for (const ch of collection.chapters) {
+                const chapterUrl = `https://www.kadokado.com.tw/chapter/${ch.chapterId}`;
                 chapterNumber++;
                 sectionChapterNumber++;
                 chapters.push(new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
                     bookUrl,
                     bookname,
                     chapterUrl,
-                    chapterNumber: chapterNumber,
-                    chapterName: ChapterName,
-                    isVIP: false,
+                    chapterNumber,
+                    chapterName: ch.chapterDisplayName,
+                    isVIP: !ch.isFree,
                     isPaid: false,
                     sectionName,
                     sectionNumber,
                     sectionChapterNumber,
                     chapterParse: this.chapterParse,
                     charset: this.charset,
-                    options: {},
+                    options: { chapterId: ch.chapterId },
                 }));
-            });
-        });
+            }
+        }
         return new _main_Book__WEBPACK_IMPORTED_MODULE_1__/* .Book */ .E({
             bookUrl,
             bookname,
@@ -35197,8 +35203,15 @@ class kadokado extends _rules__WEBPACK_IMPORTED_MODULE_0__/* .BaseRuleClass */ .
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const { chapterId } = options;
+        const contentUrl = `https://api.kadokado.com.tw/v3/chapter/${chapterId}/content`;
+        const contentText = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .ggetText */ .bx)(contentUrl);
+        if (!contentText) {
+            throw new Error(`抓取章節內容失敗！chapterId=${chapterId}`);
+        }
+        const contentData = JSON.parse(contentText);
         const contentRaw = document.createElement("div");
-        contentRaw.innerHTML = (await (0,_lib_http__WEBPACK_IMPORTED_MODULE_6__/* .getFrameContentEvent */ .n6)(chapterUrl))?.querySelector("ul > div")?.innerHTML ?? "";
+        contentRaw.innerHTML = contentData.content ?? "";
         const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .an)(contentRaw, "TM");
         return {
             chapterName,
