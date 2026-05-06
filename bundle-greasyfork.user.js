@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1251
+// @version        5.2.1252
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -17584,15 +17584,27 @@ const c69yuedu = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   alicesw: () => (/* binding */ alicesw)
 /* harmony export */ });
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
 
-const alicesw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+
+const hasRenderedContent = (doc) => {
+    const content = doc?.querySelector("div.read-content");
+    if (!content) {
+        return false;
+    }
+    const text = content.innerText.trim();
+    const wordCount = Number(doc?.querySelector(".j_chapterWordCut")?.textContent?.trim() || "0");
+    return text.length > 50 || wordCount > 0;
+};
+const alicesw = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
     bookUrl: document.location.href,
     bookname: document.querySelector("div.novel_title")?.innerText.trim(),
     author: document.querySelector("div.box_info p:first-of-type > a:first-of-type")?.innerText.trim() || "",
     introDom: document.querySelector("div.jianjie"),
     introDomPatch: (introDom) => introDom,
-    coverUrl: document.querySelector("div.pic > img.fengmian2").src || null,
+    coverUrl: document.querySelector("div.pic > img.fengmian2")
+        .src || null,
     getIndexUrls: () => {
         const chapterPageLink = document.querySelector("div.book_newchap > div.tit a");
         if (!chapterPageLink) {
@@ -17601,8 +17613,16 @@ const alicesw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass *
         return [chapterPageLink.href];
     },
     getAList: (doc) => doc.querySelectorAll("ul.mulu_list > li > a"),
-    getContent: (doc) => doc.querySelector("div.read-content"),
+    getContentFromUrl: async (chapterUrl) => {
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_0__/* .getFrameContentCondition */ .eF)(chapterUrl, (frame) => hasRenderedContent(frame.contentWindow?.document ?? null)).catch(() => null);
+        const content = doc?.querySelector("div.read-content");
+        return content
+            ? document.importNode(content, true)
+            : null;
+    },
     contentPatch: (content) => content,
+    concurrencyLimit: 1,
+    sleepTime: 1000,
     language: "zh",
     nsfw: true,
 });
