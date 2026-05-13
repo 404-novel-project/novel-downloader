@@ -1,9 +1,8 @@
 import {
   getAttachment,
-  getAttachmentClassCache,
   getRandomName,
-  putAttachmentClassCache,
 } from "../../../lib/attachments";
+import { AttachmentClass } from "../../../main/Attachment";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM, gfetch, ggetHtmlDOM } from "../../../lib/http";
 import { sleep } from "../../../lib/misc";
@@ -11,7 +10,6 @@ import { rm, rms } from "../../../lib/dom";
 import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
 import { ReferrerMode, Status } from "../../../main/main";
-import { AttachmentClass } from "../../../main/Attachment";
 import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
@@ -26,8 +24,6 @@ import * as CryptoJS from "crypto-js";
 type JJWindow = UnsafeWindow & { getCookie: (key: string) => string };
 
 const AUTHOR_SAY_PREFIX = "作者有话说："; // before it was "-".repeat(20)
-const JJWXC_TOKEN_STORAGE_KEY = "nd-jjwxc-token";
-
 function normalizeJjwxcToken(token: string): string {
   return String(token).replace(/undefined|token=|\s|&.*$/g, "").trim();
 }
@@ -47,25 +43,7 @@ function getJjwxcTokenFromOptions(): string | null {
   return token.length > 0 ? token : null;
 }
 
-function getStoredJjwxcToken(): string | null {
-  const fromOptions = getJjwxcTokenFromOptions();
-  if (fromOptions) {
-    return fromOptions;
-  }
-  try {
-    const fromStorage = normalizeJjwxcToken(
-      localStorage.getItem(JJWXC_TOKEN_STORAGE_KEY) ?? ""
-    );
-    if (fromStorage.length > 0) {
-      return fromStorage;
-    }
-  } catch (error) {
-    log.debug(`[jjwxc-token] read localStorage failed: ${String(error)}`);
-  }
-  return null;
-}
-
-function setStoredJjwxcToken(token: string): string | null {
+function setJjwxcToken(token: string): string | null {
   const normalized = normalizeJjwxcToken(token);
   if (!normalized) {
     return null;
@@ -78,19 +56,7 @@ function setStoredJjwxcToken(token: string): string | null {
     ...(tokenOptions ?? {}),
     Jjwxc: normalized,
   } as NonNullable<UnsafeWindow["tokenOptions"]>;
-  try {
-    localStorage.setItem(JJWXC_TOKEN_STORAGE_KEY, normalized);
-  } catch (error) {
-    log.debug(`[jjwxc-token] write localStorage failed: ${String(error)}`);
-  }
   return normalized;
-}
-
-function hydrateJjwxcTokenFromStorage() {
-  const token = getStoredJjwxcToken();
-  if (token) {
-    setStoredJjwxcToken(token);
-  }
 }
 
 export class Jjwxc extends BaseRuleClass {
@@ -99,7 +65,6 @@ export class Jjwxc extends BaseRuleClass {
     this.attachmentMode = "TM";
     this.concurrencyLimit = 1;
     this.charset = "GB18030";
-    hydrateJjwxcTokenFromStorage();
     function encode(data: string) {
       const key = CryptoJS.enc.Utf8.parse("KW8Dvm2N");
       const iv = CryptoJS.enc.Utf8.parse("1ae2c94b");
@@ -154,7 +119,7 @@ export class Jjwxc extends BaseRuleClass {
           ?.value ?? ""
       );
       if (manualToken.length > 0) {
-        const savedToken = setStoredJjwxcToken(manualToken);
+        const savedToken = setJjwxcToken(manualToken);
         if (savedToken) {
           const tokenElement = getDialogElement("nd-jj-token");
           if (tokenElement) {
@@ -258,7 +223,7 @@ export class Jjwxc extends BaseRuleClass {
             if (!msg) msg = responseJson.message;
             alert(msg);
           } else {
-            const token = setStoredJjwxcToken(resJson.token ?? "");
+            const token = setJjwxcToken(resJson.token ?? "");
             if (token) {
               const tokenElement = getDialogElement("nd-jj-token");
               if (tokenElement) {
@@ -291,7 +256,7 @@ export class Jjwxc extends BaseRuleClass {
               },
             });
           });
-          const token = setStoredJjwxcToken(tokenJson.token ?? "");
+          const token = setJjwxcToken(tokenJson.token ?? "");
           const tokenelement = getDialogElement("nd-jj-token");
           if (tokenelement && token) {
             tokenelement.textContent = token;
@@ -309,7 +274,7 @@ export class Jjwxc extends BaseRuleClass {
         alert("无法打开token对话框，请刷新页面重试");
         return;
       }
-      const existingToken = getStoredJjwxcToken() ?? "";
+      const existingToken = getJjwxcTokenFromOptions() ?? "";
 
       const backdrop = document.createElement('div');
       backdrop.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100000;';
@@ -610,7 +575,11 @@ export class Jjwxc extends BaseRuleClass {
     if (!getInformationBlocked()) {
       bookname = (
         document.querySelector('#oneboolt .bigtext') as HTMLElement
-      ).innerText.trim()
+      )?.innerText.trim();
+
+      if (!bookname) {
+        throw new Error("抓取书名出错");
+      }
 
       author = (
         document.querySelector("#oneboolt  h2 > a") as HTMLElement
@@ -632,7 +601,7 @@ export class Jjwxc extends BaseRuleClass {
 
       const coverUrl = (
         document.querySelector(".noveldefaultimage") as HTMLImageElement
-      ).src;
+      )?.src;
       if (coverUrl) {
         getAttachment(
           coverUrl,
@@ -652,7 +621,7 @@ export class Jjwxc extends BaseRuleClass {
         document.querySelector(
           "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)"
         ) as HTMLSpanElement
-      ).innerText.split("-"); // 文章类型
+      )?.innerText.split("-") ?? []; // 文章类型
       tags = tags.concat(
         Array.from(
           document.querySelectorAll("div.smallreadbody:nth-child(3) > span > a")
@@ -662,7 +631,7 @@ export class Jjwxc extends BaseRuleClass {
         document.querySelector(
           "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)"
         ) as HTMLLIElement
-      ).innerText.replace("\n", "").replace("作品视角：", ""); // 作品视角
+      )?.innerText.replace("\n", "").replace("作品视角：", "") ?? ""; // 作品视角
       // const workStyle = (
       //   document.querySelector(
       //     "table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(3)"
@@ -749,9 +718,9 @@ export class Jjwxc extends BaseRuleClass {
 
         if (!isLocked()) {
           if (isVIP()) {
-            const chapterName = (a as HTMLAnchorElement).innerText.trim();
-            const chapterUrl = (a as HTMLAnchorElement).getAttribute("rel");
-            if (chapterUrl) {
+            const chapterName = (a as HTMLAnchorElement)?.innerText.trim();
+            const chapterUrl = (a as HTMLAnchorElement)?.getAttribute("rel");
+            if (chapterName && chapterUrl) {
               const chapter = new Chapter({
                 bookUrl,
                 bookname,
@@ -768,7 +737,7 @@ export class Jjwxc extends BaseRuleClass {
                 options: {},
               });
               const isLogin = () => {
-                if (getStoredJjwxcToken())
+                if (getJjwxcTokenFromOptions())
                   return true;
                 return !document.getElementById("jj_login");
               };
@@ -778,8 +747,8 @@ export class Jjwxc extends BaseRuleClass {
               chapters.push(chapter);
             }
           } else {
-            const chapterName = (a as HTMLAnchorElement).innerText.trim();
-            const chapterUrl = (a as HTMLAnchorElement).href;
+            const chapterName = (a as HTMLAnchorElement)?.innerText.trim();
+            const chapterUrl = (a as HTMLAnchorElement)?.href;
             const chapter = new Chapter({
               bookUrl,
               bookname,
@@ -796,7 +765,7 @@ export class Jjwxc extends BaseRuleClass {
               options: {},
             });
             const isLogin = () => {
-              if (getStoredJjwxcToken())
+              if (getJjwxcTokenFromOptions())
                 return true;
               return !document.getElementById("jj_login");
             };
@@ -895,117 +864,14 @@ export class Jjwxc extends BaseRuleClass {
     }
 
     async function vipChapter(): Promise<ChapterParseObject> {
-      async function getFont(
-        dom: Document
-      ): Promise<
-        [string | null, AttachmentClass | null, HTMLStyleElement | null]
-      > {
-        function getFontInfo() {
-          const s = dom.querySelectorAll("body > style")[1] as HTMLStyleElement;
-          let fontNameI = "";
-          let fontUrlI = "";
-
-          if (s.sheet) {
-            const f = s.sheet.cssRules[s.sheet.cssRules.length - 2];
-
-            const m1 = f.cssText.match(/jjwxcfont_[\d\w]+/);
-            const m2 = f.cssText.match(/{(.*)}/);
-            if (m1 && m2) {
-              fontNameI = m1[0];
-
-              const ft = m2[1];
-              for (const k of ft.split(",")) {
-                if (k.includes('format("woff2")')) {
-                  const m3 = k.match(/url\("(.*)"\)\s/);
-                  if (m3) {
-                    fontUrlI = document.location.protocol + m3[1];
-                    return [fontNameI, fontUrlI];
-                  }
-                }
-              }
-            }
-          }
-
-          if (fontNameI !== "") {
-            fontUrlI = `${document.location.protocol}//static.jjwxc.net/tmp/fonts/${fontNameI}.woff2?h=my.jjwxc.net`;
-            return [fontNameI, fontUrlI];
-          } else {
-            const css = dom.querySelector("div.noveltext")?.classList;
-            if (css) {
-              fontNameI = Array.from(css).filter((cn) =>
-                cn.startsWith("jjwxcfont_")
-              )[0];
-              if (fontNameI) {
-                fontUrlI = `${document.location.protocol}//static.jjwxc.net/tmp/fonts/${fontNameI}.woff2?h=my.jjwxc.net`;
-                return [fontNameI, fontUrlI];
-              }
-            }
-          }
-
-          return [null, null];
+      function getFontName(doc: Document): string | null {
+        const noveltext = doc.querySelector("div.noveltext");
+        if (!noveltext) {
+          return null;
         }
-
-        let retryTime = 0;
-
-        function fetchFont(fontUrlI: string): Promise<Blob | null | void> {
-          log.debug(
-            `[Chapter]请求 ${fontUrlI} Referer ${chapterUrl} 重试次数 ${retryTime}`
-          );
-          return gfetch(fontUrlI, {
-            headers: {
-              accept: "*/*",
-              Referer: chapterUrl,
-            },
-            responseType: "blob",
-          })
-            .then((response) => {
-              if (response.status >= 200 && response.status <= 299) {
-                return response.response as Blob;
-              } else {
-                log.error(
-                  `[Chapter]请求 ${fontUrlI} 失败 Referer ${chapterUrl}`
-                );
-                if (retryTime < retryLimit) {
-                  retryTime++;
-                  return fetchFont(fontUrlI);
-                } else {
-                  return null;
-                }
-              }
-            })
-            .catch((error) => log.error(error));
-        }
-
-        const [fontName, fontUrl] = getFontInfo();
-        if (fontName && fontUrl) {
-          const fontFileName = `${fontName}.woff2`;
-          let fontClassObj: AttachmentClass;
-          const fontClassObjCache = getAttachmentClassCache(fontUrl);
-          if (fontClassObjCache) {
-            fontClassObj = fontClassObjCache;
-          } else {
-            const fontBlob = await fetchFont(fontUrl);
-            fontClassObj = new AttachmentClass(fontUrl, fontFileName, "TM");
-            fontClassObj.Blob = fontBlob;
-            fontClassObj.status = Status.finished;
-            putAttachmentClassCache(fontClassObj);
-          }
-
-          const fontStyleDom = document.createElement("style");
-          fontStyleDom.innerHTML = `.${fontName} {
-  font-family: ${fontName}, 'Microsoft YaHei', PingFangSC-Regular, HelveticaNeue-Light, 'Helvetica Neue Light', sans-serif !important;
-}
-@font-face {
-  font-family: ${fontName};
-  src: url('${fontFileName}') format('woff2');
-}
-.hide {
-  display: none;
-}`;
-
-          return [fontName, fontClassObj, fontStyleDom];
-        }
-        return [null, null, null];
+        const classList = noveltext.className.split(/\s+/);
+        const fontClass = classList.find((c) => c.startsWith("jjwxcfont_"));
+        return fontClass || null;
       }
 
       function decrypt(doc: Document) {
@@ -1173,7 +1039,7 @@ export class Jjwxc extends BaseRuleClass {
             return out;
           }
 
-          // https://static.jjwxc.net/scripts/jjcontent.js?ver=20220527
+          // https://static.jjwxc.net/scripts/jjcontent-v20250926.js?ver=20250926
 
           const children = doc.querySelector(
             "#contentlets, #contentvars"
@@ -1205,44 +1071,55 @@ export class Jjwxc extends BaseRuleClass {
             return out;
           };
           const accessKeyConvert = convert(accessKey);
-          let modi = 0;
+
+          // jjcontent.js v20250926 算法（DES → AES、变体选择改为 novelid+chapterid 奇偶）
+          // 旧版 (v20220527) 用 DES + chapterid%2，新版用 AES + (novelid+chapterid)%2
+          // 注意：原脚本里 `if (hash.charCodeAt())` 看似可疑，但 charCodeAt() 默认下标 0，
+          // MD5 hex 首字符必然是 0-9/a-f（charCode 都 > 0），所以 swap 实际恒发生 — 等价于
+          // 直接取 hashSlice 的后 16 当 key、前 16 当 iv。
+          const variantIdx = (novelid + chapterid) % 2;
+          const variants: Array<() => { key: string; iv: string }> = [
+            () => {
+              const _hash = novelid + "." + chapterid + "." + readerid + "." + accessKey;
+              const hash = CryptoJS.MD5(_hash).toString();
+              const sp = accessKeyConvert % hash.length;
+              const sl = hash.slice(sp) + hash.slice(0, sp);
+              // hash.charCodeAt() 恒为正 → swap 前后 16 字节
+              return { key: sl.slice(-16), iv: sl.slice(0, 16) };
+            },
+            () => {
+              const _hash = accessKey + "-" + novelid + "-" + chapterid + "-" + readerid;
+              const hash = CryptoJS.MD5(_hash).toString();
+              const sp = accessKeyConvert % (hash.length + 1);
+              const sl = hash.slice(sp) + hash.slice(0, sp);
+              return { key: sl.slice(-16), iv: sl.slice(0, 16) };
+            },
+          ];
+          const cryptInfoCipher = data["cryptInfo"];
           let _decrypedtCryptInfo = "";
-          while (modi <= 1) {
-            let _hash = "";
-            let hashSlice = "";
-            if (chapterid % 2 == modi) {
-              _hash =
-                novelid + "." + chapterid + "." + readerid + "." + accessKey;
-            } else {
-              _hash =
-                accessKey + "-" + novelid + "-" + chapterid + "-" + readerid;
+          const tryOrder = [variantIdx, 1 - variantIdx];
+          for (const i of tryOrder) {
+            const { key: hk, iv: hiv } = variants[i]();
+            try {
+              _decrypedtCryptInfo = CryptoJS.AES.decrypt(
+                cryptInfoCipher,
+                CryptoJS.enc.Utf8.parse(hk),
+                { iv: CryptoJS.enc.Utf8.parse(hiv) }
+              ).toString(CryptoJS.enc.Utf8);
+            } catch (e) {
+              log.debug(
+                `[jjwxc] cryptInfo AES 解密失败 variant=${i}: ${e instanceof Error ? e.message : String(e)}`
+              );
+              _decrypedtCryptInfo = "";
             }
-            const hash = CryptoJS.MD5(_hash).toString();
-            if (chapterid % 2 == modi) {
-              hashSlice =
-                hash.slice(accessKeyConvert % hash.length) +
-                hash.slice(0, accessKeyConvert % hash.length);
-            } else {
-              hashSlice =
-                hash.slice(accessKeyConvert % (hash.length + 1)) +
-                hash.slice(0, accessKeyConvert % (hash.length + 1));
-            }
-            let hashSlice16 = hashSlice.slice(0, 16);
-            let hashSlice_16 = hashSlice.slice(-16);
-            if (hash.charCodeAt(0)) {
-              [hashSlice16, hashSlice_16] = [hashSlice_16, hashSlice16];
-            }
-            const cryptInfo = data["cryptInfo"];
-            _decrypedtCryptInfo = CryptoJS.DES.decrypt(
-              cryptInfo,
-              CryptoJS.enc.Utf8.parse(hashSlice16),
-              {
-                iv: CryptoJS.enc.Utf8.parse(hashSlice_16),
-              }
-            ).toString(CryptoJS.enc.Utf8);
-            if (_decrypedtCryptInfo != "") {
+            if (_decrypedtCryptInfo !== "") {
               break;
-            } else modi++;
+            }
+          }
+          if (!_decrypedtCryptInfo) {
+            throw new Error(
+              "章节内容解码失败：无法解密 cryptInfo，可能晋江网页解密算法已更新，请刷新页面或反馈给开发者"
+            );
           }
           interface cryptInfo {
             time: number;
@@ -1256,7 +1133,7 @@ export class Jjwxc extends BaseRuleClass {
             if (new Date()["getTime"]() / 1000 - obj["time"] > 86400) {
               throw new Error(
                 "章节内容解码失败，内容生成时间与当前设备时间相差过大，请刷新页面或校准当前设备时间。内容生成时间为:" +
-                new Date(obj["time"] * 100).toLocaleString()
+                new Date(obj["time"] * 1000).toLocaleString()
               );
             }
           };
@@ -1265,16 +1142,24 @@ export class Jjwxc extends BaseRuleClass {
             decrypedtCryptInfo["key"] + decrypedtCryptInfo["time"] + readerid
           ).toString();
           const t =
-            md5sum["slice"](accessKeyConvert % md5sum["length"]) +
-            md5sum["slice"](0, accessKeyConvert % md5sum["length"]);
+            md5sum.slice(accessKeyConvert % md5sum.length) +
+            md5sum.slice(0, accessKeyConvert % md5sum.length);
           const key = t.slice(0, 16);
           const iv = t.slice(-16);
 
-          const decryptContent = CryptoJS.DES.decrypt(
-            data["content"],
-            CryptoJS.enc.Utf8.parse(key),
-            { iv: CryptoJS.enc.Utf8.parse(iv) }
-          ).toString(CryptoJS.enc.Utf8);
+          const decryptContent = (() => {
+            try {
+              return CryptoJS.AES.decrypt(
+                data["content"],
+                CryptoJS.enc.Utf8.parse(key),
+                { iv: CryptoJS.enc.Utf8.parse(iv) }
+              ).toString(CryptoJS.enc.Utf8);
+            } catch (e) {
+              throw new Error(
+                `章节内容解码失败：content AES 解密产生无效 UTF-8 数据 (${e instanceof Error ? e.message : String(e)})`
+              );
+            }
+          })();
           return decryptContent;
         }
 
@@ -1426,28 +1311,19 @@ export class Jjwxc extends BaseRuleClass {
 
         let finalDom = rawDom;
         let finalText = rawText;
-        const [fontName, fontClassObj, fontStyleDom] = await getFont(doc);
-        if (fontName && fontClassObj && fontStyleDom) {
-          // Replace Text
+        const fontName = getFontName(doc);
+        if (fontName) {
+          // Replace Text using OCR-based font decoding
           finalText = await replaceJjwxcCharacter(fontName, rawText);
 
-          // DOM
-          images.push(fontClassObj);
-          finalDom = document.createElement("div");
-
-          // Replace DOM innerHTML
+          // Replace DOM innerHTML using OCR-based font decoding
           const replacedDom = document.createElement("div");
           replacedDom.innerHTML = await replaceJjwxcCharacter(
             fontName,
             rawDom.innerHTML
           );
 
-          // Backup raw DOM
-          finalDom.appendChild(fontStyleDom);
-          rawDom.className = `${fontName} hide`;
-          finalDom.appendChild(rawDom);
-
-          finalDom.appendChild(replacedDom);
+          finalDom = replacedDom;
         }
 
         return {
@@ -1652,7 +1528,7 @@ export class Jjwxc extends BaseRuleClass {
       //let sid = getCookieObj("token");
       chapterGetInfoUrl += "&versionCode=381";
       // if (isVIP) {
-      let sid = getStoredJjwxcToken();
+      let sid = getJjwxcTokenFromOptions();
       if (sid) {
         sid = normalizeJjwxcToken(sid);
         chapterGetInfoUrl +=
@@ -1808,10 +1684,19 @@ export class Jjwxc extends BaseRuleClass {
         };
       }
     }
-    if (getStoredJjwxcToken() != null) {
-      return getChapterByApi();
+    const token = getJjwxcTokenFromOptions();
+    if (token != null) {
+      try {
+        return await getChapterByApi();
+      } catch (apiError) {
+        log.error(`[jjwxc] API下载失败，降级到页面解析: ${apiError instanceof Error ? apiError.message : String(apiError)}`);
+        if (isVIP) {
+          return vipChapter();
+        } else {
+          return publicChapter();
+        }
+      }
     } else {
-      log.warn(`当前我们更推荐手动捕获android版app token以下载章节,详见github主页说明,脚本将继续尝试使用远程字体下载，但可能会失败`);
       if (isVIP) {
         return vipChapter();
       } else {

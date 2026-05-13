@@ -25,7 +25,6 @@ export const maxSleepTime = {
 export const enableCustomFinishCallback = true;
 export const enableCustomChapterFilter = true;
 export const enableCustomSaveOptions = true;
-export const enableJjwxcRemoteFont = true;
 export const enableSaveToArchiveOrg = true;
 
 export const iconStart0 =
