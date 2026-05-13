@@ -23,6 +23,7 @@ export declare class Xiguashuwu extends BaseRuleClass {
     private decryptSecondPageContent;
     private decryptAESPageContent;
     private processImages;
+    private getNextChapterListPageUrl;
     private getNextPageUrl;
     private mergeParagraphsAcrossPages;
     private processFirstPageContent;

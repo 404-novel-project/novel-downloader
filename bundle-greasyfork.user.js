@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1252
+// @version        5.2.1255
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -43910,32 +43910,36 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
         }
         const chapterListUrl = chapterListLink.href;
         loglevel_default().debug(`[chapter]请求 ${chapterListUrl}`);
-        const chapterListDoc = await (0,http.getHtmlDOM)(chapterListUrl, this.charset);
-        const chapterLinks = chapterListDoc.querySelectorAll("li.BCsectionTwo-top-chapter > a");
         const chapters = [];
         let chapterNumber = 0;
-        for (const aElem of Array.from(chapterLinks)) {
-            chapterNumber++;
-            const chapterName = aElem.innerText.trim();
-            const chapterUrl = aElem.href;
-            const isVIP = false;
-            const isPaid = false;
-            const chapter = new Chapter/* Chapter */.I({
-                bookUrl,
-                bookname,
-                chapterUrl,
-                chapterNumber,
-                chapterName,
-                isVIP,
-                isPaid,
-                sectionName: null,
-                sectionNumber: null,
-                sectionChapterNumber: null,
-                chapterParse: this.chapterParse.bind(this),
-                charset: this.charset,
-                options: {},
-            });
-            chapters.push(chapter);
+        let currentListUrl = chapterListUrl;
+        while (currentListUrl) {
+            const chapterListDoc = await (0,http.getHtmlDOM)(currentListUrl, this.charset);
+            const chapterLinks = chapterListDoc.querySelectorAll("li.BCsectionTwo-top-chapter > a");
+            for (const aElem of Array.from(chapterLinks)) {
+                chapterNumber++;
+                const chapterName = aElem.innerText.trim();
+                const chapterUrl = aElem.href;
+                const isVIP = false;
+                const isPaid = false;
+                const chapter = new Chapter/* Chapter */.I({
+                    bookUrl,
+                    bookname,
+                    chapterUrl,
+                    chapterNumber,
+                    chapterName,
+                    isVIP,
+                    isPaid,
+                    sectionName: null,
+                    sectionNumber: null,
+                    sectionChapterNumber: null,
+                    chapterParse: this.chapterParse.bind(this),
+                    charset: this.charset,
+                    options: {},
+                });
+                chapters.push(chapter);
+            }
+            currentListUrl = this.getNextChapterListPageUrl(chapterListDoc, currentListUrl);
         }
         return new Book/* Book */.E({
             bookUrl,
@@ -44204,6 +44208,29 @@ class Xiguashuwu extends rules/* BaseRuleClass */.Q {
             }
         }
         return content;
+    }
+    getNextChapterListPageUrl(doc, currentUrl) {
+        const nextPageLink = doc.querySelector("a#next");
+        if (!nextPageLink) {
+            loglevel_default().debug("[chapter]No next page button found");
+            return "";
+        }
+        const nextText = nextPageLink.textContent?.trim();
+        if (nextText !== "下一页" && nextText !== "下页") {
+            loglevel_default().debug("[chapter]Next page button text mismatch");
+            return "";
+        }
+        const href = nextPageLink.getAttribute("href") || "";
+        const match = href.match(/readbookjump\(['"](\d+)['"],\s*['"](\d+)['"]\)/);
+        if (!match) {
+            loglevel_default().debug("[chapter]Could not parse readbookjump parameters");
+            return "";
+        }
+        const bookId = match[1];
+        const nextPageNum = parseInt(match[2], 10);
+        const nextUrl = `https://www.xiguashuwu.com/book/${bookId}/catalog/${nextPageNum}.html`;
+        loglevel_default().debug(`[chapter]Next chapter list page: ${nextUrl}`);
+        return nextUrl;
     }
     getNextPageUrl(doc) {
         const nextPageLink = doc.querySelector("section > ul > li[class*='-right'] > a");
@@ -44796,6 +44823,8 @@ var template = __webpack_require__("./src/rules/twoPage/template.ts");
 var main = __webpack_require__("./src/main/main.ts");
 // EXTERNAL MODULE: ./src/lib/rule.ts
 var rule = __webpack_require__("./src/lib/rule.ts");
+// EXTERNAL MODULE: ./src/lib/http.ts
+var http = __webpack_require__("./src/lib/http.ts");
 // EXTERNAL MODULE: ./src/lib/dom.ts
 var dom = __webpack_require__("./src/lib/dom.ts");
 ;// ./src/rules/lib/linovelib.ts
@@ -44915,6 +44944,7 @@ var misc = __webpack_require__("./src/lib/misc.ts");
 
 
 
+
 const chapterFixSleepTime = 2000;
 const concurrencyLimit = 1;
 const sleepTime = 1200;
@@ -44958,28 +44988,93 @@ const linovelib = () => {
             return classThis;
         },
         getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-            const { contentRaw } = await (0,rule/* nextPageParse */.u1)({
-                chapterName,
-                chapterUrl,
-                charset,
-                selector: "#TextContent",
-                domPatch: domFontFix,
-                contentPatch: (_content) => {
-                    (0,dom.rm)(".tp", true, _content);
-                    (0,dom.rm)(".bd", true, _content);
-                    _content.querySelectorAll("img.lazyload").forEach((e) => {
-                        e.src = e.dataset.src || e.src;
-                        return e;
+            const contentRaw = document.createElement("div");
+            let currentUrl = chapterUrl;
+            const patience = 3;
+            let patientCount = patience;
+            do {
+                loglevel_default().info(`[linovelib] Loading page in iframe: ${currentUrl}`);
+                const html = await (0,http/* getFrameContentConditionWithWindow */.Q2)(currentUrl, (frame) => {
+                    const doc = frame.contentWindow?.document ?? null;
+                    if (!doc)
+                        return false;
+                    const textContent = doc.querySelector("#TextContent");
+                    if (!textContent)
+                        return false;
+                    const allP = textContent.querySelectorAll("p");
+                    if (allP.length === 0)
+                        return false;
+                    if (allP.length > 20) {
+                        const hasDummy = Array.from(allP).some((p) => Array.from(p.attributes).some((a) => a.name.startsWith("data-k")));
+                        if (!hasDummy)
+                            return false;
+                    }
+                    return true;
+                });
+                let isFailed = false;
+                if (!html?.contentWindow) {
+                    contentRaw.innerHTML = "获取章节内容失败";
+                    isFailed = true;
+                    break;
+                }
+                const iframeDoc = html.contentWindow.document;
+                await domFontFix(iframeDoc);
+                const textContent = iframeDoc.querySelector("#TextContent");
+                if (!textContent) {
+                    contentRaw.innerHTML = "获取章节内容失败";
+                    isFailed = true;
+                    break;
+                }
+                let nextLink = currentUrl;
+                if (!isFailed) {
+                    const allPs = textContent.querySelectorAll("p");
+                    loglevel_default().info(`[linovelib] Total paragraphs before filter: ${allPs.length}`);
+                    let removedCount = 0;
+                    allPs.forEach((p) => {
+                        const style = html.contentWindow?.getComputedStyle(p);
+                        if (!style)
+                            return;
+                        if (style.display === "none") {
+                            p.remove();
+                            removedCount++;
+                            return;
+                        }
+                        const t = style.transform;
+                        if (t && t !== "none" && /matrix\(0+,\s*0+,\s*0+,\s*0+|scale[XY]?\(0/.test(t)) {
+                            p.remove();
+                            removedCount++;
+                        }
                     });
-                    return _content;
-                },
-                getNextPage: (doc) => doc.querySelector(".mlfy_page > a:nth-child(5)").href,
-                continueCondition: (_content, nextLink) => new URL(nextLink).pathname.includes("_"),
-                enableCleanDOM: false,
-            });
+                    loglevel_default().info(`[linovelib] Removed ${removedCount} hidden paragraphs, remaining: ${textContent.querySelectorAll("p").length}`);
+                    for (const child of Array.from(textContent.childNodes)) {
+                        contentRaw.appendChild(document.adoptNode(child));
+                    }
+                    (0,dom.rm)(".tp", true, contentRaw);
+                    (0,dom.rm)(".bd", true, contentRaw);
+                    contentRaw.querySelectorAll("img.lazyload").forEach((e) => {
+                        e.src = e.dataset.src || e.src;
+                    });
+                    patientCount = patience;
+                    nextLink = iframeDoc.querySelector(".mlfy_page > a:nth-child(5)")?.href;
+                }
+                else {
+                    loglevel_default().info(`[linovelib] Failed to load page in iframe: ${currentUrl}`);
+                    patientCount--;
+                }
+                html.remove();
+                currentUrl = (nextLink && new URL(nextLink).pathname.includes("_")) ? nextLink : undefined;
+            } while (patientCount > 0 && currentUrl);
             return contentRaw;
         },
         contentPatch: (content) => {
+            content.querySelectorAll("p *").forEach((el) => {
+                const tag = el.tagName.toLowerCase();
+                const knownTags = new Set(["a", "abbr", "b", "bdi", "bdo", "br", "cite", "code", "data", "dfn", "em", "i", "kbd", "mark", "q", "rp", "rt", "ruby", "s", "samp", "small", "span", "strong", "sub", "sup", "time", "u", "var", "wbr", "img"]);
+                if (!knownTags.has(tag)) {
+                    const text = document.createTextNode(el.textContent ?? "");
+                    el.replaceWith(text);
+                }
+            });
             for (const k in table) {
                 content.innerHTML = content.innerHTML.replaceAll(k, table[k]);
             }
