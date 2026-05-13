@@ -252,39 +252,48 @@ export class Xiguashuwu extends BaseRuleClass {
 
     const chapterListUrl = chapterListLink.href;
     log.debug(`[chapter]请求 ${chapterListUrl}`);
-    const chapterListDoc = await getHtmlDOM(chapterListUrl, this.charset);
 
-    // Get all chapter items from the chapter list page
-    const chapterLinks = chapterListDoc.querySelectorAll(
-      "li.BCsectionTwo-top-chapter > a",
-    );
-
+    // Fetch all chapter list pages (the site paginates at 100 chapters per page)
     const chapters: Chapter[] = [];
     let chapterNumber = 0;
+    let currentListUrl = chapterListUrl;
 
-    for (const aElem of Array.from(chapterLinks) as HTMLAnchorElement[]) {
-      chapterNumber++;
-      const chapterName = aElem.innerText.trim();
-      const chapterUrl = aElem.href;
-      const isVIP = false;
-      const isPaid = false;
+    while (currentListUrl) {
+      const chapterListDoc = await getHtmlDOM(currentListUrl, this.charset);
+      const chapterLinks = chapterListDoc.querySelectorAll(
+        "li.BCsectionTwo-top-chapter > a",
+      );
 
-      const chapter = new Chapter({
-        bookUrl,
-        bookname,
-        chapterUrl,
-        chapterNumber,
-        chapterName,
-        isVIP,
-        isPaid,
-        sectionName: null,
-        sectionNumber: null,
-        sectionChapterNumber: null,
-        chapterParse: this.chapterParse.bind(this),
-        charset: this.charset,
-        options: {},
-      });
-      chapters.push(chapter);
+      for (const aElem of Array.from(chapterLinks) as HTMLAnchorElement[]) {
+        chapterNumber++;
+        const chapterName = aElem.innerText.trim();
+        const chapterUrl = aElem.href;
+        const isVIP = false;
+        const isPaid = false;
+
+        const chapter = new Chapter({
+          bookUrl,
+          bookname,
+          chapterUrl,
+          chapterNumber,
+          chapterName,
+          isVIP,
+          isPaid,
+          sectionName: null,
+          sectionNumber: null,
+          sectionChapterNumber: null,
+          chapterParse: this.chapterParse.bind(this),
+          charset: this.charset,
+          options: {},
+        });
+        chapters.push(chapter);
+      }
+
+      // Check for next chapter list page
+      currentListUrl = this.getNextChapterListPageUrl(
+        chapterListDoc,
+        currentListUrl,
+      );
     }
 
     return new Book({
@@ -687,6 +696,47 @@ export class Xiguashuwu extends BaseRuleClass {
     }
 
     return content;
+  }
+
+  private getNextChapterListPageUrl(
+    doc: Document,
+    currentUrl: string,
+  ): string {
+    // Pagination structure:
+    // <p class="CGsectionTwo-right-bottom-btn">
+    //   <a href="javascript:readbookjump('59858','2');" id="next">下一页</a>
+    //   <a href="javascript:gotochapterjump('59858','5');" id="end">尾页</a>
+    // </p>
+    // URL pattern: /book/{bookId}/catalog/ (page 1), /book/{bookId}/catalog/{N}.html (page N)
+
+    const nextPageLink = doc.querySelector("a#next");
+    if (!nextPageLink) {
+      log.debug("[chapter]No next page button found");
+      return "";
+    }
+
+    const nextText = nextPageLink.textContent?.trim();
+    if (nextText !== "下一页" && nextText !== "下页") {
+      log.debug("[chapter]Next page button text mismatch");
+      return "";
+    }
+
+    // Extract book ID and next page number from javascript:readbookjump('59858','2')
+    const href = nextPageLink.getAttribute("href") || "";
+    const match = href.match(/readbookjump\(['"](\d+)['"],\s*['"](\d+)['"]\)/);
+    if (!match) {
+      log.debug("[chapter]Could not parse readbookjump parameters");
+      return "";
+    }
+
+    const bookId = match[1];
+    const nextPageNum = parseInt(match[2], 10);
+
+    // Build next page URL: page 1 = /catalog/, page N = /catalog/N.html
+    const nextUrl = `https://www.xiguashuwu.com/book/${bookId}/catalog/${nextPageNum}.html`;
+
+    log.debug(`[chapter]Next chapter list page: ${nextUrl}`);
+    return nextUrl;
   }
 
   private getNextPageUrl(doc: Document): string {
