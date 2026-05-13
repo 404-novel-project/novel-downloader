@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1255
+// @version        5.2.1256
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -22048,8 +22048,6 @@ var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
 var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
 // EXTERNAL MODULE: ./src/main/main.ts
 var main = __webpack_require__("./src/main/main.ts");
-// EXTERNAL MODULE: ./src/main/Attachment.ts
-var Attachment = __webpack_require__("./src/main/Attachment.ts");
 // EXTERNAL MODULE: ./src/main/Chapter.ts
 var Chapter = __webpack_require__("./src/main/Chapter.ts");
 // EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
@@ -22058,13 +22056,17 @@ var Book = __webpack_require__("./src/main/Book.ts");
 var rules = __webpack_require__("./src/rules.ts");
 // EXTERNAL MODULE: ./src/setting.ts
 var setting = __webpack_require__("./src/setting.ts");
+// EXTERNAL MODULE: ./src/lib/decoders/OCRDecoder.ts + 2 modules
+var OCRDecoder = __webpack_require__("./src/lib/decoders/OCRDecoder.ts");
 ;// ./src/rules/lib/jjwxcFontDecode.ts
+
+
 
 
 
 async function replaceJjwxcCharacter(fontName, inputText) {
     let outputText = inputText;
-    const jjwxcFontTable = await getJjwxcFontTable(fontName);
+    const jjwxcFontTable = await buildFontTableViaOCR(fontName, inputText);
     if (jjwxcFontTable) {
         for (const jjwxcCharacter in jjwxcFontTable) {
             if (Object.prototype.hasOwnProperty.call(jjwxcFontTable, jjwxcCharacter)) {
@@ -22072,60 +22074,203 @@ async function replaceJjwxcCharacter(fontName, inputText) {
                 outputText = outputText.replaceAll(jjwxcCharacter, normalCharacter);
             }
         }
-        outputText = outputText.replace(/\u200c/g, "");
+        outputText = outputText.replace(/‌/g, "");
     }
     return outputText;
 }
-async function getJjwxcFontTable(fontName) {
-    const jjwxcFontTableLocal = false;
-    if (jjwxcFontTableLocal) {
-        return jjwxcFontTableLocal;
-    }
-    else if (setting/* enableJjwxcRemoteFont */.ts) {
-        return await fetchRemoteFont(fontName);
-    }
-    else {
-        return undefined;
-    }
-}
-async function fetchRemoteFont(fontName) {
-    const url = `https://fastly.jsdelivr.net/gh/404-novel-project/jinjiang_font_tables@master/${fontName}.woff2.json`;
-    const fontlink = `https://static.jjwxc.net/tmp/fonts/${fontName}.woff2?h=my.jjwxc.net`;
-    loglevel_default().info(`[jjwxc-font]开始请求远程字体对照表 ${fontName}`);
+async function buildFontTableViaOCR(fontName, inputText) {
+    const fontUrl = `https://static.jjwxc.net/tmp/fonts/${fontName}.woff2?h=my.jjwxc.net`;
+    loglevel_default().info(`[jjwxc-font-ocr]开始下载字体文件 ${fontName}`);
     let retry = setting/* retryLimit */.Iz;
+    let fontBlob = null;
     while (retry > 0) {
-        let resp;
         try {
-            resp = await fetch(url);
+            const resp = await (0,http/* gfetch */._V)(fontUrl, {
+                headers: {
+                    accept: "*/*",
+                    Referer: "https://my.jjwxc.net/",
+                },
+                responseType: "blob",
+            });
+            if (resp.status >= 200 && resp.status <= 299) {
+                fontBlob = resp.response;
+                loglevel_default().info(`[jjwxc-font-ocr]字体文件 ${fontName} 下载成功 (${fontBlob.size} bytes)`);
+                break;
+            }
+            else {
+                loglevel_default().error(`[jjwxc-font-ocr]字体文件 ${fontName} 下载失败 HTTP ${resp.status}`);
+                retry--;
+                if (retry > 0) {
+                    await (0,misc/* sleep */.yy)(5000);
+                }
+                else {
+                    loglevel_default().error(`[jjwxc-font-ocr]字体文件 ${fontName} 下载失败，已用尽重试次数`);
+                    return undefined;
+                }
+            }
         }
         catch (error) {
             loglevel_default().error(error);
             retry--;
             if (retry > 0) {
                 await (0,misc/* sleep */.yy)(5000);
-                continue;
             }
             else {
-                loglevel_default().error(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败,请前往https://github.com/404-novel-project/jinjiang_font_tables 提交字体链接, ${fontlink}`);
+                loglevel_default().error(`[jjwxc-font-ocr]字体文件 ${fontName} 下载失败，已用尽重试次数`);
                 return undefined;
-            }
-        }
-        if (resp.ok) {
-            loglevel_default().info(`[jjwxc-font]远程字体对照表 ${fontName} 下载成功`);
-            loglevel_default().debug(`[jjwxc-font]如果你认为字体对应有错误,请前往https://github.com/404-novel-project/jinjiang_font_tables 重新提交字体链接, ${fontlink}`);
-            return (await resp.json());
-        }
-        else {
-            retry--;
-            if (resp.status === 404 || retry <= 0) {
-                loglevel_default().error(`[jjwxc-font]远程字体对照表 ${fontName} 下载失败,请前往https://github.com/404-novel-project/jinjiang_font_tables 提交字体链接, ${fontlink}`);
-                return undefined;
-            }
-            else {
-                await (0,misc/* sleep */.yy)(5000);
             }
         }
     }
+    if (!fontBlob) {
+        return undefined;
+    }
+    const blobUrl = URL.createObjectURL(fontBlob);
+    const fontStyle = document.createElement("style");
+    fontStyle.innerHTML = `@font-face { font-family: "${fontName}"; src: url("${blobUrl}") format("woff2"); }`;
+    document.head.appendChild(fontStyle);
+    try {
+        if (document.fonts) {
+            await document.fonts.ready;
+            const loaded = await document.fonts.check(`48px "${fontName}"`);
+            if (!loaded) {
+                const testDiv = document.createElement("div");
+                testDiv.style.fontFamily = `"${fontName}", sans-serif`;
+                testDiv.style.fontSize = "48px";
+                testDiv.style.position = "absolute";
+                testDiv.style.left = "-9999px";
+                testDiv.textContent = "";
+                document.body.appendChild(testDiv);
+                await document.fonts.ready;
+                testDiv.remove();
+            }
+            loglevel_default().info(`[jjwxc-font-ocr]字体 ${fontName} 已加载`);
+        }
+    }
+    catch (e) {
+        loglevel_default().warn(`[jjwxc-font-ocr]字体加载检测失败: ${e}`);
+    }
+    const allChars = [...inputText.replace(/‌/g, "")];
+    const uniqueEncryptedChars = [...new Set(allChars)].filter((ch) => {
+        const code = ch.codePointAt(0);
+        return ((code >= 0xE000 && code <= 0xF8FF) ||
+            (code >= 0xF0000 && code <= 0xFFFFD));
+    });
+    if (uniqueEncryptedChars.length === 0) {
+        loglevel_default().warn("[jjwxc-font-ocr]没有找到加密字符");
+        fontStyle.remove();
+        URL.revokeObjectURL(blobUrl);
+        return undefined;
+    }
+    loglevel_default().info(`[jjwxc-font-ocr]发现 ${uniqueEncryptedChars.length} 个唯一加密字符`);
+    const decodeMap = await buildFontDecodeMap(fontName, uniqueEncryptedChars);
+    fontStyle.remove();
+    URL.revokeObjectURL(blobUrl);
+    if (decodeMap.size === 0) {
+        loglevel_default().error("[jjwxc-font-ocr]OCR解码映射表构建失败");
+        return undefined;
+    }
+    loglevel_default().info(`[jjwxc-font-ocr]解码映射表: ${decodeMap.size}/${uniqueEncryptedChars.length} 个字符已映射`);
+    const table = {};
+    for (const [encrypted, real] of decodeMap) {
+        table[encrypted] = real;
+    }
+    return table;
+}
+async function buildFontDecodeMap(fontFamily, uniqueChars) {
+    const map = new Map();
+    const ocrDecoder = new OCRDecoder/* OCRDecoder */.T();
+    try {
+        const BATCH_SIZE = 30;
+        const CHAR_SIZE = 48;
+        const ROW_HEIGHT = 64;
+        const PADDING = 16;
+        const CANVAS_WIDTH = CHAR_SIZE + PADDING * 2;
+        const SCALE = 2;
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        for (let i = 0; i < uniqueChars.length; i += BATCH_SIZE) {
+            const batch = uniqueChars.slice(i, i + BATCH_SIZE);
+            const canvasHeight = batch.length * ROW_HEIGHT + PADDING * 2;
+            canvas.width = CANVAS_WIDTH * SCALE;
+            canvas.height = canvasHeight * SCALE;
+            ctx.setTransform(SCALE, 0, 0, SCALE, 0, 0);
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, CANVAS_WIDTH, canvasHeight);
+            ctx.font = `${CHAR_SIZE}px "${fontFamily}"`;
+            ctx.fillStyle = "black";
+            ctx.textBaseline = "middle";
+            ctx.textAlign = "center";
+            for (let j = 0; j < batch.length; j++) {
+                const x = CANVAS_WIDTH / 2;
+                const y = PADDING + j * ROW_HEIGHT + ROW_HEIGHT / 2;
+                ctx.fillText(batch[j], x, y);
+            }
+            const pngData = canvasToUint8Array(canvas);
+            const ocrText = await ocrDecoder.decodeFullText(pngData);
+            const ocrChars = [...ocrText.replace(/[\s\n\r]/g, "")];
+            if (ocrChars.length === batch.length) {
+                for (let j = 0; j < batch.length; j++) {
+                    map.set(batch[j], ocrChars[j]);
+                }
+            }
+            else {
+                loglevel_default().warn(`[jjwxc-font-ocr]批次 ${i}: 期望 ${batch.length} 个字符, OCR识别 ${ocrChars.length} 个. 回退到逐字OCR.`);
+                for (const ch of batch) {
+                    if (map.has(ch))
+                        continue;
+                    const single = await ocrSingleChar(canvas, ctx, ch, fontFamily, CHAR_SIZE, SCALE, ocrDecoder);
+                    if (single) {
+                        map.set(ch, single);
+                    }
+                }
+            }
+            if ((i + BATCH_SIZE) % 150 === 0 ||
+                i + BATCH_SIZE >= uniqueChars.length) {
+                loglevel_default().info(`[jjwxc-font-ocr]映射进度: ${Math.min(i + BATCH_SIZE, uniqueChars.length)}/${uniqueChars.length}`);
+            }
+        }
+        canvas.width = 0;
+        canvas.height = 0;
+        return map;
+    }
+    catch (e) {
+        loglevel_default().error(`[jjwxc-font-ocr]构建解码映射表出错: ${e instanceof Error ? e.message : String(e)}`);
+        return map;
+    }
+    finally {
+        await ocrDecoder.close();
+    }
+}
+async function ocrSingleChar(canvas, ctx, ch, fontFamily, charSize, scale, ocrDecoder) {
+    const SIZE = charSize + 32;
+    canvas.width = SIZE * scale;
+    canvas.height = SIZE * scale;
+    ctx.setTransform(scale, 0, 0, scale, 0, 0);
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, SIZE, SIZE);
+    ctx.font = `${charSize}px "${fontFamily}"`;
+    ctx.fillStyle = "black";
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "center";
+    ctx.fillText(ch, SIZE / 2, SIZE / 2);
+    try {
+        const pngData = canvasToUint8Array(canvas);
+        const result = await ocrDecoder.decode(pngData);
+        return result?.text || null;
+    }
+    catch {
+        return null;
+    }
+}
+function canvasToUint8Array(canvas) {
+    const dataUrl = canvas.toDataURL("image/png");
+    const base64 = dataUrl.split(",")[1];
+    const binaryString = atob(base64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes;
 }
 
 // EXTERNAL MODULE: ./src/lib/GM.ts
@@ -33718,9 +33863,7 @@ var external_CryptoJS_ = __webpack_require__("crypto-js");
 
 
 
-
 const AUTHOR_SAY_PREFIX = "作者有话说：";
-const JJWXC_TOKEN_STORAGE_KEY = "nd-jjwxc-token";
 function normalizeJjwxcToken(token) {
     return String(token).replace(/undefined|token=|\s|&.*$/g, "").trim();
 }
@@ -33735,23 +33878,7 @@ function getJjwxcTokenFromOptions() {
     const token = normalizeJjwxcToken(typeof raw === "string" ? raw : raw.token ?? "");
     return token.length > 0 ? token : null;
 }
-function getStoredJjwxcToken() {
-    const fromOptions = getJjwxcTokenFromOptions();
-    if (fromOptions) {
-        return fromOptions;
-    }
-    try {
-        const fromStorage = normalizeJjwxcToken(localStorage.getItem(JJWXC_TOKEN_STORAGE_KEY) ?? "");
-        if (fromStorage.length > 0) {
-            return fromStorage;
-        }
-    }
-    catch (error) {
-        loglevel_default().debug(`[jjwxc-token] read localStorage failed: ${String(error)}`);
-    }
-    return null;
-}
-function setStoredJjwxcToken(token) {
+function setJjwxcToken(token) {
     const normalized = normalizeJjwxcToken(token);
     if (!normalized) {
         return null;
@@ -33763,19 +33890,7 @@ function setStoredJjwxcToken(token) {
         ...(tokenOptions ?? {}),
         Jjwxc: normalized,
     };
-    try {
-        localStorage.setItem(JJWXC_TOKEN_STORAGE_KEY, normalized);
-    }
-    catch (error) {
-        loglevel_default().debug(`[jjwxc-token] write localStorage failed: ${String(error)}`);
-    }
     return normalized;
-}
-function hydrateJjwxcTokenFromStorage() {
-    const token = getStoredJjwxcToken();
-    if (token) {
-        setStoredJjwxcToken(token);
-    }
 }
 class Jjwxc extends rules/* BaseRuleClass */.Q {
     constructor() {
@@ -33783,7 +33898,6 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
         this.attachmentMode = "TM";
         this.concurrencyLimit = 1;
         this.charset = "GB18030";
-        hydrateJjwxcTokenFromStorage();
         function encode(data) {
             const key = external_CryptoJS_.enc.Utf8.parse("KW8Dvm2N");
             const iv = external_CryptoJS_.enc.Utf8.parse("1ae2c94b");
@@ -33831,7 +33945,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             const manualToken = normalizeJjwxcToken(getDialogElement("nd-jj-manual-token")
                 ?.value ?? "");
             if (manualToken.length > 0) {
-                const savedToken = setStoredJjwxcToken(manualToken);
+                const savedToken = setJjwxcToken(manualToken);
                 if (savedToken) {
                     const tokenElement = getDialogElement("nd-jj-token");
                     if (tokenElement) {
@@ -33920,7 +34034,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                         alert(msg);
                     }
                     else {
-                        const token = setStoredJjwxcToken(resJson.token ?? "");
+                        const token = setJjwxcToken(resJson.token ?? "");
                         if (token) {
                             const tokenElement = getDialogElement("nd-jj-token");
                             if (tokenElement) {
@@ -33956,7 +34070,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                             },
                         });
                     });
-                    const token = setStoredJjwxcToken(tokenJson.token ?? "");
+                    const token = setJjwxcToken(tokenJson.token ?? "");
                     const tokenelement = getDialogElement("nd-jj-token");
                     if (tokenelement && token) {
                         tokenelement.textContent = token;
@@ -33973,7 +34087,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                 alert("无法打开token对话框，请刷新页面重试");
                 return;
             }
-            const existingToken = getStoredJjwxcToken() ?? "";
+            const existingToken = getJjwxcTokenFromOptions() ?? "";
             const backdrop = document.createElement('div');
             backdrop.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100000;';
             shadowRoot.appendChild(backdrop);
@@ -34204,7 +34318,10 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
         let introductionHTML = null;
         let introCleanimages = null;
         if (!getInformationBlocked()) {
-            bookname = document.querySelector('#oneboolt .bigtext').innerText.trim();
+            bookname = document.querySelector('#oneboolt .bigtext')?.innerText.trim();
+            if (!bookname) {
+                throw new Error("抓取书名出错");
+            }
             author = document.querySelector("#oneboolt  h2 > a")?.innerText ?? document.querySelector('#oneboolt > .noveltitle > span > a')?.innerText;
             const introDom = document.querySelector("#novelintro")?.cloneNode(true);
             if (introDom) {
@@ -34217,7 +34334,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             if (introCleanimages) {
                 additionalMetadate.attachments = [...introCleanimages];
             }
-            const coverUrl = document.querySelector(".noveldefaultimage").src;
+            const coverUrl = document.querySelector(".noveldefaultimage")?.src;
             if (coverUrl) {
                 (0,attachments/* getAttachment */["if"])(coverUrl, this.attachmentMode, "cover-", false, (0,attachments/* getRandomName */.VJ)(), { referrerMode: main/* ReferrerMode */.ls.none })
                     .then((coverClass) => {
@@ -34225,9 +34342,9 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                 })
                     .catch((error) => loglevel_default().error(error));
             }
-            let tags = document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)").innerText.split("-");
+            let tags = document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(1) > span:nth-child(2)")?.innerText.split("-") ?? [];
             tags = tags.concat(Array.from(document.querySelectorAll("div.smallreadbody:nth-child(3) > span > a")).map((a) => a.innerText));
-            const perspective = document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)").innerText.replace("\n", "").replace("作品视角：", "");
+            const perspective = document.querySelector("table > tbody > tr > td.readtd > div.righttd > ul.rightul > li:nth-child(2)")?.innerText.replace("\n", "").replace("作品视角：", "") ?? "";
             tags.push(perspective);
             additionalMetadate.tags = tags;
         }
@@ -34298,9 +34415,9 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                 };
                 if (!isLocked()) {
                     if (isVIP()) {
-                        const chapterName = a.innerText.trim();
-                        const chapterUrl = a.getAttribute("rel");
-                        if (chapterUrl) {
+                        const chapterName = a?.innerText.trim();
+                        const chapterUrl = a?.getAttribute("rel");
+                        if (chapterName && chapterUrl) {
                             const chapter = new Chapter/* Chapter */.I({
                                 bookUrl,
                                 bookname,
@@ -34317,7 +34434,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                                 options: {},
                             });
                             const isLogin = () => {
-                                if (getStoredJjwxcToken())
+                                if (getJjwxcTokenFromOptions())
                                     return true;
                                 return !document.getElementById("jj_login");
                             };
@@ -34328,8 +34445,8 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                         }
                     }
                     else {
-                        const chapterName = a.innerText.trim();
-                        const chapterUrl = a.href;
+                        const chapterName = a?.innerText.trim();
+                        const chapterUrl = a?.href;
                         const chapter = new Chapter/* Chapter */.I({
                             bookUrl,
                             bookname,
@@ -34346,7 +34463,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                             options: {},
                         });
                         const isLogin = () => {
-                            if (getStoredJjwxcToken())
+                            if (getJjwxcTokenFromOptions())
                                 return true;
                             return !document.getElementById("jj_login");
                         };
@@ -34431,101 +34548,14 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             };
         }
         async function vipChapter() {
-            async function getFont(dom) {
-                function getFontInfo() {
-                    const s = dom.querySelectorAll("body > style")[1];
-                    let fontNameI = "";
-                    let fontUrlI = "";
-                    if (s.sheet) {
-                        const f = s.sheet.cssRules[s.sheet.cssRules.length - 2];
-                        const m1 = f.cssText.match(/jjwxcfont_[\d\w]+/);
-                        const m2 = f.cssText.match(/{(.*)}/);
-                        if (m1 && m2) {
-                            fontNameI = m1[0];
-                            const ft = m2[1];
-                            for (const k of ft.split(",")) {
-                                if (k.includes('format("woff2")')) {
-                                    const m3 = k.match(/url\("(.*)"\)\s/);
-                                    if (m3) {
-                                        fontUrlI = document.location.protocol + m3[1];
-                                        return [fontNameI, fontUrlI];
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (fontNameI !== "") {
-                        fontUrlI = `${document.location.protocol}//static.jjwxc.net/tmp/fonts/${fontNameI}.woff2?h=my.jjwxc.net`;
-                        return [fontNameI, fontUrlI];
-                    }
-                    else {
-                        const css = dom.querySelector("div.noveltext")?.classList;
-                        if (css) {
-                            fontNameI = Array.from(css).filter((cn) => cn.startsWith("jjwxcfont_"))[0];
-                            if (fontNameI) {
-                                fontUrlI = `${document.location.protocol}//static.jjwxc.net/tmp/fonts/${fontNameI}.woff2?h=my.jjwxc.net`;
-                                return [fontNameI, fontUrlI];
-                            }
-                        }
-                    }
-                    return [null, null];
+            function getFontName(doc) {
+                const noveltext = doc.querySelector("div.noveltext");
+                if (!noveltext) {
+                    return null;
                 }
-                let retryTime = 0;
-                function fetchFont(fontUrlI) {
-                    loglevel_default().debug(`[Chapter]请求 ${fontUrlI} Referer ${chapterUrl} 重试次数 ${retryTime}`);
-                    return (0,http/* gfetch */._V)(fontUrlI, {
-                        headers: {
-                            accept: "*/*",
-                            Referer: chapterUrl,
-                        },
-                        responseType: "blob",
-                    })
-                        .then((response) => {
-                        if (response.status >= 200 && response.status <= 299) {
-                            return response.response;
-                        }
-                        else {
-                            loglevel_default().error(`[Chapter]请求 ${fontUrlI} 失败 Referer ${chapterUrl}`);
-                            if (retryTime < setting/* retryLimit */.Iz) {
-                                retryTime++;
-                                return fetchFont(fontUrlI);
-                            }
-                            else {
-                                return null;
-                            }
-                        }
-                    })
-                        .catch((error) => loglevel_default().error(error));
-                }
-                const [fontName, fontUrl] = getFontInfo();
-                if (fontName && fontUrl) {
-                    const fontFileName = `${fontName}.woff2`;
-                    let fontClassObj;
-                    const fontClassObjCache = (0,attachments/* getAttachmentClassCache */._s)(fontUrl);
-                    if (fontClassObjCache) {
-                        fontClassObj = fontClassObjCache;
-                    }
-                    else {
-                        const fontBlob = await fetchFont(fontUrl);
-                        fontClassObj = new Attachment/* AttachmentClass */.q(fontUrl, fontFileName, "TM");
-                        fontClassObj.Blob = fontBlob;
-                        fontClassObj.status = main/* Status */.nW.finished;
-                        (0,attachments/* putAttachmentClassCache */.Ld)(fontClassObj);
-                    }
-                    const fontStyleDom = document.createElement("style");
-                    fontStyleDom.innerHTML = `.${fontName} {
-  font-family: ${fontName}, 'Microsoft YaHei', PingFangSC-Regular, HelveticaNeue-Light, 'Helvetica Neue Light', sans-serif !important;
-}
-@font-face {
-  font-family: ${fontName};
-  src: url('${fontFileName}') format('woff2');
-}
-.hide {
-  display: none;
-}`;
-                    return [fontName, fontClassObj, fontStyleDom];
-                }
-                return [null, null, null];
+                const classList = noveltext.className.split(/\s+/);
+                const fontClass = classList.find((c) => c.startsWith("jjwxcfont_"));
+                return fontClass || null;
             }
             function decrypt(doc) {
                 function getDecryptContent() {
@@ -34708,59 +34738,63 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                         return out;
                     };
                     const accessKeyConvert = convert(accessKey);
-                    let modi = 0;
+                    const variantIdx = (novelid + chapterid) % 2;
+                    const variants = [
+                        () => {
+                            const _hash = novelid + "." + chapterid + "." + readerid + "." + accessKey;
+                            const hash = external_CryptoJS_.MD5(_hash).toString();
+                            const sp = accessKeyConvert % hash.length;
+                            const sl = hash.slice(sp) + hash.slice(0, sp);
+                            return { key: sl.slice(-16), iv: sl.slice(0, 16) };
+                        },
+                        () => {
+                            const _hash = accessKey + "-" + novelid + "-" + chapterid + "-" + readerid;
+                            const hash = external_CryptoJS_.MD5(_hash).toString();
+                            const sp = accessKeyConvert % (hash.length + 1);
+                            const sl = hash.slice(sp) + hash.slice(0, sp);
+                            return { key: sl.slice(-16), iv: sl.slice(0, 16) };
+                        },
+                    ];
+                    const cryptInfoCipher = data["cryptInfo"];
                     let _decrypedtCryptInfo = "";
-                    while (modi <= 1) {
-                        let _hash = "";
-                        let hashSlice = "";
-                        if (chapterid % 2 == modi) {
-                            _hash =
-                                novelid + "." + chapterid + "." + readerid + "." + accessKey;
+                    const tryOrder = [variantIdx, 1 - variantIdx];
+                    for (const i of tryOrder) {
+                        const { key: hk, iv: hiv } = variants[i]();
+                        try {
+                            _decrypedtCryptInfo = external_CryptoJS_.AES.decrypt(cryptInfoCipher, external_CryptoJS_.enc.Utf8.parse(hk), { iv: external_CryptoJS_.enc.Utf8.parse(hiv) }).toString(external_CryptoJS_.enc.Utf8);
                         }
-                        else {
-                            _hash =
-                                accessKey + "-" + novelid + "-" + chapterid + "-" + readerid;
+                        catch (e) {
+                            loglevel_default().debug(`[jjwxc] cryptInfo AES 解密失败 variant=${i}: ${e instanceof Error ? e.message : String(e)}`);
+                            _decrypedtCryptInfo = "";
                         }
-                        const hash = external_CryptoJS_.MD5(_hash).toString();
-                        if (chapterid % 2 == modi) {
-                            hashSlice =
-                                hash.slice(accessKeyConvert % hash.length) +
-                                    hash.slice(0, accessKeyConvert % hash.length);
-                        }
-                        else {
-                            hashSlice =
-                                hash.slice(accessKeyConvert % (hash.length + 1)) +
-                                    hash.slice(0, accessKeyConvert % (hash.length + 1));
-                        }
-                        let hashSlice16 = hashSlice.slice(0, 16);
-                        let hashSlice_16 = hashSlice.slice(-16);
-                        if (hash.charCodeAt(0)) {
-                            [hashSlice16, hashSlice_16] = [hashSlice_16, hashSlice16];
-                        }
-                        const cryptInfo = data["cryptInfo"];
-                        _decrypedtCryptInfo = external_CryptoJS_.DES.decrypt(cryptInfo, external_CryptoJS_.enc.Utf8.parse(hashSlice16), {
-                            iv: external_CryptoJS_.enc.Utf8.parse(hashSlice_16),
-                        }).toString(external_CryptoJS_.enc.Utf8);
-                        if (_decrypedtCryptInfo != "") {
+                        if (_decrypedtCryptInfo !== "") {
                             break;
                         }
-                        else
-                            modi++;
+                    }
+                    if (!_decrypedtCryptInfo) {
+                        throw new Error("章节内容解码失败：无法解密 cryptInfo，可能晋江网页解密算法已更新，请刷新页面或反馈给开发者");
                     }
                     const decrypedtCryptInfo = JSON.parse(atob(_decrypedtCryptInfo));
                     const verifyTime = (obj) => {
                         if (new Date()["getTime"]() / 1000 - obj["time"] > 86400) {
                             throw new Error("章节内容解码失败，内容生成时间与当前设备时间相差过大，请刷新页面或校准当前设备时间。内容生成时间为:" +
-                                new Date(obj["time"] * 100).toLocaleString());
+                                new Date(obj["time"] * 1000).toLocaleString());
                         }
                     };
                     verifyTime(decrypedtCryptInfo);
                     const md5sum = external_CryptoJS_.MD5(decrypedtCryptInfo["key"] + decrypedtCryptInfo["time"] + readerid).toString();
-                    const t = md5sum["slice"](accessKeyConvert % md5sum["length"]) +
-                        md5sum["slice"](0, accessKeyConvert % md5sum["length"]);
+                    const t = md5sum.slice(accessKeyConvert % md5sum.length) +
+                        md5sum.slice(0, accessKeyConvert % md5sum.length);
                     const key = t.slice(0, 16);
                     const iv = t.slice(-16);
-                    const decryptContent = external_CryptoJS_.DES.decrypt(data["content"], external_CryptoJS_.enc.Utf8.parse(key), { iv: external_CryptoJS_.enc.Utf8.parse(iv) }).toString(external_CryptoJS_.enc.Utf8);
+                    const decryptContent = (() => {
+                        try {
+                            return external_CryptoJS_.AES.decrypt(data["content"], external_CryptoJS_.enc.Utf8.parse(key), { iv: external_CryptoJS_.enc.Utf8.parse(iv) }).toString(external_CryptoJS_.enc.Utf8);
+                        }
+                        catch (e) {
+                            throw new Error(`章节内容解码失败：content AES 解密产生无效 UTF-8 数据 (${e instanceof Error ? e.message : String(e)})`);
+                        }
+                    })();
                     return decryptContent;
                 }
                 const decryptContent = getDecryptContent();
@@ -34854,17 +34888,12 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                 }
                 let finalDom = rawDom;
                 let finalText = rawText;
-                const [fontName, fontClassObj, fontStyleDom] = await getFont(doc);
-                if (fontName && fontClassObj && fontStyleDom) {
+                const fontName = getFontName(doc);
+                if (fontName) {
                     finalText = await replaceJjwxcCharacter(fontName, rawText);
-                    images.push(fontClassObj);
-                    finalDom = document.createElement("div");
                     const replacedDom = document.createElement("div");
                     replacedDom.innerHTML = await replaceJjwxcCharacter(fontName, rawDom.innerHTML);
-                    finalDom.appendChild(fontStyleDom);
-                    rawDom.className = `${fontName} hide`;
-                    finalDom.appendChild(rawDom);
-                    finalDom.appendChild(replacedDom);
+                    finalDom = replacedDom;
                 }
                 return {
                     chapterName: ChapterName,
@@ -34965,7 +34994,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             chapterGetInfoUrl = chapterGetInfoUrl.replace("http://my.jjwxc.net/onebook_vip.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
             chapterGetInfoUrl = chapterGetInfoUrl.replace("https://my.jjwxc.net/onebook_vip.php?", "https://app.jjwxc.net/androidapi/chapterContent?");
             chapterGetInfoUrl += "&versionCode=381";
-            let sid = getStoredJjwxcToken();
+            let sid = getJjwxcTokenFromOptions();
             if (sid) {
                 sid = normalizeJjwxcToken(sid);
                 chapterGetInfoUrl +=
@@ -35101,11 +35130,22 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                 };
             }
         }
-        if (getStoredJjwxcToken() != null) {
-            return getChapterByApi();
+        const token = getJjwxcTokenFromOptions();
+        if (token != null) {
+            try {
+                return await getChapterByApi();
+            }
+            catch (apiError) {
+                loglevel_default().error(`[jjwxc] API下载失败，降级到页面解析: ${apiError instanceof Error ? apiError.message : String(apiError)}`);
+                if (isVIP) {
+                    return vipChapter();
+                }
+                else {
+                    return publicChapter();
+                }
+            }
         }
         else {
-            loglevel_default().warn(`当前我们更推荐手动捕获android版app token以下载章节,详见github主页说明,脚本将继续尝试使用远程字体下载，但可能会失败`);
             if (isVIP) {
                 return vipChapter();
             }
@@ -45807,7 +45847,6 @@ function getSectionsObj(chapters, chapterSort = (a, b) => a.chapterNumber - b.ch
 /* harmony export */   Zz: () => (/* binding */ EpubDownload),
 /* harmony export */   k8: () => (/* binding */ enableCustomSaveOptions),
 /* harmony export */   ri: () => (/* binding */ concurrencyLimit),
-/* harmony export */   ts: () => (/* binding */ enableJjwxcRemoteFont),
 /* harmony export */   w1: () => (/* binding */ iconSetting),
 /* harmony export */   zb: () => (/* binding */ enableCustomFinishCallback)
 /* harmony export */ });
@@ -45838,7 +45877,6 @@ const maxSleepTime = {
 const enableCustomFinishCallback = true;
 const enableCustomChapterFilter = true;
 const enableCustomSaveOptions = true;
-const enableJjwxcRemoteFont = true;
 const enableSaveToArchiveOrg = true;
 const iconStart0 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAFYElEQVR4nO2dIUxkORyHP4XD4E6RYNZgUGvWonAnVqxDbbJiNWLNOsQ65Oo1CMQIFAnJJiQIcgY7YhIEbgTJiEkm4USPuyNh3pv2tf33tb9f8kl4fe3H0Pm37xXi50/gHJgBC+C5YB6Bv4AL4CuwH7872skBcI/9oA5lBpwAO1F7p/IcUf5fuy8L4AzYjthPVWYfeMJ+wFLxABxG660K8xv7QcrBWawOqykfsB+YnEzQv4RXOcV+UHJzD+zF6LwaMsF+QCyYo3kBALfYD4YVK+DL8C4cd+6wHwhrfgJbQztyrJEAjhvgj4F9OcrUKMA33Me778/NaLCUXKMA27ivt48BP7vArYU0k1oFAPeRHjrJPQ3u0ZGlZgHATe5+Bv6ecxooGtUuwEuOCVvsugd2vXp0ZGlFAHDL3bOA3zfHzSmqTEsCgNsjcBXwO5e4T5Hq0poA4OYFoWsg1RWNWhTgJZ8ImxdcUdFuo5YFADcvmAZcY0olRaPWBQD313wZcJ0n3Fa6UUcC/JfvAdda4TagjjYS4HWOcF/7fK/5i5FODmvcDzC0eveOsO3xt4xwRVECvJ1t3MMmvtd+AN5HuH62SIDunOC/tLxgREUjCdCf0HnBKFYUJcBm2SNsXnCZqD3RIgE2zzZuidi3PVPcxLLISAD/fMYtDvm0qdht6BIgLIf4zwuWOHmKigQIzy5hhbSiKocSYFi2cFVA3zZ+ytjGztQogMVS7Vf85gVPFLLVrEYBrGbcvlvRJzbNfJ0aBbDc1++7Fd28bFyjAOdRe8g/PlvOfhm18d/UKMCKMjZqHNM/L1hiXCmsUYBn3ILMZ+zX6N/jVgi72mr6KFqtArzwiJtsneE+li3oezLJdNGodgHGgOm3AQlgz03vKCWMBLDnrneUEkYC2CMBGkcCNI4EaBwJ0DgSYEMecE/mbkLIA59NCnCzplElEbqfLvTJXwlQGEN2z+zjv4GzKQFK/xewZPiCTumS6xOgg4cI9xiyZ08CFIIESBwJYI8E6EACJI4EsEcCdCABEkcC2CMBOpAAiSMB7JEAHUiAxJEA9kiADiRA4kgAeyRABxIgcSSAPRKgAwmQOBLAHgnQgQRIHAlgjwToQAIkjgSwRwJ0IAESRwLYYyrA7zWNKgUJkDgSwB4J0IEESBwJYE8zAqxwr0T7webv2Ivxbv2PHtc7xb1qNucDpc0I8DHTPcXIB/yPi5MAHcT4KM+dXH3ThADzXDcUMSHHxEmADr5kuqcYOSJfvzQjwIKCz8/7X3bof8O3BAjkDvtXuPcl5HBICeDB9yx3FpZj8vdHcwKsKOCsnDeyhzvNSwJkYEp5hypfY9MXTQrwjDtJo5ScYNcPzQrwTBmHOx1g+y7BpgV4xJ21Z5Ut8hV8JMAaLpPf5fqcdbRLAmTE4lj1wwHtlQCRyV0l3MHvnF8JkIGcVcLc1T4JsCE5qoQW1T4JsCGpq4RW1b5iBbhe0yhLUlYJS7xfCfAGKaqE3wq4LwngQcxTta2rfRIggDlxqoQlVPskQCAxqoQlVPskwACG7CUspdonAQYQWiUsqdonAQYSUiUsqdonASLgUyUsrdonASKwwj2y1ZcSq30SIBKbVAlLK29LgMh0VQlLrfZJgMi89aRxydU+CRCZOe5g6JfsMo6TwiVARJbABe7r3pgmfRJASAAhAQQSQCABmsdUgKs1jRL5uO0dpYSRAPZMekcpYS7WNErk47R3lBLmx5pGiXyYvi1lDFumaua6f4jS5w77jmiRBa/XM8zyjnHX0sfIkrjPPQzOAeNdTRsbUzbb2ZQ9W7i9dBNghltyjUHrny4r3JtHJ//0b9RH4P8GSxsCzEN/51YAAAAASUVORK5CYII=";
 const iconStart1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAESElEQVR4nO2cLUxcQRSFv4QgEBiSKgQCh6pCouvQlbVVdaRuTFUNoqaqEkktCoVD4HBITBMMosmaVsxu+kL3l3lv7p13z5ccyc68OSf3sLtvHwghhBBCjJM/hRKNowAERwEIjgIQHAUgOApAcBSA4CgAwVEAgqMABEcBCI4CEBwFIDgKQHAUgOAoAMFRAIKjAARHAQiOAhAcBSA4CkBwFIDgKADBUQCCowAERwEIjgIQHAUgOApAcBSA4CgAzkmUm9SqUvHpjYSEvRky35iEvSky35iEvTky35iEvUky35iEvVky35iEvWky35iEvXky35iEvYky35iEvZky35iEvaky35iEvbky35iEvcky35iEvdky35iEveky35iEzA9PQuaHJyHzm2e78O8T7Zhfeq2j4i1wDvyi/GAT/s1P5Gs9J197SN4An4A7hjlgz+a/fM078lm8KXxt92wDp8BPYEL9g/ZoflcT8tmcMrKK6I54TwfueS/NV8SyEe/54D3uoZmK2GTEt2KA5dov5bYiXjvivRthsea6Mq+Ivka8V0NqrlWqahUx1IjfRGeF15DWWCMVrnG2xhpDaLCKqDHiV+ka+ADs9nA9ack6qYfX3yXv9XrJOkOruCIsRvxLPZANOXztRSwhzVkvDbDO4fR1H+asV0trV4SHEf8M/ABOVm22B1Jn3VRhvRPytT1jc7YLK8LTiN/Z/FyLSNT/Vm8HZxVhtYnZiD8oOc3GOcC+Iqou9gx8p86Ib40T8tnUrogqi1wB76k/4ltkh3xWVzQegHvgM7Df6/HEYp98hvc0EoAn8hg7HuAwonNMPtsnnAVggkZ8TboV0cfb9aIRf4ZGvCX7ZA9KKmLjEf8NjXiPHJO92bQiFICRUCUAqgBfVK+AedI/gXVx80/goorQ28BhcPs2cFlF6IOgMpr7IGiRVBHrM5qPguep5vf9rWF1v0DVxbrS18EBvw5epGv6u+fPOx7uGXQXgJnGXBHWt4Q1EYCuhrwptBYebgptNgBd3dBORcxG/A325zaaAMz0G7gA3gFbaxpSgy3yni7Ie7Q+p9EGoKtH4AtwtNqfwTia7uER+/MIF4CuboCPwN5Su/phb7pWKyM+RABmGqoiWh7xoQLQ1SPwlbKKOJq+RssjPmwAurpl/YqYjfhbB/tWAHrWBLjk/9/HzX4XeYnd7yIVgMqa/T7O+neR1jLfgKQASIYy34CkAEiGcvGACKmu5j5DKPJboQha9BZ4Lh4eEiX1o+LnCKoi2tMgTxJVRfjWRiO+FFWEH5k/TVwVUV/mD4ueh4cHTY5ZVUd8KaqI/mQ+4ktRRWwulyO+FFXEcjU14ktRRfxT8yO+lIgVMcoRX8rYP2gKNeJLGVNFhB/xpbRYERrxA+C9IjTiK+KpIjTijbGoCI14hwxdERrxDdFnRWjEN85rKkIjfoSsqgiN+EB0K0IjXgghhBDh+Avri3imoU6g/AAAAABJRU5ErkJggg==";
