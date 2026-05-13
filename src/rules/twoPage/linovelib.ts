@@ -1,6 +1,7 @@
 import { mkRuleClass } from "./template";
 import { Status } from "../../main/main";
 import { chapterHiddenFix, nextPageParse } from "../../lib/rule";
+import { getFrameContentConditionWithWindow } from "../../lib/http";
 import { rm, sandboxed } from "../../lib/dom";
 import { Book } from "../../main/Book";
 import { Chapter } from "../../main/Chapter";
@@ -71,34 +72,89 @@ export const linovelib = () => {
       return classThis;
     },
     getContentFromUrl: async (chapterUrl, chapterName, charset) => {
-      const { contentRaw } = await nextPageParse({
-        chapterName,
-        chapterUrl,
-        charset,
-        selector: "#TextContent",
-        domPatch: domFontFix,
-        contentPatch: (_content) => {
-          rm(".tp", true, _content);
-          rm(".bd", true, _content);
-          _content.querySelectorAll("img.lazyload").forEach((e) => {
-            (e as HTMLImageElement).src = (e as HTMLElement).dataset.src || (e as HTMLImageElement).src;
-            return e;
+      const contentRaw = document.createElement("div");
+      let currentUrl: string | undefined = chapterUrl;
+      const patience = 3;
+      let patientCount = patience;
+      do {
+        log.info(`[linovelib] Loading page in iframe: ${currentUrl}`);
+        const html = await getFrameContentConditionWithWindow(currentUrl, (frame) => {
+          const doc = frame.contentWindow?.document ?? null;
+          if (!doc) return false;
+          const textContent = doc.querySelector("#TextContent");
+          if (!textContent) return false;
+          const allP = textContent.querySelectorAll("p");
+          if (allP.length === 0) return false;
+          // 等待 chapterlog.js 阶段2注入的假人段落（属性名如 data-k1468568692），确保重排已完成
+          if (allP.length > 20) {
+            const hasDummy = Array.from(allP).some((p) =>
+              Array.from(p.attributes).some((a) => a.name.startsWith("data-k"))
+            );
+            if (!hasDummy) return false;
+          }
+          return true;
+        });
+        let isFailed = false;
+        if (!html?.contentWindow) {
+          contentRaw.innerHTML = "获取章节内容失败";
+          isFailed = true;
+          break;
+        }
+
+        const iframeDoc = html.contentWindow.document;
+        await domFontFix(iframeDoc);
+
+        const textContent = iframeDoc.querySelector("#TextContent");
+        if (!textContent) {
+          contentRaw.innerHTML = "获取章节内容失败";
+          isFailed = true;
+          break;
+        }
+        let nextLink: string|undefined = currentUrl;
+        if(!isFailed){
+          const allPs = textContent.querySelectorAll("p");
+          log.info(`[linovelib] Total paragraphs before filter: ${allPs.length}`);
+          let removedCount = 0;
+          allPs.forEach((p) => {
+            const style = html!.contentWindow?.getComputedStyle(p);
+            if (!style) return;
+            if (style.display === "none") { p.remove(); removedCount++; return; }
+            const t = style.transform;
+            if (t && t !== "none" && /matrix\(0+,\s*0+,\s*0+,\s*0+|scale[XY]?\(0/.test(t)) { p.remove(); removedCount++; }
           });
-          return _content;
-        },
-        getNextPage: (doc) =>
-          (
-            doc.querySelector(
-              ".mlfy_page > a:nth-child(5)"
-            ) as HTMLAnchorElement
-          ).href,
-        continueCondition: (_content, nextLink) =>
-          new URL(nextLink).pathname.includes("_"),
-        enableCleanDOM: false,
-      });
+          log.info(`[linovelib] Removed ${removedCount} hidden paragraphs, remaining: ${textContent.querySelectorAll("p").length}`);
+          for (const child of Array.from(textContent.childNodes)) {
+            contentRaw.appendChild(document.adoptNode(child));
+          }
+
+          rm(".tp", true, contentRaw);
+          rm(".bd", true, contentRaw);
+          contentRaw.querySelectorAll("img.lazyload").forEach((e) => {
+            (e as HTMLImageElement).src = (e as HTMLElement).dataset.src || (e as HTMLImageElement).src;
+          });
+          patientCount = patience;
+          nextLink = (iframeDoc.querySelector(".mlfy_page > a:nth-child(5)") as HTMLAnchorElement)?.href;
+        } else {
+          log.info(`[linovelib] Failed to load page in iframe: ${currentUrl}`);
+          patientCount--;
+        }
+        html.remove();
+        currentUrl = (nextLink && new URL(nextLink).pathname.includes("_")) ? nextLink : undefined;
+      } while (patientCount > 0 && currentUrl);
+
       return contentRaw;
     },
     contentPatch: (content) => {
+      // 将非标准 HTML 标签（如 <mana>）替换为纯文本，避免被 cleanDOM 丢弃
+      content.querySelectorAll("p *").forEach((el) => {
+        const tag = el.tagName.toLowerCase();
+        // 标准 HTML 行内标签白名单
+        const knownTags = new Set(["a","abbr","b","bdi","bdo","br","cite","code","data","dfn","em","i","kbd","mark","q","rp","rt","ruby","s","samp","small","span","strong","sub","sup","time","u","var","wbr","img"]);
+        if (!knownTags.has(tag)) {
+          const text = document.createTextNode(el.textContent ?? "");
+          el.replaceWith(text);
+        }
+      });
       for (const k in table) {
         content.innerHTML = content.innerHTML.replaceAll(k, table[k]);
       }
