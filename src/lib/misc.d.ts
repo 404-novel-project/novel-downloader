@@ -1,3 +1,4 @@
+export { extensionToMimetype, mimetyepToCompressible } from "./mimeDbLite";
 export type PublicConstructor<T> = new () => T;
 interface concurrencyOptions {
     signal?: AbortSignal;
@@ -11,7 +12,4 @@ export declare function saveToArchiveOrg(url: string): Promise<any>;
 export declare function mean(list: number[]): number;
 export declare function sd(list: number[]): number;
 export declare function randomUUID(): string;
-export declare function extensionToMimetype(ext: string): string;
-export declare function mimetyepToCompressible(mimeType: string): boolean;
 export declare function range(size: number, startAt?: number): number[];
-export {};

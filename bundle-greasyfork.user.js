@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1256
+// @version        5.2.1258
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -89,6 +89,8 @@
 // @exclude        *://m.chenkuan.com/*/*.html
 // @exclude        *://www.xfxs1.com/goreadbook/*/*.html
 // @exclude        *://uukanshu.cc/book/*/*.html
+// @exclude        *://sbxh1.com/novel/*/*
+// @exclude        *://www.sbxh1.com/novel/*/*
 // @match          *://101kks.com/book/*.html
 // @match          *://www.sudugu.com/*
 // @match          *://www.po18.tw/books/*
@@ -374,6 +376,8 @@
 // @match          *://www.xfxs1.com/goreadbook/*/
 // @match          *://uukanshu.cc/book/*/
 // @match          *://www.zjsw.org/read/*/
+// @match          *://sbxh1.com/novel/*
+// @match          *://www.sbxh1.com/novel/*
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
@@ -489,6 +493,7 @@
 // @require        https://unpkg.com/@oovz/esearch-ocr/dist/eSearchOCR.umd.js#sha512-UvCk39TnG39qAlff1bfsl3J5s8TrKVkNN14cyf2cDmnON+VOWZvHxYmFIvbw/GRmLz0M2CLs/oaVDdwuG5WS7Q==
 // @require        https://unpkg.com/@techstark/opencv-js@4.11.0-release.1/dist/opencv.js#sha512-6Rb1LoaC9dHPLtrQhND5lLcLe2u3hh92yKTvIRQkMSj2A1EDhK0O4aptnEXAuKQcKtKZwACDoQnrrEKCFt5WdA==
 // @require        https://unpkg.com/mdui@2/mdui.global.js#sha512-pVCG7X/2X4pMmIFT+0w0HX6XjT26xcSxH6jNLOI0Sv3lzd9s3sVZFnS6GUk8ZWcVtqF3kZ6yQcJDZDuXcbM25w==
+// @require        https://unpkg.com/css-tree@2.3.1/dist/csstree.js#sha512-Jm1Qn5EKWSQbtoTcblfyyd5ZTxxxTmiDeQGhOgduS6hZQfPO80Or5Q2JRIM7jjPedHHMf5DE6FnZHZmG6PCMdA==
 // @run-at         document-start
 // @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.meta.js
 // ==/UserScript==
@@ -6169,1512 +6174,6 @@ exports.createComplexNode = createComplexNode;
 
 /***/ },
 
-/***/ "./node_modules/mime-db/index.js"
-(module, __unused_webpack_exports, __webpack_require__) {
-
-/*!
- * mime-db
- * Copyright(c) 2014 Jonathan Ong
- * Copyright(c) 2015-2022 Douglas Christopher Wilson
- * MIT Licensed
- */
-
-/**
- * Module exports.
- */
-
-module.exports = __webpack_require__("./node_modules/mime-db/db.json")
-
-
-/***/ },
-
-/***/ "./node_modules/source-map-js/lib/array-set.js"
-(__unused_webpack_module, exports, __webpack_require__) {
-
-/* -*- Mode: js; js-indent-level: 2; -*- */
-/*
- * Copyright 2011 Mozilla Foundation and contributors
- * Licensed under the New BSD license. See LICENSE or:
- * http://opensource.org/licenses/BSD-3-Clause
- */
-
-var util = __webpack_require__("./node_modules/source-map-js/lib/util.js");
-var has = Object.prototype.hasOwnProperty;
-var hasNativeMap = typeof Map !== "undefined";
-
-/**
- * A data structure which is a combination of an array and a set. Adding a new
- * member is O(1), testing for membership is O(1), and finding the index of an
- * element is O(1). Removing elements from the set is not supported. Only
- * strings are supported for membership.
- */
-function ArraySet() {
-  this._array = [];
-  this._set = hasNativeMap ? new Map() : Object.create(null);
-}
-
-/**
- * Static method for creating ArraySet instances from an existing array.
- */
-ArraySet.fromArray = function ArraySet_fromArray(aArray, aAllowDuplicates) {
-  var set = new ArraySet();
-  for (var i = 0, len = aArray.length; i < len; i++) {
-    set.add(aArray[i], aAllowDuplicates);
-  }
-  return set;
-};
-
-/**
- * Return how many unique items are in this ArraySet. If duplicates have been
- * added, than those do not count towards the size.
- *
- * @returns Number
- */
-ArraySet.prototype.size = function ArraySet_size() {
-  return hasNativeMap ? this._set.size : Object.getOwnPropertyNames(this._set).length;
-};
-
-/**
- * Add the given string to this set.
- *
- * @param String aStr
- */
-ArraySet.prototype.add = function ArraySet_add(aStr, aAllowDuplicates) {
-  var sStr = hasNativeMap ? aStr : util.toSetString(aStr);
-  var isDuplicate = hasNativeMap ? this.has(aStr) : has.call(this._set, sStr);
-  var idx = this._array.length;
-  if (!isDuplicate || aAllowDuplicates) {
-    this._array.push(aStr);
-  }
-  if (!isDuplicate) {
-    if (hasNativeMap) {
-      this._set.set(aStr, idx);
-    } else {
-      this._set[sStr] = idx;
-    }
-  }
-};
-
-/**
- * Is the given string a member of this set?
- *
- * @param String aStr
- */
-ArraySet.prototype.has = function ArraySet_has(aStr) {
-  if (hasNativeMap) {
-    return this._set.has(aStr);
-  } else {
-    var sStr = util.toSetString(aStr);
-    return has.call(this._set, sStr);
-  }
-};
-
-/**
- * What is the index of the given string in the array?
- *
- * @param String aStr
- */
-ArraySet.prototype.indexOf = function ArraySet_indexOf(aStr) {
-  if (hasNativeMap) {
-    var idx = this._set.get(aStr);
-    if (idx >= 0) {
-        return idx;
-    }
-  } else {
-    var sStr = util.toSetString(aStr);
-    if (has.call(this._set, sStr)) {
-      return this._set[sStr];
-    }
-  }
-
-  throw new Error('"' + aStr + '" is not in the set.');
-};
-
-/**
- * What is the element at the given index?
- *
- * @param Number aIdx
- */
-ArraySet.prototype.at = function ArraySet_at(aIdx) {
-  if (aIdx >= 0 && aIdx < this._array.length) {
-    return this._array[aIdx];
-  }
-  throw new Error('No element indexed by ' + aIdx);
-};
-
-/**
- * Returns the array representation of this set (which has the proper indices
- * indicated by indexOf). Note that this is a copy of the internal array used
- * for storing the members so that no one can mess with internal state.
- */
-ArraySet.prototype.toArray = function ArraySet_toArray() {
-  return this._array.slice();
-};
-
-exports.C = ArraySet;
-
-
-/***/ },
-
-/***/ "./node_modules/source-map-js/lib/base64-vlq.js"
-(__unused_webpack_module, exports, __webpack_require__) {
-
-/* -*- Mode: js; js-indent-level: 2; -*- */
-/*
- * Copyright 2011 Mozilla Foundation and contributors
- * Licensed under the New BSD license. See LICENSE or:
- * http://opensource.org/licenses/BSD-3-Clause
- *
- * Based on the Base 64 VLQ implementation in Closure Compiler:
- * https://code.google.com/p/closure-compiler/source/browse/trunk/src/com/google/debugging/sourcemap/Base64VLQ.java
- *
- * Copyright 2011 The Closure Compiler Authors. All rights reserved.
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *  * Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above
- *    copyright notice, this list of conditions and the following
- *    disclaimer in the documentation and/or other materials provided
- *    with the distribution.
- *  * Neither the name of Google Inc. nor the names of its
- *    contributors may be used to endorse or promote products derived
- *    from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-var base64 = __webpack_require__("./node_modules/source-map-js/lib/base64.js");
-
-// A single base 64 digit can contain 6 bits of data. For the base 64 variable
-// length quantities we use in the source map spec, the first bit is the sign,
-// the next four bits are the actual value, and the 6th bit is the
-// continuation bit. The continuation bit tells us whether there are more
-// digits in this value following this digit.
-//
-//   Continuation
-//   |    Sign
-//   |    |
-//   V    V
-//   101011
-
-var VLQ_BASE_SHIFT = 5;
-
-// binary: 100000
-var VLQ_BASE = 1 << VLQ_BASE_SHIFT;
-
-// binary: 011111
-var VLQ_BASE_MASK = VLQ_BASE - 1;
-
-// binary: 100000
-var VLQ_CONTINUATION_BIT = VLQ_BASE;
-
-/**
- * Converts from a two-complement value to a value where the sign bit is
- * placed in the least significant bit.  For example, as decimals:
- *   1 becomes 2 (10 binary), -1 becomes 3 (11 binary)
- *   2 becomes 4 (100 binary), -2 becomes 5 (101 binary)
- */
-function toVLQSigned(aValue) {
-  return aValue < 0
-    ? ((-aValue) << 1) + 1
-    : (aValue << 1) + 0;
-}
-
-/**
- * Converts to a two-complement value from a value where the sign bit is
- * placed in the least significant bit.  For example, as decimals:
- *   2 (10 binary) becomes 1, 3 (11 binary) becomes -1
- *   4 (100 binary) becomes 2, 5 (101 binary) becomes -2
- */
-function fromVLQSigned(aValue) {
-  var isNegative = (aValue & 1) === 1;
-  var shifted = aValue >> 1;
-  return isNegative
-    ? -shifted
-    : shifted;
-}
-
-/**
- * Returns the base 64 VLQ encoded value.
- */
-exports.encode = function base64VLQ_encode(aValue) {
-  var encoded = "";
-  var digit;
-
-  var vlq = toVLQSigned(aValue);
-
-  do {
-    digit = vlq & VLQ_BASE_MASK;
-    vlq >>>= VLQ_BASE_SHIFT;
-    if (vlq > 0) {
-      // There are still more digits in this value, so we must make sure the
-      // continuation bit is marked.
-      digit |= VLQ_CONTINUATION_BIT;
-    }
-    encoded += base64.encode(digit);
-  } while (vlq > 0);
-
-  return encoded;
-};
-
-/**
- * Decodes the next base 64 VLQ value from the given string and returns the
- * value and the rest of the string via the out parameter.
- */
-exports.decode = function base64VLQ_decode(aStr, aIndex, aOutParam) {
-  var strLen = aStr.length;
-  var result = 0;
-  var shift = 0;
-  var continuation, digit;
-
-  do {
-    if (aIndex >= strLen) {
-      throw new Error("Expected more digits in base 64 VLQ value.");
-    }
-
-    digit = base64.decode(aStr.charCodeAt(aIndex++));
-    if (digit === -1) {
-      throw new Error("Invalid base64 digit: " + aStr.charAt(aIndex - 1));
-    }
-
-    continuation = !!(digit & VLQ_CONTINUATION_BIT);
-    digit &= VLQ_BASE_MASK;
-    result = result + (digit << shift);
-    shift += VLQ_BASE_SHIFT;
-  } while (continuation);
-
-  aOutParam.value = fromVLQSigned(result);
-  aOutParam.rest = aIndex;
-};
-
-
-/***/ },
-
-/***/ "./node_modules/source-map-js/lib/base64.js"
-(__unused_webpack_module, exports) {
-
-/* -*- Mode: js; js-indent-level: 2; -*- */
-/*
- * Copyright 2011 Mozilla Foundation and contributors
- * Licensed under the New BSD license. See LICENSE or:
- * http://opensource.org/licenses/BSD-3-Clause
- */
-
-var intToCharMap = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.split('');
-
-/**
- * Encode an integer in the range of 0 to 63 to a single base 64 digit.
- */
-exports.encode = function (number) {
-  if (0 <= number && number < intToCharMap.length) {
-    return intToCharMap[number];
-  }
-  throw new TypeError("Must be between 0 and 63: " + number);
-};
-
-/**
- * Decode a single base 64 character code digit to an integer. Returns -1 on
- * failure.
- */
-exports.decode = function (charCode) {
-  var bigA = 65;     // 'A'
-  var bigZ = 90;     // 'Z'
-
-  var littleA = 97;  // 'a'
-  var littleZ = 122; // 'z'
-
-  var zero = 48;     // '0'
-  var nine = 57;     // '9'
-
-  var plus = 43;     // '+'
-  var slash = 47;    // '/'
-
-  var littleOffset = 26;
-  var numberOffset = 52;
-
-  // 0 - 25: ABCDEFGHIJKLMNOPQRSTUVWXYZ
-  if (bigA <= charCode && charCode <= bigZ) {
-    return (charCode - bigA);
-  }
-
-  // 26 - 51: abcdefghijklmnopqrstuvwxyz
-  if (littleA <= charCode && charCode <= littleZ) {
-    return (charCode - littleA + littleOffset);
-  }
-
-  // 52 - 61: 0123456789
-  if (zero <= charCode && charCode <= nine) {
-    return (charCode - zero + numberOffset);
-  }
-
-  // 62: +
-  if (charCode == plus) {
-    return 62;
-  }
-
-  // 63: /
-  if (charCode == slash) {
-    return 63;
-  }
-
-  // Invalid base64 digit.
-  return -1;
-};
-
-
-/***/ },
-
-/***/ "./node_modules/source-map-js/lib/mapping-list.js"
-(__unused_webpack_module, exports, __webpack_require__) {
-
-/* -*- Mode: js; js-indent-level: 2; -*- */
-/*
- * Copyright 2014 Mozilla Foundation and contributors
- * Licensed under the New BSD license. See LICENSE or:
- * http://opensource.org/licenses/BSD-3-Clause
- */
-
-var util = __webpack_require__("./node_modules/source-map-js/lib/util.js");
-
-/**
- * Determine whether mappingB is after mappingA with respect to generated
- * position.
- */
-function generatedPositionAfter(mappingA, mappingB) {
-  // Optimized for most common case
-  var lineA = mappingA.generatedLine;
-  var lineB = mappingB.generatedLine;
-  var columnA = mappingA.generatedColumn;
-  var columnB = mappingB.generatedColumn;
-  return lineB > lineA || lineB == lineA && columnB >= columnA ||
-         util.compareByGeneratedPositionsInflated(mappingA, mappingB) <= 0;
-}
-
-/**
- * A data structure to provide a sorted view of accumulated mappings in a
- * performance conscious manner. It trades a neglibable overhead in general
- * case for a large speedup in case of mappings being added in order.
- */
-function MappingList() {
-  this._array = [];
-  this._sorted = true;
-  // Serves as infimum
-  this._last = {generatedLine: -1, generatedColumn: 0};
-}
-
-/**
- * Iterate through internal items. This method takes the same arguments that
- * `Array.prototype.forEach` takes.
- *
- * NOTE: The order of the mappings is NOT guaranteed.
- */
-MappingList.prototype.unsortedForEach =
-  function MappingList_forEach(aCallback, aThisArg) {
-    this._array.forEach(aCallback, aThisArg);
-  };
-
-/**
- * Add the given source mapping.
- *
- * @param Object aMapping
- */
-MappingList.prototype.add = function MappingList_add(aMapping) {
-  if (generatedPositionAfter(this._last, aMapping)) {
-    this._last = aMapping;
-    this._array.push(aMapping);
-  } else {
-    this._sorted = false;
-    this._array.push(aMapping);
-  }
-};
-
-/**
- * Returns the flat, sorted array of mappings. The mappings are sorted by
- * generated position.
- *
- * WARNING: This method returns internal data without copying, for
- * performance. The return value must NOT be mutated, and should be treated as
- * an immutable borrow. If you want to take ownership, you must make your own
- * copy.
- */
-MappingList.prototype.toArray = function MappingList_toArray() {
-  if (!this._sorted) {
-    this._array.sort(util.compareByGeneratedPositionsInflated);
-    this._sorted = true;
-  }
-  return this._array;
-};
-
-exports.P = MappingList;
-
-
-/***/ },
-
-/***/ "./node_modules/source-map-js/lib/source-map-generator.js"
-(__unused_webpack_module, exports, __webpack_require__) {
-
-/* -*- Mode: js; js-indent-level: 2; -*- */
-/*
- * Copyright 2011 Mozilla Foundation and contributors
- * Licensed under the New BSD license. See LICENSE or:
- * http://opensource.org/licenses/BSD-3-Clause
- */
-
-var base64VLQ = __webpack_require__("./node_modules/source-map-js/lib/base64-vlq.js");
-var util = __webpack_require__("./node_modules/source-map-js/lib/util.js");
-var ArraySet = (__webpack_require__("./node_modules/source-map-js/lib/array-set.js")/* .ArraySet */ .C);
-var MappingList = (__webpack_require__("./node_modules/source-map-js/lib/mapping-list.js")/* .MappingList */ .P);
-
-/**
- * An instance of the SourceMapGenerator represents a source map which is
- * being built incrementally. You may pass an object with the following
- * properties:
- *
- *   - file: The filename of the generated source.
- *   - sourceRoot: A root for all relative URLs in this source map.
- */
-function SourceMapGenerator(aArgs) {
-  if (!aArgs) {
-    aArgs = {};
-  }
-  this._file = util.getArg(aArgs, 'file', null);
-  this._sourceRoot = util.getArg(aArgs, 'sourceRoot', null);
-  this._skipValidation = util.getArg(aArgs, 'skipValidation', false);
-  this._ignoreInvalidMapping = util.getArg(aArgs, 'ignoreInvalidMapping', false);
-  this._sources = new ArraySet();
-  this._names = new ArraySet();
-  this._mappings = new MappingList();
-  this._sourcesContents = null;
-}
-
-SourceMapGenerator.prototype._version = 3;
-
-/**
- * Creates a new SourceMapGenerator based on a SourceMapConsumer
- *
- * @param aSourceMapConsumer The SourceMap.
- */
-SourceMapGenerator.fromSourceMap =
-  function SourceMapGenerator_fromSourceMap(aSourceMapConsumer, generatorOps) {
-    var sourceRoot = aSourceMapConsumer.sourceRoot;
-    var generator = new SourceMapGenerator(Object.assign(generatorOps || {}, {
-      file: aSourceMapConsumer.file,
-      sourceRoot: sourceRoot
-    }));
-    aSourceMapConsumer.eachMapping(function (mapping) {
-      var newMapping = {
-        generated: {
-          line: mapping.generatedLine,
-          column: mapping.generatedColumn
-        }
-      };
-
-      if (mapping.source != null) {
-        newMapping.source = mapping.source;
-        if (sourceRoot != null) {
-          newMapping.source = util.relative(sourceRoot, newMapping.source);
-        }
-
-        newMapping.original = {
-          line: mapping.originalLine,
-          column: mapping.originalColumn
-        };
-
-        if (mapping.name != null) {
-          newMapping.name = mapping.name;
-        }
-      }
-
-      generator.addMapping(newMapping);
-    });
-    aSourceMapConsumer.sources.forEach(function (sourceFile) {
-      var sourceRelative = sourceFile;
-      if (sourceRoot !== null) {
-        sourceRelative = util.relative(sourceRoot, sourceFile);
-      }
-
-      if (!generator._sources.has(sourceRelative)) {
-        generator._sources.add(sourceRelative);
-      }
-
-      var content = aSourceMapConsumer.sourceContentFor(sourceFile);
-      if (content != null) {
-        generator.setSourceContent(sourceFile, content);
-      }
-    });
-    return generator;
-  };
-
-/**
- * Add a single mapping from original source line and column to the generated
- * source's line and column for this source map being created. The mapping
- * object should have the following properties:
- *
- *   - generated: An object with the generated line and column positions.
- *   - original: An object with the original line and column positions.
- *   - source: The original source file (relative to the sourceRoot).
- *   - name: An optional original token name for this mapping.
- */
-SourceMapGenerator.prototype.addMapping =
-  function SourceMapGenerator_addMapping(aArgs) {
-    var generated = util.getArg(aArgs, 'generated');
-    var original = util.getArg(aArgs, 'original', null);
-    var source = util.getArg(aArgs, 'source', null);
-    var name = util.getArg(aArgs, 'name', null);
-
-    if (!this._skipValidation) {
-      if (this._validateMapping(generated, original, source, name) === false) {
-        return;
-      }
-    }
-
-    if (source != null) {
-      source = String(source);
-      if (!this._sources.has(source)) {
-        this._sources.add(source);
-      }
-    }
-
-    if (name != null) {
-      name = String(name);
-      if (!this._names.has(name)) {
-        this._names.add(name);
-      }
-    }
-
-    this._mappings.add({
-      generatedLine: generated.line,
-      generatedColumn: generated.column,
-      originalLine: original != null && original.line,
-      originalColumn: original != null && original.column,
-      source: source,
-      name: name
-    });
-  };
-
-/**
- * Set the source content for a source file.
- */
-SourceMapGenerator.prototype.setSourceContent =
-  function SourceMapGenerator_setSourceContent(aSourceFile, aSourceContent) {
-    var source = aSourceFile;
-    if (this._sourceRoot != null) {
-      source = util.relative(this._sourceRoot, source);
-    }
-
-    if (aSourceContent != null) {
-      // Add the source content to the _sourcesContents map.
-      // Create a new _sourcesContents map if the property is null.
-      if (!this._sourcesContents) {
-        this._sourcesContents = Object.create(null);
-      }
-      this._sourcesContents[util.toSetString(source)] = aSourceContent;
-    } else if (this._sourcesContents) {
-      // Remove the source file from the _sourcesContents map.
-      // If the _sourcesContents map is empty, set the property to null.
-      delete this._sourcesContents[util.toSetString(source)];
-      if (Object.keys(this._sourcesContents).length === 0) {
-        this._sourcesContents = null;
-      }
-    }
-  };
-
-/**
- * Applies the mappings of a sub-source-map for a specific source file to the
- * source map being generated. Each mapping to the supplied source file is
- * rewritten using the supplied source map. Note: The resolution for the
- * resulting mappings is the minimium of this map and the supplied map.
- *
- * @param aSourceMapConsumer The source map to be applied.
- * @param aSourceFile Optional. The filename of the source file.
- *        If omitted, SourceMapConsumer's file property will be used.
- * @param aSourceMapPath Optional. The dirname of the path to the source map
- *        to be applied. If relative, it is relative to the SourceMapConsumer.
- *        This parameter is needed when the two source maps aren't in the same
- *        directory, and the source map to be applied contains relative source
- *        paths. If so, those relative source paths need to be rewritten
- *        relative to the SourceMapGenerator.
- */
-SourceMapGenerator.prototype.applySourceMap =
-  function SourceMapGenerator_applySourceMap(aSourceMapConsumer, aSourceFile, aSourceMapPath) {
-    var sourceFile = aSourceFile;
-    // If aSourceFile is omitted, we will use the file property of the SourceMap
-    if (aSourceFile == null) {
-      if (aSourceMapConsumer.file == null) {
-        throw new Error(
-          'SourceMapGenerator.prototype.applySourceMap requires either an explicit source file, ' +
-          'or the source map\'s "file" property. Both were omitted.'
-        );
-      }
-      sourceFile = aSourceMapConsumer.file;
-    }
-    var sourceRoot = this._sourceRoot;
-    // Make "sourceFile" relative if an absolute Url is passed.
-    if (sourceRoot != null) {
-      sourceFile = util.relative(sourceRoot, sourceFile);
-    }
-    // Applying the SourceMap can add and remove items from the sources and
-    // the names array.
-    var newSources = new ArraySet();
-    var newNames = new ArraySet();
-
-    // Find mappings for the "sourceFile"
-    this._mappings.unsortedForEach(function (mapping) {
-      if (mapping.source === sourceFile && mapping.originalLine != null) {
-        // Check if it can be mapped by the source map, then update the mapping.
-        var original = aSourceMapConsumer.originalPositionFor({
-          line: mapping.originalLine,
-          column: mapping.originalColumn
-        });
-        if (original.source != null) {
-          // Copy mapping
-          mapping.source = original.source;
-          if (aSourceMapPath != null) {
-            mapping.source = util.join(aSourceMapPath, mapping.source)
-          }
-          if (sourceRoot != null) {
-            mapping.source = util.relative(sourceRoot, mapping.source);
-          }
-          mapping.originalLine = original.line;
-          mapping.originalColumn = original.column;
-          if (original.name != null) {
-            mapping.name = original.name;
-          }
-        }
-      }
-
-      var source = mapping.source;
-      if (source != null && !newSources.has(source)) {
-        newSources.add(source);
-      }
-
-      var name = mapping.name;
-      if (name != null && !newNames.has(name)) {
-        newNames.add(name);
-      }
-
-    }, this);
-    this._sources = newSources;
-    this._names = newNames;
-
-    // Copy sourcesContents of applied map.
-    aSourceMapConsumer.sources.forEach(function (sourceFile) {
-      var content = aSourceMapConsumer.sourceContentFor(sourceFile);
-      if (content != null) {
-        if (aSourceMapPath != null) {
-          sourceFile = util.join(aSourceMapPath, sourceFile);
-        }
-        if (sourceRoot != null) {
-          sourceFile = util.relative(sourceRoot, sourceFile);
-        }
-        this.setSourceContent(sourceFile, content);
-      }
-    }, this);
-  };
-
-/**
- * A mapping can have one of the three levels of data:
- *
- *   1. Just the generated position.
- *   2. The Generated position, original position, and original source.
- *   3. Generated and original position, original source, as well as a name
- *      token.
- *
- * To maintain consistency, we validate that any new mapping being added falls
- * in to one of these categories.
- */
-SourceMapGenerator.prototype._validateMapping =
-  function SourceMapGenerator_validateMapping(aGenerated, aOriginal, aSource,
-                                              aName) {
-    // When aOriginal is truthy but has empty values for .line and .column,
-    // it is most likely a programmer error. In this case we throw a very
-    // specific error message to try to guide them the right way.
-    // For example: https://github.com/Polymer/polymer-bundler/pull/519
-    if (aOriginal && typeof aOriginal.line !== 'number' && typeof aOriginal.column !== 'number') {
-      var message = 'original.line and original.column are not numbers -- you probably meant to omit ' +
-      'the original mapping entirely and only map the generated position. If so, pass ' +
-      'null for the original mapping instead of an object with empty or null values.'
-
-      if (this._ignoreInvalidMapping) {
-        if (typeof console !== 'undefined' && console.warn) {
-          console.warn(message);
-        }
-        return false;
-      } else {
-        throw new Error(message);
-      }
-    }
-
-    if (aGenerated && 'line' in aGenerated && 'column' in aGenerated
-        && aGenerated.line > 0 && aGenerated.column >= 0
-        && !aOriginal && !aSource && !aName) {
-      // Case 1.
-      return;
-    }
-    else if (aGenerated && 'line' in aGenerated && 'column' in aGenerated
-             && aOriginal && 'line' in aOriginal && 'column' in aOriginal
-             && aGenerated.line > 0 && aGenerated.column >= 0
-             && aOriginal.line > 0 && aOriginal.column >= 0
-             && aSource) {
-      // Cases 2 and 3.
-      return;
-    }
-    else {
-      var message = 'Invalid mapping: ' + JSON.stringify({
-        generated: aGenerated,
-        source: aSource,
-        original: aOriginal,
-        name: aName
-      });
-
-      if (this._ignoreInvalidMapping) {
-        if (typeof console !== 'undefined' && console.warn) {
-          console.warn(message);
-        }
-        return false;
-      } else {
-        throw new Error(message)
-      }
-    }
-  };
-
-/**
- * Serialize the accumulated mappings in to the stream of base 64 VLQs
- * specified by the source map format.
- */
-SourceMapGenerator.prototype._serializeMappings =
-  function SourceMapGenerator_serializeMappings() {
-    var previousGeneratedColumn = 0;
-    var previousGeneratedLine = 1;
-    var previousOriginalColumn = 0;
-    var previousOriginalLine = 0;
-    var previousName = 0;
-    var previousSource = 0;
-    var result = '';
-    var next;
-    var mapping;
-    var nameIdx;
-    var sourceIdx;
-
-    var mappings = this._mappings.toArray();
-    for (var i = 0, len = mappings.length; i < len; i++) {
-      mapping = mappings[i];
-      next = ''
-
-      if (mapping.generatedLine !== previousGeneratedLine) {
-        previousGeneratedColumn = 0;
-        while (mapping.generatedLine !== previousGeneratedLine) {
-          next += ';';
-          previousGeneratedLine++;
-        }
-      }
-      else {
-        if (i > 0) {
-          if (!util.compareByGeneratedPositionsInflated(mapping, mappings[i - 1])) {
-            continue;
-          }
-          next += ',';
-        }
-      }
-
-      next += base64VLQ.encode(mapping.generatedColumn
-                                 - previousGeneratedColumn);
-      previousGeneratedColumn = mapping.generatedColumn;
-
-      if (mapping.source != null) {
-        sourceIdx = this._sources.indexOf(mapping.source);
-        next += base64VLQ.encode(sourceIdx - previousSource);
-        previousSource = sourceIdx;
-
-        // lines are stored 0-based in SourceMap spec version 3
-        next += base64VLQ.encode(mapping.originalLine - 1
-                                   - previousOriginalLine);
-        previousOriginalLine = mapping.originalLine - 1;
-
-        next += base64VLQ.encode(mapping.originalColumn
-                                   - previousOriginalColumn);
-        previousOriginalColumn = mapping.originalColumn;
-
-        if (mapping.name != null) {
-          nameIdx = this._names.indexOf(mapping.name);
-          next += base64VLQ.encode(nameIdx - previousName);
-          previousName = nameIdx;
-        }
-      }
-
-      result += next;
-    }
-
-    return result;
-  };
-
-SourceMapGenerator.prototype._generateSourcesContent =
-  function SourceMapGenerator_generateSourcesContent(aSources, aSourceRoot) {
-    return aSources.map(function (source) {
-      if (!this._sourcesContents) {
-        return null;
-      }
-      if (aSourceRoot != null) {
-        source = util.relative(aSourceRoot, source);
-      }
-      var key = util.toSetString(source);
-      return Object.prototype.hasOwnProperty.call(this._sourcesContents, key)
-        ? this._sourcesContents[key]
-        : null;
-    }, this);
-  };
-
-/**
- * Externalize the source map.
- */
-SourceMapGenerator.prototype.toJSON =
-  function SourceMapGenerator_toJSON() {
-    var map = {
-      version: this._version,
-      sources: this._sources.toArray(),
-      names: this._names.toArray(),
-      mappings: this._serializeMappings()
-    };
-    if (this._file != null) {
-      map.file = this._file;
-    }
-    if (this._sourceRoot != null) {
-      map.sourceRoot = this._sourceRoot;
-    }
-    if (this._sourcesContents) {
-      map.sourcesContent = this._generateSourcesContent(map.sources, map.sourceRoot);
-    }
-
-    return map;
-  };
-
-/**
- * Render the source map being generated to a string.
- */
-SourceMapGenerator.prototype.toString =
-  function SourceMapGenerator_toString() {
-    return JSON.stringify(this.toJSON());
-  };
-
-exports.x = SourceMapGenerator;
-
-
-/***/ },
-
-/***/ "./node_modules/source-map-js/lib/util.js"
-(__unused_webpack_module, exports) {
-
-/* -*- Mode: js; js-indent-level: 2; -*- */
-/*
- * Copyright 2011 Mozilla Foundation and contributors
- * Licensed under the New BSD license. See LICENSE or:
- * http://opensource.org/licenses/BSD-3-Clause
- */
-
-/**
- * This is a helper function for getting values from parameter/options
- * objects.
- *
- * @param args The object we are extracting values from
- * @param name The name of the property we are getting.
- * @param defaultValue An optional value to return if the property is missing
- * from the object. If this is not specified and the property is missing, an
- * error will be thrown.
- */
-function getArg(aArgs, aName, aDefaultValue) {
-  if (aName in aArgs) {
-    return aArgs[aName];
-  } else if (arguments.length === 3) {
-    return aDefaultValue;
-  } else {
-    throw new Error('"' + aName + '" is a required argument.');
-  }
-}
-exports.getArg = getArg;
-
-var urlRegexp = /^(?:([\w+\-.]+):)?\/\/(?:(\w+:\w+)@)?([\w.-]*)(?::(\d+))?(.*)$/;
-var dataUrlRegexp = /^data:.+\,.+$/;
-
-function urlParse(aUrl) {
-  var match = aUrl.match(urlRegexp);
-  if (!match) {
-    return null;
-  }
-  return {
-    scheme: match[1],
-    auth: match[2],
-    host: match[3],
-    port: match[4],
-    path: match[5]
-  };
-}
-exports.urlParse = urlParse;
-
-function urlGenerate(aParsedUrl) {
-  var url = '';
-  if (aParsedUrl.scheme) {
-    url += aParsedUrl.scheme + ':';
-  }
-  url += '//';
-  if (aParsedUrl.auth) {
-    url += aParsedUrl.auth + '@';
-  }
-  if (aParsedUrl.host) {
-    url += aParsedUrl.host;
-  }
-  if (aParsedUrl.port) {
-    url += ":" + aParsedUrl.port
-  }
-  if (aParsedUrl.path) {
-    url += aParsedUrl.path;
-  }
-  return url;
-}
-exports.urlGenerate = urlGenerate;
-
-var MAX_CACHED_INPUTS = 32;
-
-/**
- * Takes some function `f(input) -> result` and returns a memoized version of
- * `f`.
- *
- * We keep at most `MAX_CACHED_INPUTS` memoized results of `f` alive. The
- * memoization is a dumb-simple, linear least-recently-used cache.
- */
-function lruMemoize(f) {
-  var cache = [];
-
-  return function(input) {
-    for (var i = 0; i < cache.length; i++) {
-      if (cache[i].input === input) {
-        var temp = cache[0];
-        cache[0] = cache[i];
-        cache[i] = temp;
-        return cache[0].result;
-      }
-    }
-
-    var result = f(input);
-
-    cache.unshift({
-      input,
-      result,
-    });
-
-    if (cache.length > MAX_CACHED_INPUTS) {
-      cache.pop();
-    }
-
-    return result;
-  };
-}
-
-/**
- * Normalizes a path, or the path portion of a URL:
- *
- * - Replaces consecutive slashes with one slash.
- * - Removes unnecessary '.' parts.
- * - Removes unnecessary '<dir>/..' parts.
- *
- * Based on code in the Node.js 'path' core module.
- *
- * @param aPath The path or url to normalize.
- */
-var normalize = lruMemoize(function normalize(aPath) {
-  var path = aPath;
-  var url = urlParse(aPath);
-  if (url) {
-    if (!url.path) {
-      return aPath;
-    }
-    path = url.path;
-  }
-  var isAbsolute = exports.isAbsolute(path);
-  // Split the path into parts between `/` characters. This is much faster than
-  // using `.split(/\/+/g)`.
-  var parts = [];
-  var start = 0;
-  var i = 0;
-  while (true) {
-    start = i;
-    i = path.indexOf("/", start);
-    if (i === -1) {
-      parts.push(path.slice(start));
-      break;
-    } else {
-      parts.push(path.slice(start, i));
-      while (i < path.length && path[i] === "/") {
-        i++;
-      }
-    }
-  }
-
-  for (var part, up = 0, i = parts.length - 1; i >= 0; i--) {
-    part = parts[i];
-    if (part === '.') {
-      parts.splice(i, 1);
-    } else if (part === '..') {
-      up++;
-    } else if (up > 0) {
-      if (part === '') {
-        // The first part is blank if the path is absolute. Trying to go
-        // above the root is a no-op. Therefore we can remove all '..' parts
-        // directly after the root.
-        parts.splice(i + 1, up);
-        up = 0;
-      } else {
-        parts.splice(i, 2);
-        up--;
-      }
-    }
-  }
-  path = parts.join('/');
-
-  if (path === '') {
-    path = isAbsolute ? '/' : '.';
-  }
-
-  if (url) {
-    url.path = path;
-    return urlGenerate(url);
-  }
-  return path;
-});
-exports.normalize = normalize;
-
-/**
- * Joins two paths/URLs.
- *
- * @param aRoot The root path or URL.
- * @param aPath The path or URL to be joined with the root.
- *
- * - If aPath is a URL or a data URI, aPath is returned, unless aPath is a
- *   scheme-relative URL: Then the scheme of aRoot, if any, is prepended
- *   first.
- * - Otherwise aPath is a path. If aRoot is a URL, then its path portion
- *   is updated with the result and aRoot is returned. Otherwise the result
- *   is returned.
- *   - If aPath is absolute, the result is aPath.
- *   - Otherwise the two paths are joined with a slash.
- * - Joining for example 'http://' and 'www.example.com' is also supported.
- */
-function join(aRoot, aPath) {
-  if (aRoot === "") {
-    aRoot = ".";
-  }
-  if (aPath === "") {
-    aPath = ".";
-  }
-  var aPathUrl = urlParse(aPath);
-  var aRootUrl = urlParse(aRoot);
-  if (aRootUrl) {
-    aRoot = aRootUrl.path || '/';
-  }
-
-  // `join(foo, '//www.example.org')`
-  if (aPathUrl && !aPathUrl.scheme) {
-    if (aRootUrl) {
-      aPathUrl.scheme = aRootUrl.scheme;
-    }
-    return urlGenerate(aPathUrl);
-  }
-
-  if (aPathUrl || aPath.match(dataUrlRegexp)) {
-    return aPath;
-  }
-
-  // `join('http://', 'www.example.com')`
-  if (aRootUrl && !aRootUrl.host && !aRootUrl.path) {
-    aRootUrl.host = aPath;
-    return urlGenerate(aRootUrl);
-  }
-
-  var joined = aPath.charAt(0) === '/'
-    ? aPath
-    : normalize(aRoot.replace(/\/+$/, '') + '/' + aPath);
-
-  if (aRootUrl) {
-    aRootUrl.path = joined;
-    return urlGenerate(aRootUrl);
-  }
-  return joined;
-}
-exports.join = join;
-
-exports.isAbsolute = function (aPath) {
-  return aPath.charAt(0) === '/' || urlRegexp.test(aPath);
-};
-
-/**
- * Make a path relative to a URL or another path.
- *
- * @param aRoot The root path or URL.
- * @param aPath The path or URL to be made relative to aRoot.
- */
-function relative(aRoot, aPath) {
-  if (aRoot === "") {
-    aRoot = ".";
-  }
-
-  aRoot = aRoot.replace(/\/$/, '');
-
-  // It is possible for the path to be above the root. In this case, simply
-  // checking whether the root is a prefix of the path won't work. Instead, we
-  // need to remove components from the root one by one, until either we find
-  // a prefix that fits, or we run out of components to remove.
-  var level = 0;
-  while (aPath.indexOf(aRoot + '/') !== 0) {
-    var index = aRoot.lastIndexOf("/");
-    if (index < 0) {
-      return aPath;
-    }
-
-    // If the only part of the root that is left is the scheme (i.e. http://,
-    // file:///, etc.), one or more slashes (/), or simply nothing at all, we
-    // have exhausted all components, so the path is not relative to the root.
-    aRoot = aRoot.slice(0, index);
-    if (aRoot.match(/^([^\/]+:\/)?\/*$/)) {
-      return aPath;
-    }
-
-    ++level;
-  }
-
-  // Make sure we add a "../" for each component we removed from the root.
-  return Array(level + 1).join("../") + aPath.substr(aRoot.length + 1);
-}
-exports.relative = relative;
-
-var supportsNullProto = (function () {
-  var obj = Object.create(null);
-  return !('__proto__' in obj);
-}());
-
-function identity (s) {
-  return s;
-}
-
-/**
- * Because behavior goes wacky when you set `__proto__` on objects, we
- * have to prefix all the strings in our set with an arbitrary character.
- *
- * See https://github.com/mozilla/source-map/pull/31 and
- * https://github.com/mozilla/source-map/issues/30
- *
- * @param String aStr
- */
-function toSetString(aStr) {
-  if (isProtoString(aStr)) {
-    return '$' + aStr;
-  }
-
-  return aStr;
-}
-exports.toSetString = supportsNullProto ? identity : toSetString;
-
-function fromSetString(aStr) {
-  if (isProtoString(aStr)) {
-    return aStr.slice(1);
-  }
-
-  return aStr;
-}
-exports.fromSetString = supportsNullProto ? identity : fromSetString;
-
-function isProtoString(s) {
-  if (!s) {
-    return false;
-  }
-
-  var length = s.length;
-
-  if (length < 9 /* "__proto__".length */) {
-    return false;
-  }
-
-  if (s.charCodeAt(length - 1) !== 95  /* '_' */ ||
-      s.charCodeAt(length - 2) !== 95  /* '_' */ ||
-      s.charCodeAt(length - 3) !== 111 /* 'o' */ ||
-      s.charCodeAt(length - 4) !== 116 /* 't' */ ||
-      s.charCodeAt(length - 5) !== 111 /* 'o' */ ||
-      s.charCodeAt(length - 6) !== 114 /* 'r' */ ||
-      s.charCodeAt(length - 7) !== 112 /* 'p' */ ||
-      s.charCodeAt(length - 8) !== 95  /* '_' */ ||
-      s.charCodeAt(length - 9) !== 95  /* '_' */) {
-    return false;
-  }
-
-  for (var i = length - 10; i >= 0; i--) {
-    if (s.charCodeAt(i) !== 36 /* '$' */) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-/**
- * Comparator between two mappings where the original positions are compared.
- *
- * Optionally pass in `true` as `onlyCompareGenerated` to consider two
- * mappings with the same original source/line/column, but different generated
- * line and column the same. Useful when searching for a mapping with a
- * stubbed out mapping.
- */
-function compareByOriginalPositions(mappingA, mappingB, onlyCompareOriginal) {
-  var cmp = strcmp(mappingA.source, mappingB.source);
-  if (cmp !== 0) {
-    return cmp;
-  }
-
-  cmp = mappingA.originalLine - mappingB.originalLine;
-  if (cmp !== 0) {
-    return cmp;
-  }
-
-  cmp = mappingA.originalColumn - mappingB.originalColumn;
-  if (cmp !== 0 || onlyCompareOriginal) {
-    return cmp;
-  }
-
-  cmp = mappingA.generatedColumn - mappingB.generatedColumn;
-  if (cmp !== 0) {
-    return cmp;
-  }
-
-  cmp = mappingA.generatedLine - mappingB.generatedLine;
-  if (cmp !== 0) {
-    return cmp;
-  }
-
-  return strcmp(mappingA.name, mappingB.name);
-}
-exports.compareByOriginalPositions = compareByOriginalPositions;
-
-function compareByOriginalPositionsNoSource(mappingA, mappingB, onlyCompareOriginal) {
-  var cmp
-
-  cmp = mappingA.originalLine - mappingB.originalLine;
-  if (cmp !== 0) {
-    return cmp;
-  }
-
-  cmp = mappingA.originalColumn - mappingB.originalColumn;
-  if (cmp !== 0 || onlyCompareOriginal) {
-    return cmp;
-  }
-
-  cmp = mappingA.generatedColumn - mappingB.generatedColumn;
-  if (cmp !== 0) {
-    return cmp;
-  }
-
-  cmp = mappingA.generatedLine - mappingB.generatedLine;
-  if (cmp !== 0) {
-    return cmp;
-  }
-
-  return strcmp(mappingA.name, mappingB.name);
-}
-exports.compareByOriginalPositionsNoSource = compareByOriginalPositionsNoSource;
-
-/**
- * Comparator between two mappings with deflated source and name indices where
- * the generated positions are compared.
- *
- * Optionally pass in `true` as `onlyCompareGenerated` to consider two
- * mappings with the same generated line and column, but different
- * source/name/original line and column the same. Useful when searching for a
- * mapping with a stubbed out mapping.
- */
-function compareByGeneratedPositionsDeflated(mappingA, mappingB, onlyCompareGenerated) {
-  var cmp = mappingA.generatedLine - mappingB.generatedLine;
-  if (cmp !== 0) {
-    return cmp;
-  }
-
-  cmp = mappingA.generatedColumn - mappingB.generatedColumn;
-  if (cmp !== 0 || onlyCompareGenerated) {
-    return cmp;
-  }
-
-  cmp = strcmp(mappingA.source, mappingB.source);
-  if (cmp !== 0) {
-    return cmp;
-  }
-
-  cmp = mappingA.originalLine - mappingB.originalLine;
-  if (cmp !== 0) {
-    return cmp;
-  }
-
-  cmp = mappingA.originalColumn - mappingB.originalColumn;
-  if (cmp !== 0) {
-    return cmp;
-  }
-
-  return strcmp(mappingA.name, mappingB.name);
-}
-exports.compareByGeneratedPositionsDeflated = compareByGeneratedPositionsDeflated;
-
-function compareByGeneratedPositionsDeflatedNoLine(mappingA, mappingB, onlyCompareGenerated) {
-  var cmp = mappingA.generatedColumn - mappingB.generatedColumn;
-  if (cmp !== 0 || onlyCompareGenerated) {
-    return cmp;
-  }
-
-  cmp = strcmp(mappingA.source, mappingB.source);
-  if (cmp !== 0) {
-    return cmp;
-  }
-
-  cmp = mappingA.originalLine - mappingB.originalLine;
-  if (cmp !== 0) {
-    return cmp;
-  }
-
-  cmp = mappingA.originalColumn - mappingB.originalColumn;
-  if (cmp !== 0) {
-    return cmp;
-  }
-
-  return strcmp(mappingA.name, mappingB.name);
-}
-exports.compareByGeneratedPositionsDeflatedNoLine = compareByGeneratedPositionsDeflatedNoLine;
-
-function strcmp(aStr1, aStr2) {
-  if (aStr1 === aStr2) {
-    return 0;
-  }
-
-  if (aStr1 === null) {
-    return 1; // aStr2 !== null
-  }
-
-  if (aStr2 === null) {
-    return -1; // aStr1 !== null
-  }
-
-  if (aStr1 > aStr2) {
-    return 1;
-  }
-
-  return -1;
-}
-
-/**
- * Comparator between two mappings with inflated source and name strings where
- * the generated positions are compared.
- */
-function compareByGeneratedPositionsInflated(mappingA, mappingB) {
-  var cmp = mappingA.generatedLine - mappingB.generatedLine;
-  if (cmp !== 0) {
-    return cmp;
-  }
-
-  cmp = mappingA.generatedColumn - mappingB.generatedColumn;
-  if (cmp !== 0) {
-    return cmp;
-  }
-
-  cmp = strcmp(mappingA.source, mappingB.source);
-  if (cmp !== 0) {
-    return cmp;
-  }
-
-  cmp = mappingA.originalLine - mappingB.originalLine;
-  if (cmp !== 0) {
-    return cmp;
-  }
-
-  cmp = mappingA.originalColumn - mappingB.originalColumn;
-  if (cmp !== 0) {
-    return cmp;
-  }
-
-  return strcmp(mappingA.name, mappingB.name);
-}
-exports.compareByGeneratedPositionsInflated = compareByGeneratedPositionsInflated;
-
-/**
- * Strip any JSON XSSI avoidance prefix from the string (as documented
- * in the source maps specification), and then parse the string as
- * JSON.
- */
-function parseSourceMapInput(str) {
-  return JSON.parse(str.replace(/^\)]}'[^\n]*\n/, ''));
-}
-exports.parseSourceMapInput = parseSourceMapInput;
-
-/**
- * Compute the URL of a source given the the source root, the source's
- * URL, and the source map's URL.
- */
-function computeSourceURL(sourceRoot, sourceURL, sourceMapURL) {
-  sourceURL = sourceURL || '';
-
-  if (sourceRoot) {
-    // This follows what Chrome does.
-    if (sourceRoot[sourceRoot.length - 1] !== '/' && sourceURL[0] !== '/') {
-      sourceRoot += '/';
-    }
-    // The spec says:
-    //   Line 4: An optional source root, useful for relocating source
-    //   files on a server or removing repeated values in the
-    //   “sources” entry.  This value is prepended to the individual
-    //   entries in the “source” field.
-    sourceURL = sourceRoot + sourceURL;
-  }
-
-  // Historically, SourceMapConsumer did not take the sourceMapURL as
-  // a parameter.  This mode is still somewhat supported, which is why
-  // this code block is conditional.  However, it's preferable to pass
-  // the source map URL to SourceMapConsumer, so that this function
-  // can implement the source URL resolution algorithm as outlined in
-  // the spec.  This block is basically the equivalent of:
-  //    new URL(sourceURL, sourceMapURL).toString()
-  // ... except it avoids using URL, which wasn't available in the
-  // older releases of node still supported by this library.
-  //
-  // The spec says:
-  //   If the sources are not absolute URLs after prepending of the
-  //   “sourceRoot”, the sources are resolved relative to the
-  //   SourceMap (like resolving script src in a html document).
-  if (sourceMapURL) {
-    var parsed = urlParse(sourceMapURL);
-    if (!parsed) {
-      throw new Error("sourceMapURL could not be parsed");
-    }
-    if (parsed.path) {
-      // Strip the last path component, but keep the "/".
-      var index = parsed.path.lastIndexOf('/');
-      if (index >= 0) {
-        parsed.path = parsed.path.substring(0, index + 1);
-      }
-    }
-    sourceURL = join(urlGenerate(parsed), sourceURL);
-  }
-
-  return normalize(sourceURL);
-}
-exports.computeSourceURL = computeSourceURL;
-
-
-/***/ },
-
 /***/ "./node_modules/streamsaver/StreamSaver.js"
 (module) {
 
@@ -7993,6 +6492,2878 @@ exports.computeSourceURL = computeSourceURL;
 
   return streamSaver
 })
+
+
+/***/ },
+
+/***/ "./src/bootstrap/top.ts"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  run: () => (/* binding */ run)
+});
+
+// EXTERNAL MODULE: ./src/lib/GM.ts
+var GM = __webpack_require__("./src/lib/GM.ts");
+// EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
+var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
+;// ./src/lib/localStorageExpired.ts
+
+function storageAvailable(type) {
+    let storage;
+    try {
+        storage = window[type];
+        const x = "__storage_test__";
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    }
+    catch (e) {
+        return (e instanceof DOMException &&
+            (e.code === 22 ||
+                e.code === 1014 ||
+                e.name === "QuotaExceededError" ||
+                e.name === "NS_ERROR_DOM_QUOTA_REACHED") &&
+            storage &&
+            storage.length !== 0);
+    }
+}
+class LocalStorageExpired {
+    storage;
+    constructor() {
+        if (storageAvailable("localStorage")) {
+            this.storage = window.localStorage;
+            this.init();
+        }
+        else {
+            throw new Error("当前浏览器不支持 localStorage");
+        }
+    }
+    set(key, value, expired) {
+        const storage = this.storage;
+        try {
+            storage[key] = JSON.stringify(value);
+            if (expired) {
+                storage[`${key}__expires__`] = Date.now() + 1000 * expired;
+            }
+        }
+        catch (error) {
+            loglevel_default().error(error);
+        }
+    }
+    get(key) {
+        const storage = this.storage;
+        const expired = storage[`${key}__expires__`] ?? false;
+        const now = Date.now();
+        if (expired && now >= expired) {
+            this.remove(key);
+            return;
+        }
+        if (expired) {
+            try {
+                return JSON.parse(storage[key]);
+            }
+            catch (error) {
+                return storage[key];
+            }
+        }
+        else {
+            return storage[key];
+        }
+    }
+    remove(key) {
+        const storage = this.storage;
+        if (storage[key]) {
+            delete storage[key];
+            if (storage[`${key}__expires__`]) {
+                delete storage[`${key}__expires__`];
+            }
+        }
+    }
+    init() {
+        const reg = new RegExp("__expires__$");
+        const storage = this.storage;
+        const keys = Object.keys(storage);
+        keys.forEach((key) => {
+            if (!reg.test(key)) {
+                this.get(key);
+            }
+        });
+    }
+}
+
+// EXTERNAL MODULE: ./src/setting.ts
+var src_setting = __webpack_require__("./src/setting.ts");
+;// ./src/detect.ts
+/* unused harmony import specifier */ var fetchWithTimeout;
+
+
+
+
+function checkObjct(name) {
+    const target = window[name];
+    const targetLength = target.toString().length;
+    const targetPrototype = target.prototype;
+    const nativeFunctionRe = /function \w+\(\) {\n?(\s+)?\[native code]\n?(\s+)?}/;
+    try {
+        if (targetPrototype === undefined ||
+            Boolean(target.toString().match(nativeFunctionRe))) {
+            return [true, targetLength].join(", ");
+        }
+    }
+    catch {
+        return [true, targetLength].join(", ");
+    }
+    return [false, targetLength].join(", ");
+}
+function streamSupport() {
+    return (typeof ReadableStream !== "undefined" &&
+        typeof WritableStream !== "undefined" &&
+        typeof TransformStream !== "undefined");
+}
+function mitmPageAvailability(url) {
+    return new Promise((resolve, reject) => {
+        fetchWithTimeout(url, {}, 2500)
+            .then((resp) => resolve(true))
+            .catch((error) => resolve(false));
+    });
+}
+async function TM_4_14_bug_Detect() {
+    if (GM/* _GM_info */.JX.scriptHandler === "Tampermonkey" &&
+        GM/* _GM_info */.JX.version?.startsWith("4.14")) {
+        const blob = new Blob(["test"]);
+        const arrayBuffer = await blob.arrayBuffer();
+        if (arrayBuffer === undefined) {
+            alert(`检测到您当前使用的脚本管理器为 Tampermonkey 4.14。
+Tampermonkey 4.14 因存在 Bug 将导致小说下载器脚本无法正常运行，详情可参见：https://github.com/Tampermonkey/tampermonkey/issues/1418 。
+如您想继续使用小说下载器脚本，请您更换 Tampermonkey 版本，或使用 Violentmonkey 脚本管理器。
+如果您不欲更改版本或更换脚本管理器，同时不想再看到本提示，您可以暂时禁用小说下载器脚本。`);
+            throw new Error("Tampermonkey 4.14 Bug Detect");
+        }
+    }
+}
+const environments = async () => {
+    await TM_4_14_bug_Detect();
+    return {
+        当前时间: new Date().toISOString(),
+        当前页URL: document.location.href,
+        workerId: window.workerId,
+        当前页Referrer: document.referrer,
+        浏览器UA: navigator.userAgent,
+        浏览器语言: navigator.languages,
+        设备运行平台: navigator.platform,
+        设备内存: navigator.deviceMemory ?? "",
+        CPU核心数: navigator.hardwareConcurrency,
+        eval: checkObjct("eval"),
+        fetch: checkObjct("fetch"),
+        XMLHttpRequest: checkObjct("XMLHttpRequest"),
+        streamSupport: streamSupport(),
+        window: Object.keys(window).length,
+        localStorage: storageAvailable("localStorage"),
+        sessionStorage: storageAvailable("sessionStorage"),
+        Cookie: navigator.cookieEnabled,
+        doNotTrack: navigator.doNotTrack ?? 0,
+        enableDebug: src_setting/* enableDebug */.Nw.value,
+        TxtDownload: src_setting/* TxtDownload */.Jv.value,
+        EpubDownload: src_setting/* EpubDownload */.Zz.value,
+        customDownload: src_setting/* customDownload */.WZ.value,
+        concurrencyLimit: src_setting/* concurrencyLimit */.ri.value,
+        sleepTime: src_setting/* sleepTime */.Xl.value,
+        maxSleepTime: src_setting/* maxSleepTime */.Fe.value,
+        ScriptHandler: GM/* _GM_info */.JX.scriptHandler,
+        "ScriptHandler version": GM/* _GM_info */.JX.version,
+        "Novel-downloader version": GM/* _GM_info */.JX.script.version,
+    };
+};
+
+// EXTERNAL MODULE: ./src/lib/misc.ts
+var misc = __webpack_require__("./src/lib/misc.ts");
+;// ./src/global.ts
+
+
+function init() {
+    window.workerId = (0,misc/* randomUUID */.N4)();
+    window.downloading = false;
+    window.localStorageExpired = new LocalStorageExpired();
+    const stopController = new AbortController();
+    const stopFlag = stopController.signal;
+    window.stopController = stopController;
+    window.stopFlag = stopFlag;
+    window.failedCount = 0;
+}
+
+// EXTERNAL MODULE: external "Vue"
+var external_Vue_ = __webpack_require__("vue");
+;// ./src/ui/fixVue.ts
+
+
+globalThis.Function = new Proxy(Function, {
+    construct(target, args) {
+        const code = args[args.length - 1];
+        if (code.includes("Vue") && code.includes("_Vue")) {
+            loglevel_default().debug("Function hook:" + code);
+            return hookVue();
+        }
+        else {
+            return new target(...args);
+        }
+        function hookVue() {
+            args[args.length - 1] = "with (Vue) {" + code + "}";
+            return new Proxy(new target(...["Vue", ...args]), {
+                apply(targetI, thisArg, argumentsList) {
+                    const newArgumentsList = [external_Vue_, ...argumentsList];
+                    return Reflect.apply(targetI, thisArg, newArgumentsList);
+                },
+            });
+        }
+    },
+});
+
+// EXTERNAL MODULE: ./src/lib/dom.ts
+var dom = __webpack_require__("./src/lib/dom.ts");
+;// ./src/router/download.ts
+async function getRule() {
+    const host = document.location.host;
+    let ruleClass;
+    switch (host) {
+        case "101kks.com": {
+            const { c101kanshu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/101kanshu.ts"));
+            ruleClass = c101kanshu();
+            break;
+        }
+        case "www.sudugu.com": {
+            const { Sudugu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/sudugu.ts"));
+            ruleClass = Sudugu;
+            break;
+        }
+        case "www.biquge66.com":
+        case "www.xkzw.org": {
+            const { Xkzw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/xkzw.ts"));
+            ruleClass = Xkzw;
+            break;
+        }
+        case "book.sfacg.com": {
+            const { Sfacg } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/sfacg.ts"));
+            ruleClass = Sfacg;
+            break;
+        }
+        case "api.langge.cf": {
+            const { Langge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/langge.ts"));
+            ruleClass = Langge;
+            break;
+        }
+        case "lcread.com":
+        case "www.lcread.com": {
+            const { Lcread } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/lcread.ts"));
+            ruleClass = Lcread;
+            break;
+        }
+        case "www.lightnovel.fun": {
+            const { Lightnovel } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/lightnovel.ts"));
+            ruleClass = Lightnovel;
+            break;
+        }
+        case "xr.unionread.net": {
+            const { XRUnionread } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/unionread.ts"));
+            ruleClass = XRUnionread;
+            break;
+        }
+        case "www.hetushu.com":
+        case "www.hetubook.com":
+        case "hetushu.com":
+        case "hetubook.com": {
+            const { Hetushu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/hetushu.ts"));
+            ruleClass = Hetushu;
+            break;
+        }
+        case "book.qidian.com":
+        case "www.qidian.com": {
+            const { Qidian } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/qidian.ts"));
+            ruleClass = Qidian;
+            break;
+        }
+        case "www.jjwxc.net": {
+            const { Jjwxc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/jjwxc.ts"));
+            ruleClass = Jjwxc;
+            break;
+        }
+        case "www.zongheng.com":
+        case "book.zongheng.com":
+        case "huayu.zongheng.com": {
+            const { Zongheng } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/zongheng.ts"));
+            ruleClass = Zongheng;
+            break;
+        }
+        case "read.zongheng.com": {
+            const { Zongheng } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/readzongheng.ts"));
+            ruleClass = Zongheng;
+            break;
+        }
+        case "www.17k.com": {
+            const { C17k } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/17k.ts"));
+            ruleClass = C17k;
+            break;
+        }
+        case "www.shuhai.com":
+        case "mm.shuhai.com": {
+            const { Shuhai } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/shuhai.ts"));
+            ruleClass = Shuhai;
+            break;
+        }
+        case "gongzicp.com":
+        case "www.gongzicp.com":
+        case "m.gongzicp.com": {
+            const { Gongzicp } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/gongzicp.ts"));
+            ruleClass = Gongzicp;
+            break;
+        }
+        case "www.ciweimao.com": {
+            const { Ciweimao } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ciweimao.ts"));
+            ruleClass = Ciweimao;
+            break;
+        }
+        case "www.linovel.net": {
+            const { Linovel } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/linovel.ts"));
+            ruleClass = Linovel;
+            break;
+        }
+        case "www.tadu.com": {
+            const { Tadu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/tadu.ts"));
+            ruleClass = Tadu;
+            break;
+        }
+        case "www.idejian.com": {
+            const { Idejian } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/idejian.ts"));
+            ruleClass = Idejian;
+            break;
+        }
+        case "www.qimao.com": {
+            const { Qimao } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/qimao.ts"));
+            ruleClass = Qimao;
+            break;
+        }
+        case "sosad.fun":
+        case "www.sosad.fun":
+        case "wenzhan.org":
+        case "www.wenzhan.org":
+        case "sosadfun.com":
+        case "www.sosadfun.com":
+        case "xn--pxtr7m5ny.com":
+        case "www.xn--pxtr7m5ny.com":
+        case "xn--pxtr7m.com":
+        case "www.xn--pxtr7m.com":
+        case "xn--pxtr7m5ny.net":
+        case "www.xn--pxtr7m5ny.net":
+        case "xn--pxtr7m.net":
+        case "www.xn--pxtr7m.net":
+        case "sosadfun.link":
+        case "www.sosadfun.link": {
+            const { Sosadfun } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/sosadfun.ts"));
+            ruleClass = Sosadfun;
+            break;
+        }
+        case "www.fushuwang.org": {
+            const { Fushuwang } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/fushuwang.ts"));
+            ruleClass = Fushuwang;
+            break;
+        }
+        case regExpMatch(/lofter\.com$/): {
+            const { Lofter } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/lofter.ts"));
+            ruleClass = Lofter;
+            break;
+        }
+        case "www.shubl.com":
+        case "shubl.com": {
+            const { Shubl } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ciweimao.ts"));
+            ruleClass = Shubl;
+            break;
+        }
+        case "m.haitangtxt.net": {
+            const { haitangtxt } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/haitangtxt.ts"));
+            ruleClass = haitangtxt();
+            break;
+        }
+        case "ebook.longmabook.com":
+        case "www.longmabookcn.com":
+        case "ebook.lmbooks.com":
+        case "www.lmebooks.com":
+        case "www.haitbook.com":
+        case "www.htwhbook.com":
+        case "www.myhtebook.com":
+        case "www.lovehtbooks.com":
+        case "www.myhtebooks.com":
+        case "www.myhtlmebook.com":
+        case "jp.myhtebook.com":
+        case "jp.myhtlmebook.com":
+        case "ebook.urhtbooks.com":
+        case "www.urhtbooks.com":
+        case "www.newhtbook.com":
+        case "www.lvhtebook.com":
+        case "jp.lvhtebook.com":
+        case "www.haitangbook.com":
+        case "www.htlvbooks.com": {
+            const { Longmabook } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/longmabook.ts"));
+            ruleClass = Longmabook;
+            break;
+        }
+        case "www.kanunu8.com": {
+            const { Kanunu8 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/kanunu8.ts"));
+            ruleClass = Kanunu8;
+            break;
+        }
+        case "www.ciyuanji.com": {
+            const { Ciyuanji } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ciyuanji.ts"));
+            ruleClass = Ciyuanji;
+            break;
+        }
+        case "www.shaoniandream.com": {
+            const { Shaoniandream } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/shaoniandream.ts"));
+            ruleClass = Shaoniandream;
+            break;
+        }
+        case "www.pixiv.net": {
+            const { Pixiv } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/pixiv.ts"));
+            ruleClass = Pixiv;
+            break;
+        }
+        case "www.myrics.com": {
+            const { Myrics } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/myrics.ts"));
+            ruleClass = Myrics;
+            break;
+        }
+        case "www.hanwujinian.com": {
+            const { Hanwujinian } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/hanwujinian.ts"));
+            ruleClass = Hanwujinian;
+            break;
+        }
+        case "www.cool18.com": {
+            const { Cool18 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/cool18.ts"));
+            ruleClass = Cool18;
+            break;
+        }
+        case "www.xrzww.com":
+        case "xrzww.com": {
+            const { Xrzww } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/xrzww.ts"));
+            ruleClass = Xrzww;
+            break;
+        }
+        case "www.youdubook.com":
+        case "youdubook.com": {
+            const { Youdubook } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/youdubook.ts"));
+            ruleClass = Youdubook;
+            break;
+        }
+        case "new-read.readmoo.com": {
+            const { Readmoo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/readmoo.ts"));
+            ruleClass = Readmoo;
+            break;
+        }
+        case "www.iqingguo.com": {
+            const { Iqingguo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/iqingguo.ts"));
+            ruleClass = Iqingguo;
+            break;
+        }
+        case "cddaoyue.cn":
+        case "www.cddaoyue.cn": {
+            const { Duread } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ciweimao.ts"));
+            ruleClass = Duread;
+            break;
+        }
+        case "www.99csw.com": {
+            const { I99csw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/99csw.ts"));
+            ruleClass = I99csw;
+            break;
+        }
+        case "www.ttkan.co":
+        case "cn.ttkan.co":
+        case "tw.ttkan.co": {
+            const { Ttkan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/ttkan.ts"));
+            ruleClass = Ttkan;
+            break;
+        }
+        case "www.uukanshu.com": {
+            const { uukanshu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/uukanshu.ts"));
+            ruleClass = uukanshu();
+            break;
+        }
+        case "uukanshu.cc": {
+            const { uukanshuCc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/uukanshuCc.ts"));
+            ruleClass = uukanshuCc();
+            break;
+        }
+        case "www.westnovel.com": {
+            const { westnovel } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/westnovel.ts"));
+            ruleClass = westnovel();
+            break;
+        }
+        case "www.soxscc.net":
+        case "www.soxscc.org":
+        case "www.soxs.cc":
+        case "www.soxscc.cc":
+        case "www.soshuwu.com": {
+            const { soxscc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/soxscc.ts"));
+            ruleClass = soxscc();
+            break;
+        }
+        case "www.630shu.net": {
+            const { c630shu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/630shu.ts"));
+            ruleClass = c630shu;
+            break;
+        }
+        case "www.trxs.cc":
+        case "www.trxs.me":
+        case "www.trxs123.com":
+        case "www.jpxs123.com":
+        case "www.tongrenquan.org":
+        case "www.tongrenquan.me":
+        case "trxs.cc":
+        case "trxs.me":
+        case "trxs123.com":
+        case "jpxs123.com":
+        case "tongrenquan.me":
+        case "tongrenquan.org": {
+            const { trxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/trxs.ts"));
+            ruleClass = trxs();
+            break;
+        }
+        case "www.256wenku.com": {
+            const { c256wxc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/256wxc.ts"));
+            ruleClass = c256wxc;
+            break;
+        }
+        case "www.fxshu.top": {
+            const { fuxiaoshu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/fuxiaoshu.ts"));
+            ruleClass = fuxiaoshu;
+            break;
+        }
+        case "www.wanbengo.com": {
+            const { wanben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/wanben.ts"));
+            ruleClass = wanben();
+            break;
+        }
+        case "masiro.me": {
+            const { masiro } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/masiro.ts"));
+            ruleClass = masiro();
+            break;
+        }
+        case "kakuyomu.jp": {
+            const { kakuyomu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/kakuyomu.ts"));
+            ruleClass = kakuyomu();
+            break;
+        }
+        case "ncode.syosetu.com":
+        case "novel18.syosetu.com": {
+            const { syosetu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/syosetu.ts"));
+            ruleClass = syosetu();
+            break;
+        }
+        case "syosetu.org": {
+            const { syosetuOrg } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/syosetu.ts"));
+            ruleClass = syosetuOrg();
+            break;
+        }
+        case "zhaoze.vip":
+        case "houhuayuan.vip": {
+            const { houhuayuan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/houhuayuan.ts"));
+            ruleClass = houhuayuan();
+            break;
+        }
+        case "www.dushu.com": {
+            const { dushu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/dushu.ts"));
+            ruleClass = dushu();
+            break;
+        }
+        case "www.tianyabooks.com": {
+            const { tianyabooks } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/tianyabooks.ts"));
+            ruleClass = tianyabooks();
+            break;
+        }
+        case "www.aixdzs.com": {
+            const { aixdzs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/aixdzs.ts"));
+            ruleClass = aixdzs();
+            break;
+        }
+        case "colorful-fantasybooks.com": {
+            const { fantasybooks } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/colorful-fantasybooks.ts"));
+            ruleClass = fantasybooks();
+            break;
+        }
+        case "www.dizishu.cc":
+        case "www.qu-la.com": {
+            const { dizishu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/dizishu.ts"));
+            ruleClass = dizishu();
+            break;
+        }
+        case "www.akatsuki-novels.com": {
+            const { akatsuki } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/akatsuki.ts"));
+            ruleClass = akatsuki();
+            break;
+        }
+        case "www.alphapolis.co.jp": {
+            const { alphapolis } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/alphapolis.ts"));
+            ruleClass = alphapolis();
+            break;
+        }
+        case "hongxiuzhao.net": {
+            const { hongxiuzhao } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/hongxiuzhao.ts"));
+            ruleClass = hongxiuzhao();
+            break;
+        }
+        case "www.xbyuan.com": {
+            const { xbyuan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/xbyuan.ts"));
+            ruleClass = xbyuan();
+            break;
+        }
+        case "www.quanzhifashi.com": {
+            const { qzxsw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/qzxsw.ts"));
+            ruleClass = qzxsw();
+            break;
+        }
+        case "www.boqugew.com": {
+            const { boqugew } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/boqugew.ts"));
+            ruleClass = boqugew();
+            break;
+        }
+        case "www.qbtr.cc": {
+            const { qbtrcc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/qbtrcc.ts"));
+            ruleClass = qbtrcc();
+            break;
+        }
+        case "b.guidaye.com": {
+            const { guidaye } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/guidaye.ts"));
+            ruleClass = await guidaye();
+            break;
+        }
+        case "www.xbanxia.la":
+        case "www.xbanxia.cc": {
+            const { banxia } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/banxia.ts"));
+            ruleClass = banxia();
+            break;
+        }
+        case "www.zgzl.net": {
+            const { zgzl } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/zgzl.ts"));
+            ruleClass = zgzl();
+            break;
+        }
+        case "www.zhenhunxiaoshuo.com": {
+            const { zhenhunxiaoshuo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/zhenhunxiaoshuo.ts"));
+            ruleClass = zhenhunxiaoshuo();
+            break;
+        }
+        case "www.52shuku.vip": {
+            const pathname = document.location.pathname;
+            const chapterPattern = /.*\/.*_\d+.html/;
+            if (!chapterPattern.test(pathname)) {
+                const { i52shuku } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/52shuku.ts"));
+                ruleClass = i52shuku();
+                break;
+            }
+            throw new Error("This is a chapter page, not a book page.");
+        }
+        case "m.bixiange.me": {
+            const { bixiange } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/bixiange.ts"));
+            ruleClass = bixiange();
+            break;
+        }
+        case "www.rmkbr.com": {
+            const { yiqushuzhai } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/yiqushuzhai.ts"));
+            ruleClass = yiqushuzhai();
+            break;
+        }
+        case "www.dbxsd.com": {
+            const { dubuxiaoshuo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/dubuxiaoshuo.ts"));
+            ruleClass = dubuxiaoshuo();
+            break;
+        }
+        case "wxscs.com":
+        case "www.wxscs.com":
+        case "wxsck.com":
+        case "www.wxsck.com": {
+            const { wanxiangshucheng } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/wanxiangshucheng.ts"));
+            ruleClass = wanxiangshucheng();
+            break;
+        }
+        case "www.biquge345.com": {
+            const { biquge345 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/biquge345.ts"));
+            ruleClass = biquge345();
+            break;
+        }
+        case "www.beqege.cc": {
+            const { biqugecc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/biqugecc.ts"));
+            ruleClass = biqugecc();
+            break;
+        }
+        case "m.mjyhb.com": {
+            const { mjyhb } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/mjyhb.ts"));
+            ruleClass = mjyhb();
+            break;
+        }
+        case "m.fly-dreams.com": {
+            const { flydreams } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/fly-dreams.ts"));
+            ruleClass = flydreams();
+            break;
+        }
+        case "www.23dishuge.com": {
+            const { dishuge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/dishuge.ts"));
+            ruleClass = dishuge();
+            break;
+        }
+        case "www.69hsw.com":
+        case "www.69hao.com":
+        case "www.69hsz.net": {
+            const { c69shuba } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/69shuba.ts"));
+            ruleClass = c69shuba();
+            break;
+        }
+        case "m.shauthor.com": {
+            const { shauthor } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/shauthor.ts"));
+            ruleClass = shauthor();
+            break;
+        }
+        case "m.chenkuan.com": {
+            const { chenkuan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/chenkuan.ts"));
+            ruleClass = chenkuan();
+            break;
+        }
+        case "m.baihexs.com": {
+            const { baihexs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/baihexs.ts"));
+            ruleClass = baihexs();
+            break;
+        }
+        case "novelup.plus": {
+            const { novelup } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/original/novelup.ts"));
+            ruleClass = novelup();
+            break;
+        }
+        case "www.piaotia.com": {
+            const { ptwxz } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/ptwxz.ts"));
+            ruleClass = ptwxz();
+            break;
+        }
+        case "m.wanbengo.com": {
+            const { wanben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/wanben.ts"));
+            ruleClass = wanben();
+            break;
+        }
+        case "www.biquge.tw": {
+            const { biqugetw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/biqugetw.ts"));
+            ruleClass = biqugetw();
+            break;
+        }
+        case "m.xszj.org":
+        case "xszj.org": {
+            const { xszj } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/xszj.ts"));
+            ruleClass = xszj();
+            break;
+        }
+        case "www.fdhxs.com": {
+            const { haitangshuwu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/haitangshuwu.ts"));
+            ruleClass = haitangshuwu();
+            break;
+        }
+        case "pornhulu.com":
+        case "xn--yhqvcx66l.xnxnxn7.xyz":
+        case "321dh.org":
+        case "www.alicesw.com": {
+            const { alicesw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/alicesw.ts"));
+            ruleClass = alicesw();
+            break;
+        }
+        case "www.xfxs1.com": {
+            const { xianfengxiaoshuo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/xianfengxiaoshuo.ts"));
+            ruleClass = xianfengxiaoshuo();
+            break;
+        }
+        case "www.ruochu.com": {
+            const { ruochu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/original/ruochu.ts"));
+            ruleClass = ruochu();
+            break;
+        }
+        case "www.1pwx.com": {
+            const { xiaoshuodaquan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/1pwx.ts"));
+            ruleClass = xiaoshuodaquan();
+            break;
+        }
+        case "www.wenku8.net": {
+            const { wenku8 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/wenku8.ts"));
+            ruleClass = wenku8();
+            break;
+        }
+        case "www.linovelib.com": {
+            const { linovelib } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/linovelib.ts"));
+            ruleClass = linovelib();
+            break;
+        }
+        case "www.bilinovel.com": {
+            const { wlinovelib } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/linovelib.ts"));
+            ruleClass = wlinovelib();
+            break;
+        }
+        case "www.yibige.cc": {
+            const { yibige } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/yibige.ts"));
+            ruleClass = yibige();
+            break;
+        }
+        case "www.wangshugu.org": {
+            const { washuge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/washuge.ts"));
+            ruleClass = washuge();
+            break;
+        }
+        case "www.shencou.com": {
+            const { shencou } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/shencou.ts"));
+            ruleClass = shencou();
+            break;
+        }
+        case "jingcaiyuedu6.com": {
+            const { jingcaiyuedu6 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/jingcaiyuedu6.ts"));
+            ruleClass = jingcaiyuedu6();
+            break;
+        }
+        case "www.uaa.com": {
+            const { uaa } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/uaa.ts"));
+            ruleClass = uaa();
+            break;
+        }
+        case "www.18kanshu.com": {
+            const { c18kanshu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/18kanshu.ts"));
+            ruleClass = c18kanshu();
+            break;
+        }
+        case "www.ihuaben.com": {
+            const { ihuaben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ihuaben.ts"));
+            ruleClass = ihuaben;
+            break;
+        }
+        case "www.kadokado.com.tw": {
+            const { kadokado } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/kadokado.ts"));
+            ruleClass = kadokado;
+            break;
+        }
+        case "www.po18.tw": {
+            const { po18 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/po18.ts"));
+            ruleClass = po18;
+            break;
+        }
+        case "b.faloo.com": {
+            const { faloo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/faloo.ts"));
+            ruleClass = faloo;
+            break;
+        }
+        case "novelpia.jp": {
+            const { novelpia } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/novelpia.ts"));
+            ruleClass = novelpia;
+            break;
+        }
+        case "book.qq.com": {
+            const { QQBook } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/qqbook.ts"));
+            ruleClass = QQBook;
+            break;
+        }
+        case "www.60ksw.com": {
+            const { i60ksw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/60ksw.ts"));
+            ruleClass = i60ksw();
+            break;
+        }
+        case "www.penana.com": {
+            const { penana } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/penana.ts"));
+            ruleClass = penana();
+            break;
+        }
+        case "www.lzdzw.com": {
+            const { lzdzw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/lzdzw.ts"));
+            ruleClass = lzdzw;
+            break;
+        }
+        case "www.doufuyuedu.com": {
+            const { doufuyuedu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/doufuyuedu.ts"));
+            ruleClass = doufuyuedu;
+            break;
+        }
+        case "czbooks.net": {
+            const { czbooks } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/czbooks.ts"));
+            ruleClass = czbooks();
+            break;
+        }
+        case "www.xiaoshuowu.com": {
+            const { xiaoshuowu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/xiaoshuowu.ts"));
+            ruleClass = xiaoshuowu();
+            break;
+        }
+        case "twkan.com": {
+            const { twkan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/twkan.ts"));
+            ruleClass = twkan();
+            break;
+        }
+        case "www.69shuba.com":
+        case "69shuba.cx": {
+            const { c69shu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/69shu.ts"));
+            ruleClass = c69shu();
+            break;
+        }
+        case "book.xbookcn.net": {
+            const { xbookcn } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/xbookcn.ts"));
+            ruleClass = xbookcn();
+            break;
+        }
+        case "www.69yuedu.net": {
+            const { c69yuedu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/69yuedu.ts"));
+            ruleClass = c69yuedu();
+            break;
+        }
+        case "www.haiwaishubao.com": {
+            const { haiwaishubao } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/haiwaishubao.ts"));
+            ruleClass = haiwaishubao();
+            break;
+        }
+        case "www.quanshuzhai.com": {
+            const { quanshuzhai } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/mbtxt/quanshuzhai.ts"));
+            ruleClass = quanshuzhai();
+            break;
+        }
+        case "www.mbtxt.la": {
+            const { mbtxt } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/mbtxt/mbtxt.ts"));
+            ruleClass = mbtxt();
+            break;
+        }
+        case "www.bqu9.cc":
+        case "www.bq06.cc": {
+            const { bqu9 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = bqu9();
+            break;
+        }
+        case "www.666biquge.com":
+        case "www.xiunews.com":
+        case "www.23xsww.cc":
+        case "www.biququ.com":
+        case "www.ddyveshu.cc":
+        case "www.81book.com":
+        case "www.81zw.com":
+        case "www.fuguoduxs.com":
+        case "www.shubaowa.org":
+        case "www.aixiaxs.net":
+        case "www.banzhuer.org":
+        case "www.007zw.com": {
+            const { common } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = common();
+            break;
+        }
+        case "www.mht99.com": {
+            const { mht } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/mht.ts"));
+            ruleClass = mht();
+            break;
+        }
+        case "www.xsbiquge.la":
+        case "www.xbiquge.tw": {
+            const { xbiquge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = xbiquge();
+            break;
+        }
+        case "www.luoqiuzw.com": {
+            const { luoqiuzw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = luoqiuzw();
+            break;
+        }
+        case "dijiuben.com": {
+            const { dijiubook } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = dijiubook();
+            break;
+        }
+        case "www.biquzw.la": {
+            const { biquwx } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = biquwx();
+            break;
+        }
+        case "www.i25zw.com": {
+            const { c25zw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = c25zw();
+            break;
+        }
+        case "www.tycqzw.com": {
+            const { tycqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = tycqxs();
+            break;
+        }
+        case "www.ranwen.la": {
+            const { ranwen } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = ranwen();
+            break;
+        }
+        case "www.lvsewx.com": {
+            const { lusetxt } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = lusetxt();
+            break;
+        }
+        case "www.biquge5200.cc": {
+            const { b5200 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = b5200();
+            break;
+        }
+        case "www.yqxsge.cc": {
+            const { yqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = yqxs();
+            break;
+        }
+        case "www.bixia3.com": {
+            const { bxwx333 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = bxwx333();
+            break;
+        }
+        case "www.ibiquge.la": {
+            const { xbiqugeLa } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = xbiqugeLa();
+            break;
+        }
+        case "www.yiruan.la": {
+            const { yruan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = yruan();
+            break;
+        }
+        case "www.ishuquge.org": {
+            const { shuquge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = shuquge();
+            break;
+        }
+        case "www.gashuw.com": {
+            const { gebiqu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = gebiqu();
+            break;
+        }
+        case "www.lewenn.net": {
+            const { lewenn } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = lewenn();
+            break;
+        }
+        case "www.xyb3.net": {
+            const { xyb3 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = xyb3();
+            break;
+        }
+        case "www.wanben.info": {
+            const { xinwanben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/nextPage.ts"));
+            ruleClass = xinwanben();
+            break;
+        }
+        case "www.ywggzy.com": {
+            const { ywggzy } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/nextPage.ts"));
+            ruleClass = ywggzy();
+            break;
+        }
+        case "www.mijiashe.com": {
+            const { mijiashe } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/nextPage.ts"));
+            ruleClass = mijiashe();
+            break;
+        }
+        case "m.kuangguwenhua.com": {
+            const { znlzd } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/multiIndexNextPage.ts"));
+            ruleClass = znlzd();
+            break;
+        }
+        case "www.266ks.com": {
+            const { c226ks } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/multiIndexNextPage.ts"));
+            ruleClass = c226ks();
+            break;
+        }
+        case "www.42zw.la": {
+            const { la42zw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
+            ruleClass = la42zw();
+            break;
+        }
+        case "www.bilibili.com": {
+            const { Bilibili } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/bilibili.ts"));
+            ruleClass = Bilibili;
+            break;
+        }
+        case "www.esjzone.cc":
+        case "www.esjzone.one":
+        case "esjzone.one": {
+            const { esjzone } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/esjzone.ts"));
+            ruleClass = esjzone;
+            break;
+        }
+        case "fanqienovel.com": {
+            const { fanqie } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/fanqie.ts"));
+            ruleClass = fanqie;
+            break;
+        }
+        case "www.mangguoshufang.com":
+        case "mangguoshufang.com": {
+            const { Mangguoshufang } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/mangguoshufang.ts"));
+            ruleClass = Mangguoshufang;
+            break;
+        }
+        case "www.pilibook.net":
+        case "www.mozishuwu.com": {
+            const { Pilishuwu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/pilishuwu.ts"));
+            ruleClass = Pilishuwu;
+            break;
+        }
+        case "www.xiguashuwu.com": {
+            const { Xiguashuwu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/xiguashuwu.ts"));
+            ruleClass = Xiguashuwu;
+            break;
+        }
+        case "www.zjsw.org": {
+            const { zjsw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/zjsw.ts"));
+            ruleClass = zjsw();
+            break;
+        }
+        case "sbxh1.com":
+        case "www.sbxh1.com": {
+            const { sbxh } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/sbxh.ts"));
+            ruleClass = sbxh();
+            break;
+        }
+        default: {
+            if (/^booktoki\d+\.com$/.test(host) || /^www\.booktoki\d+\.com$/.test(host)) {
+                const { booktoki } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/booktoki.ts"));
+                ruleClass = booktoki();
+                break;
+            }
+            throw new Error("Not Found Rule!");
+        }
+    }
+    return new ruleClass();
+    function regExpMatch(regexp) {
+        if (regexp.test(host)) {
+            return host;
+        }
+    }
+}
+
+;// ./src/lib/adBlocker.ts
+function floatBuster() {
+    if (window !== window.top) {
+        return;
+    }
+    let tstart;
+    const ttl = 30000;
+    let delay = 0;
+    const delayStep = 50;
+    const buster = () => {
+        const button = document.querySelector("#button-div");
+        if (button) {
+            getFixNearby(button).forEach((node) => node.remove());
+            tstart = Date.now();
+        }
+        const progress = document.querySelector("#nd-progress");
+        if (progress) {
+            getFixNearby(progress).forEach((node) => node.remove());
+            tstart = Date.now();
+        }
+        const setting = document.querySelector("#nd-setting");
+        if (setting) {
+            getFixNearby(setting).forEach((node) => node.remove());
+            tstart = Date.now();
+        }
+        if (Date.now() - tstart < ttl) {
+            delay = Math.min(delay + delayStep, 1000);
+            setTimeout(buster, delay);
+        }
+    };
+    const domReady = (ev) => {
+        if (ev) {
+            document.removeEventListener(ev.type, domReady);
+        }
+        tstart = Date.now();
+        setTimeout(buster, delay);
+    };
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", domReady);
+    }
+    else {
+        domReady();
+    }
+    function getFixNearby(elem) {
+        return Array.from(document.querySelectorAll("body *")).filter((node) => {
+            const { position, visibility, zIndex } = window.getComputedStyle(node);
+            return (node !== elem &&
+                !(node.compareDocumentPosition(elem) &
+                    Node.DOCUMENT_POSITION_CONTAINS ||
+                    node.compareDocumentPosition(elem) &
+                        Node.DOCUMENT_POSITION_CONTAINED_BY) &&
+                !["button-div", "nd-progress", "nd-setting"].includes(node.id) &&
+                visibility === "visible" &&
+                (position === "fixed" || parseInt(zIndex, 10) >= 1000) &&
+                (nearTest(node, elem) || parseInt(zIndex, 10) > 10 ** 9));
+        });
+        function nearTest(node, element) {
+            if (isOverlap(getVertex(node), getVertex(element))) {
+                return true;
+            }
+            else {
+                return isNearby(getVertex(node), getVertex(element));
+            }
+            function getVertex(ele) {
+                const { left, top, right, bottom } = ele.getBoundingClientRect();
+                return [
+                    [left, top],
+                    [right, top],
+                    [left, bottom],
+                    [right, bottom],
+                ];
+            }
+            function isOverlap(rec1, rec2) {
+                const [left1, top1] = rec1[0];
+                const [right1, bottom1] = rec1[3];
+                const [left2, top2] = rec2[0];
+                const [right2, bottom2] = rec2[3];
+                return (!(right1 < left2 || right2 < left1) &&
+                    !(bottom1 < top2 || bottom2 < top1));
+            }
+            function isNearby(rec1, rec2) {
+                const docEl = document.documentElement;
+                const vw = Math.min(docEl.clientWidth, window.innerWidth);
+                const vh = Math.min(docEl.clientHeight, window.innerHeight);
+                const diagonal = Math.sqrt(vw ** 2 + vh ** 2);
+                for (const [x1, y1] of rec1) {
+                    for (const [x2, y2] of rec2) {
+                        const distance = Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
+                        if (distance < diagonal * 0.1) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        }
+    }
+}
+
+;// ./src/router/ui.ts
+
+const defaultObject = {
+    type: "download",
+};
+const errorObject = {
+    type: "error",
+};
+function getUI() {
+    const host = document.location.host;
+    switch (host) {
+        case "wap.ishuquge.org": {
+            return () => {
+                const id = /(\d+)\.html$/.exec(document.location.pathname)?.[1];
+                if (!id) {
+                    return errorObject;
+                }
+                return {
+                    type: "jump",
+                    jumpFunction() {
+                        document.location.href = `https://www.ishuquge.org/txt/${id}/index.html`;
+                    },
+                };
+            };
+        }
+        case "m.wanben.info": {
+            return () => ({
+                type: "jump",
+                jumpFunction() {
+                    document.location.host = "www.wanben.info";
+                },
+            });
+        }
+        case "www.tadu.com": {
+            return () => {
+                const re = /^\/book\/\d+\/?$/;
+                if (re.test(document.location.pathname)) {
+                    return defaultObject;
+                }
+                else {
+                    return errorObject;
+                }
+            };
+        }
+        case "www.kanunu8.com": {
+            return () => {
+                if (document.body.innerHTML.includes("作者：") ||
+                    document.body.innerHTML.includes("作者:") ||
+                    document.body.innerHTML.includes("内容简介")) {
+                    return defaultObject;
+                }
+                else {
+                    return errorObject;
+                }
+            };
+        }
+        case "www.ddyucshu.cc": {
+            return () => {
+                return {
+                    type: "jump",
+                    jumpFunction: () => {
+                        document.location.href = document.location.href.replace("ddyucshu.cc", 'ddyveshu.cc');
+                    },
+                };
+            };
+        }
+        case "www.ciyuanji.com": {
+            return () => {
+                if (document.location.pathname.startsWith("/bookDetails/info")) {
+                    return {
+                        type: "jump",
+                        jumpFunction: () => (document.location.pathname = document.location.pathname.replace("/bookDetails/info", "/bookDetails/catalog")),
+                    };
+                }
+                else {
+                    return defaultObject;
+                }
+            };
+        }
+        case "m.jjwxc.com":
+        case "m.jjwxc.net": {
+            return () => {
+                return {
+                    type: "jump",
+                    jumpFunction: () => {
+                        const regex = /https:\/\/m\.jjwxc\.(com|net)\/book2\/(\d+)/;
+                        document.location.href = document.location.href.replace(regex, 'https://www.jjwxc.net/onebook.php?novelid=$2');
+                    },
+                };
+            };
+        }
+        case "ebook.longmabook.com":
+        case "www.longmabookcn.com":
+        case "ebook.lmbooks.com":
+        case "www.lmebooks.com":
+        case "www.haitbook.com":
+        case "www.htwhbook.com":
+        case "www.myhtebook.com":
+        case "www.lovehtbooks.com":
+        case "www.myhtebooks.com":
+        case "www.myhtlmebook.com":
+        case "jp.myhtebook.com":
+        case "jp.myhtlmebook.com":
+        case "ebook.urhtbooks.com":
+        case "www.urhtbooks.com":
+        case "www.newhtbook.com":
+        case "www.lvhtebook.com":
+        case "jp.lvhtebook.com":
+        case "www.haitangbook.com":
+        case "www.htlvbooks.com": {
+            return () => {
+                const params = new URLSearchParams(document.location.search);
+                if (params.get("act") === "showinfo" &&
+                    params.has("bookwritercode") &&
+                    params.has("bookid")) {
+                    return defaultObject;
+                }
+                return errorObject;
+            };
+        }
+        case "m.sfacg.com": {
+            return () => {
+                const bookId = /(\d+)\/?$/.exec(document.location.pathname)?.[1];
+                if (bookId) {
+                    return {
+                        type: "jump",
+                        jumpFunction: () => (document.location.href = `https://book.sfacg.com/Novel/${bookId}/MainIndex/`),
+                    };
+                }
+                else {
+                    return errorObject;
+                }
+            };
+        }
+        case "book.sfacg.com": {
+            return () => {
+                const jump = /^\/Novel\/\d+\/?$/.test(document.location.pathname);
+                if (jump) {
+                    const bookId = /(\d+)\/?$/.exec(document.location.pathname)?.[1];
+                    if (bookId) {
+                        return {
+                            type: "jump",
+                            jumpFunction: () => (document.location.href = `https://book.sfacg.com/Novel/${bookId}/MainIndex/`),
+                        };
+                    }
+                    else {
+                        return errorObject;
+                    }
+                }
+                else {
+                    return defaultObject;
+                }
+            };
+        }
+        case "m.lvsewx.com": {
+            return () => ({
+                type: "jump",
+                jumpFunction: () => (document.location.host = "www.lvsewx.com"),
+            });
+        }
+        case "www.cool18.com": {
+            return () => {
+                const url = new URL(document.location.href);
+                if (url.searchParams.get("act") === "threadview" &&
+                    url.searchParams.has("tid")) {
+                    return defaultObject;
+                }
+                else {
+                    return errorObject;
+                }
+            };
+        }
+        case "www.fxshu.top": {
+            const style = document.createElement("style");
+            style.innerHTML = `
+          img {
+            font-size: 1em;
+          }
+        `;
+            document.head.appendChild(style);
+            return () => {
+                return defaultObject;
+            };
+        }
+        case "read.zongheng.com":
+        case "www.zongheng.com":
+        case "book.zongheng.com":
+        case "huayu.zongheng.com": {
+            const style = document.createElement("style");
+            style.innerHTML = `
+          img {
+            font-size: 1em;
+          }
+        `;
+            document.head.appendChild(style);
+            return () => {
+                if (document.location.pathname.startsWith("/book/")) {
+                    return {
+                        type: "jump",
+                        jumpFunction: () => (document.location.pathname = document.location.pathname.replace(/^\/book\//, "/showchapter/")),
+                    };
+                }
+                else {
+                    return defaultObject;
+                }
+            };
+        }
+        case "www.17k.com": {
+            return () => {
+                if (document.location.pathname.startsWith("/book/")) {
+                    return {
+                        type: "jump",
+                        jumpFunction: () => (document.location.pathname = document.location.pathname.replace(/^\/book\//, "/list/")),
+                    };
+                }
+                else {
+                    return defaultObject;
+                }
+            };
+        }
+        case "www.linovelib.com": {
+            return () => {
+                if (document.location.pathname.endsWith(".html")) {
+                    return {
+                        type: "jump",
+                        jumpFunction: () => (document.location.pathname = document.location.pathname.replace(/\.html$/, "/catalog")),
+                    };
+                }
+                else {
+                    return defaultObject;
+                }
+            };
+        }
+        case "www.bilinovel.com": {
+            return () => {
+                if (document.location.pathname.endsWith("/catalog")) {
+                    return {
+                        type: "jump",
+                        jumpFunction: () => (document.location.pathname = document.location.pathname.replace(/\/catalog$/, ".html")),
+                    };
+                }
+                else {
+                    return defaultObject;
+                }
+            };
+        }
+        case "masiro.me": {
+            return () => {
+                if (document.querySelector(".error-box")) {
+                    return errorObject;
+                }
+                else {
+                    return defaultObject;
+                }
+            };
+        }
+        case "www.ywggzy.com":
+        case "www.yiruan.la":
+        case "www.ishuquge.org":
+        case "www.gashuw.com":
+        case "www.81book.com":
+        case "www.81zw.com":
+        case "www.fuguoduxs.com":
+        case "www.shubaowa.org":
+        case "www.aixiaxs.net":
+        case "www.banzhuer.org":
+        case "www.007zw.com":
+        case "www.wanben.info":
+        case "www.mht99.com":
+        case "www.xbiquge.tw":
+        case "www.xsbiquge.la":
+        case "www.luoqiuzw.com":
+        case "dijiuben.com":
+        case "www.biquzw.la":
+        case "www.i25zw.com":
+        case "www.tycqzw.com":
+        case "www.ranwen.la":
+        case "www.biquge5200.cc":
+        case "www.yqxsge.cc":
+        case "www.bixia3.com":
+        case "www.quanshuzhai.com":
+        case "www.ibiquge.la": {
+            return () => {
+                floatBuster();
+                return defaultObject;
+            };
+        }
+        case "new-read.readmoo.com": {
+            return () => ({ type: "download", isSettingSeen: false });
+        }
+        case "www.myrics.com": {
+            return () => {
+                if (document.location.pathname.endsWith("/menu")) {
+                    return {
+                        type: "jump",
+                        jumpFunction: () => {
+                            document.location.pathname = document.location.pathname.replace(/\/menu$/, "");
+                        },
+                    };
+                }
+                else {
+                    return defaultObject;
+                }
+            };
+        }
+        case "www.piaotia.com": {
+            return () => {
+                if (document.location.pathname.startsWith("/list/")) {
+                    return {
+                        type: "jump",
+                        jumpFunction: () => {
+                            const p = document.location.pathname.match(/\/list\/(\w+)\//)?.[1];
+                            if (!p) {
+                                return errorObject;
+                            }
+                            document.location.pathname = `/${p}/`;
+                        },
+                    };
+                }
+                else {
+                    return defaultObject;
+                }
+            };
+        }
+        case "www.soxscc.net":
+        case "www.soxscc.org":
+        case "www.soxs.cc":
+        case "www.soxscc.cc":
+        case "www.soshuwu.com": {
+            return () => {
+                if (document.location.pathname.startsWith("/book/")) {
+                    return {
+                        type: "jump",
+                        jumpFunction: () => {
+                            document.location.pathname = document.location.pathname
+                                .replace(/^\/book/, "")
+                                .replace(/\.html/, "/");
+                        },
+                    };
+                }
+                else {
+                    return defaultObject;
+                }
+            };
+        }
+        case "www.wenku8.net": {
+            return () => {
+                if (document.location.pathname.startsWith("/book/")) {
+                    return {
+                        type: "jump",
+                        jumpFunction: () => {
+                            const href = document.querySelector("#content > div:nth-child(1) > div:nth-child(6) > div:nth-child(1) > span:nth-child(1) > fieldset:nth-child(1) > div:nth-child(2) > a:nth-child(1)")?.href;
+                            if (href) {
+                                document.location.href = href;
+                            }
+                            else {
+                                return errorObject;
+                            }
+                        },
+                    };
+                }
+                else {
+                    return defaultObject;
+                }
+            };
+        }
+        case "hongxiuzhao.net": {
+            return () => {
+                if (document.querySelector(".cover")) {
+                    return defaultObject;
+                }
+                else {
+                    return errorObject;
+                }
+            };
+        }
+        case "www.quanzhifashi.com":
+        case "www.42zw.la":
+        case "www.boqugew.com":
+        case "www.qbtr.cc":
+        case "b.guidaye.com":
+        case "www.qimao.com": {
+            return () => {
+                document.querySelector("li.qm-tab-list-item:nth-child(2) > div")?.dispatchEvent(new MouseEvent('click'));
+                return defaultObject;
+            };
+        }
+        default: {
+            return () => {
+                return defaultObject;
+            };
+        }
+    }
+}
+
+;// ./src/ui/button.html
+// Module
+var code = `<div id="button-div" class="button-div">
+  <div v-if="uiObj.type !== 'error'">
+    <div v-if="uiObj.type === 'jump'" class="jump">
+      <button class="nd-fab" v-on:click="jumpButtonClick">
+        <img v-bind:src="imgJump" alt="jump">
+      </button>
+    </div>
+    <div v-if="uiObj.type === 'download'" class="download">
+      <button class="nd-fab" v-on:click="startButtonClick">
+        <img v-bind:src="imgStart" alt="start">
+      </button>
+      <button v-if="isSettingSeen" class="nd-fab nd-fab-small" v-on:click="settingButtonClick" title="设置">
+        <img v-bind:src="imgSetting" alt="setting">
+      </button>
+    </div>
+  </div>
+</div>
+`;
+// Exports
+/* harmony default export */ const ui_button = (code);
+// EXTERNAL MODULE: ./src/ui/button.less
+var src_ui_button = __webpack_require__("./src/ui/button.less");
+// EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
+var FileSaver_min = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
+;// ./src/debug.ts
+
+
+async function debug() {
+    const rule = await getRule();
+    let book;
+    if (typeof window._book !== "undefined") {
+        book = window._book;
+    }
+    else {
+        book = await rule.bookParse();
+    }
+    unsafeWindow.rule = rule;
+    unsafeWindow.book = book;
+    window._book = book;
+    unsafeWindow.saveAs = FileSaver_min.saveAs;
+    const { parse, fetchAndParse, gfetchAndParse } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/lib/readability.ts"));
+    unsafeWindow.readability = {
+        parse,
+        fetchAndParse,
+        gfetchAndParse,
+    };
+    unsafeWindow.stopController = window.stopController;
+    return;
+}
+
+// EXTERNAL MODULE: ./src/main/main.ts
+var main = __webpack_require__("./src/main/main.ts");
+// EXTERNAL MODULE: ./src/save/misc.ts
+var save_misc = __webpack_require__("./src/save/misc.ts");
+;// ./src/ui/ChapterList.html
+// Module
+var ChapterList_code = `<div>
+  <div v-if="loading">
+    <div class="chapter-list-loading">
+      <h2 v-if="failed" style="color: rgb(var(--mdui-color-error, 179,38,30));">加载章节失败！</h2>
+      <div v-else style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+        <div class="nd-spinner"></div>
+        <h2>正在载入章节列表中，请耐心等待……</h2>
+      </div>
+    </div>
+  </div>
+  <div v-else class="chapter-list" style="display: block;position: relative;">
+    <div v-for="sectionObj in sectionsObj" v-show="isSectionSeen(sectionObj)" v-bind:key="sectionObj.sectionNumber" class="section">
+      <h3 v-if="sectionObj.sectionName" class="section-label">
+        {{ sectionObj.sectionName }}
+      </h3>
+      <div v-for="chapter in sectionObj.chpaters" v-show="isChapterSeen(chapter)" v-bind:key="chapter.chapterNumber" class="chapter" v-bind:class="{
+              good: this.filter(chapter),
+              bad: !this.filter(chapter),
+              warning: this.warningFilter(chapter)
+            }" v-bind:title="chapter.chapterNumber">
+        <a rel="noopener noreferrer" target="_blank" v-bind:class="{
+                disabled: this.isChapterDisabled(chapter),
+              }" v-bind:href="chapter.chapterUrl">{{ chapter.chapterName }}</a>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+// Exports
+/* harmony default export */ const ChapterList = (ChapterList_code);
+// EXTERNAL MODULE: ./src/ui/ChapterList.less
+var ui_ChapterList = __webpack_require__("./src/ui/ChapterList.less");
+;// ./src/ui/ChapterList.ts
+
+
+
+
+
+
+
+
+
+async function getSections() {
+    if (window._sections &&
+        window._url === document.location.href) {
+        return window._sections;
+    }
+    else {
+        const rule = await getRule();
+        const book = await rule.bookParse();
+        window._book = book;
+        window._url = document.location.href;
+        if (unsafeWindow.saveOptions?.chapterSort) {
+            window._sections = (0,save_misc/* getSectionsObj */.e)(book.chapters, unsafeWindow.saveOptions?.chapterSort);
+        }
+        else {
+            window._sections = (0,save_misc/* getSectionsObj */.e)(book.chapters);
+        }
+        return window._sections;
+    }
+}
+const style = (0,dom/* createStyle */._r)(ui_ChapterList/* default */.A);
+/* harmony default export */ const src_ui_ChapterList = ((0,external_Vue_.defineComponent)({
+    name: "ChapterList",
+    setup() {
+        const sectionsObj = (0,external_Vue_.reactive)([]);
+        const loading = (0,external_Vue_.ref)(true);
+        const failed = (0,external_Vue_.ref)(false);
+        (0,external_Vue_.onMounted)(async () => {
+            if (sectionsObj.length === 0) {
+                try {
+                    const _sectionsObj = await getSections();
+                    Object.assign(sectionsObj, _sectionsObj);
+                    loading.value = false;
+                }
+                catch (error) {
+                    loglevel_default().error(error);
+                    failed.value = true;
+                }
+            }
+        });
+        const filterSetting = (0,external_Vue_.inject)("filterSetting");
+        const filter = (chapter) => {
+            if (chapter.status === main/* Status */.nW.aborted) {
+                return false;
+            }
+            if (filterSetting.value) {
+                const filterFunction = getFilterFunction(filterSetting.value.arg, filterSetting.value.functionBody);
+                if (typeof filterFunction === "function") {
+                    return filterFunction(chapter);
+                }
+            }
+            return true;
+        };
+        const warningFilter = (chapter) => {
+            return chapter.isVIP && chapter.isPaid !== true;
+        };
+        const isChapterDisabled = (chapter) => {
+            return !chapter?.chapterUrl;
+        };
+        const isChapterSeen = (chapter) => {
+            return !(filterSetting.value.hiddenBad && !filter(chapter));
+        };
+        const isSectionSeen = (sectionObj) => {
+            const chapters = sectionObj.chpaters;
+            return chapters.some((chapter) => isChapterSeen(chapter));
+        };
+        return {
+            sectionsObj,
+            loading,
+            failed,
+            filter,
+            warningFilter,
+            isChapterDisabled,
+            isChapterSeen,
+            isSectionSeen,
+        };
+    },
+    template: ChapterList,
+}));
+
+// EXTERNAL MODULE: ./src/ui/FilterTab.css
+var FilterTab = __webpack_require__("./src/ui/FilterTab.css");
+;// ./src/ui/FilterTab.html
+// Module
+var FilterTab_code = `<div>
+  <div class="setting-section filter-setting">
+    <div v-if="filterType !== 'null'" class="filter-input">
+      <mdui-text-field :value="arg" @input="arg = \$event.target.value" label="请输入过滤的条件" variant="outlined" style="width: 100%;"></mdui-text-field>
+    </div>
+    
+    <div class="filter-setter">
+<div class="setting-item">
+        <span class="setting-label">当前过滤方法：</span>
+        <mdui-select :value="filterType" @change="filterType = \$event.target.value" variant="outlined">
+          <mdui-menu-item v-for="filterOption in filterOptionList" v-bind:value="filterOption[0]">{{ filterOption[1]["abbreviation"] }}</mdui-menu-item>
+        </mdui-select>
+      </div>
+
+      <div class="setting-switches" style="margin-top: 12px;">
+        <div class="setting-item" @click="hiddenBad = !hiddenBad">
+          <span class="setting-label">只显示符合条件章节</span>
+          <mdui-switch :checked="hiddenBad" @change="hiddenBad = \$event.target.checked" @click.stop></mdui-switch>
+        </div>
+      </div>
+
+      <div class="filter-description" v-html="filterDescription" style="margin-top: 16px;"></div>
+      <div v-if="false">
+        <span class="good"></span>
+        <span class="warning"></span>
+        <span class="bad"></span>
+      </div>
+    </div>
+  </div>
+  <chapter-list>
+</div>
+`;
+// Exports
+/* harmony default export */ const ui_FilterTab = (FilterTab_code);
+;// ./src/ui/FilterTab.ts
+
+
+
+
+
+const filterOptionDict = {
+    null: {
+        raw: () => {
+            return () => true;
+        },
+        description: "<p>不应用任何过滤器（默认）</p>",
+        abbreviation: "无",
+    },
+    number: {
+        raw: (arg) => {
+            function characterCheck() {
+                return /^[\s\d\-,，]+$/.test(arg);
+            }
+            function match(s, n) {
+                switch (true) {
+                    case /^\d+$/.test(s): {
+                        const _m = s.match(/^(\d+)$/);
+                        if (_m?.length === 2) {
+                            const m = parseInt(_m[1]);
+                            if (m === n) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                    case /^\d+-\d+$/.test(s): {
+                        const _m = s.match(/^(\d+)-(\d+)$/);
+                        if (_m?.length === 3) {
+                            const m = _m.map((_s) => Number(_s));
+                            if (n >= m[1] && n <= m[2]) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                    case /^\d+-$/.test(s): {
+                        const _m = s.match(/^(\d+)-$/);
+                        if (_m?.length === 2) {
+                            const m = parseInt(_m[1]);
+                            if (n >= m) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                    case /^-\d+$/.test(s): {
+                        const _m = s.match(/^-(\d+)$/);
+                        if (_m?.length === 2) {
+                            const m = parseInt(_m[1]);
+                            if (n <= m) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                    default: {
+                        return false;
+                    }
+                }
+            }
+            if (!characterCheck()) {
+                return;
+            }
+            return (chapter) => {
+                const n = chapter.chapterNumber;
+                const ss = arg.split(/[,，]/).map((s) => s.replace(/\s/g, "").trim());
+                return ss.map((s) => match(s, n)).some((b) => b);
+            };
+        },
+        description: "<p>基于章节序号过滤，章节序号可通过章节标题悬停查看。</p><p>支持以下格式：13, 1-5, 2-, -89。可通过分号（,）使用多个表达式。</p>",
+        abbreviation: "章节序号",
+    },
+    baseOnString: {
+        raw: (arg) => {
+            return (chapter) => {
+                return (chapter && chapter.chapterName?.includes(arg)) || false;
+            };
+        },
+        description: "<p>过滤出所有包含过滤条件字符的章节</p>",
+        abbreviation: "章节标题",
+    },
+};
+function getFunctionBody(fn) {
+    return `return (${fn.toString()})(arg)`;
+}
+function getFilterFunction(arg, functionBody) {
+    const filterFunctionFactor = new Function("arg", functionBody);
+    const filterFunction = filterFunctionFactor(arg);
+    if (typeof filterFunction === "function") {
+        return filterFunction;
+    }
+    else {
+        return undefined;
+    }
+}
+/* harmony default export */ const src_ui_FilterTab = ((0,external_Vue_.defineComponent)({
+    components: { "chapter-list": src_ui_ChapterList },
+    emits: ["filterupdate"],
+    setup(props, { emit }) {
+        const arg = (0,external_Vue_.ref)("");
+        const hiddenBad = (0,external_Vue_.ref)(true);
+        const filterType = (0,external_Vue_.ref)("null");
+        const filterOptionList = Object.entries(filterOptionDict);
+        const functionBody = (0,external_Vue_.computed)(() => getFunctionBody(filterOptionDict[filterType.value].raw));
+        const filterDescription = (0,external_Vue_.computed)(() => filterOptionDict[filterType.value].description);
+        const filterSetting = (0,external_Vue_.computed)(() => ({
+            arg: arg.value,
+            hiddenBad: hiddenBad.value,
+            filterType: filterType.value,
+            functionBody: functionBody.value,
+        }));
+        (0,external_Vue_.provide)("filterSetting", filterSetting);
+        (0,external_Vue_.watch)(filterSetting, () => {
+            emit("filterupdate", filterSetting.value);
+        }, {
+            deep: true,
+        });
+        const getFilterSetting = (0,external_Vue_.inject)("getFilterSetting");
+        (0,external_Vue_.onMounted)(() => {
+            const faterFilterSetting = getFilterSetting();
+            if (faterFilterSetting) {
+                arg.value = faterFilterSetting.arg;
+                hiddenBad.value = faterFilterSetting.hiddenBad;
+                filterType.value = faterFilterSetting.filterType;
+            }
+        });
+        return {
+            arg,
+            hiddenBad,
+            filterType,
+            filterOptionList,
+            filterDescription,
+        };
+    },
+    template: ui_FilterTab,
+}));
+const FilterTab_style = (0,dom/* createStyle */._r)(FilterTab/* default */.A);
+
+// EXTERNAL MODULE: ./src/log.ts
+var log = __webpack_require__("./src/log.ts");
+;// ./src/ui/LogUI.ts
+
+
+/* harmony default export */ const LogUI = ((0,external_Vue_.defineComponent)({
+    name: "LogUI",
+    setup(props, context) {
+        const logText = (0,external_Vue_.ref)("");
+        let requestID;
+        (0,external_Vue_.onMounted)(() => {
+            logText.value = (0,log/* getLogText */.gh)();
+            function step() {
+                logText.value = (0,log/* getLogText */.gh)();
+                requestID = globalThis.requestAnimationFrame(step);
+            }
+            requestID = globalThis.requestAnimationFrame(step);
+        });
+        (0,external_Vue_.onUnmounted)(() => {
+            if (requestID) {
+                globalThis.cancelAnimationFrame(requestID);
+            }
+        });
+        return { logText };
+    },
+    template: `
+    <div class="log">
+    <pre v-html="logText" id="novel-downloader-log"></pre>
+    </div>`,
+}));
+
+;// ./src/ui/setting.html
+// Module
+var setting_code = `<div>
+  <mdui-dialog v-bind:open="openStatus === 'true'" headline="设置" close-on-esc v-on:closed="onSettingClosed(\$event)" class="nd-setting-dialog">
+    <div id="nd-setting" class="nd-setting">
+      <mdui-tabs v-bind:value="setting.currentTab" v-on:change="onTabChange" variant="secondary" full-width>
+        <mdui-tab value="tab-1">基本设置</mdui-tab>
+        <mdui-tab value="tab-2">自定义筛选条件</mdui-tab>
+        <mdui-tab v-if="setting.enableTestPage" value="tab-3">抓取测试</mdui-tab>
+        <mdui-tab v-if="setting.enableTestPage" value="tab-4">日志</mdui-tab>
+
+        <mdui-tab-panel id="nd-setting-tab-1" slot="panel" value="tab-1" class="tab-panel">
+          <div class="setting-section">
+            <div class="setting-switches">
+              <div class="setting-item" @click="setting.enableDebug = !setting.enableDebug">
+                <span class="setting-label">启用调试模式（输出更详细日志）</span>
+                <mdui-switch :checked="setting.enableDebug" @change="setting.enableDebug = \$event.target.checked" @click.stop></mdui-switch>
+              </div>
+              <div class="setting-item" @click="setting.TxtDownload = !setting.TxtDownload">
+                <span class="setting-label">下载 Txt 文件</span>
+                <mdui-switch :checked="setting.TxtDownload" @change="setting.TxtDownload = \$event.target.checked" @click.stop></mdui-switch>
+              </div>
+              <div class="setting-item" @click="setting.EpubDownload = !setting.EpubDownload">
+                <span class="setting-label">下载 Epub 文件</span>
+                <mdui-switch :checked="setting.EpubDownload" @change="setting.EpubDownload = \$event.target.checked" @click.stop></mdui-switch>
+              </div>
+              <div class="setting-item" @click="setting.enableTestPage = !setting.enableTestPage">
+                <span class="setting-label">启用测试视图</span>
+                <mdui-switch :checked="setting.enableTestPage" @change="setting.enableTestPage = \$event.target.checked" @click.stop></mdui-switch>
+              </div>
+
+          <mdui-divider></mdui-divider>
+
+          <div class="setting-section">
+            <h3 class="section-title">自定义下载参数</h3>
+            <div class="setting-item" @click="setting.customDownload = !setting.customDownload">
+              <span class="setting-label">启用自定义下载设置</span>
+              <mdui-switch :checked="setting.customDownload" @change="setting.customDownload = \$event.target.checked" @click.stop></mdui-switch>
+            </div>
+            <div class="setting-grid" v-show="setting.customDownload">
+              <mdui-text-field :value="setting.concurrencyLimit" @input="setting.concurrencyLimit = Number(\$event.target.value)" label="并行下载线程数" type="number" variant="outlined"></mdui-text-field>
+              <mdui-text-field :value="setting.sleepTime" @input="setting.sleepTime = Number(\$event.target.value)" label="下载间隔 (ms)" type="number" variant="outlined"></mdui-text-field>
+              <mdui-text-field :value="setting.maxSleepTime" @input="setting.maxSleepTime = Number(\$event.target.value)" variant="outlined" class="full-width-field"></mdui-text-field>
+            </div>
+          </div>
+
+          <mdui-divider></mdui-divider>
+
+          <div class="setting-section">
+            <h3 class="section-title">自定义保存参数</h3>
+            <mdui-radio-group :value="setting.chooseSaveOption" @change="setting.chooseSaveOption = \$event.target.value">
+              <mdui-radio v-for="item of saveOptions" v-bind:key="item.key" v-bind:value="item.key">{{ item.value }}</mdui-radio>
+            </mdui-radio-group>
+          </div>
+        </div></div></mdui-tab-panel>
+
+        <mdui-tab-panel slot="panel" value="tab-2" class="tab-panel">
+          <filter-tab v-on:filterupdate="saveFilter">
+        </mdui-tab-panel>
+
+        <mdui-tab-panel v-if="setting.enableTestPage" slot="panel" value="tab-3" class="tab-panel">
+          <test-ui></test-ui>
+        </mdui-tab-panel>
+
+        <mdui-tab-panel v-if="setting.enableTestPage" slot="panel" value="tab-4" class="tab-panel">
+          <log-ui></log-ui>
+        </mdui-tab-panel>
+      </mdui-tabs>
+    </div>
+
+    <mdui-button slot="action" variant="text" v-on:click="closeSetting">取消</mdui-button>
+    <mdui-button slot="action" variant="tonal" v-on:click="closeAndSaveSetting">保存</mdui-button>
+  </mdui-dialog>
+</div>
+`;
+// Exports
+/* harmony default export */ const setting = (setting_code);
+// EXTERNAL MODULE: ./src/ui/setting.less
+var ui_setting = __webpack_require__("./src/ui/setting.less");
+// EXTERNAL MODULE: ./src/lib/attachments.ts + 1 modules
+var attachments = __webpack_require__("./src/lib/attachments.ts");
+;// ./src/ui/TestUI.html
+// Module
+var TestUI_code = `<div>
+  <div id="test-page-div">
+    <h2>元数据</h2>
+    <mdui-card variant="outlined" style="padding: 12px; margin-bottom: 16px;">
+      <table>
+        <tbody>
+          <tr v-for="(value, key) in metaData">
+            <td>{{ key }}</td>
+            <td v-html="getData(key, value)"></td>
+          </tr>
+        </tbody>
+      </table>
+    </mdui-card>
+
+    <mdui-divider></mdui-divider>
+
+    <h2>章节测试</h2>
+    <div class="preview-chapter-setting">
+      <mdui-text-field v-model="chapterNumber" label="预览章节序号" type="text" variant="outlined" style="flex: 1;"></mdui-text-field>
+      <mdui-button @click="previewChapter" :disabled="isLoading" variant="tonal">预览</mdui-button>
+    </div>
+    <div v-if="isLoading" class="loading-spinner">
+      <div class="nd-spinner"></div>
+      <p>正在加载章节中...</p>
+    </div>
+    <div v-else-if="this.isSeenChapter(chapter)">
+      <h4>
+        <a rel="noopener noreferrer" target="_blank" v-bind:href="chapter.chapterUrl">{{ chapter.chapterName }}</a>
+      </h4>
+      <div class="chapter" v-html="getChapterHtml(chapter)"></div>
+    </div>
+    <div v-else>
+      <p v-if="this.isChapterFailed(chapter)">章节加载失败！</p>
+      <p v-else>请输入章节序号并点击预览</p>
+    </div>
+  </div>
+</div>
+`;
+// Exports
+/* harmony default export */ const TestUI = (TestUI_code);
+// EXTERNAL MODULE: ./src/ui/TestUI.less
+var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
+;// ./src/ui/TestUI.ts
+
+
+
+
+
+
+
+/* harmony default export */ const src_ui_TestUI = ((0,external_Vue_.defineComponent)({
+    name: "TestUI",
+    setup() {
+        const book = (0,external_Vue_.reactive)({});
+        const isLoading = (0,external_Vue_.ref)(false);
+        async function waitBook() {
+            while (true) {
+                await (0,misc/* sleep */.yy)(500);
+                if (window._book) {
+                    return window._book;
+                }
+            }
+        }
+        const metaData = (0,external_Vue_.reactive)({});
+        function getData(key, value) {
+            if (key === "封面") {
+                return `<img src="${value[0]}" alt="${value[1]}">`;
+            }
+            if (key === "简介" && value instanceof HTMLElement) {
+                return value.outerHTML;
+            }
+            if (key === "网址" && typeof value === "string") {
+                return `<a href="${value}">${value}</a>`;
+            }
+            return value;
+        }
+        const chapter = (0,external_Vue_.reactive)({});
+        const chapterNumber = (0,external_Vue_.ref)(-99);
+        function getInitChapterNumber() {
+            if (book) {
+                const chapters = book.chapters;
+                const cns = chapters
+                    .filter((c) => {
+                    if (c.status === main/* Status */.nW.aborted) {
+                        return false;
+                    }
+                    if (c.isVIP && c.isPaid !== true) {
+                        return false;
+                    }
+                    return true;
+                })
+                    .map((c) => c.chapterNumber);
+                cns.sort();
+                return cns.slice(-3)[0];
+            }
+        }
+        async function initChapter(n) {
+            const chapters = book.chapters;
+            const _chapter = chapters.filter((c) => c.chapterNumber === n)[0];
+            if (_chapter) {
+                if (_chapter.status === main/* Status */.nW.pending) {
+                    await _chapter.init();
+                    Object.assign(chapter, _chapter);
+                }
+                else {
+                    Object.assign(chapter, _chapter);
+                }
+            }
+        }
+        async function previewChapter() {
+            isLoading.value = true;
+            try {
+                let n = chapterNumber.value;
+                if (typeof n === "string") {
+                    n = parseInt(n, 10);
+                }
+                if (!isNaN(n) && n !== -99) {
+                    await initChapter(n);
+                }
+            }
+            finally {
+                isLoading.value = false;
+            }
+        }
+        function isSeenChapter(_chapter) {
+            return _chapter.status === main/* Status */.nW.finished;
+        }
+        function isChapterFailed(_chapter) {
+            return (_chapter.status === main/* Status */.nW.failed || _chapter.status === main/* Status */.nW.aborted);
+        }
+        function getChapterHtml(_chapter) {
+            const html = _chapter.contentHTML?.cloneNode(true);
+            const nodes = html?.querySelectorAll("img, audio");
+            if (nodes) {
+                Array.from(nodes).forEach((node) => {
+                    const url = node.title || node.alt;
+                    node.src = getObjectUrl(url);
+                });
+            }
+            return html?.outerHTML;
+        }
+        (0,external_Vue_.onMounted)(async () => {
+            const _book = await waitBook();
+            Object.assign(book, _book);
+            const coverUrl = _book?.additionalMetadate?.cover?.url ?? "";
+            const coverSrc = coverUrl ? getObjectUrl(coverUrl) : "";
+            const _metaData = {
+                封面: [coverSrc, coverUrl],
+                题名: _book?.bookname ?? "None",
+                作者: _book?.author ?? "None",
+                网址: _book?.bookUrl,
+                简介: _book?.introductionHTML ?? "",
+            };
+            Object.assign(metaData, _metaData);
+            const cn = getInitChapterNumber();
+            if (cn) {
+                chapterNumber.value = cn;
+            }
+            if (!coverSrc) {
+                const maxWait = 10000;
+                const startTime = Date.now();
+                const pollCover = async () => {
+                    if (Date.now() - startTime > maxWait)
+                        return;
+                    const newCoverUrl = book?.additionalMetadate?.cover?.url ?? "";
+                    if (newCoverUrl) {
+                        const newCoverSrc = getObjectUrl(newCoverUrl);
+                        if (newCoverSrc) {
+                            metaData["封面"] = [newCoverSrc, newCoverUrl];
+                            return;
+                        }
+                    }
+                    await (0,misc/* sleep */.yy)(300);
+                    pollCover();
+                };
+                pollCover();
+            }
+        });
+        function getObjectUrl(url) {
+            const attachment = (0,attachments/* getAttachmentClassCache */._s)(url);
+            if (attachment?.Blob) {
+                const blob = attachment.Blob;
+                const src = URL.createObjectURL(blob);
+                return src;
+            }
+            return "";
+        }
+        return {
+            metaData,
+            getData,
+            chapter,
+            isSeenChapter,
+            isChapterFailed,
+            getChapterHtml,
+            chapterNumber,
+            previewChapter,
+            isLoading,
+        };
+    },
+    template: TestUI,
+}));
+const TestUI_style = (0,dom/* createStyle */._r)(ui_TestUI/* default */.A);
+
+;// ./src/ui/setting.ts
+
+
+
+
+
+
+
+
+
+
+
+
+const setting_style = (0,dom/* createStyle */._r)(ui_setting/* default */.A);
+const el = (0,dom/* createEl */.a_)(`<div id="setting"></div>`);
+const app = (0,external_Vue_.createApp)({
+    name: "nd-setting",
+    components: { "filter-tab": src_ui_FilterTab, "log-ui": LogUI, "test-ui": src_ui_TestUI },
+    setup() {
+        const setting = (0,external_Vue_.reactive)({});
+        let settingBackup = {};
+        const saveOptions = [
+            { key: "null", value: "不使用自定义保存参数", options: {} },
+            {
+                key: "chapter_name",
+                value: "将章节名称格式修改为 第xx章 xxxx",
+                options: {
+                    getchapterName: (chapter) => {
+                        if (chapter.chapterName) {
+                            return `第${chapter.chapterNumber.toString()}章 ${chapter.chapterName}`;
+                        }
+                        else {
+                            return `第${chapter.chapterNumber.toString()}章`;
+                        }
+                    },
+                },
+            },
+            {
+                key: "txt_space",
+                value: "txt文档每个自然段前加两个空格",
+                options: {
+                    genChapterText: (chapterName, contentText) => {
+                        contentText = contentText
+                            .split("\n")
+                            .map((line) => {
+                            if (line.trim() === "") {
+                                return line;
+                            }
+                            else {
+                                return line.replace(/^/, "    ");
+                            }
+                        })
+                            .join("\n");
+                        return `## ${chapterName}\n\n${contentText}\n\n`;
+                    },
+                },
+            },
+            {
+                key: "epub_space",
+                value: "epub文档删除章节空行",
+                options: {
+                    genChapterEpub: (contentXHTML) => {
+                        return contentXHTML.replaceAll("<p><br /></p>", "")
+                            .replaceAll("<p><br/></p>", "")
+                            .replaceAll(/(<br\s*\/?>\s*)+/g, "<br />");
+                    },
+                },
+            },
+            {
+                key: "reverse_chapters",
+                value: "保存章节时倒序排列",
+                options: {
+                    chapterSort: (a, b) => {
+                        if (a.chapterNumber > b.chapterNumber) {
+                            return -1;
+                        }
+                        if (a.chapterNumber === b.chapterNumber) {
+                            return 0;
+                        }
+                        if (a.chapterNumber < b.chapterNumber) {
+                            return 1;
+                        }
+                        return 0;
+                    },
+                },
+            },
+        ];
+        setting.enableDebug = GM_getValue('enableDebug', src_setting/* enableDebug */.Nw.value);
+        src_setting/* enableDebug */.Nw.value = setting.enableDebug ?? src_setting/* enableDebug */.Nw.value;
+        src_setting/* enableDebug */.Nw.value ? loglevel_default().setLevel("trace") : loglevel_default().setLevel("info");
+        if (src_setting/* enableDebug */.Nw.value) {
+            debug();
+        }
+        setting.TxtDownload = GM_getValue('TxtDownload', src_setting/* TxtDownload */.Jv.value);
+        src_setting/* TxtDownload */.Jv.value = setting.TxtDownload ?? src_setting/* TxtDownload */.Jv.value;
+        setting.EpubDownload = GM_getValue('EpubDownload', src_setting/* EpubDownload */.Zz.value);
+        src_setting/* EpubDownload */.Zz.value = setting.EpubDownload ?? src_setting/* EpubDownload */.Zz.value;
+        setting.customDownload = GM_getValue('customDownload', false);
+        src_setting/* customDownload */.WZ.value = setting.customDownload ?? src_setting/* customDownload */.WZ.value;
+        setting.concurrencyLimit = GM_getValue('concurrencyLimit', src_setting/* concurrencyLimit */.ri.value);
+        src_setting/* concurrencyLimit */.ri.value = setting.concurrencyLimit ?? src_setting/* concurrencyLimit */.ri.value;
+        setting.sleepTime = GM_getValue('sleepTime', src_setting/* sleepTime */.Xl.value);
+        src_setting/* sleepTime */.Xl.value = setting.sleepTime ?? src_setting/* sleepTime */.Xl.value;
+        setting.maxSleepTime = GM_getValue('maxSleepTime', src_setting/* maxSleepTime */.Fe.value);
+        src_setting/* maxSleepTime */.Fe.value = setting.maxSleepTime ?? src_setting/* maxSleepTime */.Fe.value;
+        setting.enableTestPage = GM_getValue('enableTestPage', false);
+        setting.chooseSaveOption = GM_getValue('chooseSaveOption', 'null');
+        setting.filterSetting = GM_getValue('filterSetting', undefined);
+        setting.currentTab = GM_getValue('currentTab', 'tab-1');
+        let isOverWriteSaveOptions = false;
+        const curSaveOption = () => {
+            const _s = saveOptions.find((s) => s.key === setting.chooseSaveOption);
+            if (_s) {
+                isOverWriteSaveOptions = true;
+                return _s.options;
+            }
+            else {
+                return saveOptions[0].options;
+            }
+        };
+        if (isOverWriteSaveOptions)
+            unsafeWindow.saveOptions = curSaveOption();
+        const closeDialog = () => {
+            document.querySelector("#nd-shadow-host")?.shadowRoot?.querySelector("dialog-ui")?.setAttribute("status", "false");
+        };
+        const saveFilter = (filterSetting) => {
+            setting.filterSetting = (0,misc/* deepcopy */.OJ)(filterSetting);
+            GM_setValue('filterSetting', setting.filterSetting);
+            closeDialog();
+        };
+        const getFilterSetting = () => {
+            if (setting.filterSetting) {
+                return setting.filterSetting;
+            }
+            else {
+                return;
+            }
+        };
+        (0,external_Vue_.provide)("getFilterSetting", getFilterSetting);
+        const setConfig = (config) => {
+            setEnableDebug();
+            setTxtDownload();
+            setEpubDownload();
+            setCustomDownloadOption();
+            setCustomSaveOption();
+            setCustomFilter();
+            saveAllSettings();
+            function setEnableDebug() {
+                if (typeof config.enableDebug === "boolean") {
+                    config.enableDebug ? loglevel_default().setLevel("trace") : loglevel_default().setLevel("info");
+                    src_setting/* enableDebug */.Nw.value = config.enableDebug;
+                    if (config.enableDebug) {
+                        debug();
+                    }
+                    loglevel_default().info(`[Init]enableDebug: ${src_setting/* enableDebug */.Nw.value}`);
+                }
+            }
+            function setTxtDownload() {
+                if (typeof config.TxtDownload === "boolean") {
+                    src_setting/* TxtDownload */.Jv.value = config.TxtDownload;
+                    loglevel_default().info(`[Init]TxtDownload: ${src_setting/* TxtDownload */.Jv.value}`);
+                }
+            }
+            function setEpubDownload() {
+                if (typeof config.EpubDownload === "boolean") {
+                    src_setting/* EpubDownload */.Zz.value = config.EpubDownload;
+                    loglevel_default().info(`[Init]EpubDownload: ${src_setting/* EpubDownload */.Zz.value}`);
+                }
+            }
+            function setCustomDownloadOption() {
+                if (typeof config.customDownload === "boolean") {
+                    src_setting/* customDownload */.WZ.value = config.customDownload;
+                    loglevel_default().info(`[Init]customDownload: ${src_setting/* customDownload */.WZ.value}`);
+                }
+                if (typeof config.concurrencyLimit === "number") {
+                    src_setting/* concurrencyLimit */.ri.value = config.concurrencyLimit;
+                    loglevel_default().info(`[Init]concurrencyLimit: ${src_setting/* concurrencyLimit */.ri.value}`);
+                }
+                if (typeof config.sleepTime === "number") {
+                    src_setting/* sleepTime */.Xl.value = config.sleepTime;
+                    loglevel_default().info(`[Init]sleepTime: ${src_setting/* sleepTime */.Xl.value}`);
+                }
+                if (typeof config.maxSleepTime === "number") {
+                    src_setting/* maxSleepTime */.Fe.value = config.maxSleepTime;
+                    loglevel_default().info(`[Init]maxSleepTime: ${src_setting/* maxSleepTime */.Fe.value}`);
+                }
+            }
+            function setCustomSaveOption() {
+                unsafeWindow.saveOptions = curSaveOption();
+            }
+            function setCustomFilter() {
+                if (config.filterSetting) {
+                    if (config.filterSetting.filterType === "null") {
+                        unsafeWindow.chapterFilter = undefined;
+                    }
+                    else {
+                        const filterFunction = getFilterFunction(config.filterSetting.arg, config.filterSetting.functionBody);
+                        if (filterFunction) {
+                            unsafeWindow.chapterFilter = (chapter) => {
+                                if (chapter.status === main/* Status */.nW.aborted) {
+                                    return false;
+                                }
+                                return filterFunction(chapter);
+                            };
+                        }
+                    }
+                }
+            }
+            function saveAllSettings() {
+                GM_setValue('enableDebug', config.enableDebug);
+                GM_setValue('TxtDownload', config.TxtDownload);
+                GM_setValue('EpubDownload', config.EpubDownload);
+                GM_setValue('customDownload', config.customDownload);
+                GM_setValue('concurrencyLimit', config.concurrencyLimit);
+                GM_setValue('sleepTime', config.sleepTime);
+                GM_setValue('maxSleepTime', config.maxSleepTime);
+                GM_setValue('enableTestPage', config.enableTestPage);
+                GM_setValue('chooseSaveOption', config.chooseSaveOption);
+                GM_setValue('filterSetting', config.filterSetting);
+                GM_setValue('currentTab', config.currentTab);
+            }
+        };
+        const openStatus = (0,external_Vue_.ref)("false");
+        const openSetting = () => {
+            settingBackup = (0,misc/* deepcopy */.OJ)(setting);
+            openStatus.value = "true";
+        };
+        const closeSetting = (keep) => {
+            if (keep === true) {
+                settingBackup = (0,misc/* deepcopy */.OJ)(setting);
+            }
+            else {
+                Object.assign(setting, settingBackup);
+            }
+            openStatus.value = "false";
+        };
+        const onSettingClosed = (event) => {
+            if (event && event.target !== event.currentTarget) {
+                return;
+            }
+            closeSetting();
+        };
+        const onTabChange = (event) => {
+            const detail = event.detail;
+            if (detail?.value) {
+                setting.currentTab = detail.value;
+            }
+        };
+        const closeAndSaveSetting = async () => {
+            closeSetting(true);
+            await (0,misc/* sleep */.yy)(30);
+            setConfig((0,misc/* deepcopy */.OJ)(setting));
+            loglevel_default().info("[Init]自定义设置：" + JSON.stringify(setting));
+        };
+        return {
+            openStatus,
+            openSetting,
+            closeSetting,
+            onSettingClosed,
+            onTabChange,
+            closeAndSaveSetting,
+            saveFilter,
+            setting,
+            saveOptions,
+        };
+    },
+    template: setting,
+});
+app.config.compilerOptions.isCustomElement = (tag) => tag.startsWith("mdui-");
+const vm = app.mount(el);
+
+;// ./src/ui/button.ts
+
+
+
+
+
+
+
+
+
+
+const button_style = (0,dom/* createStyle */._r)(src_ui_button/* default */.A, "button-div-style");
+const button_el = (0,dom/* createEl */.a_)('<div id="nd-button"></div>');
+const button_app = (0,external_Vue_.createApp)({
+    data() {
+        return {
+            imgStart: src_setting/* iconStart0 */.Og,
+            imgSetting: src_setting/* iconSetting */.w1,
+            imgJump: src_setting/* iconJump */.GM,
+            isSettingSeen: GM/* _GM_info */.JX.scriptHandler !== "Greasemonkey",
+            uiObj: { type: "download" },
+        };
+    },
+    methods: {
+        startButtonClick() {
+            if (window.downloading) {
+                alert("正在下载中，请耐心等待……");
+                return;
+            }
+            const self = this;
+            self.imgStart = src_setting/* iconStart1 */.HE;
+            async function run() {
+                const ruleClass = await getRule();
+                await ruleClass.run();
+            }
+            run()
+                .then(() => {
+                self.imgStart = src_setting/* iconStart0 */.Og;
+            })
+                .catch((error) => loglevel_default().error(error));
+        },
+        settingButtonClick() {
+            vm.openSetting();
+        },
+        jumpButtonClick() {
+            this.uiObj.jumpFunction();
+        },
+    },
+    mounted() {
+        Object.assign(this.uiObj, getUI()());
+        if (typeof this.uiObj.isSettingSeen !== "undefined") {
+            this.isSettingSeen = this.uiObj.isSettingSeen;
+        }
+    },
+    template: ui_button,
+});
+button_app.config.compilerOptions.isCustomElement = (tag) => tag.startsWith("mdui-");
+const button_vm = button_app.mount(button_el);
+
+// EXTERNAL MODULE: ./src/ui/dialog.css
+var dialog = __webpack_require__("./src/ui/dialog.css");
+;// ./src/ui/dialog.html
+// Module
+var dialog_code = `<mdui-dialog v-bind:open="myPrivateStatus" v-bind:headline="dialogTitle" close-on-overlay-click close-on-esc v-on:closed="onDialogClosed(\$event)">
+  <slot></slot>
+  <button slot="header" v-on:click="dialogClose" class="nd-dialog-close" title="关闭">&times;</button>
+</mdui-dialog>
+`;
+// Exports
+/* harmony default export */ const ui_dialog = (dialog_code);
+;// ./src/ui/dialog.ts
+
+
+
+/* harmony default export */ const src_ui_dialog = ((0,external_Vue_.defineCustomElement)({
+    name: "Dialog",
+    props: {
+        dialogTitle: String,
+        status: String,
+    },
+    emits: ["dialogclose"],
+    data() {
+        return {
+            myPrivateStatus: this.status === "true",
+        };
+    },
+    methods: {
+        dialogClose() {
+            this.myPrivateStatus = false;
+            this.$emit("dialogclose");
+        },
+        onDialogClosed(event) {
+            if (event && event.target !== event.currentTarget) {
+                return;
+            }
+            this.myPrivateStatus = false;
+            this.$emit("dialogclose");
+        },
+    },
+    mounted() {
+        this.myPrivateStatus = this.status === "true";
+    },
+    watch: {
+        status() {
+            this.myPrivateStatus = this.status === "true";
+        },
+    },
+    template: ui_dialog,
+    styles: [dialog/* default */.A],
+}));
+
+// EXTERNAL MODULE: ./src/ui/mdui.css
+var ui_mdui = __webpack_require__("./src/ui/mdui.css");
+// EXTERNAL MODULE: ./src/ui/progress.ts + 1 modules
+var progress = __webpack_require__("./src/ui/progress.ts");
+;// ./src/ui/theme.ts
+async function initTheme(shadowHost) {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const updateTheme = () => {
+        try {
+            if (mediaQuery.matches) {
+                mdui.setTheme("dark", shadowHost);
+            }
+            else {
+                mdui.setTheme("light", shadowHost);
+            }
+        }
+        catch (e) {
+            console.warn("Failed to set theme:", e);
+        }
+    };
+    updateTheme();
+    try {
+        const color = await extractPagePrimaryColor();
+        if (color) {
+            mdui.setColorScheme(color, { target: shadowHost });
+        }
+    }
+    catch {
+    }
+    mediaQuery.addEventListener("change", updateTheme);
+}
+async function extractPagePrimaryColor() {
+    function isVibrantStr(colorStr) {
+        if (!colorStr)
+            return false;
+        let r = 0, g = 0, b = 0;
+        if (colorStr.startsWith("#")) {
+            let hex = colorStr.slice(1);
+            if (hex.length === 3)
+                hex = hex.split("").map(c => c + c).join("");
+            r = parseInt(hex.substring(0, 2), 16);
+            g = parseInt(hex.substring(2, 4), 16);
+            b = parseInt(hex.substring(4, 6), 16);
+        }
+        else {
+            const match = colorStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+            if (match) {
+                r = parseInt(match[1], 10);
+                g = parseInt(match[2], 10);
+                b = parseInt(match[3], 10);
+            }
+            else {
+                return false;
+            }
+        }
+        const max = Math.max(r, g, b) / 255;
+        const min = Math.min(r, g, b) / 255;
+        const l = (max + min) / 2;
+        if (l < 0.15 || l > 0.85)
+            return false;
+        const d = max - min;
+        const s = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
+        return s > 0.15;
+    }
+    const iconLinks = Array.from(document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"], link[rel*="icon"]'));
+    for (const link of iconLinks) {
+        if (link.href) {
+            try {
+                const color = await mdui.getColorFromImage(link.href);
+                if (isVibrantStr(color))
+                    return color;
+            }
+            catch {
+            }
+        }
+    }
+    const coverUrl = document.querySelector('meta[property="og:image"]')?.content
+        || Array.from(document.querySelectorAll('img')).find(img => {
+            const s = (img.src + img.className + img.alt + img.id).toLowerCase();
+            return s.includes('cover') || s.includes('fengmian') || s.includes('封面');
+        })?.src;
+    if (coverUrl) {
+        try {
+            const color = await mdui.getColorFromImage(coverUrl);
+            if (isVibrantStr(color))
+                return color;
+        }
+        catch {
+        }
+    }
+    const themeColorMeta = document.querySelector('meta[name="theme-color"], meta[name="msapplication-TileColor"]');
+    if (themeColorMeta) {
+        const color = themeColorMeta.getAttribute("content");
+        if (isVibrantStr(color))
+            return color;
+    }
+    try {
+        const bodyBg = window.getComputedStyle(document.body).backgroundColor;
+        if (isVibrantStr(bodyBg))
+            return bodyBg;
+        const links = document.querySelectorAll("a");
+        for (let i = 0; i < Math.min(links.length, 10); i++) {
+            const linkColor = window.getComputedStyle(links[i]).color;
+            if (isVibrantStr(linkColor))
+                return linkColor;
+        }
+    }
+    catch {
+        console.warn("Failed to extract page color");
+    }
+    return undefined;
+}
+
+;// ./src/ui/ui.ts
+
+
+
+
+
+
+
+
+
+function register() {
+    customElements.define("dialog-ui", src_ui_dialog);
+}
+function injectMduiStyles(shadowRoot) {
+    const styleEl = document.createElement("style");
+    styleEl.textContent = ui_mdui/* default */.A;
+    shadowRoot.prepend(styleEl);
+}
+async function ui_init() {
+    register();
+    const shadowHost = document.createElement("div");
+    shadowHost.id = "nd-shadow-host";
+    document.body.appendChild(shadowHost);
+    const shadowRoot = shadowHost.attachShadow({ mode: "open" });
+    injectMduiStyles(shadowRoot);
+    shadowRoot.appendChild(button_el);
+    shadowRoot.appendChild(progress.el);
+    shadowRoot.appendChild(el);
+    shadowRoot.appendChild(button_style);
+    shadowRoot.appendChild(progress/* style */.i);
+    shadowRoot.appendChild(setting_style);
+    shadowRoot.appendChild(FilterTab_style);
+    shadowRoot.appendChild(style);
+    shadowRoot.appendChild(TestUI_style);
+    initTheme(shadowHost);
+}
+
+;// ./src/bootstrap/top.ts
+
+
+
+
+
+async function printEnvironments() {
+    loglevel_default().info("[Init]开始载入小说下载器……");
+    Object.entries(await environments()).forEach((kv) => loglevel_default().info("[Init]" + kv.join("：")));
+}
+async function top_main(ev) {
+    if (ev) {
+        document.removeEventListener(ev.type, top_main);
+    }
+    init();
+    await printEnvironments();
+    await ui_init();
+}
+async function run() {
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", top_main);
+    }
+    else {
+        await top_main();
+    }
+}
 
 
 /***/ },
@@ -11557,10 +12928,8 @@ async function getFrameContentConditionWithWindow(url, stopCondition, sandboxs) 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   N4: () => (/* binding */ randomUUID),
-/* harmony export */   OH: () => (/* binding */ mimetyepToCompressible),
 /* harmony export */   OJ: () => (/* binding */ deepcopy),
 /* harmony export */   ZA: () => (/* binding */ saveToArchiveOrg),
-/* harmony export */   dB: () => (/* binding */ extensionToMimetype),
 /* harmony export */   rr: () => (/* binding */ concurrencyRun),
 /* harmony export */   y1: () => (/* binding */ range),
 /* harmony export */   yy: () => (/* binding */ sleep)
@@ -11568,7 +12937,6 @@ async function getFrameContentConditionWithWindow(url, stopCondition, sandboxs) 
 /* unused harmony exports regexpEscape, mean, sd */
 /* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/main/main.ts");
 /* harmony import */ var _GM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/GM.ts");
-/* harmony import */ var mime_db__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/mime-db/index.js");
 
 
 
@@ -11660,23 +13028,6 @@ function randomUUID() {
     else {
         return createUUID();
     }
-}
-function extensionToMimetype(ext) {
-    for (const [mimetype, entry] of Object.entries(mime_db__WEBPACK_IMPORTED_MODULE_2__)) {
-        if (entry.extensions?.includes(ext)) {
-            return mimetype;
-        }
-    }
-    return "application/octet-stream";
-}
-function mimetyepToCompressible(mimeType) {
-    if (mime_db__WEBPACK_IMPORTED_MODULE_2__[mimeType]) {
-        const entry = mime_db__WEBPACK_IMPORTED_MODULE_2__[mimeType];
-        if (entry["compressible"]) {
-            return entry["compressible"];
-        }
-    }
-    return false;
 }
 function range(size, startAt = 0) {
     return [...Array(size).keys()].map((i) => i + startAt);
@@ -12569,6 +13920,54 @@ var sgc_toc = __webpack_require__("./src/save/sgc-toc.css");
 var web = __webpack_require__("./src/save/web.css");
 // EXTERNAL MODULE: ./src/lib/GM.ts
 var GM = __webpack_require__("./src/lib/GM.ts");
+;// ./src/lib/mimeDbLite.ts
+const TABLE = {
+    "application/epub+zip": { extensions: ["epub"], compressible: false },
+    "application/json": { extensions: ["json"], compressible: true },
+    "application/oebps-package+xml": { extensions: ["opf"], compressible: true },
+    "application/octet-stream": { extensions: ["bin"], compressible: false },
+    "application/pdf": { extensions: ["pdf"], compressible: false },
+    "application/x-dtbncx+xml": { extensions: ["ncx"], compressible: true },
+    "application/xhtml+xml": { extensions: ["xhtml", "xht"], compressible: true },
+    "application/xml": { extensions: ["xml", "xsl", "xsd"], compressible: true },
+    "application/zip": { extensions: ["zip"], compressible: false },
+    "font/otf": { extensions: ["otf"], compressible: true },
+    "font/ttf": { extensions: ["ttf"], compressible: true },
+    "font/woff": { extensions: ["woff"], compressible: false },
+    "font/woff2": { extensions: ["woff2"], compressible: false },
+    "image/bmp": { extensions: ["bmp"], compressible: true },
+    "image/gif": { extensions: ["gif"], compressible: false },
+    "image/jpeg": { extensions: ["jpeg", "jpg", "jpe"], compressible: false },
+    "image/png": { extensions: ["png"], compressible: false },
+    "image/svg+xml": { extensions: ["svg", "svgz"], compressible: true },
+    "image/tiff": { extensions: ["tiff", "tif"], compressible: false },
+    "image/webp": { extensions: ["webp"], compressible: false },
+    "image/x-icon": { extensions: ["ico"], compressible: true },
+    "text/css": { extensions: ["css"], compressible: true },
+    "text/csv": { extensions: ["csv"], compressible: true },
+    "text/html": { extensions: ["html", "htm", "shtml"], compressible: true },
+    "text/javascript": { extensions: ["js", "mjs"], compressible: true },
+    "text/markdown": { extensions: ["md", "markdown"], compressible: true },
+    "text/plain": { extensions: ["txt", "text", "log", "conf", "ini"], compressible: true },
+    "text/xml": { extensions: ["xml"], compressible: true },
+};
+function extensionToMimetype(ext) {
+    if (!ext)
+        return "application/octet-stream";
+    const needle = ext.toLowerCase();
+    for (const [mimetype, entry] of Object.entries(TABLE)) {
+        if (entry.extensions.includes(needle))
+            return mimetype;
+    }
+    return "application/octet-stream";
+}
+function mimetyepToCompressible(mimeType) {
+    if (!mimeType)
+        return false;
+    const key = mimeType.toLowerCase().split(";")[0].trim();
+    return TABLE[key]?.compressible ?? false;
+}
+
 // EXTERNAL MODULE: external "fflate"
 var external_fflate_ = __webpack_require__("fflate");
 // EXTERNAL MODULE: ./node_modules/streamsaver/StreamSaver.js
@@ -12657,7 +14056,7 @@ class FflateZip {
         this.count++;
         const buffer = await fileBlob.arrayBuffer();
         const chunk = new Uint8Array(buffer);
-        if (!((0,misc/* mimetyepToCompressible */.OH)((0,misc/* extensionToMimetype */.dB)(filename.split(".").slice(-1)[0])) || (0,misc/* mimetyepToCompressible */.OH)(fileBlob.type)) ||
+        if (!(mimetyepToCompressible(extensionToMimetype(filename.split(".").slice(-1)[0])) || mimetyepToCompressible(fileBlob.type)) ||
             nocompress) {
             const nonStreamingFile = new external_fflate_.ZipPassThrough(filename);
             this.savedZip.add(nonStreamingFile);
@@ -13458,7 +14857,7 @@ class EPUB extends Options {
             const item = this.contentOpf.createElement("item");
             item.id = attachment.name;
             item.setAttribute("href", attachment.name);
-            const mimetype = (0,misc/* extensionToMimetype */.dB)(attachment.name.substring(attachment.name.lastIndexOf(".") + 1));
+            const mimetype = extensionToMimetype(attachment.name.substring(attachment.name.lastIndexOf(".") + 1));
             item.setAttribute("media-type", mimetype);
             if (!this.manifest.querySelector(`item[id="${attachment.name}"]`)) {
                 this.manifest.appendChild(item);
@@ -13528,7 +14927,7 @@ class Raw {
         this.book = book;
         if (this.book.saveType.raw instanceof Object) {
             const zipFilename = `[${this.book.author}]${this.book.bookname}.${this.book.saveType.raw.ext}`;
-            this.epubZip = new FflateZip(zipFilename, false, (0,misc/* extensionToMimetype */.dB)(this.book.saveType.raw.ext));
+            this.epubZip = new FflateZip(zipFilename, false, extensionToMimetype(this.book.saveType.raw.ext));
         }
         else {
             throw new Error("init raw save zip failed!");
@@ -21475,562 +22874,6 @@ __webpack_require__.d(__webpack_exports__, {
   Jjwxc: () => (/* binding */ Jjwxc)
 });
 
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/generator/token-before.js
-var token_before_namespaceObject = {};
-__webpack_require__.r(token_before_namespaceObject);
-__webpack_require__.d(token_before_namespaceObject, {
-  safe: () => (safe),
-  spec: () => (spec)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/lexer/units.js
-var units_namespaceObject = {};
-__webpack_require__.r(units_namespaceObject);
-__webpack_require__.d(units_namespaceObject, {
-  angle: () => (angle),
-  decibel: () => (decibel),
-  flex: () => (flex),
-  frequency: () => (frequency),
-  length: () => (units_length),
-  resolution: () => (resolution),
-  semitones: () => (semitones),
-  time: () => (time)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/lexer/trace.js
-var trace_namespaceObject = {};
-__webpack_require__.r(trace_namespaceObject);
-__webpack_require__.d(trace_namespaceObject, {
-  getTrace: () => (getTrace),
-  isKeyword: () => (isKeyword),
-  isProperty: () => (isProperty),
-  isType: () => (isType)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/AnPlusB.js
-var AnPlusB_namespaceObject = {};
-__webpack_require__.r(AnPlusB_namespaceObject);
-__webpack_require__.d(AnPlusB_namespaceObject, {
-  generate: () => (AnPlusB_generate),
-  name: () => (AnPlusB_name),
-  parse: () => (AnPlusB_parse),
-  structure: () => (structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Atrule.js
-var Atrule_namespaceObject = {};
-__webpack_require__.r(Atrule_namespaceObject);
-__webpack_require__.d(Atrule_namespaceObject, {
-  generate: () => (Atrule_generate),
-  name: () => (Atrule_name),
-  parse: () => (Atrule_parse),
-  structure: () => (Atrule_structure),
-  walkContext: () => (walkContext)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/AtrulePrelude.js
-var AtrulePrelude_namespaceObject = {};
-__webpack_require__.r(AtrulePrelude_namespaceObject);
-__webpack_require__.d(AtrulePrelude_namespaceObject, {
-  generate: () => (AtrulePrelude_generate),
-  name: () => (AtrulePrelude_name),
-  parse: () => (AtrulePrelude_parse),
-  structure: () => (AtrulePrelude_structure),
-  walkContext: () => (AtrulePrelude_walkContext)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/AttributeSelector.js
-var AttributeSelector_namespaceObject = {};
-__webpack_require__.r(AttributeSelector_namespaceObject);
-__webpack_require__.d(AttributeSelector_namespaceObject, {
-  generate: () => (AttributeSelector_generate),
-  name: () => (AttributeSelector_name),
-  parse: () => (AttributeSelector_parse),
-  structure: () => (AttributeSelector_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Block.js
-var Block_namespaceObject = {};
-__webpack_require__.r(Block_namespaceObject);
-__webpack_require__.d(Block_namespaceObject, {
-  generate: () => (Block_generate),
-  name: () => (Block_name),
-  parse: () => (Block_parse),
-  structure: () => (Block_structure),
-  walkContext: () => (Block_walkContext)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Brackets.js
-var Brackets_namespaceObject = {};
-__webpack_require__.r(Brackets_namespaceObject);
-__webpack_require__.d(Brackets_namespaceObject, {
-  generate: () => (Brackets_generate),
-  name: () => (Brackets_name),
-  parse: () => (Brackets_parse),
-  structure: () => (Brackets_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/CDC.js
-var CDC_namespaceObject = {};
-__webpack_require__.r(CDC_namespaceObject);
-__webpack_require__.d(CDC_namespaceObject, {
-  generate: () => (CDC_generate),
-  name: () => (CDC_name),
-  parse: () => (CDC_parse),
-  structure: () => (CDC_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/CDO.js
-var CDO_namespaceObject = {};
-__webpack_require__.r(CDO_namespaceObject);
-__webpack_require__.d(CDO_namespaceObject, {
-  generate: () => (CDO_generate),
-  name: () => (CDO_name),
-  parse: () => (CDO_parse),
-  structure: () => (CDO_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/ClassSelector.js
-var ClassSelector_namespaceObject = {};
-__webpack_require__.r(ClassSelector_namespaceObject);
-__webpack_require__.d(ClassSelector_namespaceObject, {
-  generate: () => (ClassSelector_generate),
-  name: () => (ClassSelector_name),
-  parse: () => (ClassSelector_parse),
-  structure: () => (ClassSelector_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Combinator.js
-var Combinator_namespaceObject = {};
-__webpack_require__.r(Combinator_namespaceObject);
-__webpack_require__.d(Combinator_namespaceObject, {
-  generate: () => (Combinator_generate),
-  name: () => (Combinator_name),
-  parse: () => (Combinator_parse),
-  structure: () => (Combinator_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Comment.js
-var Comment_namespaceObject = {};
-__webpack_require__.r(Comment_namespaceObject);
-__webpack_require__.d(Comment_namespaceObject, {
-  generate: () => (Comment_generate),
-  name: () => (Comment_name),
-  parse: () => (Comment_parse),
-  structure: () => (Comment_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Declaration.js
-var Declaration_namespaceObject = {};
-__webpack_require__.r(Declaration_namespaceObject);
-__webpack_require__.d(Declaration_namespaceObject, {
-  generate: () => (Declaration_generate),
-  name: () => (Declaration_name),
-  parse: () => (Declaration_parse),
-  structure: () => (Declaration_structure),
-  walkContext: () => (Declaration_walkContext)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/DeclarationList.js
-var DeclarationList_namespaceObject = {};
-__webpack_require__.r(DeclarationList_namespaceObject);
-__webpack_require__.d(DeclarationList_namespaceObject, {
-  generate: () => (DeclarationList_generate),
-  name: () => (DeclarationList_name),
-  parse: () => (DeclarationList_parse),
-  structure: () => (DeclarationList_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Dimension.js
-var Dimension_namespaceObject = {};
-__webpack_require__.r(Dimension_namespaceObject);
-__webpack_require__.d(Dimension_namespaceObject, {
-  generate: () => (Dimension_generate),
-  name: () => (Dimension_name),
-  parse: () => (Dimension_parse),
-  structure: () => (Dimension_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Function.js
-var Function_namespaceObject = {};
-__webpack_require__.r(Function_namespaceObject);
-__webpack_require__.d(Function_namespaceObject, {
-  generate: () => (Function_generate),
-  name: () => (Function_name),
-  parse: () => (Function_parse),
-  structure: () => (Function_structure),
-  walkContext: () => (Function_walkContext)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Hash.js
-var Hash_namespaceObject = {};
-__webpack_require__.r(Hash_namespaceObject);
-__webpack_require__.d(Hash_namespaceObject, {
-  generate: () => (Hash_generate),
-  name: () => (Hash_name),
-  parse: () => (Hash_parse),
-  structure: () => (Hash_structure),
-  xxx: () => (xxx)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Identifier.js
-var Identifier_namespaceObject = {};
-__webpack_require__.r(Identifier_namespaceObject);
-__webpack_require__.d(Identifier_namespaceObject, {
-  generate: () => (Identifier_generate),
-  name: () => (Identifier_name),
-  parse: () => (Identifier_parse),
-  structure: () => (Identifier_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/IdSelector.js
-var IdSelector_namespaceObject = {};
-__webpack_require__.r(IdSelector_namespaceObject);
-__webpack_require__.d(IdSelector_namespaceObject, {
-  generate: () => (IdSelector_generate),
-  name: () => (IdSelector_name),
-  parse: () => (IdSelector_parse),
-  structure: () => (IdSelector_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/MediaFeature.js
-var MediaFeature_namespaceObject = {};
-__webpack_require__.r(MediaFeature_namespaceObject);
-__webpack_require__.d(MediaFeature_namespaceObject, {
-  generate: () => (MediaFeature_generate),
-  name: () => (MediaFeature_name),
-  parse: () => (MediaFeature_parse),
-  structure: () => (MediaFeature_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/MediaQuery.js
-var MediaQuery_namespaceObject = {};
-__webpack_require__.r(MediaQuery_namespaceObject);
-__webpack_require__.d(MediaQuery_namespaceObject, {
-  generate: () => (MediaQuery_generate),
-  name: () => (MediaQuery_name),
-  parse: () => (MediaQuery_parse),
-  structure: () => (MediaQuery_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/MediaQueryList.js
-var MediaQueryList_namespaceObject = {};
-__webpack_require__.r(MediaQueryList_namespaceObject);
-__webpack_require__.d(MediaQueryList_namespaceObject, {
-  generate: () => (MediaQueryList_generate),
-  name: () => (MediaQueryList_name),
-  parse: () => (MediaQueryList_parse),
-  structure: () => (MediaQueryList_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/NestingSelector.js
-var NestingSelector_namespaceObject = {};
-__webpack_require__.r(NestingSelector_namespaceObject);
-__webpack_require__.d(NestingSelector_namespaceObject, {
-  generate: () => (NestingSelector_generate),
-  name: () => (NestingSelector_name),
-  parse: () => (NestingSelector_parse),
-  structure: () => (NestingSelector_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Nth.js
-var Nth_namespaceObject = {};
-__webpack_require__.r(Nth_namespaceObject);
-__webpack_require__.d(Nth_namespaceObject, {
-  generate: () => (Nth_generate),
-  name: () => (Nth_name),
-  parse: () => (Nth_parse),
-  structure: () => (Nth_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Number.js
-var Number_namespaceObject = {};
-__webpack_require__.r(Number_namespaceObject);
-__webpack_require__.d(Number_namespaceObject, {
-  generate: () => (Number_generate),
-  name: () => (Number_name),
-  parse: () => (Number_parse),
-  structure: () => (Number_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Operator.js
-var Operator_namespaceObject = {};
-__webpack_require__.r(Operator_namespaceObject);
-__webpack_require__.d(Operator_namespaceObject, {
-  generate: () => (Operator_generate),
-  name: () => (Operator_name),
-  parse: () => (Operator_parse),
-  structure: () => (Operator_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Parentheses.js
-var Parentheses_namespaceObject = {};
-__webpack_require__.r(Parentheses_namespaceObject);
-__webpack_require__.d(Parentheses_namespaceObject, {
-  generate: () => (Parentheses_generate),
-  name: () => (Parentheses_name),
-  parse: () => (Parentheses_parse),
-  structure: () => (Parentheses_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Percentage.js
-var Percentage_namespaceObject = {};
-__webpack_require__.r(Percentage_namespaceObject);
-__webpack_require__.d(Percentage_namespaceObject, {
-  generate: () => (Percentage_generate),
-  name: () => (Percentage_name),
-  parse: () => (Percentage_parse),
-  structure: () => (Percentage_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/PseudoClassSelector.js
-var PseudoClassSelector_namespaceObject = {};
-__webpack_require__.r(PseudoClassSelector_namespaceObject);
-__webpack_require__.d(PseudoClassSelector_namespaceObject, {
-  generate: () => (PseudoClassSelector_generate),
-  name: () => (PseudoClassSelector_name),
-  parse: () => (PseudoClassSelector_parse),
-  structure: () => (PseudoClassSelector_structure),
-  walkContext: () => (PseudoClassSelector_walkContext)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/PseudoElementSelector.js
-var PseudoElementSelector_namespaceObject = {};
-__webpack_require__.r(PseudoElementSelector_namespaceObject);
-__webpack_require__.d(PseudoElementSelector_namespaceObject, {
-  generate: () => (PseudoElementSelector_generate),
-  name: () => (PseudoElementSelector_name),
-  parse: () => (PseudoElementSelector_parse),
-  structure: () => (PseudoElementSelector_structure),
-  walkContext: () => (PseudoElementSelector_walkContext)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Ratio.js
-var Ratio_namespaceObject = {};
-__webpack_require__.r(Ratio_namespaceObject);
-__webpack_require__.d(Ratio_namespaceObject, {
-  generate: () => (Ratio_generate),
-  name: () => (Ratio_name),
-  parse: () => (Ratio_parse),
-  structure: () => (Ratio_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Raw.js
-var Raw_namespaceObject = {};
-__webpack_require__.r(Raw_namespaceObject);
-__webpack_require__.d(Raw_namespaceObject, {
-  generate: () => (Raw_generate),
-  name: () => (Raw_name),
-  parse: () => (Raw_parse),
-  structure: () => (Raw_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Rule.js
-var Rule_namespaceObject = {};
-__webpack_require__.r(Rule_namespaceObject);
-__webpack_require__.d(Rule_namespaceObject, {
-  generate: () => (Rule_generate),
-  name: () => (Rule_name),
-  parse: () => (Rule_parse),
-  structure: () => (Rule_structure),
-  walkContext: () => (Rule_walkContext)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Selector.js
-var Selector_namespaceObject = {};
-__webpack_require__.r(Selector_namespaceObject);
-__webpack_require__.d(Selector_namespaceObject, {
-  generate: () => (Selector_generate),
-  name: () => (Selector_name),
-  parse: () => (Selector_parse),
-  structure: () => (Selector_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/SelectorList.js
-var SelectorList_namespaceObject = {};
-__webpack_require__.r(SelectorList_namespaceObject);
-__webpack_require__.d(SelectorList_namespaceObject, {
-  generate: () => (SelectorList_generate),
-  name: () => (SelectorList_name),
-  parse: () => (SelectorList_parse),
-  structure: () => (SelectorList_structure),
-  walkContext: () => (SelectorList_walkContext)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/String.js
-var String_namespaceObject = {};
-__webpack_require__.r(String_namespaceObject);
-__webpack_require__.d(String_namespaceObject, {
-  generate: () => (String_generate),
-  name: () => (String_name),
-  parse: () => (String_parse),
-  structure: () => (String_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/StyleSheet.js
-var StyleSheet_namespaceObject = {};
-__webpack_require__.r(StyleSheet_namespaceObject);
-__webpack_require__.d(StyleSheet_namespaceObject, {
-  generate: () => (StyleSheet_generate),
-  name: () => (StyleSheet_name),
-  parse: () => (StyleSheet_parse),
-  structure: () => (StyleSheet_structure),
-  walkContext: () => (StyleSheet_walkContext)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/TypeSelector.js
-var TypeSelector_namespaceObject = {};
-__webpack_require__.r(TypeSelector_namespaceObject);
-__webpack_require__.d(TypeSelector_namespaceObject, {
-  generate: () => (TypeSelector_generate),
-  name: () => (TypeSelector_name),
-  parse: () => (TypeSelector_parse),
-  structure: () => (TypeSelector_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/UnicodeRange.js
-var UnicodeRange_namespaceObject = {};
-__webpack_require__.r(UnicodeRange_namespaceObject);
-__webpack_require__.d(UnicodeRange_namespaceObject, {
-  generate: () => (UnicodeRange_generate),
-  name: () => (UnicodeRange_name),
-  parse: () => (UnicodeRange_parse),
-  structure: () => (UnicodeRange_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Url.js
-var Url_namespaceObject = {};
-__webpack_require__.r(Url_namespaceObject);
-__webpack_require__.d(Url_namespaceObject, {
-  generate: () => (Url_generate),
-  name: () => (Url_name),
-  parse: () => (Url_parse),
-  structure: () => (Url_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/Value.js
-var Value_namespaceObject = {};
-__webpack_require__.r(Value_namespaceObject);
-__webpack_require__.d(Value_namespaceObject, {
-  generate: () => (Value_generate),
-  name: () => (Value_name),
-  parse: () => (Value_parse),
-  structure: () => (Value_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/WhiteSpace.js
-var WhiteSpace_namespaceObject = {};
-__webpack_require__.r(WhiteSpace_namespaceObject);
-__webpack_require__.d(WhiteSpace_namespaceObject, {
-  generate: () => (WhiteSpace_generate),
-  name: () => (WhiteSpace_name),
-  parse: () => (WhiteSpace_parse),
-  structure: () => (WhiteSpace_structure)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/index.js
-var node_namespaceObject = {};
-__webpack_require__.r(node_namespaceObject);
-__webpack_require__.d(node_namespaceObject, {
-  AnPlusB: () => (AnPlusB_namespaceObject),
-  Atrule: () => (Atrule_namespaceObject),
-  AtrulePrelude: () => (AtrulePrelude_namespaceObject),
-  AttributeSelector: () => (AttributeSelector_namespaceObject),
-  Block: () => (Block_namespaceObject),
-  Brackets: () => (Brackets_namespaceObject),
-  CDC: () => (CDC_namespaceObject),
-  CDO: () => (CDO_namespaceObject),
-  ClassSelector: () => (ClassSelector_namespaceObject),
-  Combinator: () => (Combinator_namespaceObject),
-  Comment: () => (Comment_namespaceObject),
-  Declaration: () => (Declaration_namespaceObject),
-  DeclarationList: () => (DeclarationList_namespaceObject),
-  Dimension: () => (Dimension_namespaceObject),
-  Function: () => (Function_namespaceObject),
-  Hash: () => (Hash_namespaceObject),
-  IdSelector: () => (IdSelector_namespaceObject),
-  Identifier: () => (Identifier_namespaceObject),
-  MediaFeature: () => (MediaFeature_namespaceObject),
-  MediaQuery: () => (MediaQuery_namespaceObject),
-  MediaQueryList: () => (MediaQueryList_namespaceObject),
-  NestingSelector: () => (NestingSelector_namespaceObject),
-  Nth: () => (Nth_namespaceObject),
-  Number: () => (Number_namespaceObject),
-  Operator: () => (Operator_namespaceObject),
-  Parentheses: () => (Parentheses_namespaceObject),
-  Percentage: () => (Percentage_namespaceObject),
-  PseudoClassSelector: () => (PseudoClassSelector_namespaceObject),
-  PseudoElementSelector: () => (PseudoElementSelector_namespaceObject),
-  Ratio: () => (Ratio_namespaceObject),
-  Raw: () => (Raw_namespaceObject),
-  Rule: () => (Rule_namespaceObject),
-  Selector: () => (Selector_namespaceObject),
-  SelectorList: () => (SelectorList_namespaceObject),
-  String: () => (String_namespaceObject),
-  StyleSheet: () => (StyleSheet_namespaceObject),
-  TypeSelector: () => (TypeSelector_namespaceObject),
-  UnicodeRange: () => (UnicodeRange_namespaceObject),
-  Url: () => (Url_namespaceObject),
-  Value: () => (Value_namespaceObject),
-  WhiteSpace: () => (WhiteSpace_namespaceObject)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/scope/index.js
-var scope_namespaceObject = {};
-__webpack_require__.r(scope_namespaceObject);
-__webpack_require__.d(scope_namespaceObject, {
-  AtrulePrelude: () => (atrulePrelude),
-  Selector: () => (selector),
-  Value: () => (value)
-});
-
-// NAMESPACE OBJECT: ./node_modules/css-tree/lib/syntax/node/index-parse.js
-var index_parse_namespaceObject = {};
-__webpack_require__.r(index_parse_namespaceObject);
-__webpack_require__.d(index_parse_namespaceObject, {
-  AnPlusB: () => (AnPlusB_parse),
-  Atrule: () => (Atrule_parse),
-  AtrulePrelude: () => (AtrulePrelude_parse),
-  AttributeSelector: () => (AttributeSelector_parse),
-  Block: () => (Block_parse),
-  Brackets: () => (Brackets_parse),
-  CDC: () => (CDC_parse),
-  CDO: () => (CDO_parse),
-  ClassSelector: () => (ClassSelector_parse),
-  Combinator: () => (Combinator_parse),
-  Comment: () => (Comment_parse),
-  Declaration: () => (Declaration_parse),
-  DeclarationList: () => (DeclarationList_parse),
-  Dimension: () => (Dimension_parse),
-  Function: () => (Function_parse),
-  Hash: () => (Hash_parse),
-  IdSelector: () => (IdSelector_parse),
-  Identifier: () => (Identifier_parse),
-  MediaFeature: () => (MediaFeature_parse),
-  MediaQuery: () => (MediaQuery_parse),
-  MediaQueryList: () => (MediaQueryList_parse),
-  NestingSelector: () => (NestingSelector_parse),
-  Nth: () => (Nth_parse),
-  Number: () => (Number_parse),
-  Operator: () => (Operator_parse),
-  Parentheses: () => (Parentheses_parse),
-  Percentage: () => (Percentage_parse),
-  PseudoClassSelector: () => (PseudoClassSelector_parse),
-  PseudoElementSelector: () => (PseudoElementSelector_parse),
-  Ratio: () => (Ratio_parse),
-  Raw: () => (Raw_parse),
-  Rule: () => (Rule_parse),
-  Selector: () => (Selector_parse),
-  SelectorList: () => (SelectorList_parse),
-  String: () => (String_parse),
-  StyleSheet: () => (StyleSheet_parse),
-  TypeSelector: () => (TypeSelector_parse),
-  UnicodeRange: () => (UnicodeRange_parse),
-  Url: () => (Url_parse),
-  Value: () => (Value_parse),
-  WhiteSpace: () => (WhiteSpace_parse)
-});
-
 // EXTERNAL MODULE: ./src/lib/attachments.ts + 1 modules
 var attachments = __webpack_require__("./src/lib/attachments.ts");
 // EXTERNAL MODULE: ./src/lib/cleanDOM.ts
@@ -22052,7 +22895,7 @@ var main = __webpack_require__("./src/main/main.ts");
 var Chapter = __webpack_require__("./src/main/Chapter.ts");
 // EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
 var Book = __webpack_require__("./src/main/Book.ts");
-// EXTERNAL MODULE: ./src/rules.ts + 11 modules
+// EXTERNAL MODULE: ./src/rules.ts + 12 modules
 var rules = __webpack_require__("./src/rules.ts");
 // EXTERNAL MODULE: ./src/setting.ts
 var setting = __webpack_require__("./src/setting.ts");
@@ -22275,11575 +23118,8 @@ function canvasToUint8Array(canvas) {
 
 // EXTERNAL MODULE: ./src/lib/GM.ts
 var GM = __webpack_require__("./src/lib/GM.ts");
-;// ./node_modules/css-tree/lib/tokenizer/types.js
-// CSS Syntax Module Level 3
-// https://www.w3.org/TR/css-syntax-3/
-const EOF = 0;                 // <EOF-token>
-const Ident = 1;               // <ident-token>
-const Function = 2;            // <function-token>
-const AtKeyword = 3;           // <at-keyword-token>
-const Hash = 4;                // <hash-token>
-const types_String = 5;              // <string-token>
-const BadString = 6;           // <bad-string-token>
-const Url = 7;                 // <url-token>
-const BadUrl = 8;              // <bad-url-token>
-const Delim = 9;               // <delim-token>
-const types_Number = 10;             // <number-token>
-const Percentage = 11;         // <percentage-token>
-const Dimension = 12;          // <dimension-token>
-const WhiteSpace = 13;         // <whitespace-token>
-const CDO = 14;                // <CDO-token>
-const CDC = 15;                // <CDC-token>
-const Colon = 16;              // <colon-token>     :
-const Semicolon = 17;          // <semicolon-token> ;
-const Comma = 18;              // <comma-token>     ,
-const LeftSquareBracket = 19;  // <[-token>
-const RightSquareBracket = 20; // <]-token>
-const LeftParenthesis = 21;    // <(-token>
-const RightParenthesis = 22;   // <)-token>
-const LeftCurlyBracket = 23;   // <{-token>
-const RightCurlyBracket = 24;  // <}-token>
-const Comment = 25;
-
-;// ./node_modules/css-tree/lib/tokenizer/char-code-definitions.js
-const char_code_definitions_EOF = 0;
-
-// https://drafts.csswg.org/css-syntax-3/
-// § 4.2. Definitions
-
-// digit
-// A code point between U+0030 DIGIT ZERO (0) and U+0039 DIGIT NINE (9).
-function isDigit(code) {
-    return code >= 0x0030 && code <= 0x0039;
-}
-
-// hex digit
-// A digit, or a code point between U+0041 LATIN CAPITAL LETTER A (A) and U+0046 LATIN CAPITAL LETTER F (F),
-// or a code point between U+0061 LATIN SMALL LETTER A (a) and U+0066 LATIN SMALL LETTER F (f).
-function isHexDigit(code) {
-    return (
-        isDigit(code) || // 0 .. 9
-        (code >= 0x0041 && code <= 0x0046) || // A .. F
-        (code >= 0x0061 && code <= 0x0066)    // a .. f
-    );
-}
-
-// uppercase letter
-// A code point between U+0041 LATIN CAPITAL LETTER A (A) and U+005A LATIN CAPITAL LETTER Z (Z).
-function isUppercaseLetter(code) {
-    return code >= 0x0041 && code <= 0x005A;
-}
-
-// lowercase letter
-// A code point between U+0061 LATIN SMALL LETTER A (a) and U+007A LATIN SMALL LETTER Z (z).
-function isLowercaseLetter(code) {
-    return code >= 0x0061 && code <= 0x007A;
-}
-
-// letter
-// An uppercase letter or a lowercase letter.
-function isLetter(code) {
-    return isUppercaseLetter(code) || isLowercaseLetter(code);
-}
-
-// non-ASCII code point
-// A code point with a value equal to or greater than U+0080 <control>.
-function isNonAscii(code) {
-    return code >= 0x0080;
-}
-
-// name-start code point
-// A letter, a non-ASCII code point, or U+005F LOW LINE (_).
-function isNameStart(code) {
-    return isLetter(code) || isNonAscii(code) || code === 0x005F;
-}
-
-// name code point
-// A name-start code point, a digit, or U+002D HYPHEN-MINUS (-).
-function isName(code) {
-    return isNameStart(code) || isDigit(code) || code === 0x002D;
-}
-
-// non-printable code point
-// A code point between U+0000 NULL and U+0008 BACKSPACE, or U+000B LINE TABULATION,
-// or a code point between U+000E SHIFT OUT and U+001F INFORMATION SEPARATOR ONE, or U+007F DELETE.
-function isNonPrintable(code) {
-    return (
-        (code >= 0x0000 && code <= 0x0008) ||
-        (code === 0x000B) ||
-        (code >= 0x000E && code <= 0x001F) ||
-        (code === 0x007F)
-    );
-}
-
-// newline
-// U+000A LINE FEED. Note that U+000D CARRIAGE RETURN and U+000C FORM FEED are not included in this definition,
-// as they are converted to U+000A LINE FEED during preprocessing.
-// TODO: we doesn't do a preprocessing, so check a code point for U+000D CARRIAGE RETURN and U+000C FORM FEED
-function isNewline(code) {
-    return code === 0x000A || code === 0x000D || code === 0x000C;
-}
-
-// whitespace
-// A newline, U+0009 CHARACTER TABULATION, or U+0020 SPACE.
-function isWhiteSpace(code) {
-    return isNewline(code) || code === 0x0020 || code === 0x0009;
-}
-
-// § 4.3.8. Check if two code points are a valid escape
-function isValidEscape(first, second) {
-    // If the first code point is not U+005C REVERSE SOLIDUS (\), return false.
-    if (first !== 0x005C) {
-        return false;
-    }
-
-    // Otherwise, if the second code point is a newline or EOF, return false.
-    if (isNewline(second) || second === char_code_definitions_EOF) {
-        return false;
-    }
-
-    // Otherwise, return true.
-    return true;
-}
-
-// § 4.3.9. Check if three code points would start an identifier
-function isIdentifierStart(first, second, third) {
-    // Look at the first code point:
-
-    // U+002D HYPHEN-MINUS
-    if (first === 0x002D) {
-        // If the second code point is a name-start code point or a U+002D HYPHEN-MINUS,
-        // or the second and third code points are a valid escape, return true. Otherwise, return false.
-        return (
-            isNameStart(second) ||
-            second === 0x002D ||
-            isValidEscape(second, third)
-        );
-    }
-
-    // name-start code point
-    if (isNameStart(first)) {
-        // Return true.
-        return true;
-    }
-
-    // U+005C REVERSE SOLIDUS (\)
-    if (first === 0x005C) {
-        // If the first and second code points are a valid escape, return true. Otherwise, return false.
-        return isValidEscape(first, second);
-    }
-
-    // anything else
-    // Return false.
-    return false;
-}
-
-// § 4.3.10. Check if three code points would start a number
-function isNumberStart(first, second, third) {
-    // Look at the first code point:
-
-    // U+002B PLUS SIGN (+)
-    // U+002D HYPHEN-MINUS (-)
-    if (first === 0x002B || first === 0x002D) {
-        // If the second code point is a digit, return true.
-        if (isDigit(second)) {
-            return 2;
-        }
-
-        // Otherwise, if the second code point is a U+002E FULL STOP (.)
-        // and the third code point is a digit, return true.
-        // Otherwise, return false.
-        return second === 0x002E && isDigit(third) ? 3 : 0;
-    }
-
-    // U+002E FULL STOP (.)
-    if (first === 0x002E) {
-        // If the second code point is a digit, return true. Otherwise, return false.
-        return isDigit(second) ? 2 : 0;
-    }
-
-    // digit
-    if (isDigit(first)) {
-        // Return true.
-        return 1;
-    }
-
-    // anything else
-    // Return false.
-    return 0;
-}
-
-//
-// Misc
-//
-
-// detect BOM (https://en.wikipedia.org/wiki/Byte_order_mark)
-function isBOM(code) {
-    // UTF-16BE
-    if (code === 0xFEFF) {
-        return 1;
-    }
-
-    // UTF-16LE
-    if (code === 0xFFFE) {
-        return 1;
-    }
-
-    return 0;
-}
-
-// Fast code category
-// Only ASCII code points has a special meaning, that's why we define a maps for 0..127 codes only
-const CATEGORY = new Array(0x80);
-const EofCategory = 0x80;
-const WhiteSpaceCategory = 0x82;
-const DigitCategory = 0x83;
-const NameStartCategory = 0x84;
-const NonPrintableCategory = 0x85;
-
-for (let i = 0; i < CATEGORY.length; i++) {
-    CATEGORY[i] =
-        isWhiteSpace(i) && WhiteSpaceCategory ||
-        isDigit(i) && DigitCategory ||
-        isNameStart(i) && NameStartCategory ||
-        isNonPrintable(i) && NonPrintableCategory ||
-        i || EofCategory;
-}
-
-function charCodeCategory(code) {
-    return code < 0x80 ? CATEGORY[code] : NameStartCategory;
-}
-
-;// ./node_modules/css-tree/lib/tokenizer/utils.js
-
-
-function getCharCode(source, offset) {
-    return offset < source.length ? source.charCodeAt(offset) : 0;
-}
-
-function getNewlineLength(source, offset, code) {
-    if (code === 13 /* \r */ && getCharCode(source, offset + 1) === 10 /* \n */) {
-        return 2;
-    }
-
-    return 1;
-}
-
-function cmpChar(testStr, offset, referenceCode) {
-    let code = testStr.charCodeAt(offset);
-
-    // code.toLowerCase() for A..Z
-    if (isUppercaseLetter(code)) {
-        code = code | 32;
-    }
-
-    return code === referenceCode;
-}
-
-function cmpStr(testStr, start, end, referenceStr) {
-    if (end - start !== referenceStr.length) {
-        return false;
-    }
-
-    if (start < 0 || end > testStr.length) {
-        return false;
-    }
-
-    for (let i = start; i < end; i++) {
-        const referenceCode = referenceStr.charCodeAt(i - start);
-        let testCode = testStr.charCodeAt(i);
-
-        // testCode.toLowerCase() for A..Z
-        if (isUppercaseLetter(testCode)) {
-            testCode = testCode | 32;
-        }
-
-        if (testCode !== referenceCode) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-function findWhiteSpaceStart(source, offset) {
-    for (; offset >= 0; offset--) {
-        if (!isWhiteSpace(source.charCodeAt(offset))) {
-            break;
-        }
-    }
-
-    return offset + 1;
-}
-
-function findWhiteSpaceEnd(source, offset) {
-    for (; offset < source.length; offset++) {
-        if (!isWhiteSpace(source.charCodeAt(offset))) {
-            break;
-        }
-    }
-
-    return offset;
-}
-
-function findDecimalNumberEnd(source, offset) {
-    for (; offset < source.length; offset++) {
-        if (!isDigit(source.charCodeAt(offset))) {
-            break;
-        }
-    }
-
-    return offset;
-}
-
-// § 4.3.7. Consume an escaped code point
-function consumeEscaped(source, offset) {
-    // It assumes that the U+005C REVERSE SOLIDUS (\) has already been consumed and
-    // that the next input code point has already been verified to be part of a valid escape.
-    offset += 2;
-
-    // hex digit
-    if (isHexDigit(getCharCode(source, offset - 1))) {
-        // Consume as many hex digits as possible, but no more than 5.
-        // Note that this means 1-6 hex digits have been consumed in total.
-        for (const maxOffset = Math.min(source.length, offset + 5); offset < maxOffset; offset++) {
-            if (!isHexDigit(getCharCode(source, offset))) {
-                break;
-            }
-        }
-
-        // If the next input code point is whitespace, consume it as well.
-        const code = getCharCode(source, offset);
-        if (isWhiteSpace(code)) {
-            offset += getNewlineLength(source, offset, code);
-        }
-    }
-
-    return offset;
-}
-
-// §4.3.11. Consume a name
-// Note: This algorithm does not do the verification of the first few code points that are necessary
-// to ensure the returned code points would constitute an <ident-token>. If that is the intended use,
-// ensure that the stream starts with an identifier before calling this algorithm.
-function consumeName(source, offset) {
-    // Let result initially be an empty string.
-    // Repeatedly consume the next input code point from the stream:
-    for (; offset < source.length; offset++) {
-        const code = source.charCodeAt(offset);
-
-        // name code point
-        if (isName(code)) {
-            // Append the code point to result.
-            continue;
-        }
-
-        // the stream starts with a valid escape
-        if (isValidEscape(code, getCharCode(source, offset + 1))) {
-            // Consume an escaped code point. Append the returned code point to result.
-            offset = consumeEscaped(source, offset) - 1;
-            continue;
-        }
-
-        // anything else
-        // Reconsume the current input code point. Return result.
-        break;
-    }
-
-    return offset;
-}
-
-// §4.3.12. Consume a number
-function consumeNumber(source, offset) {
-    let code = source.charCodeAt(offset);
-
-    // 2. If the next input code point is U+002B PLUS SIGN (+) or U+002D HYPHEN-MINUS (-),
-    // consume it and append it to repr.
-    if (code === 0x002B || code === 0x002D) {
-        code = source.charCodeAt(offset += 1);
-    }
-
-    // 3. While the next input code point is a digit, consume it and append it to repr.
-    if (isDigit(code)) {
-        offset = findDecimalNumberEnd(source, offset + 1);
-        code = source.charCodeAt(offset);
-    }
-
-    // 4. If the next 2 input code points are U+002E FULL STOP (.) followed by a digit, then:
-    if (code === 0x002E && isDigit(source.charCodeAt(offset + 1))) {
-        // 4.1 Consume them.
-        // 4.2 Append them to repr.
-        offset += 2;
-
-        // 4.3 Set type to "number".
-        // TODO
-
-        // 4.4 While the next input code point is a digit, consume it and append it to repr.
-
-        offset = findDecimalNumberEnd(source, offset);
-    }
-
-    // 5. If the next 2 or 3 input code points are U+0045 LATIN CAPITAL LETTER E (E)
-    // or U+0065 LATIN SMALL LETTER E (e), ... , followed by a digit, then:
-    if (cmpChar(source, offset, 101 /* e */)) {
-        let sign = 0;
-        code = source.charCodeAt(offset + 1);
-
-        // ... optionally followed by U+002D HYPHEN-MINUS (-) or U+002B PLUS SIGN (+) ...
-        if (code === 0x002D || code === 0x002B) {
-            sign = 1;
-            code = source.charCodeAt(offset + 2);
-        }
-
-        // ... followed by a digit
-        if (isDigit(code)) {
-            // 5.1 Consume them.
-            // 5.2 Append them to repr.
-
-            // 5.3 Set type to "number".
-            // TODO
-
-            // 5.4 While the next input code point is a digit, consume it and append it to repr.
-            offset = findDecimalNumberEnd(source, offset + 1 + sign + 1);
-        }
-    }
-
-    return offset;
-}
-
-// § 4.3.14. Consume the remnants of a bad url
-// ... its sole use is to consume enough of the input stream to reach a recovery point
-// where normal tokenizing can resume.
-function consumeBadUrlRemnants(source, offset) {
-    // Repeatedly consume the next input code point from the stream:
-    for (; offset < source.length; offset++) {
-        const code = source.charCodeAt(offset);
-
-        // U+0029 RIGHT PARENTHESIS ())
-        // EOF
-        if (code === 0x0029) {
-            // Return.
-            offset++;
-            break;
-        }
-
-        if (isValidEscape(code, getCharCode(source, offset + 1))) {
-            // Consume an escaped code point.
-            // Note: This allows an escaped right parenthesis ("\)") to be encountered
-            // without ending the <bad-url-token>. This is otherwise identical to
-            // the "anything else" clause.
-            offset = consumeEscaped(source, offset);
-        }
-    }
-
-    return offset;
-}
-
-// § 4.3.7. Consume an escaped code point
-// Note: This algorithm assumes that escaped is valid without leading U+005C REVERSE SOLIDUS (\)
-function decodeEscaped(escaped) {
-    // Single char escaped that's not a hex digit
-    if (escaped.length === 1 && !isHexDigit(escaped.charCodeAt(0))) {
-        return escaped[0];
-    }
-
-    // Interpret the hex digits as a hexadecimal number.
-    let code = parseInt(escaped, 16);
-
-    if (
-        (code === 0) ||                       // If this number is zero,
-        (code >= 0xD800 && code <= 0xDFFF) || // or is for a surrogate,
-        (code > 0x10FFFF)                     // or is greater than the maximum allowed code point
-    ) {
-        // ... return U+FFFD REPLACEMENT CHARACTER
-        code = 0xFFFD;
-    }
-
-    // Otherwise, return the code point with that value.
-    return String.fromCodePoint(code);
-}
-
-;// ./node_modules/css-tree/lib/tokenizer/names.js
-/* harmony default export */ const names = ([
-    'EOF-token',
-    'ident-token',
-    'function-token',
-    'at-keyword-token',
-    'hash-token',
-    'string-token',
-    'bad-string-token',
-    'url-token',
-    'bad-url-token',
-    'delim-token',
-    'number-token',
-    'percentage-token',
-    'dimension-token',
-    'whitespace-token',
-    'CDO-token',
-    'CDC-token',
-    'colon-token',
-    'semicolon-token',
-    'comma-token',
-    '[-token',
-    ']-token',
-    '(-token',
-    ')-token',
-    '{-token',
-    '}-token'
-]);
-
-;// ./node_modules/css-tree/lib/tokenizer/adopt-buffer.js
-const MIN_SIZE = 16 * 1024;
-
-function adoptBuffer(buffer = null, size) {
-    if (buffer === null || buffer.length < size) {
-        return new Uint32Array(Math.max(size + 1024, MIN_SIZE));
-    }
-
-    return buffer;
-};
-
-;// ./node_modules/css-tree/lib/tokenizer/OffsetToLocation.js
-
-
-
-const N = 10;
-const F = 12;
-const R = 13;
-
-function computeLinesAndColumns(host) {
-    const source = host.source;
-    const sourceLength = source.length;
-    const startOffset = source.length > 0 ? isBOM(source.charCodeAt(0)) : 0;
-    const lines = adoptBuffer(host.lines, sourceLength);
-    const columns = adoptBuffer(host.columns, sourceLength);
-    let line = host.startLine;
-    let column = host.startColumn;
-
-    for (let i = startOffset; i < sourceLength; i++) {
-        const code = source.charCodeAt(i);
-
-        lines[i] = line;
-        columns[i] = column++;
-
-        if (code === N || code === R || code === F) {
-            if (code === R && i + 1 < sourceLength && source.charCodeAt(i + 1) === N) {
-                i++;
-                lines[i] = line;
-                columns[i] = column;
-            }
-
-            line++;
-            column = 1;
-        }
-    }
-
-    lines[sourceLength] = line;
-    columns[sourceLength] = column;
-
-    host.lines = lines;
-    host.columns = columns;
-    host.computed = true;
-}
-
-class OffsetToLocation {
-    constructor() {
-        this.lines = null;
-        this.columns = null;
-        this.computed = false;
-    }
-    setSource(source, startOffset = 0, startLine = 1, startColumn = 1) {
-        this.source = source;
-        this.startOffset = startOffset;
-        this.startLine = startLine;
-        this.startColumn = startColumn;
-        this.computed = false;
-    }
-    getLocation(offset, filename) {
-        if (!this.computed) {
-            computeLinesAndColumns(this);
-        }
-
-        return {
-            source: filename,
-            offset: this.startOffset + offset,
-            line: this.lines[offset],
-            column: this.columns[offset]
-        };
-    }
-    getLocationRange(start, end, filename) {
-        if (!this.computed) {
-            computeLinesAndColumns(this);
-        }
-
-        return {
-            source: filename,
-            start: {
-                offset: this.startOffset + start,
-                line: this.lines[start],
-                column: this.columns[start]
-            },
-            end: {
-                offset: this.startOffset + end,
-                line: this.lines[end],
-                column: this.columns[end]
-            }
-        };
-    }
-};
-
-;// ./node_modules/css-tree/lib/tokenizer/TokenStream.js
-
-
-
-
-
-const OFFSET_MASK = 0x00FFFFFF;
-const TYPE_SHIFT = 24;
-const balancePair = new Map([
-    [Function, RightParenthesis],
-    [LeftParenthesis, RightParenthesis],
-    [LeftSquareBracket, RightSquareBracket],
-    [LeftCurlyBracket, RightCurlyBracket]
-]);
-
-class TokenStream {
-    constructor(source, tokenize) {
-        this.setSource(source, tokenize);
-    }
-    reset() {
-        this.eof = false;
-        this.tokenIndex = -1;
-        this.tokenType = 0;
-        this.tokenStart = this.firstCharOffset;
-        this.tokenEnd = this.firstCharOffset;
-    }
-    setSource(source = '', tokenize = () => {}) {
-        source = String(source || '');
-
-        const sourceLength = source.length;
-        const offsetAndType = adoptBuffer(this.offsetAndType, source.length + 1); // +1 because of eof-token
-        const balance = adoptBuffer(this.balance, source.length + 1);
-        let tokenCount = 0;
-        let balanceCloseType = 0;
-        let balanceStart = 0;
-        let firstCharOffset = -1;
-
-        // capture buffers
-        this.offsetAndType = null;
-        this.balance = null;
-
-        tokenize(source, (type, start, end) => {
-            switch (type) {
-                default:
-                    balance[tokenCount] = sourceLength;
-                    break;
-
-                case balanceCloseType: {
-                    let balancePrev = balanceStart & OFFSET_MASK;
-                    balanceStart = balance[balancePrev];
-                    balanceCloseType = balanceStart >> TYPE_SHIFT;
-                    balance[tokenCount] = balancePrev;
-                    balance[balancePrev++] = tokenCount;
-                    for (; balancePrev < tokenCount; balancePrev++) {
-                        if (balance[balancePrev] === sourceLength) {
-                            balance[balancePrev] = tokenCount;
-                        }
-                    }
-                    break;
-                }
-
-                case LeftParenthesis:
-                case Function:
-                case LeftSquareBracket:
-                case LeftCurlyBracket:
-                    balance[tokenCount] = balanceStart;
-                    balanceCloseType = balancePair.get(type);
-                    balanceStart = (balanceCloseType << TYPE_SHIFT) | tokenCount;
-                    break;
-            }
-
-            offsetAndType[tokenCount++] = (type << TYPE_SHIFT) | end;
-            if (firstCharOffset === -1) {
-                firstCharOffset = start;
-            }
-        });
-
-        // finalize buffers
-        offsetAndType[tokenCount] = (EOF << TYPE_SHIFT) | sourceLength; // <EOF-token>
-        balance[tokenCount] = sourceLength;
-        balance[sourceLength] = sourceLength; // prevents false positive balance match with any token
-        while (balanceStart !== 0) {
-            const balancePrev = balanceStart & OFFSET_MASK;
-            balanceStart = balance[balancePrev];
-            balance[balancePrev] = sourceLength;
-        }
-
-        this.source = source;
-        this.firstCharOffset = firstCharOffset === -1 ? 0 : firstCharOffset;
-        this.tokenCount = tokenCount;
-        this.offsetAndType = offsetAndType;
-        this.balance = balance;
-
-        this.reset();
-        this.next();
-    }
-
-    lookupType(offset) {
-        offset += this.tokenIndex;
-
-        if (offset < this.tokenCount) {
-            return this.offsetAndType[offset] >> TYPE_SHIFT;
-        }
-
-        return EOF;
-    }
-    lookupOffset(offset) {
-        offset += this.tokenIndex;
-
-        if (offset < this.tokenCount) {
-            return this.offsetAndType[offset - 1] & OFFSET_MASK;
-        }
-
-        return this.source.length;
-    }
-    lookupValue(offset, referenceStr) {
-        offset += this.tokenIndex;
-
-        if (offset < this.tokenCount) {
-            return cmpStr(
-                this.source,
-                this.offsetAndType[offset - 1] & OFFSET_MASK,
-                this.offsetAndType[offset] & OFFSET_MASK,
-                referenceStr
-            );
-        }
-
-        return false;
-    }
-    getTokenStart(tokenIndex) {
-        if (tokenIndex === this.tokenIndex) {
-            return this.tokenStart;
-        }
-
-        if (tokenIndex > 0) {
-            return tokenIndex < this.tokenCount
-                ? this.offsetAndType[tokenIndex - 1] & OFFSET_MASK
-                : this.offsetAndType[this.tokenCount] & OFFSET_MASK;
-        }
-
-        return this.firstCharOffset;
-    }
-    substrToCursor(start) {
-        return this.source.substring(start, this.tokenStart);
-    }
-
-    isBalanceEdge(pos) {
-        return this.balance[this.tokenIndex] < pos;
-    }
-    isDelim(code, offset) {
-        if (offset) {
-            return (
-                this.lookupType(offset) === Delim &&
-                this.source.charCodeAt(this.lookupOffset(offset)) === code
-            );
-        }
-
-        return (
-            this.tokenType === Delim &&
-            this.source.charCodeAt(this.tokenStart) === code
-        );
-    }
-
-    skip(tokenCount) {
-        let next = this.tokenIndex + tokenCount;
-
-        if (next < this.tokenCount) {
-            this.tokenIndex = next;
-            this.tokenStart = this.offsetAndType[next - 1] & OFFSET_MASK;
-            next = this.offsetAndType[next];
-            this.tokenType = next >> TYPE_SHIFT;
-            this.tokenEnd = next & OFFSET_MASK;
-        } else {
-            this.tokenIndex = this.tokenCount;
-            this.next();
-        }
-    }
-    next() {
-        let next = this.tokenIndex + 1;
-
-        if (next < this.tokenCount) {
-            this.tokenIndex = next;
-            this.tokenStart = this.tokenEnd;
-            next = this.offsetAndType[next];
-            this.tokenType = next >> TYPE_SHIFT;
-            this.tokenEnd = next & OFFSET_MASK;
-        } else {
-            this.eof = true;
-            this.tokenIndex = this.tokenCount;
-            this.tokenType = EOF;
-            this.tokenStart = this.tokenEnd = this.source.length;
-        }
-    }
-    skipSC() {
-        while (this.tokenType === WhiteSpace || this.tokenType === Comment) {
-            this.next();
-        }
-    }
-    skipUntilBalanced(startToken, stopConsume) {
-        let cursor = startToken;
-        let balanceEnd;
-        let offset;
-
-        loop:
-        for (; cursor < this.tokenCount; cursor++) {
-            balanceEnd = this.balance[cursor];
-
-            // stop scanning on balance edge that points to offset before start token
-            if (balanceEnd < startToken) {
-                break loop;
-            }
-
-            offset = cursor > 0 ? this.offsetAndType[cursor - 1] & OFFSET_MASK : this.firstCharOffset;
-
-            // check stop condition
-            switch (stopConsume(this.source.charCodeAt(offset))) {
-                case 1: // just stop
-                    break loop;
-
-                case 2: // stop & included
-                    cursor++;
-                    break loop;
-
-                default:
-                    // fast forward to the end of balanced block
-                    if (this.balance[balanceEnd] === cursor) {
-                        cursor = balanceEnd;
-                    }
-            }
-        }
-
-        this.skip(cursor - this.tokenIndex);
-    }
-
-    forEachToken(fn) {
-        for (let i = 0, offset = this.firstCharOffset; i < this.tokenCount; i++) {
-            const start = offset;
-            const item = this.offsetAndType[i];
-            const end = item & OFFSET_MASK;
-            const type = item >> TYPE_SHIFT;
-
-            offset = end;
-
-            fn(type, start, end, i);
-        }
-    }
-    dump() {
-        const tokens = new Array(this.tokenCount);
-
-        this.forEachToken((type, start, end, index) => {
-            tokens[index] = {
-                idx: index,
-                type: names[type],
-                chunk: this.source.substring(start, end),
-                balance: this.balance[index]
-            };
-        });
-
-        return tokens;
-    }
-};
-
-;// ./node_modules/css-tree/lib/tokenizer/index.js
-
-
-
-
-function tokenize(source, onToken) {
-    function getCharCode(offset) {
-        return offset < sourceLength ? source.charCodeAt(offset) : 0;
-    }
-
-    // § 4.3.3. Consume a numeric token
-    function consumeNumericToken() {
-        // Consume a number and let number be the result.
-        offset = consumeNumber(source, offset);
-
-        // If the next 3 input code points would start an identifier, then:
-        if (isIdentifierStart(getCharCode(offset), getCharCode(offset + 1), getCharCode(offset + 2))) {
-            // Create a <dimension-token> with the same value and type flag as number, and a unit set initially to the empty string.
-            // Consume a name. Set the <dimension-token>’s unit to the returned value.
-            // Return the <dimension-token>.
-            type = Dimension;
-            offset = consumeName(source, offset);
-            return;
-        }
-
-        // Otherwise, if the next input code point is U+0025 PERCENTAGE SIGN (%), consume it.
-        if (getCharCode(offset) === 0x0025) {
-            // Create a <percentage-token> with the same value as number, and return it.
-            type = Percentage;
-            offset++;
-            return;
-        }
-
-        // Otherwise, create a <number-token> with the same value and type flag as number, and return it.
-        type = types_Number;
-    }
-
-    // § 4.3.4. Consume an ident-like token
-    function consumeIdentLikeToken() {
-        const nameStartOffset = offset;
-
-        // Consume a name, and let string be the result.
-        offset = consumeName(source, offset);
-
-        // If string’s value is an ASCII case-insensitive match for "url",
-        // and the next input code point is U+0028 LEFT PARENTHESIS ((), consume it.
-        if (cmpStr(source, nameStartOffset, offset, 'url') && getCharCode(offset) === 0x0028) {
-            // While the next two input code points are whitespace, consume the next input code point.
-            offset = findWhiteSpaceEnd(source, offset + 1);
-
-            // If the next one or two input code points are U+0022 QUOTATION MARK ("), U+0027 APOSTROPHE ('),
-            // or whitespace followed by U+0022 QUOTATION MARK (") or U+0027 APOSTROPHE ('),
-            // then create a <function-token> with its value set to string and return it.
-            if (getCharCode(offset) === 0x0022 ||
-                getCharCode(offset) === 0x0027) {
-                type = Function;
-                offset = nameStartOffset + 4;
-                return;
-            }
-
-            // Otherwise, consume a url token, and return it.
-            consumeUrlToken();
-            return;
-        }
-
-        // Otherwise, if the next input code point is U+0028 LEFT PARENTHESIS ((), consume it.
-        // Create a <function-token> with its value set to string and return it.
-        if (getCharCode(offset) === 0x0028) {
-            type = Function;
-            offset++;
-            return;
-        }
-
-        // Otherwise, create an <ident-token> with its value set to string and return it.
-        type = Ident;
-    }
-
-    // § 4.3.5. Consume a string token
-    function consumeStringToken(endingCodePoint) {
-        // This algorithm may be called with an ending code point, which denotes the code point
-        // that ends the string. If an ending code point is not specified,
-        // the current input code point is used.
-        if (!endingCodePoint) {
-            endingCodePoint = getCharCode(offset++);
-        }
-
-        // Initially create a <string-token> with its value set to the empty string.
-        type = types_String;
-
-        // Repeatedly consume the next input code point from the stream:
-        for (; offset < source.length; offset++) {
-            const code = source.charCodeAt(offset);
-
-            switch (charCodeCategory(code)) {
-                // ending code point
-                case endingCodePoint:
-                    // Return the <string-token>.
-                    offset++;
-                    return;
-
-                    // EOF
-                    // case EofCategory:
-                    // This is a parse error. Return the <string-token>.
-                    // return;
-
-                // newline
-                case WhiteSpaceCategory:
-                    if (isNewline(code)) {
-                        // This is a parse error. Reconsume the current input code point,
-                        // create a <bad-string-token>, and return it.
-                        offset += getNewlineLength(source, offset, code);
-                        type = BadString;
-                        return;
-                    }
-                    break;
-
-                // U+005C REVERSE SOLIDUS (\)
-                case 0x005C:
-                    // If the next input code point is EOF, do nothing.
-                    if (offset === source.length - 1) {
-                        break;
-                    }
-
-                    const nextCode = getCharCode(offset + 1);
-
-                    // Otherwise, if the next input code point is a newline, consume it.
-                    if (isNewline(nextCode)) {
-                        offset += getNewlineLength(source, offset + 1, nextCode);
-                    } else if (isValidEscape(code, nextCode)) {
-                        // Otherwise, (the stream starts with a valid escape) consume
-                        // an escaped code point and append the returned code point to
-                        // the <string-token>’s value.
-                        offset = consumeEscaped(source, offset) - 1;
-                    }
-                    break;
-
-                // anything else
-                // Append the current input code point to the <string-token>’s value.
-            }
-        }
-    }
-
-    // § 4.3.6. Consume a url token
-    // Note: This algorithm assumes that the initial "url(" has already been consumed.
-    // This algorithm also assumes that it’s being called to consume an "unquoted" value, like url(foo).
-    // A quoted value, like url("foo"), is parsed as a <function-token>. Consume an ident-like token
-    // automatically handles this distinction; this algorithm shouldn’t be called directly otherwise.
-    function consumeUrlToken() {
-        // Initially create a <url-token> with its value set to the empty string.
-        type = Url;
-
-        // Consume as much whitespace as possible.
-        offset = findWhiteSpaceEnd(source, offset);
-
-        // Repeatedly consume the next input code point from the stream:
-        for (; offset < source.length; offset++) {
-            const code = source.charCodeAt(offset);
-
-            switch (charCodeCategory(code)) {
-                // U+0029 RIGHT PARENTHESIS ())
-                case 0x0029:
-                    // Return the <url-token>.
-                    offset++;
-                    return;
-
-                    // EOF
-                    // case EofCategory:
-                    // This is a parse error. Return the <url-token>.
-                    // return;
-
-                // whitespace
-                case WhiteSpaceCategory:
-                    // Consume as much whitespace as possible.
-                    offset = findWhiteSpaceEnd(source, offset);
-
-                    // If the next input code point is U+0029 RIGHT PARENTHESIS ()) or EOF,
-                    // consume it and return the <url-token>
-                    // (if EOF was encountered, this is a parse error);
-                    if (getCharCode(offset) === 0x0029 || offset >= source.length) {
-                        if (offset < source.length) {
-                            offset++;
-                        }
-                        return;
-                    }
-
-                    // otherwise, consume the remnants of a bad url, create a <bad-url-token>,
-                    // and return it.
-                    offset = consumeBadUrlRemnants(source, offset);
-                    type = BadUrl;
-                    return;
-
-                // U+0022 QUOTATION MARK (")
-                // U+0027 APOSTROPHE (')
-                // U+0028 LEFT PARENTHESIS (()
-                // non-printable code point
-                case 0x0022:
-                case 0x0027:
-                case 0x0028:
-                case NonPrintableCategory:
-                    // This is a parse error. Consume the remnants of a bad url,
-                    // create a <bad-url-token>, and return it.
-                    offset = consumeBadUrlRemnants(source, offset);
-                    type = BadUrl;
-                    return;
-
-                // U+005C REVERSE SOLIDUS (\)
-                case 0x005C:
-                    // If the stream starts with a valid escape, consume an escaped code point and
-                    // append the returned code point to the <url-token>’s value.
-                    if (isValidEscape(code, getCharCode(offset + 1))) {
-                        offset = consumeEscaped(source, offset) - 1;
-                        break;
-                    }
-
-                    // Otherwise, this is a parse error. Consume the remnants of a bad url,
-                    // create a <bad-url-token>, and return it.
-                    offset = consumeBadUrlRemnants(source, offset);
-                    type = BadUrl;
-                    return;
-
-                // anything else
-                // Append the current input code point to the <url-token>’s value.
-            }
-        }
-    }
-
-    // ensure source is a string
-    source = String(source || '');
-
-    const sourceLength = source.length;
-    let start = isBOM(getCharCode(0));
-    let offset = start;
-    let type;
-
-    // https://drafts.csswg.org/css-syntax-3/#consume-token
-    // § 4.3.1. Consume a token
-    while (offset < sourceLength) {
-        const code = source.charCodeAt(offset);
-
-        switch (charCodeCategory(code)) {
-            // whitespace
-            case WhiteSpaceCategory:
-                // Consume as much whitespace as possible. Return a <whitespace-token>.
-                type = WhiteSpace;
-                offset = findWhiteSpaceEnd(source, offset + 1);
-                break;
-
-            // U+0022 QUOTATION MARK (")
-            case 0x0022:
-                // Consume a string token and return it.
-                consumeStringToken();
-                break;
-
-            // U+0023 NUMBER SIGN (#)
-            case 0x0023:
-                // If the next input code point is a name code point or the next two input code points are a valid escape, then:
-                if (isName(getCharCode(offset + 1)) || isValidEscape(getCharCode(offset + 1), getCharCode(offset + 2))) {
-                    // Create a <hash-token>.
-                    type = Hash;
-
-                    // If the next 3 input code points would start an identifier, set the <hash-token>’s type flag to "id".
-                    // if (isIdentifierStart(getCharCode(offset + 1), getCharCode(offset + 2), getCharCode(offset + 3))) {
-                    //     // TODO: set id flag
-                    // }
-
-                    // Consume a name, and set the <hash-token>’s value to the returned string.
-                    offset = consumeName(source, offset + 1);
-
-                    // Return the <hash-token>.
-                } else {
-                    // Otherwise, return a <delim-token> with its value set to the current input code point.
-                    type = Delim;
-                    offset++;
-                }
-
-                break;
-
-            // U+0027 APOSTROPHE (')
-            case 0x0027:
-                // Consume a string token and return it.
-                consumeStringToken();
-                break;
-
-            // U+0028 LEFT PARENTHESIS (()
-            case 0x0028:
-                // Return a <(-token>.
-                type = LeftParenthesis;
-                offset++;
-                break;
-
-            // U+0029 RIGHT PARENTHESIS ())
-            case 0x0029:
-                // Return a <)-token>.
-                type = RightParenthesis;
-                offset++;
-                break;
-
-            // U+002B PLUS SIGN (+)
-            case 0x002B:
-                // If the input stream starts with a number, ...
-                if (isNumberStart(code, getCharCode(offset + 1), getCharCode(offset + 2))) {
-                    // ... reconsume the current input code point, consume a numeric token, and return it.
-                    consumeNumericToken();
-                } else {
-                    // Otherwise, return a <delim-token> with its value set to the current input code point.
-                    type = Delim;
-                    offset++;
-                }
-                break;
-
-            // U+002C COMMA (,)
-            case 0x002C:
-                // Return a <comma-token>.
-                type = Comma;
-                offset++;
-                break;
-
-            // U+002D HYPHEN-MINUS (-)
-            case 0x002D:
-                // If the input stream starts with a number, reconsume the current input code point, consume a numeric token, and return it.
-                if (isNumberStart(code, getCharCode(offset + 1), getCharCode(offset + 2))) {
-                    consumeNumericToken();
-                } else {
-                    // Otherwise, if the next 2 input code points are U+002D HYPHEN-MINUS U+003E GREATER-THAN SIGN (->), consume them and return a <CDC-token>.
-                    if (getCharCode(offset + 1) === 0x002D &&
-                        getCharCode(offset + 2) === 0x003E) {
-                        type = CDC;
-                        offset = offset + 3;
-                    } else {
-                        // Otherwise, if the input stream starts with an identifier, ...
-                        if (isIdentifierStart(code, getCharCode(offset + 1), getCharCode(offset + 2))) {
-                            // ... reconsume the current input code point, consume an ident-like token, and return it.
-                            consumeIdentLikeToken();
-                        } else {
-                            // Otherwise, return a <delim-token> with its value set to the current input code point.
-                            type = Delim;
-                            offset++;
-                        }
-                    }
-                }
-                break;
-
-            // U+002E FULL STOP (.)
-            case 0x002E:
-                // If the input stream starts with a number, ...
-                if (isNumberStart(code, getCharCode(offset + 1), getCharCode(offset + 2))) {
-                    // ... reconsume the current input code point, consume a numeric token, and return it.
-                    consumeNumericToken();
-                } else {
-                    // Otherwise, return a <delim-token> with its value set to the current input code point.
-                    type = Delim;
-                    offset++;
-                }
-
-                break;
-
-            // U+002F SOLIDUS (/)
-            case 0x002F:
-                // If the next two input code point are U+002F SOLIDUS (/) followed by a U+002A ASTERISK (*),
-                if (getCharCode(offset + 1) === 0x002A) {
-                    // ... consume them and all following code points up to and including the first U+002A ASTERISK (*)
-                    // followed by a U+002F SOLIDUS (/), or up to an EOF code point.
-                    type = Comment;
-                    offset = source.indexOf('*/', offset + 2);
-                    offset = offset === -1 ? source.length : offset + 2;
-                } else {
-                    type = Delim;
-                    offset++;
-                }
-                break;
-
-            // U+003A COLON (:)
-            case 0x003A:
-                // Return a <colon-token>.
-                type = Colon;
-                offset++;
-                break;
-
-            // U+003B SEMICOLON (;)
-            case 0x003B:
-                // Return a <semicolon-token>.
-                type = Semicolon;
-                offset++;
-                break;
-
-            // U+003C LESS-THAN SIGN (<)
-            case 0x003C:
-                // If the next 3 input code points are U+0021 EXCLAMATION MARK U+002D HYPHEN-MINUS U+002D HYPHEN-MINUS (!--), ...
-                if (getCharCode(offset + 1) === 0x0021 &&
-                    getCharCode(offset + 2) === 0x002D &&
-                    getCharCode(offset + 3) === 0x002D) {
-                    // ... consume them and return a <CDO-token>.
-                    type = CDO;
-                    offset = offset + 4;
-                } else {
-                    // Otherwise, return a <delim-token> with its value set to the current input code point.
-                    type = Delim;
-                    offset++;
-                }
-
-                break;
-
-            // U+0040 COMMERCIAL AT (@)
-            case 0x0040:
-                // If the next 3 input code points would start an identifier, ...
-                if (isIdentifierStart(getCharCode(offset + 1), getCharCode(offset + 2), getCharCode(offset + 3))) {
-                    // ... consume a name, create an <at-keyword-token> with its value set to the returned value, and return it.
-                    type = AtKeyword;
-                    offset = consumeName(source, offset + 1);
-                } else {
-                    // Otherwise, return a <delim-token> with its value set to the current input code point.
-                    type = Delim;
-                    offset++;
-                }
-
-                break;
-
-            // U+005B LEFT SQUARE BRACKET ([)
-            case 0x005B:
-                // Return a <[-token>.
-                type = LeftSquareBracket;
-                offset++;
-                break;
-
-            // U+005C REVERSE SOLIDUS (\)
-            case 0x005C:
-                // If the input stream starts with a valid escape, ...
-                if (isValidEscape(code, getCharCode(offset + 1))) {
-                    // ... reconsume the current input code point, consume an ident-like token, and return it.
-                    consumeIdentLikeToken();
-                } else {
-                    // Otherwise, this is a parse error. Return a <delim-token> with its value set to the current input code point.
-                    type = Delim;
-                    offset++;
-                }
-                break;
-
-            // U+005D RIGHT SQUARE BRACKET (])
-            case 0x005D:
-                // Return a <]-token>.
-                type = RightSquareBracket;
-                offset++;
-                break;
-
-            // U+007B LEFT CURLY BRACKET ({)
-            case 0x007B:
-                // Return a <{-token>.
-                type = LeftCurlyBracket;
-                offset++;
-                break;
-
-            // U+007D RIGHT CURLY BRACKET (})
-            case 0x007D:
-                // Return a <}-token>.
-                type = RightCurlyBracket;
-                offset++;
-                break;
-
-            // digit
-            case DigitCategory:
-                // Reconsume the current input code point, consume a numeric token, and return it.
-                consumeNumericToken();
-                break;
-
-            // name-start code point
-            case NameStartCategory:
-                // Reconsume the current input code point, consume an ident-like token, and return it.
-                consumeIdentLikeToken();
-                break;
-
-                // EOF
-                // case EofCategory:
-                // Return an <EOF-token>.
-                // break;
-
-            // anything else
-            default:
-                // Return a <delim-token> with its value set to the current input code point.
-                type = Delim;
-                offset++;
-        }
-
-        // put token to stream
-        onToken(type, start, start = offset);
-    }
-}
-
-
-
-
-
-
-
-
-
-;// ./node_modules/css-tree/lib/utils/List.js
-//
-//                              list
-//                            ┌──────┐
-//             ┌──────────────┼─head │
-//             │              │ tail─┼──────────────┐
-//             │              └──────┘              │
-//             ▼                                    ▼
-//            item        item        item        item
-//          ┌──────┐    ┌──────┐    ┌──────┐    ┌──────┐
-//  null ◀──┼─prev │◀───┼─prev │◀───┼─prev │◀───┼─prev │
-//          │ next─┼───▶│ next─┼───▶│ next─┼───▶│ next─┼──▶ null
-//          ├──────┤    ├──────┤    ├──────┤    ├──────┤
-//          │ data │    │ data │    │ data │    │ data │
-//          └──────┘    └──────┘    └──────┘    └──────┘
-//
-
-let releasedCursors = null;
-
-class List {
-    static createItem(data) {
-        return {
-            prev: null,
-            next: null,
-            data
-        };
-    }
-
-    constructor() {
-        this.head = null;
-        this.tail = null;
-        this.cursor = null;
-    }
-    createItem(data) {
-        return List.createItem(data);
-    }
-
-    // cursor helpers
-    allocateCursor(prev, next) {
-        let cursor;
-
-        if (releasedCursors !== null) {
-            cursor = releasedCursors;
-            releasedCursors = releasedCursors.cursor;
-            cursor.prev = prev;
-            cursor.next = next;
-            cursor.cursor = this.cursor;
-        } else {
-            cursor = {
-                prev,
-                next,
-                cursor: this.cursor
-            };
-        }
-
-        this.cursor = cursor;
-
-        return cursor;
-    }
-    releaseCursor() {
-        const { cursor } = this;
-
-        this.cursor = cursor.cursor;
-        cursor.prev = null;
-        cursor.next = null;
-        cursor.cursor = releasedCursors;
-        releasedCursors = cursor;
-    }
-    updateCursors(prevOld, prevNew, nextOld, nextNew) {
-        let { cursor } = this;
-
-        while (cursor !== null) {
-            if (cursor.prev === prevOld) {
-                cursor.prev = prevNew;
-            }
-
-            if (cursor.next === nextOld) {
-                cursor.next = nextNew;
-            }
-
-            cursor = cursor.cursor;
-        }
-    }
-    *[Symbol.iterator]() {
-        for (let cursor = this.head; cursor !== null; cursor = cursor.next) {
-            yield cursor.data;
-        }
-    }
-
-    // getters
-    get size() {
-        let size = 0;
-
-        for (let cursor = this.head; cursor !== null; cursor = cursor.next) {
-            size++;
-        }
-
-        return size;
-    }
-    get isEmpty() {
-        return this.head === null;
-    }
-    get first() {
-        return this.head && this.head.data;
-    }
-    get last() {
-        return this.tail && this.tail.data;
-    }
-
-    // convertors
-    fromArray(array) {
-        let cursor = null;
-        this.head = null;
-
-        for (let data of array) {
-            const item = List.createItem(data);
-
-            if (cursor !== null) {
-                cursor.next = item;
-            } else {
-                this.head = item;
-            }
-
-            item.prev = cursor;
-            cursor = item;
-        }
-
-        this.tail = cursor;
-        return this;
-    }
-    toArray() {
-        return [...this];
-    }
-    toJSON() {
-        return [...this];
-    }
-
-    // array-like methods
-    forEach(fn, thisArg = this) {
-        // push cursor
-        const cursor = this.allocateCursor(null, this.head);
-
-        while (cursor.next !== null) {
-            const item = cursor.next;
-            cursor.next = item.next;
-            fn.call(thisArg, item.data, item, this);
-        }
-
-        // pop cursor
-        this.releaseCursor();
-    }
-    forEachRight(fn, thisArg = this) {
-        // push cursor
-        const cursor = this.allocateCursor(this.tail, null);
-
-        while (cursor.prev !== null) {
-            const item = cursor.prev;
-            cursor.prev = item.prev;
-            fn.call(thisArg, item.data, item, this);
-        }
-
-        // pop cursor
-        this.releaseCursor();
-    }
-    reduce(fn, initialValue, thisArg = this) {
-        // push cursor
-        let cursor = this.allocateCursor(null, this.head);
-        let acc = initialValue;
-        let item;
-
-        while (cursor.next !== null) {
-            item = cursor.next;
-            cursor.next = item.next;
-
-            acc = fn.call(thisArg, acc, item.data, item, this);
-        }
-
-        // pop cursor
-        this.releaseCursor();
-
-        return acc;
-    }
-    reduceRight(fn, initialValue, thisArg = this) {
-        // push cursor
-        let cursor = this.allocateCursor(this.tail, null);
-        let acc = initialValue;
-        let item;
-
-        while (cursor.prev !== null) {
-            item = cursor.prev;
-            cursor.prev = item.prev;
-
-            acc = fn.call(thisArg, acc, item.data, item, this);
-        }
-
-        // pop cursor
-        this.releaseCursor();
-
-        return acc;
-    }
-    some(fn, thisArg = this) {
-        for (let cursor = this.head; cursor !== null; cursor = cursor.next) {
-            if (fn.call(thisArg, cursor.data, cursor, this)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    map(fn, thisArg = this) {
-        const result = new List();
-
-        for (let cursor = this.head; cursor !== null; cursor = cursor.next) {
-            result.appendData(fn.call(thisArg, cursor.data, cursor, this));
-        }
-
-        return result;
-    }
-    filter(fn, thisArg = this) {
-        const result = new List();
-
-        for (let cursor = this.head; cursor !== null; cursor = cursor.next) {
-            if (fn.call(thisArg, cursor.data, cursor, this)) {
-                result.appendData(cursor.data);
-            }
-        }
-
-        return result;
-    }
-
-    nextUntil(start, fn, thisArg = this) {
-        if (start === null) {
-            return;
-        }
-
-        // push cursor
-        const cursor = this.allocateCursor(null, start);
-
-        while (cursor.next !== null) {
-            const item = cursor.next;
-            cursor.next = item.next;
-            if (fn.call(thisArg, item.data, item, this)) {
-                break;
-            }
-        }
-
-        // pop cursor
-        this.releaseCursor();
-    }
-    prevUntil(start, fn, thisArg = this) {
-        if (start === null) {
-            return;
-        }
-
-        // push cursor
-        const cursor = this.allocateCursor(start, null);
-
-        while (cursor.prev !== null) {
-            const item = cursor.prev;
-            cursor.prev = item.prev;
-            if (fn.call(thisArg, item.data, item, this)) {
-                break;
-            }
-        }
-
-        // pop cursor
-        this.releaseCursor();
-    }
-
-    // mutation
-    clear() {
-        this.head = null;
-        this.tail = null;
-    }
-    copy() {
-        const result = new List();
-
-        for (let data of this) {
-            result.appendData(data);
-        }
-
-        return result;
-    }
-    prepend(item) {
-        //      head
-        //    ^
-        // item
-        this.updateCursors(null, item, this.head, item);
-
-        // insert to the beginning of the list
-        if (this.head !== null) {
-            // new item <- first item
-            this.head.prev = item;
-            // new item -> first item
-            item.next = this.head;
-        } else {
-            // if list has no head, then it also has no tail
-            // in this case tail points to the new item
-            this.tail = item;
-        }
-
-        // head always points to new item
-        this.head = item;
-        return this;
-    }
-    prependData(data) {
-        return this.prepend(List.createItem(data));
-    }
-    append(item) {
-        return this.insert(item);
-    }
-    appendData(data) {
-        return this.insert(List.createItem(data));
-    }
-    insert(item, before = null) {
-        if (before !== null) {
-            // prev   before
-            //      ^
-            //     item
-            this.updateCursors(before.prev, item, before, item);
-
-            if (before.prev === null) {
-                // insert to the beginning of list
-                if (this.head !== before) {
-                    throw new Error('before doesn\'t belong to list');
-                }
-                // since head points to before therefore list doesn't empty
-                // no need to check tail
-                this.head = item;
-                before.prev = item;
-                item.next = before;
-                this.updateCursors(null, item);
-            } else {
-                // insert between two items
-                before.prev.next = item;
-                item.prev = before.prev;
-                before.prev = item;
-                item.next = before;
-            }
-        } else {
-            // tail
-            //      ^
-            //      item
-            this.updateCursors(this.tail, item, null, item);
-
-            // insert to the ending of the list
-            if (this.tail !== null) {
-                // last item -> new item
-                this.tail.next = item;
-                // last item <- new item
-                item.prev = this.tail;
-            } else {
-                // if list has no tail, then it also has no head
-                // in this case head points to new item
-                this.head = item;
-            }
-
-            // tail always points to new item
-            this.tail = item;
-        }
-
-        return this;
-    }
-    insertData(data, before) {
-        return this.insert(List.createItem(data), before);
-    }
-    remove(item) {
-        //      item
-        //       ^
-        // prev     next
-        this.updateCursors(item, item.prev, item, item.next);
-
-        if (item.prev !== null) {
-            item.prev.next = item.next;
-        } else {
-            if (this.head !== item) {
-                throw new Error('item doesn\'t belong to list');
-            }
-
-            this.head = item.next;
-        }
-
-        if (item.next !== null) {
-            item.next.prev = item.prev;
-        } else {
-            if (this.tail !== item) {
-                throw new Error('item doesn\'t belong to list');
-            }
-
-            this.tail = item.prev;
-        }
-
-        item.prev = null;
-        item.next = null;
-
-        return item;
-    }
-    push(data) {
-        this.insert(List.createItem(data));
-    }
-    pop() {
-        return this.tail !== null ? this.remove(this.tail) : null;
-    }
-    unshift(data) {
-        this.prepend(List.createItem(data));
-    }
-    shift() {
-        return this.head !== null ? this.remove(this.head) : null;
-    }
-    prependList(list) {
-        return this.insertList(list, this.head);
-    }
-    appendList(list) {
-        return this.insertList(list);
-    }
-    insertList(list, before) {
-        // ignore empty lists
-        if (list.head === null) {
-            return this;
-        }
-
-        if (before !== undefined && before !== null) {
-            this.updateCursors(before.prev, list.tail, before, list.head);
-
-            // insert in the middle of dist list
-            if (before.prev !== null) {
-                // before.prev <-> list.head
-                before.prev.next = list.head;
-                list.head.prev = before.prev;
-            } else {
-                this.head = list.head;
-            }
-
-            before.prev = list.tail;
-            list.tail.next = before;
-        } else {
-            this.updateCursors(this.tail, list.tail, null, list.head);
-
-            // insert to end of the list
-            if (this.tail !== null) {
-                // if destination list has a tail, then it also has a head,
-                // but head doesn't change
-                // dest tail -> source head
-                this.tail.next = list.head;
-                // dest tail <- source head
-                list.head.prev = this.tail;
-            } else {
-                // if list has no a tail, then it also has no a head
-                // in this case points head to new item
-                this.head = list.head;
-            }
-
-            // tail always start point to new item
-            this.tail = list.tail;
-        }
-
-        list.head = null;
-        list.tail = null;
-        return this;
-    }
-    replace(oldItem, newItemOrList) {
-        if ('head' in newItemOrList) {
-            this.insertList(newItemOrList, oldItem);
-        } else {
-            this.insert(newItemOrList, oldItem);
-        }
-
-        this.remove(oldItem);
-    }
-}
-
-;// ./node_modules/css-tree/lib/utils/create-custom-error.js
-function createCustomError(name, message) {
-    // use Object.create(), because some VMs prevent setting line/column otherwise
-    // (iOS Safari 10 even throws an exception)
-    const error = Object.create(SyntaxError.prototype);
-    const errorStack = new Error();
-
-    return Object.assign(error, {
-        name,
-        message,
-        get stack() {
-            return (errorStack.stack || '').replace(/^(.+\n){1,3}/, `${name}: ${message}\n`);
-        }
-    });
-};
-
-;// ./node_modules/css-tree/lib/parser/SyntaxError.js
-
-
-const MAX_LINE_LENGTH = 100;
-const OFFSET_CORRECTION = 60;
-const TAB_REPLACEMENT = '    ';
-
-function sourceFragment({ source, line, column }, extraLines) {
-    function processLines(start, end) {
-        return lines
-            .slice(start, end)
-            .map((line, idx) =>
-                String(start + idx + 1).padStart(maxNumLength) + ' |' + line
-            ).join('\n');
-    }
-
-    const lines = source.split(/\r\n?|\n|\f/);
-    const startLine = Math.max(1, line - extraLines) - 1;
-    const endLine = Math.min(line + extraLines, lines.length + 1);
-    const maxNumLength = Math.max(4, String(endLine).length) + 1;
-    let cutLeft = 0;
-
-    // column correction according to replaced tab before column
-    column += (TAB_REPLACEMENT.length - 1) * (lines[line - 1].substr(0, column - 1).match(/\t/g) || []).length;
-
-    if (column > MAX_LINE_LENGTH) {
-        cutLeft = column - OFFSET_CORRECTION + 3;
-        column = OFFSET_CORRECTION - 2;
-    }
-
-    for (let i = startLine; i <= endLine; i++) {
-        if (i >= 0 && i < lines.length) {
-            lines[i] = lines[i].replace(/\t/g, TAB_REPLACEMENT);
-            lines[i] =
-                (cutLeft > 0 && lines[i].length > cutLeft ? '\u2026' : '') +
-                lines[i].substr(cutLeft, MAX_LINE_LENGTH - 2) +
-                (lines[i].length > cutLeft + MAX_LINE_LENGTH - 1 ? '\u2026' : '');
-        }
-    }
-
-    return [
-        processLines(startLine, line),
-        new Array(column + maxNumLength + 2).join('-') + '^',
-        processLines(line, endLine)
-    ].filter(Boolean).join('\n');
-}
-
-function SyntaxError_SyntaxError(message, source, offset, line, column) {
-    const error = Object.assign(createCustomError('SyntaxError', message), {
-        source,
-        offset,
-        line,
-        column,
-        sourceFragment(extraLines) {
-            return sourceFragment({ source, line, column }, isNaN(extraLines) ? 0 : extraLines);
-        },
-        get formattedMessage() {
-            return (
-                `Parse error: ${message}\n` +
-                sourceFragment({ source, line, column }, 2)
-            );
-        }
-    });
-
-    return error;
-}
-
-;// ./node_modules/css-tree/lib/parser/sequence.js
-
-
-function readSequence(recognizer) {
-    const children = this.createList();
-    let space = false;
-    const context = {
-        recognizer
-    };
-
-    while (!this.eof) {
-        switch (this.tokenType) {
-            case Comment:
-                this.next();
-                continue;
-
-            case WhiteSpace:
-                space = true;
-                this.next();
-                continue;
-        }
-
-        let child = recognizer.getNode.call(this, context);
-
-        if (child === undefined) {
-            break;
-        }
-
-        if (space) {
-            if (recognizer.onWhiteSpace) {
-                recognizer.onWhiteSpace.call(this, child, children, context);
-            }
-            space = false;
-        }
-
-        children.push(child);
-    }
-
-    if (space && recognizer.onWhiteSpace) {
-        recognizer.onWhiteSpace.call(this, null, children, context);
-    }
-
-    return children;
-};
-
-;// ./node_modules/css-tree/lib/parser/create.js
-
-
-
-
-
-const NOOP = () => {};
-const EXCLAMATIONMARK = 0x0021;  // U+0021 EXCLAMATION MARK (!)
-const NUMBERSIGN = 0x0023;       // U+0023 NUMBER SIGN (#)
-const SEMICOLON = 0x003B;        // U+003B SEMICOLON (;)
-const LEFTCURLYBRACKET = 0x007B; // U+007B LEFT CURLY BRACKET ({)
-const NULL = 0;
-
-function createParseContext(name) {
-    return function() {
-        return this[name]();
-    };
-}
-
-function fetchParseValues(dict) {
-    const result = Object.create(null);
-
-    for (const name in dict) {
-        const item = dict[name];
-        const fn = item.parse || item;
-
-        if (fn) {
-            result[name] = fn;
-        }
-    }
-
-    return result;
-}
-
-function processConfig(config) {
-    const parseConfig = {
-        context: Object.create(null),
-        scope: Object.assign(Object.create(null), config.scope),
-        atrule: fetchParseValues(config.atrule),
-        pseudo: fetchParseValues(config.pseudo),
-        node: fetchParseValues(config.node)
-    };
-
-    for (const name in config.parseContext) {
-        switch (typeof config.parseContext[name]) {
-            case 'function':
-                parseConfig.context[name] = config.parseContext[name];
-                break;
-
-            case 'string':
-                parseConfig.context[name] = createParseContext(config.parseContext[name]);
-                break;
-        }
-    }
-
-    return {
-        config: parseConfig,
-        ...parseConfig,
-        ...parseConfig.node
-    };
-}
-
-function createParser(config) {
-    let source = '';
-    let filename = '<unknown>';
-    let needPositions = false;
-    let onParseError = NOOP;
-    let onParseErrorThrow = false;
-
-    const locationMap = new OffsetToLocation();
-    const parser = Object.assign(new TokenStream(), processConfig(config || {}), {
-        parseAtrulePrelude: true,
-        parseRulePrelude: true,
-        parseValue: true,
-        parseCustomProperty: false,
-
-        readSequence: readSequence,
-
-        consumeUntilBalanceEnd: () => 0,
-        consumeUntilLeftCurlyBracket(code) {
-            return code === LEFTCURLYBRACKET ? 1 : 0;
-        },
-        consumeUntilLeftCurlyBracketOrSemicolon(code) {
-            return code === LEFTCURLYBRACKET || code === SEMICOLON ? 1 : 0;
-        },
-        consumeUntilExclamationMarkOrSemicolon(code) {
-            return code === EXCLAMATIONMARK || code === SEMICOLON ? 1 : 0;
-        },
-        consumeUntilSemicolonIncluded(code) {
-            return code === SEMICOLON ? 2 : 0;
-        },
-
-        createList() {
-            return new List();
-        },
-        createSingleNodeList(node) {
-            return new List().appendData(node);
-        },
-        getFirstListNode(list) {
-            return list && list.first;
-        },
-        getLastListNode(list) {
-            return list && list.last;
-        },
-
-        parseWithFallback(consumer, fallback) {
-            const startToken = this.tokenIndex;
-
-            try {
-                return consumer.call(this);
-            } catch (e) {
-                if (onParseErrorThrow) {
-                    throw e;
-                }
-
-                const fallbackNode = fallback.call(this, startToken);
-
-                onParseErrorThrow = true;
-                onParseError(e, fallbackNode);
-                onParseErrorThrow = false;
-
-                return fallbackNode;
-            }
-        },
-
-        lookupNonWSType(offset) {
-            let type;
-
-            do {
-                type = this.lookupType(offset++);
-                if (type !== WhiteSpace) {
-                    return type;
-                }
-            } while (type !== NULL);
-
-            return NULL;
-        },
-
-        charCodeAt(offset) {
-            return offset >= 0 && offset < source.length ? source.charCodeAt(offset) : 0;
-        },
-        substring(offsetStart, offsetEnd) {
-            return source.substring(offsetStart, offsetEnd);
-        },
-        substrToCursor(start) {
-            return this.source.substring(start, this.tokenStart);
-        },
-
-        cmpChar(offset, charCode) {
-            return cmpChar(source, offset, charCode);
-        },
-        cmpStr(offsetStart, offsetEnd, str) {
-            return cmpStr(source, offsetStart, offsetEnd, str);
-        },
-
-        consume(tokenType) {
-            const start = this.tokenStart;
-
-            this.eat(tokenType);
-
-            return this.substrToCursor(start);
-        },
-        consumeFunctionName() {
-            const name = source.substring(this.tokenStart, this.tokenEnd - 1);
-
-            this.eat(Function);
-
-            return name;
-        },
-        consumeNumber(type) {
-            const number = source.substring(this.tokenStart, consumeNumber(source, this.tokenStart));
-
-            this.eat(type);
-
-            return number;
-        },
-
-        eat(tokenType) {
-            if (this.tokenType !== tokenType) {
-                const tokenName = names[tokenType].slice(0, -6).replace(/-/g, ' ').replace(/^./, m => m.toUpperCase());
-                let message = `${/[[\](){}]/.test(tokenName) ? `"${tokenName}"` : tokenName} is expected`;
-                let offset = this.tokenStart;
-
-                // tweak message and offset
-                switch (tokenType) {
-                    case Ident:
-                        // when identifier is expected but there is a function or url
-                        if (this.tokenType === Function || this.tokenType === Url) {
-                            offset = this.tokenEnd - 1;
-                            message = 'Identifier is expected but function found';
-                        } else {
-                            message = 'Identifier is expected';
-                        }
-                        break;
-
-                    case Hash:
-                        if (this.isDelim(NUMBERSIGN)) {
-                            this.next();
-                            offset++;
-                            message = 'Name is expected';
-                        }
-                        break;
-
-                    case Percentage:
-                        if (this.tokenType === types_Number) {
-                            offset = this.tokenEnd;
-                            message = 'Percent sign is expected';
-                        }
-                        break;
-                }
-
-                this.error(message, offset);
-            }
-
-            this.next();
-        },
-        eatIdent(name) {
-            if (this.tokenType !== Ident || this.lookupValue(0, name) === false) {
-                this.error(`Identifier "${name}" is expected`);
-            }
-
-            this.next();
-        },
-        eatDelim(code) {
-            if (!this.isDelim(code)) {
-                this.error(`Delim "${String.fromCharCode(code)}" is expected`);
-            }
-
-            this.next();
-        },
-
-        getLocation(start, end) {
-            if (needPositions) {
-                return locationMap.getLocationRange(
-                    start,
-                    end,
-                    filename
-                );
-            }
-
-            return null;
-        },
-        getLocationFromList(list) {
-            if (needPositions) {
-                const head = this.getFirstListNode(list);
-                const tail = this.getLastListNode(list);
-                return locationMap.getLocationRange(
-                    head !== null ? head.loc.start.offset - locationMap.startOffset : this.tokenStart,
-                    tail !== null ? tail.loc.end.offset - locationMap.startOffset : this.tokenStart,
-                    filename
-                );
-            }
-
-            return null;
-        },
-
-        error(message, offset) {
-            const location = typeof offset !== 'undefined' && offset < source.length
-                ? locationMap.getLocation(offset)
-                : this.eof
-                    ? locationMap.getLocation(findWhiteSpaceStart(source, source.length - 1))
-                    : locationMap.getLocation(this.tokenStart);
-
-            throw new SyntaxError_SyntaxError(
-                message || 'Unexpected input',
-                source,
-                location.offset,
-                location.line,
-                location.column
-            );
-        }
-    });
-
-    const parse = function(source_, options) {
-        source = source_;
-        options = options || {};
-
-        parser.setSource(source, tokenize);
-        locationMap.setSource(
-            source,
-            options.offset,
-            options.line,
-            options.column
-        );
-
-        filename = options.filename || '<unknown>';
-        needPositions = Boolean(options.positions);
-        onParseError = typeof options.onParseError === 'function' ? options.onParseError : NOOP;
-        onParseErrorThrow = false;
-
-        parser.parseAtrulePrelude = 'parseAtrulePrelude' in options ? Boolean(options.parseAtrulePrelude) : true;
-        parser.parseRulePrelude = 'parseRulePrelude' in options ? Boolean(options.parseRulePrelude) : true;
-        parser.parseValue = 'parseValue' in options ? Boolean(options.parseValue) : true;
-        parser.parseCustomProperty = 'parseCustomProperty' in options ? Boolean(options.parseCustomProperty) : false;
-
-        const { context = 'default', onComment } = options;
-
-        if (context in parser.context === false) {
-            throw new Error('Unknown context `' + context + '`');
-        }
-
-        if (typeof onComment === 'function') {
-            parser.forEachToken((type, start, end) => {
-                if (type === Comment) {
-                    const loc = parser.getLocation(start, end);
-                    const value = cmpStr(source, end - 2, end, '*/')
-                        ? source.slice(start + 2, end - 2)
-                        : source.slice(start + 2, end);
-
-                    onComment(value, loc);
-                }
-            });
-        }
-
-        const ast = parser.context[context].call(parser, options);
-
-        if (!parser.eof) {
-            parser.error();
-        }
-
-        return ast;
-    };
-
-    return Object.assign(parse, {
-        SyntaxError: SyntaxError_SyntaxError,
-        config: parser.config
-    });
-};
-
-// EXTERNAL MODULE: ./node_modules/source-map-js/lib/source-map-generator.js
-var source_map_generator = __webpack_require__("./node_modules/source-map-js/lib/source-map-generator.js");
-;// ./node_modules/css-tree/lib/generator/sourceMap.js
-
-
-const trackNodes = new Set(['Atrule', 'Selector', 'Declaration']);
-
-function generateSourceMap(handlers) {
-    const map = new source_map_generator/* SourceMapGenerator */.x();
-    const generated = {
-        line: 1,
-        column: 0
-    };
-    const original = {
-        line: 0, // should be zero to add first mapping
-        column: 0
-    };
-    const activatedGenerated = {
-        line: 1,
-        column: 0
-    };
-    const activatedMapping = {
-        generated: activatedGenerated
-    };
-    let line = 1;
-    let column = 0;
-    let sourceMappingActive = false;
-
-    const origHandlersNode = handlers.node;
-    handlers.node = function(node) {
-        if (node.loc && node.loc.start && trackNodes.has(node.type)) {
-            const nodeLine = node.loc.start.line;
-            const nodeColumn = node.loc.start.column - 1;
-
-            if (original.line !== nodeLine ||
-                original.column !== nodeColumn) {
-                original.line = nodeLine;
-                original.column = nodeColumn;
-
-                generated.line = line;
-                generated.column = column;
-
-                if (sourceMappingActive) {
-                    sourceMappingActive = false;
-                    if (generated.line !== activatedGenerated.line ||
-                        generated.column !== activatedGenerated.column) {
-                        map.addMapping(activatedMapping);
-                    }
-                }
-
-                sourceMappingActive = true;
-                map.addMapping({
-                    source: node.loc.source,
-                    original,
-                    generated
-                });
-            }
-        }
-
-        origHandlersNode.call(this, node);
-
-        if (sourceMappingActive && trackNodes.has(node.type)) {
-            activatedGenerated.line = line;
-            activatedGenerated.column = column;
-        }
-    };
-
-    const origHandlersEmit = handlers.emit;
-    handlers.emit = function(value, type, auto) {
-        for (let i = 0; i < value.length; i++) {
-            if (value.charCodeAt(i) === 10) { // \n
-                line++;
-                column = 0;
-            } else {
-                column++;
-            }
-        }
-
-        origHandlersEmit(value, type, auto);
-    };
-
-    const origHandlersResult = handlers.result;
-    handlers.result = function() {
-        if (sourceMappingActive) {
-            map.addMapping(activatedMapping);
-        }
-
-        return {
-            css: origHandlersResult(),
-            map
-        };
-    };
-
-    return handlers;
-};
-
-;// ./node_modules/css-tree/lib/generator/token-before.js
-
-
-const PLUSSIGN = 0x002B;    // U+002B PLUS SIGN (+)
-const HYPHENMINUS = 0x002D; // U+002D HYPHEN-MINUS (-)
-
-const code = (type, value) => {
-    if (type === Delim) {
-        type = value;
-    }
-
-    if (typeof type === 'string') {
-        const charCode = type.charCodeAt(0);
-        return charCode > 0x7F ? 0x8000 : charCode << 8;
-    }
-
-    return type;
-};
-
-// https://www.w3.org/TR/css-syntax-3/#serialization
-// The only requirement for serialization is that it must "round-trip" with parsing,
-// that is, parsing the stylesheet must produce the same data structures as parsing,
-// serializing, and parsing again, except for consecutive <whitespace-token>s,
-// which may be collapsed into a single token.
-
-const specPairs = [
-    [Ident, Ident],
-    [Ident, Function],
-    [Ident, Url],
-    [Ident, BadUrl],
-    [Ident, '-'],
-    [Ident, types_Number],
-    [Ident, Percentage],
-    [Ident, Dimension],
-    [Ident, CDC],
-    [Ident, LeftParenthesis],
-
-    [AtKeyword, Ident],
-    [AtKeyword, Function],
-    [AtKeyword, Url],
-    [AtKeyword, BadUrl],
-    [AtKeyword, '-'],
-    [AtKeyword, types_Number],
-    [AtKeyword, Percentage],
-    [AtKeyword, Dimension],
-    [AtKeyword, CDC],
-
-    [Hash, Ident],
-    [Hash, Function],
-    [Hash, Url],
-    [Hash, BadUrl],
-    [Hash, '-'],
-    [Hash, types_Number],
-    [Hash, Percentage],
-    [Hash, Dimension],
-    [Hash, CDC],
-
-    [Dimension, Ident],
-    [Dimension, Function],
-    [Dimension, Url],
-    [Dimension, BadUrl],
-    [Dimension, '-'],
-    [Dimension, types_Number],
-    [Dimension, Percentage],
-    [Dimension, Dimension],
-    [Dimension, CDC],
-
-    ['#', Ident],
-    ['#', Function],
-    ['#', Url],
-    ['#', BadUrl],
-    ['#', '-'],
-    ['#', types_Number],
-    ['#', Percentage],
-    ['#', Dimension],
-    ['#', CDC], // https://github.com/w3c/csswg-drafts/pull/6874
-
-    ['-', Ident],
-    ['-', Function],
-    ['-', Url],
-    ['-', BadUrl],
-    ['-', '-'],
-    ['-', types_Number],
-    ['-', Percentage],
-    ['-', Dimension],
-    ['-', CDC], // https://github.com/w3c/csswg-drafts/pull/6874
-
-    [types_Number, Ident],
-    [types_Number, Function],
-    [types_Number, Url],
-    [types_Number, BadUrl],
-    [types_Number, types_Number],
-    [types_Number, Percentage],
-    [types_Number, Dimension],
-    [types_Number, '%'],
-    [types_Number, CDC], // https://github.com/w3c/csswg-drafts/pull/6874
-
-    ['@', Ident],
-    ['@', Function],
-    ['@', Url],
-    ['@', BadUrl],
-    ['@', '-'],
-    ['@', CDC], // https://github.com/w3c/csswg-drafts/pull/6874
-
-    ['.', types_Number],
-    ['.', Percentage],
-    ['.', Dimension],
-
-    ['+', types_Number],
-    ['+', Percentage],
-    ['+', Dimension],
-
-    ['/', '*']
-];
-// validate with scripts/generate-safe
-const safePairs = specPairs.concat([
-    [Ident, Hash],
-
-    [Dimension, Hash],
-
-    [Hash, Hash],
-
-    [AtKeyword, LeftParenthesis],
-    [AtKeyword, types_String],
-    [AtKeyword, Colon],
-
-    [Percentage, Percentage],
-    [Percentage, Dimension],
-    [Percentage, Function],
-    [Percentage, '-'],
-
-    [RightParenthesis, Ident],
-    [RightParenthesis, Function],
-    [RightParenthesis, Percentage],
-    [RightParenthesis, Dimension],
-    [RightParenthesis, Hash],
-    [RightParenthesis, '-']
-]);
-
-function createMap(pairs) {
-    const isWhiteSpaceRequired = new Set(
-        pairs.map(([prev, next]) => (code(prev) << 16 | code(next)))
-    );
-
-    return function(prevCode, type, value) {
-        const nextCode = code(type, value);
-        const nextCharCode = value.charCodeAt(0);
-        const emitWs =
-            (nextCharCode === HYPHENMINUS &&
-                type !== Ident &&
-                type !== Function &&
-                type !== CDC) ||
-            (nextCharCode === PLUSSIGN)
-                ? isWhiteSpaceRequired.has(prevCode << 16 | nextCharCode << 8)
-                : isWhiteSpaceRequired.has(prevCode << 16 | nextCode);
-
-        if (emitWs) {
-            this.emit(' ', WhiteSpace, true);
-        }
-
-        return nextCode;
-    };
-}
-
-const spec = createMap(specPairs);
-const safe = createMap(safePairs);
-
-;// ./node_modules/css-tree/lib/generator/create.js
-
-
-
-
-const REVERSESOLIDUS = 0x005c; // U+005C REVERSE SOLIDUS (\)
-
-function processChildren(node, delimeter) {
-    if (typeof delimeter === 'function') {
-        let prev = null;
-
-        node.children.forEach(node => {
-            if (prev !== null) {
-                delimeter.call(this, prev);
-            }
-
-            this.node(node);
-            prev = node;
-        });
-
-        return;
-    }
-
-    node.children.forEach(this.node, this);
-}
-
-function processChunk(chunk) {
-    tokenize(chunk, (type, start, end) => {
-        this.token(type, chunk.slice(start, end));
-    });
-}
-
-function createGenerator(config) {
-    const types = new Map();
-
-    for (let name in config.node) {
-        const item = config.node[name];
-        const fn = item.generate || item;
-
-        if (typeof fn === 'function') {
-            types.set(name, item.generate || item);
-        }
-    }
-
-    return function(node, options) {
-        let buffer = '';
-        let prevCode = 0;
-        let handlers = {
-            node(node) {
-                if (types.has(node.type)) {
-                    types.get(node.type).call(publicApi, node);
-                } else {
-                    throw new Error('Unknown node type: ' + node.type);
-                }
-            },
-            tokenBefore: safe,
-            token(type, value) {
-                prevCode = this.tokenBefore(prevCode, type, value);
-
-                this.emit(value, type, false);
-
-                if (type === Delim && value.charCodeAt(0) === REVERSESOLIDUS) {
-                    this.emit('\n', WhiteSpace, true);
-                }
-            },
-            emit(value) {
-                buffer += value;
-            },
-            result() {
-                return buffer;
-            }
-        };
-
-        if (options) {
-            if (typeof options.decorator === 'function') {
-                handlers = options.decorator(handlers);
-            }
-
-            if (options.sourceMap) {
-                handlers = generateSourceMap(handlers);
-            }
-
-            if (options.mode in token_before_namespaceObject) {
-                handlers.tokenBefore = token_before_namespaceObject[options.mode];
-            }
-        }
-
-        const publicApi = {
-            node: (node) => handlers.node(node),
-            children: processChildren,
-            token: (type, value) => handlers.token(type, value),
-            tokenize: processChunk
-        };
-
-        handlers.node(node);
-
-        return handlers.result();
-    };
-};
-
-;// ./node_modules/css-tree/lib/convertor/create.js
-
-
-function createConvertor(walk) {
-    return {
-        fromPlainObject(ast) {
-            walk(ast, {
-                enter(node) {
-                    if (node.children && node.children instanceof List === false) {
-                        node.children = new List().fromArray(node.children);
-                    }
-                }
-            });
-
-            return ast;
-        },
-        toPlainObject(ast) {
-            walk(ast, {
-                leave(node) {
-                    if (node.children && node.children instanceof List) {
-                        node.children = node.children.toArray();
-                    }
-                }
-            });
-
-            return ast;
-        }
-    };
-};
-
-;// ./node_modules/css-tree/lib/walker/create.js
-const { hasOwnProperty: create_hasOwnProperty } = Object.prototype;
-const noop = function() {};
-
-function ensureFunction(value) {
-    return typeof value === 'function' ? value : noop;
-}
-
-function invokeForType(fn, type) {
-    return function(node, item, list) {
-        if (node.type === type) {
-            fn.call(this, node, item, list);
-        }
-    };
-}
-
-function getWalkersFromStructure(name, nodeType) {
-    const structure = nodeType.structure;
-    const walkers = [];
-
-    for (const key in structure) {
-        if (create_hasOwnProperty.call(structure, key) === false) {
-            continue;
-        }
-
-        let fieldTypes = structure[key];
-        const walker = {
-            name: key,
-            type: false,
-            nullable: false
-        };
-
-        if (!Array.isArray(fieldTypes)) {
-            fieldTypes = [fieldTypes];
-        }
-
-        for (const fieldType of fieldTypes) {
-            if (fieldType === null) {
-                walker.nullable = true;
-            } else if (typeof fieldType === 'string') {
-                walker.type = 'node';
-            } else if (Array.isArray(fieldType)) {
-                walker.type = 'list';
-            }
-        }
-
-        if (walker.type) {
-            walkers.push(walker);
-        }
-    }
-
-    if (walkers.length) {
-        return {
-            context: nodeType.walkContext,
-            fields: walkers
-        };
-    }
-
-    return null;
-}
-
-function getTypesFromConfig(config) {
-    const types = {};
-
-    for (const name in config.node) {
-        if (create_hasOwnProperty.call(config.node, name)) {
-            const nodeType = config.node[name];
-
-            if (!nodeType.structure) {
-                throw new Error('Missed `structure` field in `' + name + '` node type definition');
-            }
-
-            types[name] = getWalkersFromStructure(name, nodeType);
-        }
-    }
-
-    return types;
-}
-
-function createTypeIterator(config, reverse) {
-    const fields = config.fields.slice();
-    const contextName = config.context;
-    const useContext = typeof contextName === 'string';
-
-    if (reverse) {
-        fields.reverse();
-    }
-
-    return function(node, context, walk, walkReducer) {
-        let prevContextValue;
-
-        if (useContext) {
-            prevContextValue = context[contextName];
-            context[contextName] = node;
-        }
-
-        for (const field of fields) {
-            const ref = node[field.name];
-
-            if (!field.nullable || ref) {
-                if (field.type === 'list') {
-                    const breakWalk = reverse
-                        ? ref.reduceRight(walkReducer, false)
-                        : ref.reduce(walkReducer, false);
-
-                    if (breakWalk) {
-                        return true;
-                    }
-                } else if (walk(ref)) {
-                    return true;
-                }
-            }
-        }
-
-        if (useContext) {
-            context[contextName] = prevContextValue;
-        }
-    };
-}
-
-function createFastTraveralMap({
-    StyleSheet,
-    Atrule,
-    Rule,
-    Block,
-    DeclarationList
-}) {
-    return {
-        Atrule: {
-            StyleSheet,
-            Atrule,
-            Rule,
-            Block
-        },
-        Rule: {
-            StyleSheet,
-            Atrule,
-            Rule,
-            Block
-        },
-        Declaration: {
-            StyleSheet,
-            Atrule,
-            Rule,
-            Block,
-            DeclarationList
-        }
-    };
-}
-
-function createWalker(config) {
-    const types = getTypesFromConfig(config);
-    const iteratorsNatural = {};
-    const iteratorsReverse = {};
-    const breakWalk = Symbol('break-walk');
-    const skipNode = Symbol('skip-node');
-
-    for (const name in types) {
-        if (create_hasOwnProperty.call(types, name) && types[name] !== null) {
-            iteratorsNatural[name] = createTypeIterator(types[name], false);
-            iteratorsReverse[name] = createTypeIterator(types[name], true);
-        }
-    }
-
-    const fastTraversalIteratorsNatural = createFastTraveralMap(iteratorsNatural);
-    const fastTraversalIteratorsReverse = createFastTraveralMap(iteratorsReverse);
-
-    const walk = function(root, options) {
-        function walkNode(node, item, list) {
-            const enterRet = enter.call(context, node, item, list);
-
-            if (enterRet === breakWalk) {
-                return true;
-            }
-
-            if (enterRet === skipNode) {
-                return false;
-            }
-
-            if (iterators.hasOwnProperty(node.type)) {
-                if (iterators[node.type](node, context, walkNode, walkReducer)) {
-                    return true;
-                }
-            }
-
-            if (leave.call(context, node, item, list) === breakWalk) {
-                return true;
-            }
-
-            return false;
-        }
-
-        let enter = noop;
-        let leave = noop;
-        let iterators = iteratorsNatural;
-        let walkReducer = (ret, data, item, list) => ret || walkNode(data, item, list);
-        const context = {
-            break: breakWalk,
-            skip: skipNode,
-
-            root,
-            stylesheet: null,
-            atrule: null,
-            atrulePrelude: null,
-            rule: null,
-            selector: null,
-            block: null,
-            declaration: null,
-            function: null
-        };
-
-        if (typeof options === 'function') {
-            enter = options;
-        } else if (options) {
-            enter = ensureFunction(options.enter);
-            leave = ensureFunction(options.leave);
-
-            if (options.reverse) {
-                iterators = iteratorsReverse;
-            }
-
-            if (options.visit) {
-                if (fastTraversalIteratorsNatural.hasOwnProperty(options.visit)) {
-                    iterators = options.reverse
-                        ? fastTraversalIteratorsReverse[options.visit]
-                        : fastTraversalIteratorsNatural[options.visit];
-                } else if (!types.hasOwnProperty(options.visit)) {
-                    throw new Error('Bad value `' + options.visit + '` for `visit` option (should be: ' + Object.keys(types).sort().join(', ') + ')');
-                }
-
-                enter = invokeForType(enter, options.visit);
-                leave = invokeForType(leave, options.visit);
-            }
-        }
-
-        if (enter === noop && leave === noop) {
-            throw new Error('Neither `enter` nor `leave` walker handler is set or both aren\'t a function');
-        }
-
-        walkNode(root);
-    };
-
-    walk.break = breakWalk;
-    walk.skip = skipNode;
-
-    walk.find = function(ast, fn) {
-        let found = null;
-
-        walk(ast, function(node, item, list) {
-            if (fn.call(this, node, item, list)) {
-                found = node;
-                return breakWalk;
-            }
-        });
-
-        return found;
-    };
-
-    walk.findLast = function(ast, fn) {
-        let found = null;
-
-        walk(ast, {
-            reverse: true,
-            enter(node, item, list) {
-                if (fn.call(this, node, item, list)) {
-                    found = node;
-                    return breakWalk;
-                }
-            }
-        });
-
-        return found;
-    };
-
-    walk.findAll = function(ast, fn) {
-        const found = [];
-
-        walk(ast, function(node, item, list) {
-            if (fn.call(this, node, item, list)) {
-                found.push(node);
-            }
-        });
-
-        return found;
-    };
-
-    return walk;
-};
-
-;// ./node_modules/css-tree/lib/definition-syntax/generate.js
-function generate_noop(value) {
-    return value;
-}
-
-function generateMultiplier(multiplier) {
-    const { min, max, comma } = multiplier;
-
-    if (min === 0 && max === 0) {
-        return comma ? '#?' : '*';
-    }
-
-    if (min === 0 && max === 1) {
-        return '?';
-    }
-
-    if (min === 1 && max === 0) {
-        return comma ? '#' : '+';
-    }
-
-    if (min === 1 && max === 1) {
-        return '';
-    }
-
-    return (
-        (comma ? '#' : '') +
-        (min === max
-            ? '{' + min + '}'
-            : '{' + min + ',' + (max !== 0 ? max : '') + '}'
-        )
-    );
-}
-
-function generateTypeOpts(node) {
-    switch (node.type) {
-        case 'Range':
-            return (
-                ' [' +
-                (node.min === null ? '-∞' : node.min) +
-                ',' +
-                (node.max === null ? '∞' : node.max) +
-                ']'
-            );
-
-        default:
-            throw new Error('Unknown node type `' + node.type + '`');
-    }
-}
-
-function generateSequence(node, decorate, forceBraces, compact) {
-    const combinator = node.combinator === ' ' || compact ? node.combinator : ' ' + node.combinator + ' ';
-    const result = node.terms
-        .map(term => internalGenerate(term, decorate, forceBraces, compact))
-        .join(combinator);
-
-    if (node.explicit || forceBraces) {
-        return (compact || result[0] === ',' ? '[' : '[ ') + result + (compact ? ']' : ' ]');
-    }
-
-    return result;
-}
-
-function internalGenerate(node, decorate, forceBraces, compact) {
-    let result;
-
-    switch (node.type) {
-        case 'Group':
-            result =
-                generateSequence(node, decorate, forceBraces, compact) +
-                (node.disallowEmpty ? '!' : '');
-            break;
-
-        case 'Multiplier':
-            // return since node is a composition
-            return (
-                internalGenerate(node.term, decorate, forceBraces, compact) +
-                decorate(generateMultiplier(node), node)
-            );
-
-        case 'Type':
-            result = '<' + node.name + (node.opts ? decorate(generateTypeOpts(node.opts), node.opts) : '') + '>';
-            break;
-
-        case 'Property':
-            result = '<\'' + node.name + '\'>';
-            break;
-
-        case 'Keyword':
-            result = node.name;
-            break;
-
-        case 'AtKeyword':
-            result = '@' + node.name;
-            break;
-
-        case 'Function':
-            result = node.name + '(';
-            break;
-
-        case 'String':
-        case 'Token':
-            result = node.value;
-            break;
-
-        case 'Comma':
-            result = ',';
-            break;
-
-        default:
-            throw new Error('Unknown node type `' + node.type + '`');
-    }
-
-    return decorate(result, node);
-}
-
-function generate(node, options) {
-    let decorate = generate_noop;
-    let forceBraces = false;
-    let compact = false;
-
-    if (typeof options === 'function') {
-        decorate = options;
-    } else if (options) {
-        forceBraces = Boolean(options.forceBraces);
-        compact = Boolean(options.compact);
-        if (typeof options.decorate === 'function') {
-            decorate = options.decorate;
-        }
-    }
-
-    return internalGenerate(node, decorate, forceBraces, compact);
-};
-
-;// ./node_modules/css-tree/lib/lexer/error.js
-
-
-
-const defaultLoc = { offset: 0, line: 1, column: 1 };
-
-function locateMismatch(matchResult, node) {
-    const tokens = matchResult.tokens;
-    const longestMatch = matchResult.longestMatch;
-    const mismatchNode = longestMatch < tokens.length ? tokens[longestMatch].node || null : null;
-    const badNode = mismatchNode !== node ? mismatchNode : null;
-    let mismatchOffset = 0;
-    let mismatchLength = 0;
-    let entries = 0;
-    let css = '';
-    let start;
-    let end;
-
-    for (let i = 0; i < tokens.length; i++) {
-        const token = tokens[i].value;
-
-        if (i === longestMatch) {
-            mismatchLength = token.length;
-            mismatchOffset = css.length;
-        }
-
-        if (badNode !== null && tokens[i].node === badNode) {
-            if (i <= longestMatch) {
-                entries++;
-            } else {
-                entries = 0;
-            }
-        }
-
-        css += token;
-    }
-
-    if (longestMatch === tokens.length || entries > 1) { // last
-        start = fromLoc(badNode || node, 'end') || buildLoc(defaultLoc, css);
-        end = buildLoc(start);
-    } else {
-        start = fromLoc(badNode, 'start') ||
-            buildLoc(fromLoc(node, 'start') || defaultLoc, css.slice(0, mismatchOffset));
-        end = fromLoc(badNode, 'end') ||
-            buildLoc(start, css.substr(mismatchOffset, mismatchLength));
-    }
-
-    return {
-        css,
-        mismatchOffset,
-        mismatchLength,
-        start,
-        end
-    };
-}
-
-function fromLoc(node, point) {
-    const value = node && node.loc && node.loc[point];
-
-    if (value) {
-        return 'line' in value ? buildLoc(value) : value;
-    }
-
-    return null;
-}
-
-function buildLoc({ offset, line, column }, extra) {
-    const loc = {
-        offset,
-        line,
-        column
-    };
-
-    if (extra) {
-        const lines = extra.split(/\n|\r\n?|\f/);
-
-        loc.offset += extra.length;
-        loc.line += lines.length - 1;
-        loc.column = lines.length === 1 ? loc.column + extra.length : lines.pop().length + 1;
-    }
-
-    return loc;
-}
-
-const SyntaxReferenceError = function(type, referenceName) {
-    const error = createCustomError(
-        'SyntaxReferenceError',
-        type + (referenceName ? ' `' + referenceName + '`' : '')
-    );
-
-    error.reference = referenceName;
-
-    return error;
-};
-
-const SyntaxMatchError = function(message, syntax, node, matchResult) {
-    const error = createCustomError('SyntaxMatchError', message);
-    const {
-        css,
-        mismatchOffset,
-        mismatchLength,
-        start,
-        end
-    } = locateMismatch(matchResult, node);
-
-    error.rawMessage = message;
-    error.syntax = syntax ? generate(syntax) : '<generic>';
-    error.css = css;
-    error.mismatchOffset = mismatchOffset;
-    error.mismatchLength = mismatchLength;
-    error.message = message + '\n' +
-        '  syntax: ' + error.syntax + '\n' +
-        '   value: ' + (css || '<empty string>') + '\n' +
-        '  --------' + new Array(error.mismatchOffset + 1).join('-') + '^';
-
-    Object.assign(error, start);
-    error.loc = {
-        source: (node && node.loc && node.loc.source) || '<unknown>',
-        start,
-        end
-    };
-
-    return error;
-};
-
-;// ./node_modules/css-tree/lib/utils/names.js
-const keywords = new Map();
-const properties = new Map();
-const names_HYPHENMINUS = 45; // '-'.charCodeAt()
-
-const keyword = getKeywordDescriptor;
-const names_property = getPropertyDescriptor;
-const vendorPrefix = (/* unused pure expression or super */ null && (getVendorPrefix));
-function isCustomProperty(str, offset) {
-    offset = offset || 0;
-
-    return str.length - offset >= 2 &&
-           str.charCodeAt(offset) === names_HYPHENMINUS &&
-           str.charCodeAt(offset + 1) === names_HYPHENMINUS;
-}
-
-function getVendorPrefix(str, offset) {
-    offset = offset || 0;
-
-    // verdor prefix should be at least 3 chars length
-    if (str.length - offset >= 3) {
-        // vendor prefix starts with hyper minus following non-hyper minus
-        if (str.charCodeAt(offset) === names_HYPHENMINUS &&
-            str.charCodeAt(offset + 1) !== names_HYPHENMINUS) {
-            // vendor prefix should contain a hyper minus at the ending
-            const secondDashIndex = str.indexOf('-', offset + 2);
-
-            if (secondDashIndex !== -1) {
-                return str.substring(offset, secondDashIndex + 1);
-            }
-        }
-    }
-
-    return '';
-}
-
-function getKeywordDescriptor(keyword) {
-    if (keywords.has(keyword)) {
-        return keywords.get(keyword);
-    }
-
-    const name = keyword.toLowerCase();
-    let descriptor = keywords.get(name);
-
-    if (descriptor === undefined) {
-        const custom = isCustomProperty(name, 0);
-        const vendor = !custom ? getVendorPrefix(name, 0) : '';
-        descriptor = Object.freeze({
-            basename: name.substr(vendor.length),
-            name,
-            prefix: vendor,
-            vendor,
-            custom
-        });
-    }
-
-    keywords.set(keyword, descriptor);
-
-    return descriptor;
-}
-
-function getPropertyDescriptor(property) {
-    if (properties.has(property)) {
-        return properties.get(property);
-    }
-
-    let name = property;
-    let hack = property[0];
-
-    if (hack === '/') {
-        hack = property[1] === '/' ? '//' : '/';
-    } else if (hack !== '_' &&
-               hack !== '*' &&
-               hack !== '$' &&
-               hack !== '#' &&
-               hack !== '+' &&
-               hack !== '&') {
-        hack = '';
-    }
-
-    const custom = isCustomProperty(name, hack.length);
-
-    // re-use result when possible (the same as for lower case)
-    if (!custom) {
-        name = name.toLowerCase();
-        if (properties.has(name)) {
-            const descriptor = properties.get(name);
-            properties.set(property, descriptor);
-            return descriptor;
-        }
-    }
-
-    const vendor = !custom ? getVendorPrefix(name, hack.length) : '';
-    const prefix = name.substr(0, hack.length + vendor.length);
-    const descriptor = Object.freeze({
-        basename: name.substr(prefix.length),
-        name: name.substr(hack.length),
-        hack,
-        vendor,
-        prefix,
-        custom
-    });
-
-    properties.set(property, descriptor);
-
-    return descriptor;
-}
-
-;// ./node_modules/css-tree/lib/lexer/generic-const.js
-// https://drafts.csswg.org/css-cascade-5/
-const cssWideKeywords = [
-    'initial',
-    'inherit',
-    'unset',
-    'revert',
-    'revert-layer'
-];
-
-;// ./node_modules/css-tree/lib/lexer/generic-an-plus-b.js
-
-
-const generic_an_plus_b_PLUSSIGN = 0x002B;    // U+002B PLUS SIGN (+)
-const generic_an_plus_b_HYPHENMINUS = 0x002D; // U+002D HYPHEN-MINUS (-)
-const generic_an_plus_b_N = 0x006E;           // U+006E LATIN SMALL LETTER N (n)
-const DISALLOW_SIGN = true;
-const ALLOW_SIGN = false;
-
-function isDelim(token, code) {
-    return token !== null && token.type === Delim && token.value.charCodeAt(0) === code;
-}
-
-function skipSC(token, offset, getNextToken) {
-    while (token !== null && (token.type === WhiteSpace || token.type === Comment)) {
-        token = getNextToken(++offset);
-    }
-
-    return offset;
-}
-
-function checkInteger(token, valueOffset, disallowSign, offset) {
-    if (!token) {
-        return 0;
-    }
-
-    const code = token.value.charCodeAt(valueOffset);
-
-    if (code === generic_an_plus_b_PLUSSIGN || code === generic_an_plus_b_HYPHENMINUS) {
-        if (disallowSign) {
-            // Number sign is not allowed
-            return 0;
-        }
-        valueOffset++;
-    }
-
-    for (; valueOffset < token.value.length; valueOffset++) {
-        if (!isDigit(token.value.charCodeAt(valueOffset))) {
-            // Integer is expected
-            return 0;
-        }
-    }
-
-    return offset + 1;
-}
-
-// ... <signed-integer>
-// ... ['+' | '-'] <signless-integer>
-function consumeB(token, offset_, getNextToken) {
-    let sign = false;
-    let offset = skipSC(token, offset_, getNextToken);
-
-    token = getNextToken(offset);
-
-    if (token === null) {
-        return offset_;
-    }
-
-    if (token.type !== types_Number) {
-        if (isDelim(token, generic_an_plus_b_PLUSSIGN) || isDelim(token, generic_an_plus_b_HYPHENMINUS)) {
-            sign = true;
-            offset = skipSC(getNextToken(++offset), offset, getNextToken);
-            token = getNextToken(offset);
-
-            if (token === null || token.type !== types_Number) {
-                return 0;
-            }
-        } else {
-            return offset_;
-        }
-    }
-
-    if (!sign) {
-        const code = token.value.charCodeAt(0);
-        if (code !== generic_an_plus_b_PLUSSIGN && code !== generic_an_plus_b_HYPHENMINUS) {
-            // Number sign is expected
-            return 0;
-        }
-    }
-
-    return checkInteger(token, sign ? 0 : 1, sign, offset);
-}
-
-// An+B microsyntax https://www.w3.org/TR/css-syntax-3/#anb
-function anPlusB(token, getNextToken) {
-    /* eslint-disable brace-style*/
-    let offset = 0;
-
-    if (!token) {
-        return 0;
-    }
-
-    // <integer>
-    if (token.type === types_Number) {
-        return checkInteger(token, 0, ALLOW_SIGN, offset); // b
-    }
-
-    // -n
-    // -n <signed-integer>
-    // -n ['+' | '-'] <signless-integer>
-    // -n- <signless-integer>
-    // <dashndashdigit-ident>
-    else if (token.type === Ident && token.value.charCodeAt(0) === generic_an_plus_b_HYPHENMINUS) {
-        // expect 1st char is N
-        if (!cmpChar(token.value, 1, generic_an_plus_b_N)) {
-            return 0;
-        }
-
-        switch (token.value.length) {
-            // -n
-            // -n <signed-integer>
-            // -n ['+' | '-'] <signless-integer>
-            case 2:
-                return consumeB(getNextToken(++offset), offset, getNextToken);
-
-            // -n- <signless-integer>
-            case 3:
-                if (token.value.charCodeAt(2) !== generic_an_plus_b_HYPHENMINUS) {
-                    return 0;
-                }
-
-                offset = skipSC(getNextToken(++offset), offset, getNextToken);
-                token = getNextToken(offset);
-
-                return checkInteger(token, 0, DISALLOW_SIGN, offset);
-
-            // <dashndashdigit-ident>
-            default:
-                if (token.value.charCodeAt(2) !== generic_an_plus_b_HYPHENMINUS) {
-                    return 0;
-                }
-
-                return checkInteger(token, 3, DISALLOW_SIGN, offset);
-        }
-    }
-
-    // '+'? n
-    // '+'? n <signed-integer>
-    // '+'? n ['+' | '-'] <signless-integer>
-    // '+'? n- <signless-integer>
-    // '+'? <ndashdigit-ident>
-    else if (token.type === Ident || (isDelim(token, generic_an_plus_b_PLUSSIGN) && getNextToken(offset + 1).type === Ident)) {
-        // just ignore a plus
-        if (token.type !== Ident) {
-            token = getNextToken(++offset);
-        }
-
-        if (token === null || !cmpChar(token.value, 0, generic_an_plus_b_N)) {
-            return 0;
-        }
-
-        switch (token.value.length) {
-            // '+'? n
-            // '+'? n <signed-integer>
-            // '+'? n ['+' | '-'] <signless-integer>
-            case 1:
-                return consumeB(getNextToken(++offset), offset, getNextToken);
-
-            // '+'? n- <signless-integer>
-            case 2:
-                if (token.value.charCodeAt(1) !== generic_an_plus_b_HYPHENMINUS) {
-                    return 0;
-                }
-
-                offset = skipSC(getNextToken(++offset), offset, getNextToken);
-                token = getNextToken(offset);
-
-                return checkInteger(token, 0, DISALLOW_SIGN, offset);
-
-            // '+'? <ndashdigit-ident>
-            default:
-                if (token.value.charCodeAt(1) !== generic_an_plus_b_HYPHENMINUS) {
-                    return 0;
-                }
-
-                return checkInteger(token, 2, DISALLOW_SIGN, offset);
-        }
-    }
-
-    // <ndashdigit-dimension>
-    // <ndash-dimension> <signless-integer>
-    // <n-dimension>
-    // <n-dimension> <signed-integer>
-    // <n-dimension> ['+' | '-'] <signless-integer>
-    else if (token.type === Dimension) {
-        let code = token.value.charCodeAt(0);
-        let sign = code === generic_an_plus_b_PLUSSIGN || code === generic_an_plus_b_HYPHENMINUS ? 1 : 0;
-        let i = sign;
-
-        for (; i < token.value.length; i++) {
-            if (!isDigit(token.value.charCodeAt(i))) {
-                break;
-            }
-        }
-
-        if (i === sign) {
-            // Integer is expected
-            return 0;
-        }
-
-        if (!cmpChar(token.value, i, generic_an_plus_b_N)) {
-            return 0;
-        }
-
-        // <n-dimension>
-        // <n-dimension> <signed-integer>
-        // <n-dimension> ['+' | '-'] <signless-integer>
-        if (i + 1 === token.value.length) {
-            return consumeB(getNextToken(++offset), offset, getNextToken);
-        } else {
-            if (token.value.charCodeAt(i + 1) !== generic_an_plus_b_HYPHENMINUS) {
-                return 0;
-            }
-
-            // <ndash-dimension> <signless-integer>
-            if (i + 2 === token.value.length) {
-                offset = skipSC(getNextToken(++offset), offset, getNextToken);
-                token = getNextToken(offset);
-
-                return checkInteger(token, 0, DISALLOW_SIGN, offset);
-            }
-            // <ndashdigit-dimension>
-            else {
-                return checkInteger(token, i + 2, DISALLOW_SIGN, offset);
-            }
-        }
-    }
-
-    return 0;
-};
-
-;// ./node_modules/css-tree/lib/lexer/generic-urange.js
-
-
-const generic_urange_PLUSSIGN = 0x002B;     // U+002B PLUS SIGN (+)
-const generic_urange_HYPHENMINUS = 0x002D;  // U+002D HYPHEN-MINUS (-)
-const QUESTIONMARK = 0x003F; // U+003F QUESTION MARK (?)
-const U = 0x0075;            // U+0075 LATIN SMALL LETTER U (u)
-
-function generic_urange_isDelim(token, code) {
-    return token !== null && token.type === Delim && token.value.charCodeAt(0) === code;
-}
-
-function startsWith(token, code) {
-    return token.value.charCodeAt(0) === code;
-}
-
-function hexSequence(token, offset, allowDash) {
-    let hexlen = 0;
-
-    for (let pos = offset; pos < token.value.length; pos++) {
-        const code = token.value.charCodeAt(pos);
-
-        if (code === generic_urange_HYPHENMINUS && allowDash && hexlen !== 0) {
-            hexSequence(token, offset + hexlen + 1, false);
-            return 6; // dissallow following question marks
-        }
-
-        if (!isHexDigit(code)) {
-            return 0; // not a hex digit
-        }
-
-        if (++hexlen > 6) {
-            return 0; // too many hex digits
-        };
-    }
-
-    return hexlen;
-}
-
-function withQuestionMarkSequence(consumed, length, getNextToken) {
-    if (!consumed) {
-        return 0; // nothing consumed
-    }
-
-    while (generic_urange_isDelim(getNextToken(length), QUESTIONMARK)) {
-        if (++consumed > 6) {
-            return 0; // too many question marks
-        }
-
-        length++;
-    }
-
-    return length;
-}
-
-// https://drafts.csswg.org/css-syntax/#urange
-// Informally, the <urange> production has three forms:
-// U+0001
-//      Defines a range consisting of a single code point, in this case the code point "1".
-// U+0001-00ff
-//      Defines a range of codepoints between the first and the second value, in this case
-//      the range between "1" and "ff" (255 in decimal) inclusive.
-// U+00??
-//      Defines a range of codepoints where the "?" characters range over all hex digits,
-//      in this case defining the same as the value U+0000-00ff.
-// In each form, a maximum of 6 digits is allowed for each hexadecimal number (if you treat "?" as a hexadecimal digit).
-//
-// <urange> =
-//   u '+' <ident-token> '?'* |
-//   u <dimension-token> '?'* |
-//   u <number-token> '?'* |
-//   u <number-token> <dimension-token> |
-//   u <number-token> <number-token> |
-//   u '+' '?'+
-function urange(token, getNextToken) {
-    let length = 0;
-
-    // should start with `u` or `U`
-    if (token === null || token.type !== Ident || !cmpChar(token.value, 0, U)) {
-        return 0;
-    }
-
-    token = getNextToken(++length);
-    if (token === null) {
-        return 0;
-    }
-
-    // u '+' <ident-token> '?'*
-    // u '+' '?'+
-    if (generic_urange_isDelim(token, generic_urange_PLUSSIGN)) {
-        token = getNextToken(++length);
-        if (token === null) {
-            return 0;
-        }
-
-        if (token.type === Ident) {
-            // u '+' <ident-token> '?'*
-            return withQuestionMarkSequence(hexSequence(token, 0, true), ++length, getNextToken);
-        }
-
-        if (generic_urange_isDelim(token, QUESTIONMARK)) {
-            // u '+' '?'+
-            return withQuestionMarkSequence(1, ++length, getNextToken);
-        }
-
-        // Hex digit or question mark is expected
-        return 0;
-    }
-
-    // u <number-token> '?'*
-    // u <number-token> <dimension-token>
-    // u <number-token> <number-token>
-    if (token.type === types_Number) {
-        const consumedHexLength = hexSequence(token, 1, true);
-        if (consumedHexLength === 0) {
-            return 0;
-        }
-
-        token = getNextToken(++length);
-        if (token === null) {
-            // u <number-token> <eof>
-            return length;
-        }
-
-        if (token.type === Dimension || token.type === types_Number) {
-            // u <number-token> <dimension-token>
-            // u <number-token> <number-token>
-            if (!startsWith(token, generic_urange_HYPHENMINUS) || !hexSequence(token, 1, false)) {
-                return 0;
-            }
-
-            return length + 1;
-        }
-
-        // u <number-token> '?'*
-        return withQuestionMarkSequence(consumedHexLength, length, getNextToken);
-    }
-
-    // u <dimension-token> '?'*
-    if (token.type === Dimension) {
-        return withQuestionMarkSequence(hexSequence(token, 1, true), ++length, getNextToken);
-    }
-
-    return 0;
-};
-
-;// ./node_modules/css-tree/lib/lexer/generic.js
-
-
-
-
-
-const calcFunctionNames = ['calc(', '-moz-calc(', '-webkit-calc('];
-const generic_balancePair = new Map([
-    [Function, RightParenthesis],
-    [LeftParenthesis, RightParenthesis],
-    [LeftSquareBracket, RightSquareBracket],
-    [LeftCurlyBracket, RightCurlyBracket]
-]);
-
-// safe char code getter
-function charCodeAt(str, index) {
-    return index < str.length ? str.charCodeAt(index) : 0;
-}
-
-function eqStr(actual, expected) {
-    return cmpStr(actual, 0, actual.length, expected);
-}
-
-function eqStrAny(actual, expected) {
-    for (let i = 0; i < expected.length; i++) {
-        if (eqStr(actual, expected[i])) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-// IE postfix hack, i.e. 123\0 or 123px\9
-function isPostfixIeHack(str, offset) {
-    if (offset !== str.length - 2) {
-        return false;
-    }
-
-    return (
-        charCodeAt(str, offset) === 0x005C &&  // U+005C REVERSE SOLIDUS (\)
-        isDigit(charCodeAt(str, offset + 1))
-    );
-}
-
-function outOfRange(opts, value, numEnd) {
-    if (opts && opts.type === 'Range') {
-        const num = Number(
-            numEnd !== undefined && numEnd !== value.length
-                ? value.substr(0, numEnd)
-                : value
-        );
-
-        if (isNaN(num)) {
-            return true;
-        }
-
-        // FIXME: when opts.min is a string it's a dimension, skip a range validation
-        // for now since it requires a type covertation which is not implmented yet
-        if (opts.min !== null && num < opts.min && typeof opts.min !== 'string') {
-            return true;
-        }
-
-        // FIXME: when opts.max is a string it's a dimension, skip a range validation
-        // for now since it requires a type covertation which is not implmented yet
-        if (opts.max !== null && num > opts.max && typeof opts.max !== 'string') {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-function consumeFunction(token, getNextToken) {
-    let balanceCloseType = 0;
-    let balanceStash = [];
-    let length = 0;
-
-    // balanced token consuming
-    scan:
-    do {
-        switch (token.type) {
-            case RightCurlyBracket:
-            case RightParenthesis:
-            case RightSquareBracket:
-                if (token.type !== balanceCloseType) {
-                    break scan;
-                }
-
-                balanceCloseType = balanceStash.pop();
-
-                if (balanceStash.length === 0) {
-                    length++;
-                    break scan;
-                }
-
-                break;
-
-            case Function:
-            case LeftParenthesis:
-            case LeftSquareBracket:
-            case LeftCurlyBracket:
-                balanceStash.push(balanceCloseType);
-                balanceCloseType = generic_balancePair.get(token.type);
-                break;
-        }
-
-        length++;
-    } while (token = getNextToken(length));
-
-    return length;
-}
-
-// TODO: implement
-// can be used wherever <length>, <frequency>, <angle>, <time>, <percentage>, <number>, or <integer> values are allowed
-// https://drafts.csswg.org/css-values/#calc-notation
-function calc(next) {
-    return function(token, getNextToken, opts) {
-        if (token === null) {
-            return 0;
-        }
-
-        if (token.type === Function && eqStrAny(token.value, calcFunctionNames)) {
-            return consumeFunction(token, getNextToken);
-        }
-
-        return next(token, getNextToken, opts);
-    };
-}
-
-function tokenType(expectedTokenType) {
-    return function(token) {
-        if (token === null || token.type !== expectedTokenType) {
-            return 0;
-        }
-
-        return 1;
-    };
-}
-
-// =========================
-// Complex types
-//
-
-// https://drafts.csswg.org/css-values-4/#custom-idents
-// 4.2. Author-defined Identifiers: the <custom-ident> type
-// Some properties accept arbitrary author-defined identifiers as a component value.
-// This generic data type is denoted by <custom-ident>, and represents any valid CSS identifier
-// that would not be misinterpreted as a pre-defined keyword in that property’s value definition.
-//
-// See also: https://developer.mozilla.org/en-US/docs/Web/CSS/custom-ident
-function customIdent(token) {
-    if (token === null || token.type !== Ident) {
-        return 0;
-    }
-
-    const name = token.value.toLowerCase();
-
-    // The CSS-wide keywords are not valid <custom-ident>s
-    if (eqStrAny(name, cssWideKeywords)) {
-        return 0;
-    }
-
-    // The default keyword is reserved and is also not a valid <custom-ident>
-    if (eqStr(name, 'default')) {
-        return 0;
-    }
-
-    // TODO: ignore property specific keywords (as described https://developer.mozilla.org/en-US/docs/Web/CSS/custom-ident)
-    // Specifications using <custom-ident> must specify clearly what other keywords
-    // are excluded from <custom-ident>, if any—for example by saying that any pre-defined keywords
-    // in that property’s value definition are excluded. Excluded keywords are excluded
-    // in all ASCII case permutations.
-
-    return 1;
-}
-
-// https://drafts.csswg.org/css-variables/#typedef-custom-property-name
-// A custom property is any property whose name starts with two dashes (U+002D HYPHEN-MINUS), like --foo.
-// The <custom-property-name> production corresponds to this: it’s defined as any valid identifier
-// that starts with two dashes, except -- itself, which is reserved for future use by CSS.
-// NOTE: Current implementation treat `--` as a valid name since most (all?) major browsers treat it as valid.
-function customPropertyName(token) {
-    // ... defined as any valid identifier
-    if (token === null || token.type !== Ident) {
-        return 0;
-    }
-
-    // ... that starts with two dashes (U+002D HYPHEN-MINUS)
-    if (charCodeAt(token.value, 0) !== 0x002D || charCodeAt(token.value, 1) !== 0x002D) {
-        return 0;
-    }
-
-    return 1;
-}
-
-// https://drafts.csswg.org/css-color-4/#hex-notation
-// The syntax of a <hex-color> is a <hash-token> token whose value consists of 3, 4, 6, or 8 hexadecimal digits.
-// In other words, a hex color is written as a hash character, "#", followed by some number of digits 0-9 or
-// letters a-f (the case of the letters doesn’t matter - #00ff00 is identical to #00FF00).
-function hexColor(token) {
-    if (token === null || token.type !== Hash) {
-        return 0;
-    }
-
-    const length = token.value.length;
-
-    // valid values (length): #rgb (4), #rgba (5), #rrggbb (7), #rrggbbaa (9)
-    if (length !== 4 && length !== 5 && length !== 7 && length !== 9) {
-        return 0;
-    }
-
-    for (let i = 1; i < length; i++) {
-        if (!isHexDigit(charCodeAt(token.value, i))) {
-            return 0;
-        }
-    }
-
-    return 1;
-}
-
-function idSelector(token) {
-    if (token === null || token.type !== Hash) {
-        return 0;
-    }
-
-    if (!isIdentifierStart(charCodeAt(token.value, 1), charCodeAt(token.value, 2), charCodeAt(token.value, 3))) {
-        return 0;
-    }
-
-    return 1;
-}
-
-// https://drafts.csswg.org/css-syntax/#any-value
-// It represents the entirety of what a valid declaration can have as its value.
-function declarationValue(token, getNextToken) {
-    if (!token) {
-        return 0;
-    }
-
-    let balanceCloseType = 0;
-    let balanceStash = [];
-    let length = 0;
-
-    // The <declaration-value> production matches any sequence of one or more tokens,
-    // so long as the sequence does not contain ...
-    scan:
-    do {
-        switch (token.type) {
-            // ... <bad-string-token>, <bad-url-token>,
-            case BadString:
-            case BadUrl:
-                break scan;
-
-            // ... unmatched <)-token>, <]-token>, or <}-token>,
-            case RightCurlyBracket:
-            case RightParenthesis:
-            case RightSquareBracket:
-                if (token.type !== balanceCloseType) {
-                    break scan;
-                }
-
-                balanceCloseType = balanceStash.pop();
-                break;
-
-            // ... or top-level <semicolon-token> tokens
-            case Semicolon:
-                if (balanceCloseType === 0) {
-                    break scan;
-                }
-
-                break;
-
-            // ... or <delim-token> tokens with a value of "!"
-            case Delim:
-                if (balanceCloseType === 0 && token.value === '!') {
-                    break scan;
-                }
-
-                break;
-
-            case Function:
-            case LeftParenthesis:
-            case LeftSquareBracket:
-            case LeftCurlyBracket:
-                balanceStash.push(balanceCloseType);
-                balanceCloseType = generic_balancePair.get(token.type);
-                break;
-        }
-
-        length++;
-    } while (token = getNextToken(length));
-
-    return length;
-}
-
-// https://drafts.csswg.org/css-syntax/#any-value
-// The <any-value> production is identical to <declaration-value>, but also
-// allows top-level <semicolon-token> tokens and <delim-token> tokens
-// with a value of "!". It represents the entirety of what valid CSS can be in any context.
-function anyValue(token, getNextToken) {
-    if (!token) {
-        return 0;
-    }
-
-    let balanceCloseType = 0;
-    let balanceStash = [];
-    let length = 0;
-
-    // The <any-value> production matches any sequence of one or more tokens,
-    // so long as the sequence ...
-    scan:
-    do {
-        switch (token.type) {
-            // ... does not contain <bad-string-token>, <bad-url-token>,
-            case BadString:
-            case BadUrl:
-                break scan;
-
-            // ... unmatched <)-token>, <]-token>, or <}-token>,
-            case RightCurlyBracket:
-            case RightParenthesis:
-            case RightSquareBracket:
-                if (token.type !== balanceCloseType) {
-                    break scan;
-                }
-
-                balanceCloseType = balanceStash.pop();
-                break;
-
-            case Function:
-            case LeftParenthesis:
-            case LeftSquareBracket:
-            case LeftCurlyBracket:
-                balanceStash.push(balanceCloseType);
-                balanceCloseType = generic_balancePair.get(token.type);
-                break;
-        }
-
-        length++;
-    } while (token = getNextToken(length));
-
-    return length;
-}
-
-// =========================
-// Dimensions
-//
-
-function dimension(type) {
-    if (type) {
-        type = new Set(type);
-    }
-
-    return function(token, getNextToken, opts) {
-        if (token === null || token.type !== Dimension) {
-            return 0;
-        }
-
-        const numberEnd = consumeNumber(token.value, 0);
-
-        // check unit
-        if (type !== null) {
-            // check for IE postfix hack, i.e. 123px\0 or 123px\9
-            const reverseSolidusOffset = token.value.indexOf('\\', numberEnd);
-            const unit = reverseSolidusOffset === -1 || !isPostfixIeHack(token.value, reverseSolidusOffset)
-                ? token.value.substr(numberEnd)
-                : token.value.substring(numberEnd, reverseSolidusOffset);
-
-            if (type.has(unit.toLowerCase()) === false) {
-                return 0;
-            }
-        }
-
-        // check range if specified
-        if (outOfRange(opts, token.value, numberEnd)) {
-            return 0;
-        }
-
-        return 1;
-    };
-}
-
-// =========================
-// Percentage
-//
-
-// §5.5. Percentages: the <percentage> type
-// https://drafts.csswg.org/css-values-4/#percentages
-function percentage(token, getNextToken, opts) {
-    // ... corresponds to the <percentage-token> production
-    if (token === null || token.type !== Percentage) {
-        return 0;
-    }
-
-    // check range if specified
-    if (outOfRange(opts, token.value, token.value.length - 1)) {
-        return 0;
-    }
-
-    return 1;
-}
-
-// =========================
-// Numeric
-//
-
-// https://drafts.csswg.org/css-values-4/#numbers
-// The value <zero> represents a literal number with the value 0. Expressions that merely
-// evaluate to a <number> with the value 0 (for example, calc(0)) do not match <zero>;
-// only literal <number-token>s do.
-function zero(next) {
-    if (typeof next !== 'function') {
-        next = function() {
-            return 0;
-        };
-    }
-
-    return function(token, getNextToken, opts) {
-        if (token !== null && token.type === types_Number) {
-            if (Number(token.value) === 0) {
-                return 1;
-            }
-        }
-
-        return next(token, getNextToken, opts);
-    };
-}
-
-// § 5.3. Real Numbers: the <number> type
-// https://drafts.csswg.org/css-values-4/#numbers
-// Number values are denoted by <number>, and represent real numbers, possibly with a fractional component.
-// ... It corresponds to the <number-token> production
-function number(token, getNextToken, opts) {
-    if (token === null) {
-        return 0;
-    }
-
-    const numberEnd = consumeNumber(token.value, 0);
-    const isNumber = numberEnd === token.value.length;
-    if (!isNumber && !isPostfixIeHack(token.value, numberEnd)) {
-        return 0;
-    }
-
-    // check range if specified
-    if (outOfRange(opts, token.value, numberEnd)) {
-        return 0;
-    }
-
-    return 1;
-}
-
-// §5.2. Integers: the <integer> type
-// https://drafts.csswg.org/css-values-4/#integers
-function integer(token, getNextToken, opts) {
-    // ... corresponds to a subset of the <number-token> production
-    if (token === null || token.type !== types_Number) {
-        return 0;
-    }
-
-    // The first digit of an integer may be immediately preceded by `-` or `+` to indicate the integer’s sign.
-    let i = charCodeAt(token.value, 0) === 0x002B ||       // U+002B PLUS SIGN (+)
-            charCodeAt(token.value, 0) === 0x002D ? 1 : 0; // U+002D HYPHEN-MINUS (-)
-
-    // When written literally, an integer is one or more decimal digits 0 through 9 ...
-    for (; i < token.value.length; i++) {
-        if (!isDigit(charCodeAt(token.value, i))) {
-            return 0;
-        }
-    }
-
-    // check range if specified
-    if (outOfRange(opts, token.value, i)) {
-        return 0;
-    }
-
-    return 1;
-}
-
-// token types
-const tokenTypes = {
-    'ident-token': tokenType(Ident),
-    'function-token': tokenType(Function),
-    'at-keyword-token': tokenType(AtKeyword),
-    'hash-token': tokenType(Hash),
-    'string-token': tokenType(types_String),
-    'bad-string-token': tokenType(BadString),
-    'url-token': tokenType(Url),
-    'bad-url-token': tokenType(BadUrl),
-    'delim-token': tokenType(Delim),
-    'number-token': tokenType(types_Number),
-    'percentage-token': tokenType(Percentage),
-    'dimension-token': tokenType(Dimension),
-    'whitespace-token': tokenType(WhiteSpace),
-    'CDO-token': tokenType(CDO),
-    'CDC-token': tokenType(CDC),
-    'colon-token': tokenType(Colon),
-    'semicolon-token': tokenType(Semicolon),
-    'comma-token': tokenType(Comma),
-    '[-token': tokenType(LeftSquareBracket),
-    ']-token': tokenType(RightSquareBracket),
-    '(-token': tokenType(LeftParenthesis),
-    ')-token': tokenType(RightParenthesis),
-    '{-token': tokenType(LeftCurlyBracket),
-    '}-token': tokenType(RightCurlyBracket)
-};
-
-// token production types
-const productionTypes = {
-    // token type aliases
-    'string': tokenType(types_String),
-    'ident': tokenType(Ident),
-
-    // percentage
-    'percentage': calc(percentage),
-
-    // numeric
-    'zero': zero(),
-    'number': calc(number),
-    'integer': calc(integer),
-
-    // complex types
-    'custom-ident': customIdent,
-    'custom-property-name': customPropertyName,
-    'hex-color': hexColor,
-    'id-selector': idSelector, // element( <id-selector> )
-    'an-plus-b': anPlusB,
-    'urange': urange,
-    'declaration-value': declarationValue,
-    'any-value': anyValue
-};
-
-const unitGroups = (/* unused pure expression or super */ null && ([
-    'length',
-    'angle',
-    'time',
-    'frequency',
-    'resolution',
-    'flex',
-    'decibel',
-    'semitones'
-]));
-
-// dimensions types depend on units set
-function createDemensionTypes(units) {
-    const {
-        angle,
-        decibel,
-        frequency,
-        flex,
-        length,
-        resolution,
-        semitones,
-        time
-    } = units || {};
-
-    return {
-        'dimension': calc(dimension(null)),
-        'angle': calc(dimension(angle)),
-        'decibel': calc(dimension(decibel)),
-        'frequency': calc(dimension(frequency)),
-        'flex': calc(dimension(flex)),
-        'length': calc(zero(dimension(length))),
-        'resolution': calc(dimension(resolution)),
-        'semitones': calc(dimension(semitones)),
-        'time': calc(dimension(time))
-    };
-}
-
-function createGenericTypes(units) {
-    return {
-        ...tokenTypes,
-        ...productionTypes,
-        ...createDemensionTypes(units)
-    };
-};
-
-;// ./node_modules/css-tree/lib/lexer/units.js
-const units_length = [
-    // absolute length units https://www.w3.org/TR/css-values-3/#lengths
-    'cm', 'mm', 'q', 'in', 'pt', 'pc', 'px',
-    // font-relative length units https://drafts.csswg.org/css-values-4/#font-relative-lengths
-    'em', 'rem',
-    'ex', 'rex',
-    'cap', 'rcap',
-    'ch', 'rch',
-    'ic', 'ric',
-    'lh', 'rlh',
-    // viewport-percentage lengths https://drafts.csswg.org/css-values-4/#viewport-relative-lengths
-    'vw', 'svw', 'lvw', 'dvw',
-    'vh', 'svh', 'lvh', 'dvh',
-    'vi', 'svi', 'lvi', 'dvi',
-    'vb', 'svb', 'lvb', 'dvb',
-    'vmin', 'svmin', 'lvmin', 'dvmin',
-    'vmax', 'svmax', 'lvmax', 'dvmax',
-    // container relative lengths https://drafts.csswg.org/css-contain-3/#container-lengths
-    'cqw', 'cqh', 'cqi', 'cqb', 'cqmin', 'cqmax'
-];
-const angle = ['deg', 'grad', 'rad', 'turn'];    // https://www.w3.org/TR/css-values-3/#angles
-const time = ['s', 'ms'];                        // https://www.w3.org/TR/css-values-3/#time
-const frequency = ['hz', 'khz'];                 // https://www.w3.org/TR/css-values-3/#frequency
-const resolution = ['dpi', 'dpcm', 'dppx', 'x']; // https://www.w3.org/TR/css-values-3/#resolution
-const flex = ['fr'];                             // https://drafts.csswg.org/css-grid/#fr-unit
-const decibel = ['db'];                          // https://www.w3.org/TR/css3-speech/#mixing-props-voice-volume
-const semitones = ['st'];                        // https://www.w3.org/TR/css3-speech/#voice-props-voice-pitch
-
-;// ./node_modules/css-tree/lib/definition-syntax/SyntaxError.js
-
-
-function definition_syntax_SyntaxError_SyntaxError(message, input, offset) {
-    return Object.assign(createCustomError('SyntaxError', message), {
-        input,
-        offset,
-        rawMessage: message,
-        message: message + '\n' +
-            '  ' + input + '\n' +
-            '--' + new Array((offset || input.length) + 1).join('-') + '^'
-    });
-};
-
-;// ./node_modules/css-tree/lib/definition-syntax/tokenizer.js
-
-
-const TAB = 9;
-const tokenizer_N = 10;
-const tokenizer_F = 12;
-const tokenizer_R = 13;
-const SPACE = 32;
-
-class Tokenizer {
-    constructor(str) {
-        this.str = str;
-        this.pos = 0;
-    }
-    charCodeAt(pos) {
-        return pos < this.str.length ? this.str.charCodeAt(pos) : 0;
-    }
-    charCode() {
-        return this.charCodeAt(this.pos);
-    }
-    nextCharCode() {
-        return this.charCodeAt(this.pos + 1);
-    }
-    nextNonWsCode(pos) {
-        return this.charCodeAt(this.findWsEnd(pos));
-    }
-    findWsEnd(pos) {
-        for (; pos < this.str.length; pos++) {
-            const code = this.str.charCodeAt(pos);
-            if (code !== tokenizer_R && code !== tokenizer_N && code !== tokenizer_F && code !== SPACE && code !== TAB) {
-                break;
-            }
-        }
-
-        return pos;
-    }
-    substringToPos(end) {
-        return this.str.substring(this.pos, this.pos = end);
-    }
-    eat(code) {
-        if (this.charCode() !== code) {
-            this.error('Expect `' + String.fromCharCode(code) + '`');
-        }
-
-        this.pos++;
-    }
-    peek() {
-        return this.pos < this.str.length ? this.str.charAt(this.pos++) : '';
-    }
-    error(message) {
-        throw new definition_syntax_SyntaxError_SyntaxError(message, this.str, this.pos);
-    }
-};
-
-;// ./node_modules/css-tree/lib/definition-syntax/parse.js
-
-
-const parse_TAB = 9;
-const parse_N = 10;
-const parse_F = 12;
-const parse_R = 13;
-const parse_SPACE = 32;
-const parse_EXCLAMATIONMARK = 33;    // !
-const parse_NUMBERSIGN = 35;         // #
-const AMPERSAND = 38;          // &
-const APOSTROPHE = 39;         // '
-const LEFTPARENTHESIS = 40;    // (
-const RIGHTPARENTHESIS = 41;   // )
-const ASTERISK = 42;           // *
-const parse_PLUSSIGN = 43;           // +
-const COMMA = 44;              // ,
-const HYPERMINUS = 45;         // -
-const LESSTHANSIGN = 60;       // <
-const GREATERTHANSIGN = 62;    // >
-const parse_QUESTIONMARK = 63;       // ?
-const COMMERCIALAT = 64;       // @
-const LEFTSQUAREBRACKET = 91;  // [
-const RIGHTSQUAREBRACKET = 93; // ]
-const parse_LEFTCURLYBRACKET = 123;  // {
-const VERTICALLINE = 124;      // |
-const RIGHTCURLYBRACKET = 125; // }
-const INFINITY = 8734;         // ∞
-const NAME_CHAR = new Uint8Array(128).map((_, idx) =>
-    /[a-zA-Z0-9\-]/.test(String.fromCharCode(idx)) ? 1 : 0
-);
-const COMBINATOR_PRECEDENCE = {
-    ' ': 1,
-    '&&': 2,
-    '||': 3,
-    '|': 4
-};
-
-function scanSpaces(tokenizer) {
-    return tokenizer.substringToPos(
-        tokenizer.findWsEnd(tokenizer.pos)
-    );
-}
-
-function scanWord(tokenizer) {
-    let end = tokenizer.pos;
-
-    for (; end < tokenizer.str.length; end++) {
-        const code = tokenizer.str.charCodeAt(end);
-        if (code >= 128 || NAME_CHAR[code] === 0) {
-            break;
-        }
-    }
-
-    if (tokenizer.pos === end) {
-        tokenizer.error('Expect a keyword');
-    }
-
-    return tokenizer.substringToPos(end);
-}
-
-function scanNumber(tokenizer) {
-    let end = tokenizer.pos;
-
-    for (; end < tokenizer.str.length; end++) {
-        const code = tokenizer.str.charCodeAt(end);
-        if (code < 48 || code > 57) {
-            break;
-        }
-    }
-
-    if (tokenizer.pos === end) {
-        tokenizer.error('Expect a number');
-    }
-
-    return tokenizer.substringToPos(end);
-}
-
-function scanString(tokenizer) {
-    const end = tokenizer.str.indexOf('\'', tokenizer.pos + 1);
-
-    if (end === -1) {
-        tokenizer.pos = tokenizer.str.length;
-        tokenizer.error('Expect an apostrophe');
-    }
-
-    return tokenizer.substringToPos(end + 1);
-}
-
-function readMultiplierRange(tokenizer) {
-    let min = null;
-    let max = null;
-
-    tokenizer.eat(parse_LEFTCURLYBRACKET);
-
-    min = scanNumber(tokenizer);
-
-    if (tokenizer.charCode() === COMMA) {
-        tokenizer.pos++;
-        if (tokenizer.charCode() !== RIGHTCURLYBRACKET) {
-            max = scanNumber(tokenizer);
-        }
-    } else {
-        max = min;
-    }
-
-    tokenizer.eat(RIGHTCURLYBRACKET);
-
-    return {
-        min: Number(min),
-        max: max ? Number(max) : 0
-    };
-}
-
-function readMultiplier(tokenizer) {
-    let range = null;
-    let comma = false;
-
-    switch (tokenizer.charCode()) {
-        case ASTERISK:
-            tokenizer.pos++;
-
-            range = {
-                min: 0,
-                max: 0
-            };
-
-            break;
-
-        case parse_PLUSSIGN:
-            tokenizer.pos++;
-
-            range = {
-                min: 1,
-                max: 0
-            };
-
-            break;
-
-        case parse_QUESTIONMARK:
-            tokenizer.pos++;
-
-            range = {
-                min: 0,
-                max: 1
-            };
-
-            break;
-
-        case parse_NUMBERSIGN:
-            tokenizer.pos++;
-
-            comma = true;
-
-            if (tokenizer.charCode() === parse_LEFTCURLYBRACKET) {
-                range = readMultiplierRange(tokenizer);
-            } else if (tokenizer.charCode() === parse_QUESTIONMARK) {
-                // https://www.w3.org/TR/css-values-4/#component-multipliers
-                // > the # and ? multipliers may be stacked as #?
-                // In this case just treat "#?" as a single multiplier
-                // { min: 0, max: 0, comma: true }
-                tokenizer.pos++;
-                range = {
-                    min: 0,
-                    max: 0
-                };
-            } else {
-                range = {
-                    min: 1,
-                    max: 0
-                };
-            }
-
-            break;
-
-        case parse_LEFTCURLYBRACKET:
-            range = readMultiplierRange(tokenizer);
-            break;
-
-        default:
-            return null;
-    }
-
-    return {
-        type: 'Multiplier',
-        comma,
-        min: range.min,
-        max: range.max,
-        term: null
-    };
-}
-
-function maybeMultiplied(tokenizer, node) {
-    const multiplier = readMultiplier(tokenizer);
-
-    if (multiplier !== null) {
-        multiplier.term = node;
-
-        // https://www.w3.org/TR/css-values-4/#component-multipliers
-        // > The + and # multipliers may be stacked as +#;
-        // Represent "+#" as nested multipliers:
-        // { ...<multiplier #>,
-        //   term: {
-        //     ...<multipler +>,
-        //     term: node
-        //   }
-        // }
-        if (tokenizer.charCode() === parse_NUMBERSIGN &&
-            tokenizer.charCodeAt(tokenizer.pos - 1) === parse_PLUSSIGN) {
-            return maybeMultiplied(tokenizer, multiplier);
-        }
-
-        return multiplier;
-    }
-
-    return node;
-}
-
-function maybeToken(tokenizer) {
-    const ch = tokenizer.peek();
-
-    if (ch === '') {
-        return null;
-    }
-
-    return {
-        type: 'Token',
-        value: ch
-    };
-}
-
-function readProperty(tokenizer) {
-    let name;
-
-    tokenizer.eat(LESSTHANSIGN);
-    tokenizer.eat(APOSTROPHE);
-
-    name = scanWord(tokenizer);
-
-    tokenizer.eat(APOSTROPHE);
-    tokenizer.eat(GREATERTHANSIGN);
-
-    return maybeMultiplied(tokenizer, {
-        type: 'Property',
-        name
-    });
-}
-
-// https://drafts.csswg.org/css-values-3/#numeric-ranges
-// 4.1. Range Restrictions and Range Definition Notation
-//
-// Range restrictions can be annotated in the numeric type notation using CSS bracketed
-// range notation—[min,max]—within the angle brackets, after the identifying keyword,
-// indicating a closed range between (and including) min and max.
-// For example, <integer [0, 10]> indicates an integer between 0 and 10, inclusive.
-function readTypeRange(tokenizer) {
-    // use null for Infinity to make AST format JSON serializable/deserializable
-    let min = null; // -Infinity
-    let max = null; // Infinity
-    let sign = 1;
-
-    tokenizer.eat(LEFTSQUAREBRACKET);
-
-    if (tokenizer.charCode() === HYPERMINUS) {
-        tokenizer.peek();
-        sign = -1;
-    }
-
-    if (sign == -1 && tokenizer.charCode() === INFINITY) {
-        tokenizer.peek();
-    } else {
-        min = sign * Number(scanNumber(tokenizer));
-
-        if (NAME_CHAR[tokenizer.charCode()] !== 0) {
-            min += scanWord(tokenizer);
-        }
-    }
-
-    scanSpaces(tokenizer);
-    tokenizer.eat(COMMA);
-    scanSpaces(tokenizer);
-
-    if (tokenizer.charCode() === INFINITY) {
-        tokenizer.peek();
-    } else {
-        sign = 1;
-
-        if (tokenizer.charCode() === HYPERMINUS) {
-            tokenizer.peek();
-            sign = -1;
-        }
-
-        max = sign * Number(scanNumber(tokenizer));
-
-        if (NAME_CHAR[tokenizer.charCode()] !== 0) {
-            max += scanWord(tokenizer);
-        }
-    }
-
-    tokenizer.eat(RIGHTSQUAREBRACKET);
-
-    return {
-        type: 'Range',
-        min,
-        max
-    };
-}
-
-function readType(tokenizer) {
-    let name;
-    let opts = null;
-
-    tokenizer.eat(LESSTHANSIGN);
-    name = scanWord(tokenizer);
-
-    if (tokenizer.charCode() === LEFTPARENTHESIS &&
-        tokenizer.nextCharCode() === RIGHTPARENTHESIS) {
-        tokenizer.pos += 2;
-        name += '()';
-    }
-
-    if (tokenizer.charCodeAt(tokenizer.findWsEnd(tokenizer.pos)) === LEFTSQUAREBRACKET) {
-        scanSpaces(tokenizer);
-        opts = readTypeRange(tokenizer);
-    }
-
-    tokenizer.eat(GREATERTHANSIGN);
-
-    return maybeMultiplied(tokenizer, {
-        type: 'Type',
-        name,
-        opts
-    });
-}
-
-function readKeywordOrFunction(tokenizer) {
-    const name = scanWord(tokenizer);
-
-    if (tokenizer.charCode() === LEFTPARENTHESIS) {
-        tokenizer.pos++;
-
-        return {
-            type: 'Function',
-            name
-        };
-    }
-
-    return maybeMultiplied(tokenizer, {
-        type: 'Keyword',
-        name
-    });
-}
-
-function regroupTerms(terms, combinators) {
-    function createGroup(terms, combinator) {
-        return {
-            type: 'Group',
-            terms,
-            combinator,
-            disallowEmpty: false,
-            explicit: false
-        };
-    }
-
-    let combinator;
-
-    combinators = Object.keys(combinators)
-        .sort((a, b) => COMBINATOR_PRECEDENCE[a] - COMBINATOR_PRECEDENCE[b]);
-
-    while (combinators.length > 0) {
-        combinator = combinators.shift();
-
-        let i = 0;
-        let subgroupStart = 0;
-
-        for (; i < terms.length; i++) {
-            const term = terms[i];
-
-            if (term.type === 'Combinator') {
-                if (term.value === combinator) {
-                    if (subgroupStart === -1) {
-                        subgroupStart = i - 1;
-                    }
-                    terms.splice(i, 1);
-                    i--;
-                } else {
-                    if (subgroupStart !== -1 && i - subgroupStart > 1) {
-                        terms.splice(
-                            subgroupStart,
-                            i - subgroupStart,
-                            createGroup(terms.slice(subgroupStart, i), combinator)
-                        );
-                        i = subgroupStart + 1;
-                    }
-                    subgroupStart = -1;
-                }
-            }
-        }
-
-        if (subgroupStart !== -1 && combinators.length) {
-            terms.splice(
-                subgroupStart,
-                i - subgroupStart,
-                createGroup(terms.slice(subgroupStart, i), combinator)
-            );
-        }
-    }
-
-    return combinator;
-}
-
-function readImplicitGroup(tokenizer) {
-    const terms = [];
-    const combinators = {};
-    let token;
-    let prevToken = null;
-    let prevTokenPos = tokenizer.pos;
-
-    while (token = peek(tokenizer)) {
-        if (token.type !== 'Spaces') {
-            if (token.type === 'Combinator') {
-                // check for combinator in group beginning and double combinator sequence
-                if (prevToken === null || prevToken.type === 'Combinator') {
-                    tokenizer.pos = prevTokenPos;
-                    tokenizer.error('Unexpected combinator');
-                }
-
-                combinators[token.value] = true;
-            } else if (prevToken !== null && prevToken.type !== 'Combinator') {
-                combinators[' '] = true;  // a b
-                terms.push({
-                    type: 'Combinator',
-                    value: ' '
-                });
-            }
-
-            terms.push(token);
-            prevToken = token;
-            prevTokenPos = tokenizer.pos;
-        }
-    }
-
-    // check for combinator in group ending
-    if (prevToken !== null && prevToken.type === 'Combinator') {
-        tokenizer.pos -= prevTokenPos;
-        tokenizer.error('Unexpected combinator');
-    }
-
-    return {
-        type: 'Group',
-        terms,
-        combinator: regroupTerms(terms, combinators) || ' ',
-        disallowEmpty: false,
-        explicit: false
-    };
-}
-
-function readGroup(tokenizer) {
-    let result;
-
-    tokenizer.eat(LEFTSQUAREBRACKET);
-    result = readImplicitGroup(tokenizer);
-    tokenizer.eat(RIGHTSQUAREBRACKET);
-
-    result.explicit = true;
-
-    if (tokenizer.charCode() === parse_EXCLAMATIONMARK) {
-        tokenizer.pos++;
-        result.disallowEmpty = true;
-    }
-
-    return result;
-}
-
-function peek(tokenizer) {
-    let code = tokenizer.charCode();
-
-    if (code < 128 && NAME_CHAR[code] === 1) {
-        return readKeywordOrFunction(tokenizer);
-    }
-
-    switch (code) {
-        case RIGHTSQUAREBRACKET:
-            // don't eat, stop scan a group
-            break;
-
-        case LEFTSQUAREBRACKET:
-            return maybeMultiplied(tokenizer, readGroup(tokenizer));
-
-        case LESSTHANSIGN:
-            return tokenizer.nextCharCode() === APOSTROPHE
-                ? readProperty(tokenizer)
-                : readType(tokenizer);
-
-        case VERTICALLINE:
-            return {
-                type: 'Combinator',
-                value: tokenizer.substringToPos(
-                    tokenizer.pos + (tokenizer.nextCharCode() === VERTICALLINE ? 2 : 1)
-                )
-            };
-
-        case AMPERSAND:
-            tokenizer.pos++;
-            tokenizer.eat(AMPERSAND);
-
-            return {
-                type: 'Combinator',
-                value: '&&'
-            };
-
-        case COMMA:
-            tokenizer.pos++;
-            return {
-                type: 'Comma'
-            };
-
-        case APOSTROPHE:
-            return maybeMultiplied(tokenizer, {
-                type: 'String',
-                value: scanString(tokenizer)
-            });
-
-        case parse_SPACE:
-        case parse_TAB:
-        case parse_N:
-        case parse_R:
-        case parse_F:
-            return {
-                type: 'Spaces',
-                value: scanSpaces(tokenizer)
-            };
-
-        case COMMERCIALAT:
-            code = tokenizer.nextCharCode();
-
-            if (code < 128 && NAME_CHAR[code] === 1) {
-                tokenizer.pos++;
-                return {
-                    type: 'AtKeyword',
-                    name: scanWord(tokenizer)
-                };
-            }
-
-            return maybeToken(tokenizer);
-
-        case ASTERISK:
-        case parse_PLUSSIGN:
-        case parse_QUESTIONMARK:
-        case parse_NUMBERSIGN:
-        case parse_EXCLAMATIONMARK:
-            // prohibited tokens (used as a multiplier start)
-            break;
-
-        case parse_LEFTCURLYBRACKET:
-            // LEFTCURLYBRACKET is allowed since mdn/data uses it w/o quoting
-            // check next char isn't a number, because it's likely a disjoined multiplier
-            code = tokenizer.nextCharCode();
-
-            if (code < 48 || code > 57) {
-                return maybeToken(tokenizer);
-            }
-
-            break;
-
-        default:
-            return maybeToken(tokenizer);
-    }
-}
-
-function parse(source) {
-    const tokenizer = new Tokenizer(source);
-    const result = readImplicitGroup(tokenizer);
-
-    if (tokenizer.pos !== source.length) {
-        tokenizer.error('Unexpected input');
-    }
-
-    // reduce redundant groups with single group term
-    if (result.terms.length === 1 && result.terms[0].type === 'Group') {
-        return result.terms[0];
-    }
-
-    return result;
-};
-
-;// ./node_modules/css-tree/lib/definition-syntax/walk.js
-const walk_noop = function() {};
-
-function walk_ensureFunction(value) {
-    return typeof value === 'function' ? value : walk_noop;
-}
-
-function walk(node, options, context) {
-    function walk(node) {
-        enter.call(context, node);
-
-        switch (node.type) {
-            case 'Group':
-                node.terms.forEach(walk);
-                break;
-
-            case 'Multiplier':
-                walk(node.term);
-                break;
-
-            case 'Type':
-            case 'Property':
-            case 'Keyword':
-            case 'AtKeyword':
-            case 'Function':
-            case 'String':
-            case 'Token':
-            case 'Comma':
-                break;
-
-            default:
-                throw new Error('Unknown type: ' + node.type);
-        }
-
-        leave.call(context, node);
-    }
-
-    let enter = walk_noop;
-    let leave = walk_noop;
-
-    if (typeof options === 'function') {
-        enter = options;
-    } else if (options) {
-        enter = walk_ensureFunction(options.enter);
-        leave = walk_ensureFunction(options.leave);
-    }
-
-    if (enter === walk_noop && leave === walk_noop) {
-        throw new Error('Neither `enter` nor `leave` walker handler is set or both aren\'t a function');
-    }
-
-    walk(node, context);
-};
-
-;// ./node_modules/css-tree/lib/definition-syntax/index.js
-
-
-
-
-
-;// ./node_modules/css-tree/lib/lexer/prepare-tokens.js
-Object.defineProperty(prepare_tokens, "name", { value: "default", configurable: true });
-
-
-const astToTokens = {
-    decorator(handlers) {
-        const tokens = [];
-        let curNode = null;
-
-        return {
-            ...handlers,
-            node(node) {
-                const tmp = curNode;
-                curNode = node;
-                handlers.node.call(this, node);
-                curNode = tmp;
-            },
-            emit(value, type, auto) {
-                tokens.push({
-                    type,
-                    value,
-                    node: auto ? null : curNode
-                });
-            },
-            result() {
-                return tokens;
-            }
-        };
-    }
-};
-
-function stringToTokens(str) {
-    const tokens = [];
-
-    tokenize(str, (type, start, end) =>
-        tokens.push({
-            type,
-            value: str.slice(start, end),
-            node: null
-        })
-    );
-
-    return tokens;
-}
-
-/* harmony default export */ function prepare_tokens(value, syntax) {
-    if (typeof value === 'string') {
-        return stringToTokens(value);
-    }
-
-    return syntax.generate(value, astToTokens);
-};
-
-;// ./node_modules/css-tree/lib/lexer/match-graph.js
-
-
-const MATCH = { type: 'Match' };
-const MISMATCH = { type: 'Mismatch' };
-const DISALLOW_EMPTY = { type: 'DisallowEmpty' };
-
-const match_graph_LEFTPARENTHESIS = 40;  // (
-const match_graph_RIGHTPARENTHESIS = 41; // )
-
-function createCondition(match, thenBranch, elseBranch) {
-    // reduce node count
-    if (thenBranch === MATCH && elseBranch === MISMATCH) {
-        return match;
-    }
-
-    if (match === MATCH && thenBranch === MATCH && elseBranch === MATCH) {
-        return match;
-    }
-
-    if (match.type === 'If' && match.else === MISMATCH && thenBranch === MATCH) {
-        thenBranch = match.then;
-        match = match.match;
-    }
-
-    return {
-        type: 'If',
-        match,
-        then: thenBranch,
-        else: elseBranch
-    };
-}
-
-function isFunctionType(name) {
-    return (
-        name.length > 2 &&
-        name.charCodeAt(name.length - 2) === match_graph_LEFTPARENTHESIS &&
-        name.charCodeAt(name.length - 1) === match_graph_RIGHTPARENTHESIS
-    );
-}
-
-function isEnumCapatible(term) {
-    return (
-        term.type === 'Keyword' ||
-        term.type === 'AtKeyword' ||
-        term.type === 'Function' ||
-        term.type === 'Type' && isFunctionType(term.name)
-    );
-}
-
-function buildGroupMatchGraph(combinator, terms, atLeastOneTermMatched) {
-    switch (combinator) {
-        case ' ': {
-            // Juxtaposing components means that all of them must occur, in the given order.
-            //
-            // a b c
-            // =
-            // match a
-            //   then match b
-            //     then match c
-            //       then MATCH
-            //       else MISMATCH
-            //     else MISMATCH
-            //   else MISMATCH
-            let result = MATCH;
-
-            for (let i = terms.length - 1; i >= 0; i--) {
-                const term = terms[i];
-
-                result = createCondition(
-                    term,
-                    result,
-                    MISMATCH
-                );
-            };
-
-            return result;
-        }
-
-        case '|': {
-            // A bar (|) separates two or more alternatives: exactly one of them must occur.
-            //
-            // a | b | c
-            // =
-            // match a
-            //   then MATCH
-            //   else match b
-            //     then MATCH
-            //     else match c
-            //       then MATCH
-            //       else MISMATCH
-
-            let result = MISMATCH;
-            let map = null;
-
-            for (let i = terms.length - 1; i >= 0; i--) {
-                let term = terms[i];
-
-                // reduce sequence of keywords into a Enum
-                if (isEnumCapatible(term)) {
-                    if (map === null && i > 0 && isEnumCapatible(terms[i - 1])) {
-                        map = Object.create(null);
-                        result = createCondition(
-                            {
-                                type: 'Enum',
-                                map
-                            },
-                            MATCH,
-                            result
-                        );
-                    }
-
-                    if (map !== null) {
-                        const key = (isFunctionType(term.name) ? term.name.slice(0, -1) : term.name).toLowerCase();
-                        if (key in map === false) {
-                            map[key] = term;
-                            continue;
-                        }
-                    }
-                }
-
-                map = null;
-
-                // create a new conditonal node
-                result = createCondition(
-                    term,
-                    MATCH,
-                    result
-                );
-            };
-
-            return result;
-        }
-
-        case '&&': {
-            // A double ampersand (&&) separates two or more components,
-            // all of which must occur, in any order.
-
-            // Use MatchOnce for groups with a large number of terms,
-            // since &&-groups produces at least N!-node trees
-            if (terms.length > 5) {
-                return {
-                    type: 'MatchOnce',
-                    terms,
-                    all: true
-                };
-            }
-
-            // Use a combination tree for groups with small number of terms
-            //
-            // a && b && c
-            // =
-            // match a
-            //   then [b && c]
-            //   else match b
-            //     then [a && c]
-            //     else match c
-            //       then [a && b]
-            //       else MISMATCH
-            //
-            // a && b
-            // =
-            // match a
-            //   then match b
-            //     then MATCH
-            //     else MISMATCH
-            //   else match b
-            //     then match a
-            //       then MATCH
-            //       else MISMATCH
-            //     else MISMATCH
-            let result = MISMATCH;
-
-            for (let i = terms.length - 1; i >= 0; i--) {
-                const term = terms[i];
-                let thenClause;
-
-                if (terms.length > 1) {
-                    thenClause = buildGroupMatchGraph(
-                        combinator,
-                        terms.filter(function(newGroupTerm) {
-                            return newGroupTerm !== term;
-                        }),
-                        false
-                    );
-                } else {
-                    thenClause = MATCH;
-                }
-
-                result = createCondition(
-                    term,
-                    thenClause,
-                    result
-                );
-            };
-
-            return result;
-        }
-
-        case '||': {
-            // A double bar (||) separates two or more options:
-            // one or more of them must occur, in any order.
-
-            // Use MatchOnce for groups with a large number of terms,
-            // since ||-groups produces at least N!-node trees
-            if (terms.length > 5) {
-                return {
-                    type: 'MatchOnce',
-                    terms,
-                    all: false
-                };
-            }
-
-            // Use a combination tree for groups with small number of terms
-            //
-            // a || b || c
-            // =
-            // match a
-            //   then [b || c]
-            //   else match b
-            //     then [a || c]
-            //     else match c
-            //       then [a || b]
-            //       else MISMATCH
-            //
-            // a || b
-            // =
-            // match a
-            //   then match b
-            //     then MATCH
-            //     else MATCH
-            //   else match b
-            //     then match a
-            //       then MATCH
-            //       else MATCH
-            //     else MISMATCH
-            let result = atLeastOneTermMatched ? MATCH : MISMATCH;
-
-            for (let i = terms.length - 1; i >= 0; i--) {
-                const term = terms[i];
-                let thenClause;
-
-                if (terms.length > 1) {
-                    thenClause = buildGroupMatchGraph(
-                        combinator,
-                        terms.filter(function(newGroupTerm) {
-                            return newGroupTerm !== term;
-                        }),
-                        true
-                    );
-                } else {
-                    thenClause = MATCH;
-                }
-
-                result = createCondition(
-                    term,
-                    thenClause,
-                    result
-                );
-            };
-
-            return result;
-        }
-    }
-}
-
-function buildMultiplierMatchGraph(node) {
-    let result = MATCH;
-    let matchTerm = buildMatchGraphInternal(node.term);
-
-    if (node.max === 0) {
-        // disable repeating of empty match to prevent infinite loop
-        matchTerm = createCondition(
-            matchTerm,
-            DISALLOW_EMPTY,
-            MISMATCH
-        );
-
-        // an occurrence count is not limited, make a cycle;
-        // to collect more terms on each following matching mismatch
-        result = createCondition(
-            matchTerm,
-            null, // will be a loop
-            MISMATCH
-        );
-
-        result.then = createCondition(
-            MATCH,
-            MATCH,
-            result // make a loop
-        );
-
-        if (node.comma) {
-            result.then.else = createCondition(
-                { type: 'Comma', syntax: node },
-                result,
-                MISMATCH
-            );
-        }
-    } else {
-        // create a match node chain for [min .. max] interval with optional matches
-        for (let i = node.min || 1; i <= node.max; i++) {
-            if (node.comma && result !== MATCH) {
-                result = createCondition(
-                    { type: 'Comma', syntax: node },
-                    result,
-                    MISMATCH
-                );
-            }
-
-            result = createCondition(
-                matchTerm,
-                createCondition(
-                    MATCH,
-                    MATCH,
-                    result
-                ),
-                MISMATCH
-            );
-        }
-    }
-
-    if (node.min === 0) {
-        // allow zero match
-        result = createCondition(
-            MATCH,
-            MATCH,
-            result
-        );
-    } else {
-        // create a match node chain to collect [0 ... min - 1] required matches
-        for (let i = 0; i < node.min - 1; i++) {
-            if (node.comma && result !== MATCH) {
-                result = createCondition(
-                    { type: 'Comma', syntax: node },
-                    result,
-                    MISMATCH
-                );
-            }
-
-            result = createCondition(
-                matchTerm,
-                result,
-                MISMATCH
-            );
-        }
-    }
-
-    return result;
-}
-
-function buildMatchGraphInternal(node) {
-    if (typeof node === 'function') {
-        return {
-            type: 'Generic',
-            fn: node
-        };
-    }
-
-    switch (node.type) {
-        case 'Group': {
-            let result = buildGroupMatchGraph(
-                node.combinator,
-                node.terms.map(buildMatchGraphInternal),
-                false
-            );
-
-            if (node.disallowEmpty) {
-                result = createCondition(
-                    result,
-                    DISALLOW_EMPTY,
-                    MISMATCH
-                );
-            }
-
-            return result;
-        }
-
-        case 'Multiplier':
-            return buildMultiplierMatchGraph(node);
-
-        case 'Type':
-        case 'Property':
-            return {
-                type: node.type,
-                name: node.name,
-                syntax: node
-            };
-
-        case 'Keyword':
-            return {
-                type: node.type,
-                name: node.name.toLowerCase(),
-                syntax: node
-            };
-
-        case 'AtKeyword':
-            return {
-                type: node.type,
-                name: '@' + node.name.toLowerCase(),
-                syntax: node
-            };
-
-        case 'Function':
-            return {
-                type: node.type,
-                name: node.name.toLowerCase() + '(',
-                syntax: node
-            };
-
-        case 'String':
-            // convert a one char length String to a Token
-            if (node.value.length === 3) {
-                return {
-                    type: 'Token',
-                    value: node.value.charAt(1),
-                    syntax: node
-                };
-            }
-
-            // otherwise use it as is
-            return {
-                type: node.type,
-                value: node.value.substr(1, node.value.length - 2).replace(/\\'/g, '\''),
-                syntax: node
-            };
-
-        case 'Token':
-            return {
-                type: node.type,
-                value: node.value,
-                syntax: node
-            };
-
-        case 'Comma':
-            return {
-                type: node.type,
-                syntax: node
-            };
-
-        default:
-            throw new Error('Unknown node type:', node.type);
-    }
-}
-
-function buildMatchGraph(syntaxTree, ref) {
-    if (typeof syntaxTree === 'string') {
-        syntaxTree = parse(syntaxTree);
-    }
-
-    return {
-        type: 'MatchGraph',
-        match: buildMatchGraphInternal(syntaxTree),
-        syntax: ref || null,
-        source: syntaxTree
-    };
-}
-
-;// ./node_modules/css-tree/lib/lexer/match.js
-
-
-
-const { hasOwnProperty: match_hasOwnProperty } = Object.prototype;
-const STUB = 0;
-const TOKEN = 1;
-const OPEN_SYNTAX = 2;
-const CLOSE_SYNTAX = 3;
-
-const EXIT_REASON_MATCH = 'Match';
-const EXIT_REASON_MISMATCH = 'Mismatch';
-const EXIT_REASON_ITERATION_LIMIT = 'Maximum iteration number exceeded (please fill an issue on https://github.com/csstree/csstree/issues)';
-
-const ITERATION_LIMIT = 15000;
-let totalIterationCount = 0;
-
-function reverseList(list) {
-    let prev = null;
-    let next = null;
-    let item = list;
-
-    while (item !== null) {
-        next = item.prev;
-        item.prev = prev;
-        prev = item;
-        item = next;
-    }
-
-    return prev;
-}
-
-function areStringsEqualCaseInsensitive(testStr, referenceStr) {
-    if (testStr.length !== referenceStr.length) {
-        return false;
-    }
-
-    for (let i = 0; i < testStr.length; i++) {
-        const referenceCode = referenceStr.charCodeAt(i);
-        let testCode = testStr.charCodeAt(i);
-
-        // testCode.toLowerCase() for U+0041 LATIN CAPITAL LETTER A (A) .. U+005A LATIN CAPITAL LETTER Z (Z).
-        if (testCode >= 0x0041 && testCode <= 0x005A) {
-            testCode = testCode | 32;
-        }
-
-        if (testCode !== referenceCode) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-function isContextEdgeDelim(token) {
-    if (token.type !== Delim) {
-        return false;
-    }
-
-    // Fix matching for unicode-range: U+30??, U+FF00-FF9F
-    // Probably we need to check out previous match instead
-    return token.value !== '?';
-}
-
-function isCommaContextStart(token) {
-    if (token === null) {
-        return true;
-    }
-
-    return (
-        token.type === Comma ||
-        token.type === Function ||
-        token.type === LeftParenthesis ||
-        token.type === LeftSquareBracket ||
-        token.type === LeftCurlyBracket ||
-        isContextEdgeDelim(token)
-    );
-}
-
-function isCommaContextEnd(token) {
-    if (token === null) {
-        return true;
-    }
-
-    return (
-        token.type === RightParenthesis ||
-        token.type === RightSquareBracket ||
-        token.type === RightCurlyBracket ||
-        (token.type === Delim && token.value === '/')
-    );
-}
-
-function internalMatch(tokens, state, syntaxes) {
-    function moveToNextToken() {
-        do {
-            tokenIndex++;
-            token = tokenIndex < tokens.length ? tokens[tokenIndex] : null;
-        } while (token !== null && (token.type === WhiteSpace || token.type === Comment));
-    }
-
-    function getNextToken(offset) {
-        const nextIndex = tokenIndex + offset;
-
-        return nextIndex < tokens.length ? tokens[nextIndex] : null;
-    }
-
-    function stateSnapshotFromSyntax(nextState, prev) {
-        return {
-            nextState,
-            matchStack,
-            syntaxStack,
-            thenStack,
-            tokenIndex,
-            prev
-        };
-    }
-
-    function pushThenStack(nextState) {
-        thenStack = {
-            nextState,
-            matchStack,
-            syntaxStack,
-            prev: thenStack
-        };
-    }
-
-    function pushElseStack(nextState) {
-        elseStack = stateSnapshotFromSyntax(nextState, elseStack);
-    }
-
-    function addTokenToMatch() {
-        matchStack = {
-            type: TOKEN,
-            syntax: state.syntax,
-            token,
-            prev: matchStack
-        };
-
-        moveToNextToken();
-        syntaxStash = null;
-
-        if (tokenIndex > longestMatch) {
-            longestMatch = tokenIndex;
-        }
-    }
-
-    function openSyntax() {
-        syntaxStack = {
-            syntax: state.syntax,
-            opts: state.syntax.opts || (syntaxStack !== null && syntaxStack.opts) || null,
-            prev: syntaxStack
-        };
-
-        matchStack = {
-            type: OPEN_SYNTAX,
-            syntax: state.syntax,
-            token: matchStack.token,
-            prev: matchStack
-        };
-    }
-
-    function closeSyntax() {
-        if (matchStack.type === OPEN_SYNTAX) {
-            matchStack = matchStack.prev;
-        } else {
-            matchStack = {
-                type: CLOSE_SYNTAX,
-                syntax: syntaxStack.syntax,
-                token: matchStack.token,
-                prev: matchStack
-            };
-        }
-
-        syntaxStack = syntaxStack.prev;
-    }
-
-    let syntaxStack = null;
-    let thenStack = null;
-    let elseStack = null;
-
-    // null – stashing allowed, nothing stashed
-    // false – stashing disabled, nothing stashed
-    // anithing else – fail stashable syntaxes, some syntax stashed
-    let syntaxStash = null;
-
-    let iterationCount = 0; // count iterations and prevent infinite loop
-    let exitReason = null;
-
-    let token = null;
-    let tokenIndex = -1;
-    let longestMatch = 0;
-    let matchStack = {
-        type: STUB,
-        syntax: null,
-        token: null,
-        prev: null
-    };
-
-    moveToNextToken();
-
-    while (exitReason === null && ++iterationCount < ITERATION_LIMIT) {
-        // function mapList(list, fn) {
-        //     const result = [];
-        //     while (list) {
-        //         result.unshift(fn(list));
-        //         list = list.prev;
-        //     }
-        //     return result;
-        // }
-        // console.log('--\n',
-        //     '#' + iterationCount,
-        //     require('util').inspect({
-        //         match: mapList(matchStack, x => x.type === TOKEN ? x.token && x.token.value : x.syntax ? ({ [OPEN_SYNTAX]: '<', [CLOSE_SYNTAX]: '</' }[x.type] || x.type) + '!' + x.syntax.name : null),
-        //         token: token && token.value,
-        //         tokenIndex,
-        //         syntax: syntax.type + (syntax.id ? ' #' + syntax.id : '')
-        //     }, { depth: null })
-        // );
-        switch (state.type) {
-            case 'Match':
-                if (thenStack === null) {
-                    // turn to MISMATCH when some tokens left unmatched
-                    if (token !== null) {
-                        // doesn't mismatch if just one token left and it's an IE hack
-                        if (tokenIndex !== tokens.length - 1 || (token.value !== '\\0' && token.value !== '\\9')) {
-                            state = MISMATCH;
-                            break;
-                        }
-                    }
-
-                    // break the main loop, return a result - MATCH
-                    exitReason = EXIT_REASON_MATCH;
-                    break;
-                }
-
-                // go to next syntax (`then` branch)
-                state = thenStack.nextState;
-
-                // check match is not empty
-                if (state === DISALLOW_EMPTY) {
-                    if (thenStack.matchStack === matchStack) {
-                        state = MISMATCH;
-                        break;
-                    } else {
-                        state = MATCH;
-                    }
-                }
-
-                // close syntax if needed
-                while (thenStack.syntaxStack !== syntaxStack) {
-                    closeSyntax();
-                }
-
-                // pop stack
-                thenStack = thenStack.prev;
-                break;
-
-            case 'Mismatch':
-                // when some syntax is stashed
-                if (syntaxStash !== null && syntaxStash !== false) {
-                    // there is no else branches or a branch reduce match stack
-                    if (elseStack === null || tokenIndex > elseStack.tokenIndex) {
-                        // restore state from the stash
-                        elseStack = syntaxStash;
-                        syntaxStash = false; // disable stashing
-                    }
-                } else if (elseStack === null) {
-                    // no else branches -> break the main loop
-                    // return a result - MISMATCH
-                    exitReason = EXIT_REASON_MISMATCH;
-                    break;
-                }
-
-                // go to next syntax (`else` branch)
-                state = elseStack.nextState;
-
-                // restore all the rest stack states
-                thenStack = elseStack.thenStack;
-                syntaxStack = elseStack.syntaxStack;
-                matchStack = elseStack.matchStack;
-                tokenIndex = elseStack.tokenIndex;
-                token = tokenIndex < tokens.length ? tokens[tokenIndex] : null;
-
-                // pop stack
-                elseStack = elseStack.prev;
-                break;
-
-            case 'MatchGraph':
-                state = state.match;
-                break;
-
-            case 'If':
-                // IMPORTANT: else stack push must go first,
-                // since it stores the state of thenStack before changes
-                if (state.else !== MISMATCH) {
-                    pushElseStack(state.else);
-                }
-
-                if (state.then !== MATCH) {
-                    pushThenStack(state.then);
-                }
-
-                state = state.match;
-                break;
-
-            case 'MatchOnce':
-                state = {
-                    type: 'MatchOnceBuffer',
-                    syntax: state,
-                    index: 0,
-                    mask: 0
-                };
-                break;
-
-            case 'MatchOnceBuffer': {
-                const terms = state.syntax.terms;
-
-                if (state.index === terms.length) {
-                    // no matches at all or it's required all terms to be matched
-                    if (state.mask === 0 || state.syntax.all) {
-                        state = MISMATCH;
-                        break;
-                    }
-
-                    // a partial match is ok
-                    state = MATCH;
-                    break;
-                }
-
-                // all terms are matched
-                if (state.mask === (1 << terms.length) - 1) {
-                    state = MATCH;
-                    break;
-                }
-
-                for (; state.index < terms.length; state.index++) {
-                    const matchFlag = 1 << state.index;
-
-                    if ((state.mask & matchFlag) === 0) {
-                        // IMPORTANT: else stack push must go first,
-                        // since it stores the state of thenStack before changes
-                        pushElseStack(state);
-                        pushThenStack({
-                            type: 'AddMatchOnce',
-                            syntax: state.syntax,
-                            mask: state.mask | matchFlag
-                        });
-
-                        // match
-                        state = terms[state.index++];
-                        break;
-                    }
-                }
-                break;
-            }
-
-            case 'AddMatchOnce':
-                state = {
-                    type: 'MatchOnceBuffer',
-                    syntax: state.syntax,
-                    index: 0,
-                    mask: state.mask
-                };
-                break;
-
-            case 'Enum':
-                if (token !== null) {
-                    let name = token.value.toLowerCase();
-
-                    // drop \0 and \9 hack from keyword name
-                    if (name.indexOf('\\') !== -1) {
-                        name = name.replace(/\\[09].*$/, '');
-                    }
-
-                    if (match_hasOwnProperty.call(state.map, name)) {
-                        state = state.map[name];
-                        break;
-                    }
-                }
-
-                state = MISMATCH;
-                break;
-
-            case 'Generic': {
-                const opts = syntaxStack !== null ? syntaxStack.opts : null;
-                const lastTokenIndex = tokenIndex + Math.floor(state.fn(token, getNextToken, opts));
-
-                if (!isNaN(lastTokenIndex) && lastTokenIndex > tokenIndex) {
-                    while (tokenIndex < lastTokenIndex) {
-                        addTokenToMatch();
-                    }
-
-                    state = MATCH;
-                } else {
-                    state = MISMATCH;
-                }
-
-                break;
-            }
-
-            case 'Type':
-            case 'Property': {
-                const syntaxDict = state.type === 'Type' ? 'types' : 'properties';
-                const dictSyntax = match_hasOwnProperty.call(syntaxes, syntaxDict) ? syntaxes[syntaxDict][state.name] : null;
-
-                if (!dictSyntax || !dictSyntax.match) {
-                    throw new Error(
-                        'Bad syntax reference: ' +
-                        (state.type === 'Type'
-                            ? '<' + state.name + '>'
-                            : '<\'' + state.name + '\'>')
-                    );
-                }
-
-                // stash a syntax for types with low priority
-                if (syntaxStash !== false && token !== null && state.type === 'Type') {
-                    const lowPriorityMatching =
-                        // https://drafts.csswg.org/css-values-4/#custom-idents
-                        // When parsing positionally-ambiguous keywords in a property value, a <custom-ident> production
-                        // can only claim the keyword if no other unfulfilled production can claim it.
-                        (state.name === 'custom-ident' && token.type === Ident) ||
-
-                        // https://drafts.csswg.org/css-values-4/#lengths
-                        // ... if a `0` could be parsed as either a <number> or a <length> in a property (such as line-height),
-                        // it must parse as a <number>
-                        (state.name === 'length' && token.value === '0');
-
-                    if (lowPriorityMatching) {
-                        if (syntaxStash === null) {
-                            syntaxStash = stateSnapshotFromSyntax(state, elseStack);
-                        }
-
-                        state = MISMATCH;
-                        break;
-                    }
-                }
-
-                openSyntax();
-                state = dictSyntax.match;
-                break;
-            }
-
-            case 'Keyword': {
-                const name = state.name;
-
-                if (token !== null) {
-                    let keywordName = token.value;
-
-                    // drop \0 and \9 hack from keyword name
-                    if (keywordName.indexOf('\\') !== -1) {
-                        keywordName = keywordName.replace(/\\[09].*$/, '');
-                    }
-
-                    if (areStringsEqualCaseInsensitive(keywordName, name)) {
-                        addTokenToMatch();
-                        state = MATCH;
-                        break;
-                    }
-                }
-
-                state = MISMATCH;
-                break;
-            }
-
-            case 'AtKeyword':
-            case 'Function':
-                if (token !== null && areStringsEqualCaseInsensitive(token.value, state.name)) {
-                    addTokenToMatch();
-                    state = MATCH;
-                    break;
-                }
-
-                state = MISMATCH;
-                break;
-
-            case 'Token':
-                if (token !== null && token.value === state.value) {
-                    addTokenToMatch();
-                    state = MATCH;
-                    break;
-                }
-
-                state = MISMATCH;
-                break;
-
-            case 'Comma':
-                if (token !== null && token.type === Comma) {
-                    if (isCommaContextStart(matchStack.token)) {
-                        state = MISMATCH;
-                    } else {
-                        addTokenToMatch();
-                        state = isCommaContextEnd(token) ? MISMATCH : MATCH;
-                    }
-                } else {
-                    state = isCommaContextStart(matchStack.token) || isCommaContextEnd(token) ? MATCH : MISMATCH;
-                }
-
-                break;
-
-            case 'String':
-                let string = '';
-                let lastTokenIndex = tokenIndex;
-
-                for (; lastTokenIndex < tokens.length && string.length < state.value.length; lastTokenIndex++) {
-                    string += tokens[lastTokenIndex].value;
-                }
-
-                if (areStringsEqualCaseInsensitive(string, state.value)) {
-                    while (tokenIndex < lastTokenIndex) {
-                        addTokenToMatch();
-                    }
-
-                    state = MATCH;
-                } else {
-                    state = MISMATCH;
-                }
-
-                break;
-
-            default:
-                throw new Error('Unknown node type: ' + state.type);
-        }
-    }
-
-    totalIterationCount += iterationCount;
-
-    switch (exitReason) {
-        case null:
-            console.warn('[csstree-match] BREAK after ' + ITERATION_LIMIT + ' iterations');
-            exitReason = EXIT_REASON_ITERATION_LIMIT;
-            matchStack = null;
-            break;
-
-        case EXIT_REASON_MATCH:
-            while (syntaxStack !== null) {
-                closeSyntax();
-            }
-            break;
-
-        default:
-            matchStack = null;
-    }
-
-    return {
-        tokens,
-        reason: exitReason,
-        iterations: iterationCount,
-        match: matchStack,
-        longestMatch
-    };
-}
-
-function matchAsList(tokens, matchGraph, syntaxes) {
-    const matchResult = internalMatch(tokens, matchGraph, syntaxes || {});
-
-    if (matchResult.match !== null) {
-        let item = reverseList(matchResult.match).prev;
-
-        matchResult.match = [];
-
-        while (item !== null) {
-            switch (item.type) {
-                case OPEN_SYNTAX:
-                case CLOSE_SYNTAX:
-                    matchResult.match.push({
-                        type: item.type,
-                        syntax: item.syntax
-                    });
-                    break;
-
-                default:
-                    matchResult.match.push({
-                        token: item.token.value,
-                        node: item.token.node
-                    });
-                    break;
-            }
-
-            item = item.prev;
-        }
-    }
-
-    return matchResult;
-}
-
-function matchAsTree(tokens, matchGraph, syntaxes) {
-    const matchResult = internalMatch(tokens, matchGraph, syntaxes || {});
-
-    if (matchResult.match === null) {
-        return matchResult;
-    }
-
-    let item = matchResult.match;
-    let host = matchResult.match = {
-        syntax: matchGraph.syntax || null,
-        match: []
-    };
-    const hostStack = [host];
-
-    // revert a list and start with 2nd item since 1st is a stub item
-    item = reverseList(item).prev;
-
-    // build a tree
-    while (item !== null) {
-        switch (item.type) {
-            case OPEN_SYNTAX:
-                host.match.push(host = {
-                    syntax: item.syntax,
-                    match: []
-                });
-                hostStack.push(host);
-                break;
-
-            case CLOSE_SYNTAX:
-                hostStack.pop();
-                host = hostStack[hostStack.length - 1];
-                break;
-
-            default:
-                host.match.push({
-                    syntax: item.syntax || null,
-                    token: item.token.value,
-                    node: item.token.node
-                });
-        }
-
-        item = item.prev;
-    }
-
-    return matchResult;
-}
-
-;// ./node_modules/css-tree/lib/lexer/trace.js
-function getTrace(node) {
-    function shouldPutToTrace(syntax) {
-        if (syntax === null) {
-            return false;
-        }
-
-        return (
-            syntax.type === 'Type' ||
-            syntax.type === 'Property' ||
-            syntax.type === 'Keyword'
-        );
-    }
-
-    function hasMatch(matchNode) {
-        if (Array.isArray(matchNode.match)) {
-            // use for-loop for better perfomance
-            for (let i = 0; i < matchNode.match.length; i++) {
-                if (hasMatch(matchNode.match[i])) {
-                    if (shouldPutToTrace(matchNode.syntax)) {
-                        result.unshift(matchNode.syntax);
-                    }
-
-                    return true;
-                }
-            }
-        } else if (matchNode.node === node) {
-            result = shouldPutToTrace(matchNode.syntax)
-                ? [matchNode.syntax]
-                : [];
-
-            return true;
-        }
-
-        return false;
-    }
-
-    let result = null;
-
-    if (this.matched !== null) {
-        hasMatch(this.matched);
-    }
-
-    return result;
-}
-
-function isType(node, type) {
-    return testNode(this, node, match => match.type === 'Type' && match.name === type);
-}
-
-function isProperty(node, property) {
-    return testNode(this, node, match => match.type === 'Property' && match.name === property);
-}
-
-function isKeyword(node) {
-    return testNode(this, node, match => match.type === 'Keyword');
-}
-
-function testNode(match, node, fn) {
-    const trace = getTrace.call(match, node);
-
-    if (trace === null) {
-        return false;
-    }
-
-    return trace.some(fn);
-}
-
-;// ./node_modules/css-tree/lib/lexer/search.js
-
-
-function getFirstMatchNode(matchNode) {
-    if ('node' in matchNode) {
-        return matchNode.node;
-    }
-
-    return getFirstMatchNode(matchNode.match[0]);
-}
-
-function getLastMatchNode(matchNode) {
-    if ('node' in matchNode) {
-        return matchNode.node;
-    }
-
-    return getLastMatchNode(matchNode.match[matchNode.match.length - 1]);
-}
-
-function matchFragments(lexer, ast, match, type, name) {
-    function findFragments(matchNode) {
-        if (matchNode.syntax !== null &&
-            matchNode.syntax.type === type &&
-            matchNode.syntax.name === name) {
-            const start = getFirstMatchNode(matchNode);
-            const end = getLastMatchNode(matchNode);
-
-            lexer.syntax.walk(ast, function(node, item, list) {
-                if (node === start) {
-                    const nodes = new List();
-
-                    do {
-                        nodes.appendData(item.data);
-
-                        if (item.data === end) {
-                            break;
-                        }
-
-                        item = item.next;
-                    } while (item !== null);
-
-                    fragments.push({
-                        parent: list,
-                        nodes
-                    });
-                }
-            });
-        }
-
-        if (Array.isArray(matchNode.match)) {
-            matchNode.match.forEach(findFragments);
-        }
-    }
-
-    const fragments = [];
-
-    if (match.matched !== null) {
-        findFragments(match.matched);
-    }
-
-    return fragments;
-}
-
-;// ./node_modules/css-tree/lib/lexer/structure.js
-
-
-const { hasOwnProperty: structure_hasOwnProperty } = Object.prototype;
-
-function isValidNumber(value) {
-    // Number.isInteger(value) && value >= 0
-    return (
-        typeof value === 'number' &&
-        isFinite(value) &&
-        Math.floor(value) === value &&
-        value >= 0
-    );
-}
-
-function isValidLocation(loc) {
-    return (
-        Boolean(loc) &&
-        isValidNumber(loc.offset) &&
-        isValidNumber(loc.line) &&
-        isValidNumber(loc.column)
-    );
-}
-
-function createNodeStructureChecker(type, fields) {
-    return function checkNode(node, warn) {
-        if (!node || node.constructor !== Object) {
-            return warn(node, 'Type of node should be an Object');
-        }
-
-        for (let key in node) {
-            let valid = true;
-
-            if (structure_hasOwnProperty.call(node, key) === false) {
-                continue;
-            }
-
-            if (key === 'type') {
-                if (node.type !== type) {
-                    warn(node, 'Wrong node type `' + node.type + '`, expected `' + type + '`');
-                }
-            } else if (key === 'loc') {
-                if (node.loc === null) {
-                    continue;
-                } else if (node.loc && node.loc.constructor === Object) {
-                    if (typeof node.loc.source !== 'string') {
-                        key += '.source';
-                    } else if (!isValidLocation(node.loc.start)) {
-                        key += '.start';
-                    } else if (!isValidLocation(node.loc.end)) {
-                        key += '.end';
-                    } else {
-                        continue;
-                    }
-                }
-
-                valid = false;
-            } else if (fields.hasOwnProperty(key)) {
-                valid = false;
-
-                for (let i = 0; !valid && i < fields[key].length; i++) {
-                    const fieldType = fields[key][i];
-
-                    switch (fieldType) {
-                        case String:
-                            valid = typeof node[key] === 'string';
-                            break;
-
-                        case Boolean:
-                            valid = typeof node[key] === 'boolean';
-                            break;
-
-                        case null:
-                            valid = node[key] === null;
-                            break;
-
-                        default:
-                            if (typeof fieldType === 'string') {
-                                valid = node[key] && node[key].type === fieldType;
-                            } else if (Array.isArray(fieldType)) {
-                                valid = node[key] instanceof List;
-                            }
-                    }
-                }
-            } else {
-                warn(node, 'Unknown field `' + key + '` for ' + type + ' node type');
-            }
-
-            if (!valid) {
-                warn(node, 'Bad value for `' + type + '.' + key + '`');
-            }
-        }
-
-        for (const key in fields) {
-            if (structure_hasOwnProperty.call(fields, key) &&
-                structure_hasOwnProperty.call(node, key) === false) {
-                warn(node, 'Field `' + type + '.' + key + '` is missed');
-            }
-        }
-    };
-}
-
-function processStructure(name, nodeType) {
-    const structure = nodeType.structure;
-    const fields = {
-        type: String,
-        loc: true
-    };
-    const docs = {
-        type: '"' + name + '"'
-    };
-
-    for (const key in structure) {
-        if (structure_hasOwnProperty.call(structure, key) === false) {
-            continue;
-        }
-
-        const docsTypes = [];
-        const fieldTypes = fields[key] = Array.isArray(structure[key])
-            ? structure[key].slice()
-            : [structure[key]];
-
-        for (let i = 0; i < fieldTypes.length; i++) {
-            const fieldType = fieldTypes[i];
-            if (fieldType === String || fieldType === Boolean) {
-                docsTypes.push(fieldType.name);
-            } else if (fieldType === null) {
-                docsTypes.push('null');
-            } else if (typeof fieldType === 'string') {
-                docsTypes.push('<' + fieldType + '>');
-            } else if (Array.isArray(fieldType)) {
-                docsTypes.push('List'); // TODO: use type enum
-            } else {
-                throw new Error('Wrong value `' + fieldType + '` in `' + name + '.' + key + '` structure definition');
-            }
-        }
-
-        docs[key] = docsTypes.join(' | ');
-    }
-
-    return {
-        docs,
-        check: createNodeStructureChecker(name, fields)
-    };
-}
-
-function getStructureFromConfig(config) {
-    const structure = {};
-
-    if (config.node) {
-        for (const name in config.node) {
-            if (structure_hasOwnProperty.call(config.node, name)) {
-                const nodeType = config.node[name];
-
-                if (nodeType.structure) {
-                    structure[name] = processStructure(name, nodeType);
-                } else {
-                    throw new Error('Missed `structure` field in `' + name + '` node type definition');
-                }
-            }
-        }
-    }
-
-    return structure;
-};
-
-;// ./node_modules/css-tree/lib/lexer/Lexer.js
-
-
-
-
-
-
-
-
-
-
-
-
-
-const cssWideKeywordsSyntax = buildMatchGraph(cssWideKeywords.join(' | '));
-
-function dumpMapSyntax(map, compact, syntaxAsAst) {
-    const result = {};
-
-    for (const name in map) {
-        if (map[name].syntax) {
-            result[name] = syntaxAsAst
-                ? map[name].syntax
-                : generate(map[name].syntax, { compact });
-        }
-    }
-
-    return result;
-}
-
-function dumpAtruleMapSyntax(map, compact, syntaxAsAst) {
-    const result = {};
-
-    for (const [name, atrule] of Object.entries(map)) {
-        result[name] = {
-            prelude: atrule.prelude && (
-                syntaxAsAst
-                    ? atrule.prelude.syntax
-                    : generate(atrule.prelude.syntax, { compact })
-            ),
-            descriptors: atrule.descriptors && dumpMapSyntax(atrule.descriptors, compact, syntaxAsAst)
-        };
-    }
-
-    return result;
-}
-
-function valueHasVar(tokens) {
-    for (let i = 0; i < tokens.length; i++) {
-        if (tokens[i].value.toLowerCase() === 'var(') {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-function buildMatchResult(matched, error, iterations) {
-    return {
-        matched,
-        iterations,
-        error,
-        ...trace_namespaceObject
-    };
-}
-
-function matchSyntax(lexer, syntax, value, useCssWideKeywords) {
-    const tokens = prepare_tokens(value, lexer.syntax);
-    let result;
-
-    if (valueHasVar(tokens)) {
-        return buildMatchResult(null, new Error('Matching for a tree with var() is not supported'));
-    }
-
-    if (useCssWideKeywords) {
-        result = matchAsTree(tokens, lexer.cssWideKeywordsSyntax, lexer);
-    }
-
-    if (!useCssWideKeywords || !result.match) {
-        result = matchAsTree(tokens, syntax.match, lexer);
-        if (!result.match) {
-            return buildMatchResult(
-                null,
-                new SyntaxMatchError(result.reason, syntax.syntax, value, result),
-                result.iterations
-            );
-        }
-    }
-
-    return buildMatchResult(result.match, null, result.iterations);
-}
-
-class Lexer {
-    constructor(config, syntax, structure) {
-        this.cssWideKeywordsSyntax = cssWideKeywordsSyntax;
-        this.syntax = syntax;
-        this.generic = false;
-        this.units = { ...units_namespaceObject };
-        this.atrules = Object.create(null);
-        this.properties = Object.create(null);
-        this.types = Object.create(null);
-        this.structure = structure || getStructureFromConfig(config);
-
-        if (config) {
-            if (config.units) {
-                for (const group of Object.keys(units_namespaceObject)) {
-                    if (Array.isArray(config.units[group])) {
-                        this.units[group] = config.units[group];
-                    }
-                }
-            }
-
-            if (config.types) {
-                for (const name in config.types) {
-                    this.addType_(name, config.types[name]);
-                }
-            }
-
-            if (config.generic) {
-                this.generic = true;
-                for (const [name, value] of Object.entries(createGenericTypes(this.units))) {
-                    this.addType_(name, value);
-                }
-            }
-
-            if (config.atrules) {
-                for (const name in config.atrules) {
-                    this.addAtrule_(name, config.atrules[name]);
-                }
-            }
-
-            if (config.properties) {
-                for (const name in config.properties) {
-                    this.addProperty_(name, config.properties[name]);
-                }
-            }
-        }
-    }
-
-    checkStructure(ast) {
-        function collectWarning(node, message) {
-            warns.push({ node, message });
-        }
-
-        const structure = this.structure;
-        const warns = [];
-
-        this.syntax.walk(ast, function(node) {
-            if (structure.hasOwnProperty(node.type)) {
-                structure[node.type].check(node, collectWarning);
-            } else {
-                collectWarning(node, 'Unknown node type `' + node.type + '`');
-            }
-        });
-
-        return warns.length ? warns : false;
-    }
-
-    createDescriptor(syntax, type, name, parent = null) {
-        const ref = {
-            type,
-            name
-        };
-        const descriptor = {
-            type,
-            name,
-            parent,
-            serializable: typeof syntax === 'string' || (syntax && typeof syntax.type === 'string'),
-            syntax: null,
-            match: null
-        };
-
-        if (typeof syntax === 'function') {
-            descriptor.match = buildMatchGraph(syntax, ref);
-        } else {
-            if (typeof syntax === 'string') {
-                // lazy parsing on first access
-                Object.defineProperty(descriptor, 'syntax', {
-                    get() {
-                        Object.defineProperty(descriptor, 'syntax', {
-                            value: parse(syntax)
-                        });
-
-                        return descriptor.syntax;
-                    }
-                });
-            } else {
-                descriptor.syntax = syntax;
-            }
-
-            // lazy graph build on first access
-            Object.defineProperty(descriptor, 'match', {
-                get() {
-                    Object.defineProperty(descriptor, 'match', {
-                        value: buildMatchGraph(descriptor.syntax, ref)
-                    });
-
-                    return descriptor.match;
-                }
-            });
-        }
-
-        return descriptor;
-    }
-    addAtrule_(name, syntax) {
-        if (!syntax) {
-            return;
-        }
-
-        this.atrules[name] = {
-            type: 'Atrule',
-            name: name,
-            prelude: syntax.prelude ? this.createDescriptor(syntax.prelude, 'AtrulePrelude', name) : null,
-            descriptors: syntax.descriptors
-                ? Object.keys(syntax.descriptors).reduce(
-                    (map, descName) => {
-                        map[descName] = this.createDescriptor(syntax.descriptors[descName], 'AtruleDescriptor', descName, name);
-                        return map;
-                    },
-                    Object.create(null)
-                )
-                : null
-        };
-    }
-    addProperty_(name, syntax) {
-        if (!syntax) {
-            return;
-        }
-
-        this.properties[name] = this.createDescriptor(syntax, 'Property', name);
-    }
-    addType_(name, syntax) {
-        if (!syntax) {
-            return;
-        }
-
-        this.types[name] = this.createDescriptor(syntax, 'Type', name);
-    }
-
-    checkAtruleName(atruleName) {
-        if (!this.getAtrule(atruleName)) {
-            return new SyntaxReferenceError('Unknown at-rule', '@' + atruleName);
-        }
-    }
-    checkAtrulePrelude(atruleName, prelude) {
-        const error = this.checkAtruleName(atruleName);
-
-        if (error) {
-            return error;
-        }
-
-        const atrule = this.getAtrule(atruleName);
-
-        if (!atrule.prelude && prelude) {
-            return new SyntaxError('At-rule `@' + atruleName + '` should not contain a prelude');
-        }
-
-        if (atrule.prelude && !prelude) {
-            if (!matchSyntax(this, atrule.prelude, '', false).matched) {
-                return new SyntaxError('At-rule `@' + atruleName + '` should contain a prelude');
-            }
-        }
-    }
-    checkAtruleDescriptorName(atruleName, descriptorName) {
-        const error = this.checkAtruleName(atruleName);
-
-        if (error) {
-            return error;
-        }
-
-        const atrule = this.getAtrule(atruleName);
-        const descriptor = keyword(descriptorName);
-
-        if (!atrule.descriptors) {
-            return new SyntaxError('At-rule `@' + atruleName + '` has no known descriptors');
-        }
-
-        if (!atrule.descriptors[descriptor.name] &&
-            !atrule.descriptors[descriptor.basename]) {
-            return new SyntaxReferenceError('Unknown at-rule descriptor', descriptorName);
-        }
-    }
-    checkPropertyName(propertyName) {
-        if (!this.getProperty(propertyName)) {
-            return new SyntaxReferenceError('Unknown property', propertyName);
-        }
-    }
-
-    matchAtrulePrelude(atruleName, prelude) {
-        const error = this.checkAtrulePrelude(atruleName, prelude);
-
-        if (error) {
-            return buildMatchResult(null, error);
-        }
-
-        const atrule = this.getAtrule(atruleName);
-
-        if (!atrule.prelude) {
-            return buildMatchResult(null, null);
-        }
-
-        return matchSyntax(this, atrule.prelude, prelude || '', false);
-    }
-    matchAtruleDescriptor(atruleName, descriptorName, value) {
-        const error = this.checkAtruleDescriptorName(atruleName, descriptorName);
-
-        if (error) {
-            return buildMatchResult(null, error);
-        }
-
-        const atrule = this.getAtrule(atruleName);
-        const descriptor = keyword(descriptorName);
-
-        return matchSyntax(this, atrule.descriptors[descriptor.name] || atrule.descriptors[descriptor.basename], value, false);
-    }
-    matchDeclaration(node) {
-        if (node.type !== 'Declaration') {
-            return buildMatchResult(null, new Error('Not a Declaration node'));
-        }
-
-        return this.matchProperty(node.property, node.value);
-    }
-    matchProperty(propertyName, value) {
-        // don't match syntax for a custom property at the moment
-        if (names_property(propertyName).custom) {
-            return buildMatchResult(null, new Error('Lexer matching doesn\'t applicable for custom properties'));
-        }
-
-        const error = this.checkPropertyName(propertyName);
-
-        if (error) {
-            return buildMatchResult(null, error);
-        }
-
-        return matchSyntax(this, this.getProperty(propertyName), value, true);
-    }
-    matchType(typeName, value) {
-        const typeSyntax = this.getType(typeName);
-
-        if (!typeSyntax) {
-            return buildMatchResult(null, new SyntaxReferenceError('Unknown type', typeName));
-        }
-
-        return matchSyntax(this, typeSyntax, value, false);
-    }
-    match(syntax, value) {
-        if (typeof syntax !== 'string' && (!syntax || !syntax.type)) {
-            return buildMatchResult(null, new SyntaxReferenceError('Bad syntax'));
-        }
-
-        if (typeof syntax === 'string' || !syntax.match) {
-            syntax = this.createDescriptor(syntax, 'Type', 'anonymous');
-        }
-
-        return matchSyntax(this, syntax, value, false);
-    }
-
-    findValueFragments(propertyName, value, type, name) {
-        return matchFragments(this, value, this.matchProperty(propertyName, value), type, name);
-    }
-    findDeclarationValueFragments(declaration, type, name) {
-        return matchFragments(this, declaration.value, this.matchDeclaration(declaration), type, name);
-    }
-    findAllFragments(ast, type, name) {
-        const result = [];
-
-        this.syntax.walk(ast, {
-            visit: 'Declaration',
-            enter: (declaration) => {
-                result.push.apply(result, this.findDeclarationValueFragments(declaration, type, name));
-            }
-        });
-
-        return result;
-    }
-
-    getAtrule(atruleName, fallbackBasename = true) {
-        const atrule = keyword(atruleName);
-        const atruleEntry = atrule.vendor && fallbackBasename
-            ? this.atrules[atrule.name] || this.atrules[atrule.basename]
-            : this.atrules[atrule.name];
-
-        return atruleEntry || null;
-    }
-    getAtrulePrelude(atruleName, fallbackBasename = true) {
-        const atrule = this.getAtrule(atruleName, fallbackBasename);
-
-        return atrule && atrule.prelude || null;
-    }
-    getAtruleDescriptor(atruleName, name) {
-        return this.atrules.hasOwnProperty(atruleName) && this.atrules.declarators
-            ? this.atrules[atruleName].declarators[name] || null
-            : null;
-    }
-    getProperty(propertyName, fallbackBasename = true) {
-        const property = names_property(propertyName);
-        const propertyEntry = property.vendor && fallbackBasename
-            ? this.properties[property.name] || this.properties[property.basename]
-            : this.properties[property.name];
-
-        return propertyEntry || null;
-    }
-    getType(name) {
-        return hasOwnProperty.call(this.types, name) ? this.types[name] : null;
-    }
-
-    validate() {
-        function validate(syntax, name, broken, descriptor) {
-            if (broken.has(name)) {
-                return broken.get(name);
-            }
-
-            broken.set(name, false);
-            if (descriptor.syntax !== null) {
-                walk(descriptor.syntax, function(node) {
-                    if (node.type !== 'Type' && node.type !== 'Property') {
-                        return;
-                    }
-
-                    const map = node.type === 'Type' ? syntax.types : syntax.properties;
-                    const brokenMap = node.type === 'Type' ? brokenTypes : brokenProperties;
-
-                    if (!hasOwnProperty.call(map, node.name) || validate(syntax, node.name, brokenMap, map[node.name])) {
-                        broken.set(name, true);
-                    }
-                }, this);
-            }
-        }
-
-        let brokenTypes = new Map();
-        let brokenProperties = new Map();
-
-        for (const key in this.types) {
-            validate(this, key, brokenTypes, this.types[key]);
-        }
-
-        for (const key in this.properties) {
-            validate(this, key, brokenProperties, this.properties[key]);
-        }
-
-        brokenTypes = [...brokenTypes.keys()].filter(name => brokenTypes.get(name));
-        brokenProperties = [...brokenProperties.keys()].filter(name => brokenProperties.get(name));
-
-        if (brokenTypes.length || brokenProperties.length) {
-            return {
-                types: brokenTypes,
-                properties: brokenProperties
-            };
-        }
-
-        return null;
-    }
-    dump(syntaxAsAst, pretty) {
-        return {
-            generic: this.generic,
-            units: this.units,
-            types: dumpMapSyntax(this.types, !pretty, syntaxAsAst),
-            properties: dumpMapSyntax(this.properties, !pretty, syntaxAsAst),
-            atrules: dumpAtruleMapSyntax(this.atrules, !pretty, syntaxAsAst)
-        };
-    }
-    toString() {
-        return JSON.stringify(this.dump());
-    }
-};
-
-;// ./node_modules/css-tree/lib/syntax/config/mix.js
-function appendOrSet(a, b) {
-    if (typeof b === 'string' && /^\s*\|/.test(b)) {
-        return typeof a === 'string'
-            ? a + b
-            : b.replace(/^\s*\|\s*/, '');
-    }
-
-    return b || null;
-}
-
-function sliceProps(obj, props) {
-    const result = Object.create(null);
-
-    for (const [key, value] of Object.entries(obj)) {
-        if (value) {
-            result[key] = {};
-            for (const prop of Object.keys(value)) {
-                if (props.includes(prop)) {
-                    result[key][prop] = value[prop];
-                }
-            }
-        }
-    }
-
-    return result;
-}
-
-function mix(dest, src) {
-    const result = { ...dest };
-
-    for (const [prop, value] of Object.entries(src)) {
-        switch (prop) {
-            case 'generic':
-                result[prop] = Boolean(value);
-                break;
-
-            case 'units':
-                result[prop] = { ...dest[prop] };
-                for (const [name, patch] of Object.entries(value)) {
-                    result[prop][name] = Array.isArray(patch) ? patch : [];
-                }
-                break;
-
-            case 'atrules':
-                result[prop] = { ...dest[prop] };
-
-                for (const [name, atrule] of Object.entries(value)) {
-                    const exists = result[prop][name] || {};
-                    const current = result[prop][name] = {
-                        prelude: exists.prelude || null,
-                        descriptors: {
-                            ...exists.descriptors
-                        }
-                    };
-
-                    if (!atrule) {
-                        continue;
-                    }
-
-                    current.prelude = atrule.prelude
-                        ? appendOrSet(current.prelude, atrule.prelude)
-                        : current.prelude || null;
-
-                    for (const [descriptorName, descriptorValue] of Object.entries(atrule.descriptors || {})) {
-                        current.descriptors[descriptorName] = descriptorValue
-                            ? appendOrSet(current.descriptors[descriptorName], descriptorValue)
-                            : null;
-                    }
-
-                    if (!Object.keys(current.descriptors).length) {
-                        current.descriptors = null;
-                    }
-                }
-                break;
-
-            case 'types':
-            case 'properties':
-                result[prop] = { ...dest[prop] };
-                for (const [name, syntax] of Object.entries(value)) {
-                    result[prop][name] = appendOrSet(result[prop][name], syntax);
-                }
-                break;
-
-            case 'scope':
-                result[prop] = { ...dest[prop] };
-                for (const [name, props] of Object.entries(value)) {
-                    result[prop][name] = { ...result[prop][name], ...props };
-                }
-                break;
-
-            case 'parseContext':
-                result[prop] = {
-                    ...dest[prop],
-                    ...value
-                };
-                break;
-
-            case 'atrule':
-            case 'pseudo':
-                result[prop] = {
-                    ...dest[prop],
-                    ...sliceProps(value, ['parse']) };
-                break;
-
-            case 'node':
-                result[prop] = {
-                    ...dest[prop],
-                    ...sliceProps(value, ['name', 'structure', 'parse', 'generate', 'walkContext'])
-                };
-                break;
-        }
-    }
-
-    return result;
-}
-
-;// ./node_modules/css-tree/lib/syntax/create.js
-
-
-
-
-
-
-
-
-function createSyntax(config) {
-    const parse = createParser(config);
-    const walk = createWalker(config);
-    const generate = createGenerator(config);
-    const { fromPlainObject, toPlainObject } = createConvertor(walk);
-
-    const syntax = {
-        lexer: null,
-        createLexer: config => new Lexer(config, syntax, syntax.lexer.structure),
-
-        tokenize: tokenize,
-        parse,
-        generate,
-
-        walk,
-        find: walk.find,
-        findLast: walk.findLast,
-        findAll: walk.findAll,
-
-        fromPlainObject,
-        toPlainObject,
-
-        fork(extension) {
-            const base = mix({}, config); // copy of config
-
-            return createSyntax(
-                typeof extension === 'function'
-                    ? extension(base, Object.assign)
-                    : mix(base, extension)
-            );
-        }
-    };
-
-    syntax.lexer = new Lexer({
-        generic: true,
-        units: config.units,
-        types: config.types,
-        atrules: config.atrules,
-        properties: config.properties,
-        node: config.node
-    }, syntax);
-
-    return syntax;
-};
-
-/* harmony default export */ const create = (config => createSyntax(mix({}, config)));
-(Object.getOwnPropertyDescriptor(create, "name") || {}).writable || Object.defineProperty(create, "name", { value: "default", configurable: true });
-
-;// ./node_modules/css-tree/dist/data.js
-/* harmony default export */ const data = ({
-    "generic": true,
-    "units": {
-        "angle": [
-            "deg",
-            "grad",
-            "rad",
-            "turn"
-        ],
-        "decibel": [
-            "db"
-        ],
-        "flex": [
-            "fr"
-        ],
-        "frequency": [
-            "hz",
-            "khz"
-        ],
-        "length": [
-            "cm",
-            "mm",
-            "q",
-            "in",
-            "pt",
-            "pc",
-            "px",
-            "em",
-            "rem",
-            "ex",
-            "rex",
-            "cap",
-            "rcap",
-            "ch",
-            "rch",
-            "ic",
-            "ric",
-            "lh",
-            "rlh",
-            "vw",
-            "svw",
-            "lvw",
-            "dvw",
-            "vh",
-            "svh",
-            "lvh",
-            "dvh",
-            "vi",
-            "svi",
-            "lvi",
-            "dvi",
-            "vb",
-            "svb",
-            "lvb",
-            "dvb",
-            "vmin",
-            "svmin",
-            "lvmin",
-            "dvmin",
-            "vmax",
-            "svmax",
-            "lvmax",
-            "dvmax",
-            "cqw",
-            "cqh",
-            "cqi",
-            "cqb",
-            "cqmin",
-            "cqmax"
-        ],
-        "resolution": [
-            "dpi",
-            "dpcm",
-            "dppx",
-            "x"
-        ],
-        "semitones": [
-            "st"
-        ],
-        "time": [
-            "s",
-            "ms"
-        ]
-    },
-    "types": {
-        "abs()": "abs( <calc-sum> )",
-        "absolute-size": "xx-small|x-small|small|medium|large|x-large|xx-large|xxx-large",
-        "acos()": "acos( <calc-sum> )",
-        "alpha-value": "<number>|<percentage>",
-        "angle-percentage": "<angle>|<percentage>",
-        "angular-color-hint": "<angle-percentage>",
-        "angular-color-stop": "<color>&&<color-stop-angle>?",
-        "angular-color-stop-list": "[<angular-color-stop> [, <angular-color-hint>]?]# , <angular-color-stop>",
-        "animateable-feature": "scroll-position|contents|<custom-ident>",
-        "asin()": "asin( <calc-sum> )",
-        "atan()": "atan( <calc-sum> )",
-        "atan2()": "atan2( <calc-sum> , <calc-sum> )",
-        "attachment": "scroll|fixed|local",
-        "attr()": "attr( <attr-name> <type-or-unit>? [, <attr-fallback>]? )",
-        "attr-matcher": "['~'|'|'|'^'|'$'|'*']? '='",
-        "attr-modifier": "i|s",
-        "attribute-selector": "'[' <wq-name> ']'|'[' <wq-name> <attr-matcher> [<string-token>|<ident-token>] <attr-modifier>? ']'",
-        "auto-repeat": "repeat( [auto-fill|auto-fit] , [<line-names>? <fixed-size>]+ <line-names>? )",
-        "auto-track-list": "[<line-names>? [<fixed-size>|<fixed-repeat>]]* <line-names>? <auto-repeat> [<line-names>? [<fixed-size>|<fixed-repeat>]]* <line-names>?",
-        "axis": "block|inline|vertical|horizontal",
-        "baseline-position": "[first|last]? baseline",
-        "basic-shape": "<inset()>|<circle()>|<ellipse()>|<polygon()>|<path()>",
-        "bg-image": "none|<image>",
-        "bg-layer": "<bg-image>||<bg-position> [/ <bg-size>]?||<repeat-style>||<attachment>||<box>||<box>",
-        "bg-position": "[[left|center|right|top|bottom|<length-percentage>]|[left|center|right|<length-percentage>] [top|center|bottom|<length-percentage>]|[center|[left|right] <length-percentage>?]&&[center|[top|bottom] <length-percentage>?]]",
-        "bg-size": "[<length-percentage>|auto]{1,2}|cover|contain",
-        "blur()": "blur( <length> )",
-        "blend-mode": "normal|multiply|screen|overlay|darken|lighten|color-dodge|color-burn|hard-light|soft-light|difference|exclusion|hue|saturation|color|luminosity",
-        "box": "border-box|padding-box|content-box",
-        "brightness()": "brightness( <number-percentage> )",
-        "calc()": "calc( <calc-sum> )",
-        "calc-sum": "<calc-product> [['+'|'-'] <calc-product>]*",
-        "calc-product": "<calc-value> ['*' <calc-value>|'/' <number>]*",
-        "calc-value": "<number>|<dimension>|<percentage>|<calc-constant>|( <calc-sum> )",
-        "calc-constant": "e|pi|infinity|-infinity|NaN",
-        "cf-final-image": "<image>|<color>",
-        "cf-mixing-image": "<percentage>?&&<image>",
-        "circle()": "circle( [<shape-radius>]? [at <position>]? )",
-        "clamp()": "clamp( <calc-sum>#{3} )",
-        "class-selector": "'.' <ident-token>",
-        "clip-source": "<url>",
-        "color": "<rgb()>|<rgba()>|<hsl()>|<hsla()>|<hwb()>|<lab()>|<lch()>|<hex-color>|<named-color>|currentcolor|<deprecated-system-color>",
-        "color-stop": "<color-stop-length>|<color-stop-angle>",
-        "color-stop-angle": "<angle-percentage>{1,2}",
-        "color-stop-length": "<length-percentage>{1,2}",
-        "color-stop-list": "[<linear-color-stop> [, <linear-color-hint>]?]# , <linear-color-stop>",
-        "combinator": "'>'|'+'|'~'|['||']",
-        "common-lig-values": "[common-ligatures|no-common-ligatures]",
-        "compat-auto": "searchfield|textarea|push-button|slider-horizontal|checkbox|radio|square-button|menulist|listbox|meter|progress-bar|button",
-        "composite-style": "clear|copy|source-over|source-in|source-out|source-atop|destination-over|destination-in|destination-out|destination-atop|xor",
-        "compositing-operator": "add|subtract|intersect|exclude",
-        "compound-selector": "[<type-selector>? <subclass-selector>* [<pseudo-element-selector> <pseudo-class-selector>*]*]!",
-        "compound-selector-list": "<compound-selector>#",
-        "complex-selector": "<compound-selector> [<combinator>? <compound-selector>]*",
-        "complex-selector-list": "<complex-selector>#",
-        "conic-gradient()": "conic-gradient( [from <angle>]? [at <position>]? , <angular-color-stop-list> )",
-        "contextual-alt-values": "[contextual|no-contextual]",
-        "content-distribution": "space-between|space-around|space-evenly|stretch",
-        "content-list": "[<string>|contents|<image>|<counter>|<quote>|<target>|<leader()>|<attr()>]+",
-        "content-position": "center|start|end|flex-start|flex-end",
-        "content-replacement": "<image>",
-        "contrast()": "contrast( [<number-percentage>] )",
-        "cos()": "cos( <calc-sum> )",
-        "counter": "<counter()>|<counters()>",
-        "counter()": "counter( <counter-name> , <counter-style>? )",
-        "counter-name": "<custom-ident>",
-        "counter-style": "<counter-style-name>|symbols( )",
-        "counter-style-name": "<custom-ident>",
-        "counters()": "counters( <counter-name> , <string> , <counter-style>? )",
-        "cross-fade()": "cross-fade( <cf-mixing-image> , <cf-final-image>? )",
-        "cubic-bezier-timing-function": "ease|ease-in|ease-out|ease-in-out|cubic-bezier( <number [0,1]> , <number> , <number [0,1]> , <number> )",
-        "deprecated-system-color": "ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText",
-        "discretionary-lig-values": "[discretionary-ligatures|no-discretionary-ligatures]",
-        "display-box": "contents|none",
-        "display-inside": "flow|flow-root|table|flex|grid|ruby",
-        "display-internal": "table-row-group|table-header-group|table-footer-group|table-row|table-cell|table-column-group|table-column|table-caption|ruby-base|ruby-text|ruby-base-container|ruby-text-container",
-        "display-legacy": "inline-block|inline-list-item|inline-table|inline-flex|inline-grid",
-        "display-listitem": "<display-outside>?&&[flow|flow-root]?&&list-item",
-        "display-outside": "block|inline|run-in",
-        "drop-shadow()": "drop-shadow( <length>{2,3} <color>? )",
-        "east-asian-variant-values": "[jis78|jis83|jis90|jis04|simplified|traditional]",
-        "east-asian-width-values": "[full-width|proportional-width]",
-        "element()": "element( <custom-ident> , [first|start|last|first-except]? )|element( <id-selector> )",
-        "ellipse()": "ellipse( [<shape-radius>{2}]? [at <position>]? )",
-        "ending-shape": "circle|ellipse",
-        "env()": "env( <custom-ident> , <declaration-value>? )",
-        "exp()": "exp( <calc-sum> )",
-        "explicit-track-list": "[<line-names>? <track-size>]+ <line-names>?",
-        "family-name": "<string>|<custom-ident>+",
-        "feature-tag-value": "<string> [<integer>|on|off]?",
-        "feature-type": "@stylistic|@historical-forms|@styleset|@character-variant|@swash|@ornaments|@annotation",
-        "feature-value-block": "<feature-type> '{' <feature-value-declaration-list> '}'",
-        "feature-value-block-list": "<feature-value-block>+",
-        "feature-value-declaration": "<custom-ident> : <integer>+ ;",
-        "feature-value-declaration-list": "<feature-value-declaration>",
-        "feature-value-name": "<custom-ident>",
-        "fill-rule": "nonzero|evenodd",
-        "filter-function": "<blur()>|<brightness()>|<contrast()>|<drop-shadow()>|<grayscale()>|<hue-rotate()>|<invert()>|<opacity()>|<saturate()>|<sepia()>",
-        "filter-function-list": "[<filter-function>|<url>]+",
-        "final-bg-layer": "<'background-color'>||<bg-image>||<bg-position> [/ <bg-size>]?||<repeat-style>||<attachment>||<box>||<box>",
-        "fixed-breadth": "<length-percentage>",
-        "fixed-repeat": "repeat( [<integer [1,∞]>] , [<line-names>? <fixed-size>]+ <line-names>? )",
-        "fixed-size": "<fixed-breadth>|minmax( <fixed-breadth> , <track-breadth> )|minmax( <inflexible-breadth> , <fixed-breadth> )",
-        "font-stretch-absolute": "normal|ultra-condensed|extra-condensed|condensed|semi-condensed|semi-expanded|expanded|extra-expanded|ultra-expanded|<percentage>",
-        "font-variant-css21": "[normal|small-caps]",
-        "font-weight-absolute": "normal|bold|<number [1,1000]>",
-        "frequency-percentage": "<frequency>|<percentage>",
-        "general-enclosed": "[<function-token> <any-value> )]|( <ident> <any-value> )",
-        "generic-family": "serif|sans-serif|cursive|fantasy|monospace|-apple-system",
-        "generic-name": "serif|sans-serif|cursive|fantasy|monospace",
-        "geometry-box": "<shape-box>|fill-box|stroke-box|view-box",
-        "gradient": "<linear-gradient()>|<repeating-linear-gradient()>|<radial-gradient()>|<repeating-radial-gradient()>|<conic-gradient()>|<repeating-conic-gradient()>|<-legacy-gradient>",
-        "grayscale()": "grayscale( <number-percentage> )",
-        "grid-line": "auto|<custom-ident>|[<integer>&&<custom-ident>?]|[span&&[<integer>||<custom-ident>]]",
-        "historical-lig-values": "[historical-ligatures|no-historical-ligatures]",
-        "hsl()": "hsl( <hue> <percentage> <percentage> [/ <alpha-value>]? )|hsl( <hue> , <percentage> , <percentage> , <alpha-value>? )",
-        "hsla()": "hsla( <hue> <percentage> <percentage> [/ <alpha-value>]? )|hsla( <hue> , <percentage> , <percentage> , <alpha-value>? )",
-        "hue": "<number>|<angle>",
-        "hue-rotate()": "hue-rotate( <angle> )",
-        "hwb()": "hwb( [<hue>|none] [<percentage>|none] [<percentage>|none] [/ [<alpha-value>|none]]? )",
-        "hypot()": "hypot( <calc-sum># )",
-        "image": "<url>|<image()>|<image-set()>|<element()>|<paint()>|<cross-fade()>|<gradient>",
-        "image()": "image( <image-tags>? [<image-src>? , <color>?]! )",
-        "image-set()": "image-set( <image-set-option># )",
-        "image-set-option": "[<image>|<string>] [<resolution>||type( <string> )]",
-        "image-src": "<url>|<string>",
-        "image-tags": "ltr|rtl",
-        "inflexible-breadth": "<length-percentage>|min-content|max-content|auto",
-        "inset()": "inset( <length-percentage>{1,4} [round <'border-radius'>]? )",
-        "invert()": "invert( <number-percentage> )",
-        "keyframes-name": "<custom-ident>|<string>",
-        "keyframe-block": "<keyframe-selector># { <declaration-list> }",
-        "keyframe-block-list": "<keyframe-block>+",
-        "keyframe-selector": "from|to|<percentage>",
-        "lab()": "lab( [<percentage>|<number>|none] [<percentage>|<number>|none] [<percentage>|<number>|none] [/ [<alpha-value>|none]]? )",
-        "layer()": "layer( <layer-name> )",
-        "layer-name": "<ident> ['.' <ident>]*",
-        "lch()": "lch( [<percentage>|<number>|none] [<percentage>|<number>|none] [<hue>|none] [/ [<alpha-value>|none]]? )",
-        "leader()": "leader( <leader-type> )",
-        "leader-type": "dotted|solid|space|<string>",
-        "length-percentage": "<length>|<percentage>",
-        "line-names": "'[' <custom-ident>* ']'",
-        "line-name-list": "[<line-names>|<name-repeat>]+",
-        "line-style": "none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset",
-        "line-width": "<length>|thin|medium|thick",
-        "linear-color-hint": "<length-percentage>",
-        "linear-color-stop": "<color> <color-stop-length>?",
-        "linear-gradient()": "linear-gradient( [<angle>|to <side-or-corner>]? , <color-stop-list> )",
-        "log()": "log( <calc-sum> , <calc-sum>? )",
-        "mask-layer": "<mask-reference>||<position> [/ <bg-size>]?||<repeat-style>||<geometry-box>||[<geometry-box>|no-clip]||<compositing-operator>||<masking-mode>",
-        "mask-position": "[<length-percentage>|left|center|right] [<length-percentage>|top|center|bottom]?",
-        "mask-reference": "none|<image>|<mask-source>",
-        "mask-source": "<url>",
-        "masking-mode": "alpha|luminance|match-source",
-        "matrix()": "matrix( <number>#{6} )",
-        "matrix3d()": "matrix3d( <number>#{16} )",
-        "max()": "max( <calc-sum># )",
-        "media-and": "<media-in-parens> [and <media-in-parens>]+",
-        "media-condition": "<media-not>|<media-and>|<media-or>|<media-in-parens>",
-        "media-condition-without-or": "<media-not>|<media-and>|<media-in-parens>",
-        "media-feature": "( [<mf-plain>|<mf-boolean>|<mf-range>] )",
-        "media-in-parens": "( <media-condition> )|<media-feature>|<general-enclosed>",
-        "media-not": "not <media-in-parens>",
-        "media-or": "<media-in-parens> [or <media-in-parens>]+",
-        "media-query": "<media-condition>|[not|only]? <media-type> [and <media-condition-without-or>]?",
-        "media-query-list": "<media-query>#",
-        "media-type": "<ident>",
-        "mf-boolean": "<mf-name>",
-        "mf-name": "<ident>",
-        "mf-plain": "<mf-name> : <mf-value>",
-        "mf-range": "<mf-name> ['<'|'>']? '='? <mf-value>|<mf-value> ['<'|'>']? '='? <mf-name>|<mf-value> '<' '='? <mf-name> '<' '='? <mf-value>|<mf-value> '>' '='? <mf-name> '>' '='? <mf-value>",
-        "mf-value": "<number>|<dimension>|<ident>|<ratio>",
-        "min()": "min( <calc-sum># )",
-        "minmax()": "minmax( [<length-percentage>|min-content|max-content|auto] , [<length-percentage>|<flex>|min-content|max-content|auto] )",
-        "mod()": "mod( <calc-sum> , <calc-sum> )",
-        "name-repeat": "repeat( [<integer [1,∞]>|auto-fill] , <line-names>+ )",
-        "named-color": "transparent|aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|rebeccapurple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen|<-non-standard-color>",
-        "namespace-prefix": "<ident>",
-        "ns-prefix": "[<ident-token>|'*']? '|'",
-        "number-percentage": "<number>|<percentage>",
-        "numeric-figure-values": "[lining-nums|oldstyle-nums]",
-        "numeric-fraction-values": "[diagonal-fractions|stacked-fractions]",
-        "numeric-spacing-values": "[proportional-nums|tabular-nums]",
-        "nth": "<an-plus-b>|even|odd",
-        "opacity()": "opacity( [<number-percentage>] )",
-        "overflow-position": "unsafe|safe",
-        "outline-radius": "<length>|<percentage>",
-        "page-body": "<declaration>? [; <page-body>]?|<page-margin-box> <page-body>",
-        "page-margin-box": "<page-margin-box-type> '{' <declaration-list> '}'",
-        "page-margin-box-type": "@top-left-corner|@top-left|@top-center|@top-right|@top-right-corner|@bottom-left-corner|@bottom-left|@bottom-center|@bottom-right|@bottom-right-corner|@left-top|@left-middle|@left-bottom|@right-top|@right-middle|@right-bottom",
-        "page-selector-list": "[<page-selector>#]?",
-        "page-selector": "<pseudo-page>+|<ident> <pseudo-page>*",
-        "page-size": "A5|A4|A3|B5|B4|JIS-B5|JIS-B4|letter|legal|ledger",
-        "path()": "path( [<fill-rule> ,]? <string> )",
-        "paint()": "paint( <ident> , <declaration-value>? )",
-        "perspective()": "perspective( [<length [0,∞]>|none] )",
-        "polygon()": "polygon( <fill-rule>? , [<length-percentage> <length-percentage>]# )",
-        "position": "[[left|center|right]||[top|center|bottom]|[left|center|right|<length-percentage>] [top|center|bottom|<length-percentage>]?|[[left|right] <length-percentage>]&&[[top|bottom] <length-percentage>]]",
-        "pow()": "pow( <calc-sum> , <calc-sum> )",
-        "pseudo-class-selector": "':' <ident-token>|':' <function-token> <any-value> ')'",
-        "pseudo-element-selector": "':' <pseudo-class-selector>",
-        "pseudo-page": ": [left|right|first|blank]",
-        "quote": "open-quote|close-quote|no-open-quote|no-close-quote",
-        "radial-gradient()": "radial-gradient( [<ending-shape>||<size>]? [at <position>]? , <color-stop-list> )",
-        "ratio": "<number [0,∞]> [/ <number [0,∞]>]?",
-        "relative-selector": "<combinator>? <complex-selector>",
-        "relative-selector-list": "<relative-selector>#",
-        "relative-size": "larger|smaller",
-        "rem()": "rem( <calc-sum> , <calc-sum> )",
-        "repeat-style": "repeat-x|repeat-y|[repeat|space|round|no-repeat]{1,2}",
-        "repeating-conic-gradient()": "repeating-conic-gradient( [from <angle>]? [at <position>]? , <angular-color-stop-list> )",
-        "repeating-linear-gradient()": "repeating-linear-gradient( [<angle>|to <side-or-corner>]? , <color-stop-list> )",
-        "repeating-radial-gradient()": "repeating-radial-gradient( [<ending-shape>||<size>]? [at <position>]? , <color-stop-list> )",
-        "reversed-counter-name": "reversed( <counter-name> )",
-        "rgb()": "rgb( <percentage>{3} [/ <alpha-value>]? )|rgb( <number>{3} [/ <alpha-value>]? )|rgb( <percentage>#{3} , <alpha-value>? )|rgb( <number>#{3} , <alpha-value>? )",
-        "rgba()": "rgba( <percentage>{3} [/ <alpha-value>]? )|rgba( <number>{3} [/ <alpha-value>]? )|rgba( <percentage>#{3} , <alpha-value>? )|rgba( <number>#{3} , <alpha-value>? )",
-        "rotate()": "rotate( [<angle>|<zero>] )",
-        "rotate3d()": "rotate3d( <number> , <number> , <number> , [<angle>|<zero>] )",
-        "rotateX()": "rotateX( [<angle>|<zero>] )",
-        "rotateY()": "rotateY( [<angle>|<zero>] )",
-        "rotateZ()": "rotateZ( [<angle>|<zero>] )",
-        "round()": "round( <rounding-strategy>? , <calc-sum> , <calc-sum> )",
-        "rounding-strategy": "nearest|up|down|to-zero",
-        "saturate()": "saturate( <number-percentage> )",
-        "scale()": "scale( [<number>|<percentage>]#{1,2} )",
-        "scale3d()": "scale3d( [<number>|<percentage>]#{3} )",
-        "scaleX()": "scaleX( [<number>|<percentage>] )",
-        "scaleY()": "scaleY( [<number>|<percentage>] )",
-        "scaleZ()": "scaleZ( [<number>|<percentage>] )",
-        "scroller": "root|nearest",
-        "self-position": "center|start|end|self-start|self-end|flex-start|flex-end",
-        "shape-radius": "<length-percentage>|closest-side|farthest-side",
-        "sign()": "sign( <calc-sum> )",
-        "skew()": "skew( [<angle>|<zero>] , [<angle>|<zero>]? )",
-        "skewX()": "skewX( [<angle>|<zero>] )",
-        "skewY()": "skewY( [<angle>|<zero>] )",
-        "sepia()": "sepia( <number-percentage> )",
-        "shadow": "inset?&&<length>{2,4}&&<color>?",
-        "shadow-t": "[<length>{2,3}&&<color>?]",
-        "shape": "rect( <top> , <right> , <bottom> , <left> )|rect( <top> <right> <bottom> <left> )",
-        "shape-box": "<box>|margin-box",
-        "side-or-corner": "[left|right]||[top|bottom]",
-        "sin()": "sin( <calc-sum> )",
-        "single-animation": "<time>||<easing-function>||<time>||<single-animation-iteration-count>||<single-animation-direction>||<single-animation-fill-mode>||<single-animation-play-state>||[none|<keyframes-name>]",
-        "single-animation-direction": "normal|reverse|alternate|alternate-reverse",
-        "single-animation-fill-mode": "none|forwards|backwards|both",
-        "single-animation-iteration-count": "infinite|<number>",
-        "single-animation-play-state": "running|paused",
-        "single-animation-timeline": "auto|none|<timeline-name>|scroll( <axis>? <scroller>? )",
-        "single-transition": "[none|<single-transition-property>]||<time>||<easing-function>||<time>",
-        "single-transition-property": "all|<custom-ident>",
-        "size": "closest-side|farthest-side|closest-corner|farthest-corner|<length>|<length-percentage>{2}",
-        "sqrt()": "sqrt( <calc-sum> )",
-        "step-position": "jump-start|jump-end|jump-none|jump-both|start|end",
-        "step-timing-function": "step-start|step-end|steps( <integer> [, <step-position>]? )",
-        "subclass-selector": "<id-selector>|<class-selector>|<attribute-selector>|<pseudo-class-selector>",
-        "supports-condition": "not <supports-in-parens>|<supports-in-parens> [and <supports-in-parens>]*|<supports-in-parens> [or <supports-in-parens>]*",
-        "supports-in-parens": "( <supports-condition> )|<supports-feature>|<general-enclosed>",
-        "supports-feature": "<supports-decl>|<supports-selector-fn>",
-        "supports-decl": "( <declaration> )",
-        "supports-selector-fn": "selector( <complex-selector> )",
-        "symbol": "<string>|<image>|<custom-ident>",
-        "tan()": "tan( <calc-sum> )",
-        "target": "<target-counter()>|<target-counters()>|<target-text()>",
-        "target-counter()": "target-counter( [<string>|<url>] , <custom-ident> , <counter-style>? )",
-        "target-counters()": "target-counters( [<string>|<url>] , <custom-ident> , <string> , <counter-style>? )",
-        "target-text()": "target-text( [<string>|<url>] , [content|before|after|first-letter]? )",
-        "time-percentage": "<time>|<percentage>",
-        "timeline-name": "<custom-ident>|<string>",
-        "easing-function": "linear|<cubic-bezier-timing-function>|<step-timing-function>",
-        "track-breadth": "<length-percentage>|<flex>|min-content|max-content|auto",
-        "track-list": "[<line-names>? [<track-size>|<track-repeat>]]+ <line-names>?",
-        "track-repeat": "repeat( [<integer [1,∞]>] , [<line-names>? <track-size>]+ <line-names>? )",
-        "track-size": "<track-breadth>|minmax( <inflexible-breadth> , <track-breadth> )|fit-content( <length-percentage> )",
-        "transform-function": "<matrix()>|<translate()>|<translateX()>|<translateY()>|<scale()>|<scaleX()>|<scaleY()>|<rotate()>|<skew()>|<skewX()>|<skewY()>|<matrix3d()>|<translate3d()>|<translateZ()>|<scale3d()>|<scaleZ()>|<rotate3d()>|<rotateX()>|<rotateY()>|<rotateZ()>|<perspective()>",
-        "transform-list": "<transform-function>+",
-        "translate()": "translate( <length-percentage> , <length-percentage>? )",
-        "translate3d()": "translate3d( <length-percentage> , <length-percentage> , <length> )",
-        "translateX()": "translateX( <length-percentage> )",
-        "translateY()": "translateY( <length-percentage> )",
-        "translateZ()": "translateZ( <length> )",
-        "type-or-unit": "string|color|url|integer|number|length|angle|time|frequency|cap|ch|em|ex|ic|lh|rlh|rem|vb|vi|vw|vh|vmin|vmax|mm|Q|cm|in|pt|pc|px|deg|grad|rad|turn|ms|s|Hz|kHz|%",
-        "type-selector": "<wq-name>|<ns-prefix>? '*'",
-        "var()": "var( <custom-property-name> , <declaration-value>? )",
-        "viewport-length": "auto|<length-percentage>",
-        "visual-box": "content-box|padding-box|border-box",
-        "wq-name": "<ns-prefix>? <ident-token>",
-        "-legacy-gradient": "<-webkit-gradient()>|<-legacy-linear-gradient>|<-legacy-repeating-linear-gradient>|<-legacy-radial-gradient>|<-legacy-repeating-radial-gradient>",
-        "-legacy-linear-gradient": "-moz-linear-gradient( <-legacy-linear-gradient-arguments> )|-webkit-linear-gradient( <-legacy-linear-gradient-arguments> )|-o-linear-gradient( <-legacy-linear-gradient-arguments> )",
-        "-legacy-repeating-linear-gradient": "-moz-repeating-linear-gradient( <-legacy-linear-gradient-arguments> )|-webkit-repeating-linear-gradient( <-legacy-linear-gradient-arguments> )|-o-repeating-linear-gradient( <-legacy-linear-gradient-arguments> )",
-        "-legacy-linear-gradient-arguments": "[<angle>|<side-or-corner>]? , <color-stop-list>",
-        "-legacy-radial-gradient": "-moz-radial-gradient( <-legacy-radial-gradient-arguments> )|-webkit-radial-gradient( <-legacy-radial-gradient-arguments> )|-o-radial-gradient( <-legacy-radial-gradient-arguments> )",
-        "-legacy-repeating-radial-gradient": "-moz-repeating-radial-gradient( <-legacy-radial-gradient-arguments> )|-webkit-repeating-radial-gradient( <-legacy-radial-gradient-arguments> )|-o-repeating-radial-gradient( <-legacy-radial-gradient-arguments> )",
-        "-legacy-radial-gradient-arguments": "[<position> ,]? [[[<-legacy-radial-gradient-shape>||<-legacy-radial-gradient-size>]|[<length>|<percentage>]{2}] ,]? <color-stop-list>",
-        "-legacy-radial-gradient-size": "closest-side|closest-corner|farthest-side|farthest-corner|contain|cover",
-        "-legacy-radial-gradient-shape": "circle|ellipse",
-        "-non-standard-font": "-apple-system-body|-apple-system-headline|-apple-system-subheadline|-apple-system-caption1|-apple-system-caption2|-apple-system-footnote|-apple-system-short-body|-apple-system-short-headline|-apple-system-short-subheadline|-apple-system-short-caption1|-apple-system-short-footnote|-apple-system-tall-body",
-        "-non-standard-color": "-moz-ButtonDefault|-moz-ButtonHoverFace|-moz-ButtonHoverText|-moz-CellHighlight|-moz-CellHighlightText|-moz-Combobox|-moz-ComboboxText|-moz-Dialog|-moz-DialogText|-moz-dragtargetzone|-moz-EvenTreeRow|-moz-Field|-moz-FieldText|-moz-html-CellHighlight|-moz-html-CellHighlightText|-moz-mac-accentdarkestshadow|-moz-mac-accentdarkshadow|-moz-mac-accentface|-moz-mac-accentlightesthighlight|-moz-mac-accentlightshadow|-moz-mac-accentregularhighlight|-moz-mac-accentregularshadow|-moz-mac-chrome-active|-moz-mac-chrome-inactive|-moz-mac-focusring|-moz-mac-menuselect|-moz-mac-menushadow|-moz-mac-menutextselect|-moz-MenuHover|-moz-MenuHoverText|-moz-MenuBarText|-moz-MenuBarHoverText|-moz-nativehyperlinktext|-moz-OddTreeRow|-moz-win-communicationstext|-moz-win-mediatext|-moz-activehyperlinktext|-moz-default-background-color|-moz-default-color|-moz-hyperlinktext|-moz-visitedhyperlinktext|-webkit-activelink|-webkit-focus-ring-color|-webkit-link|-webkit-text",
-        "-non-standard-image-rendering": "optimize-contrast|-moz-crisp-edges|-o-crisp-edges|-webkit-optimize-contrast",
-        "-non-standard-overflow": "-moz-scrollbars-none|-moz-scrollbars-horizontal|-moz-scrollbars-vertical|-moz-hidden-unscrollable",
-        "-non-standard-width": "fill-available|min-intrinsic|intrinsic|-moz-available|-moz-fit-content|-moz-min-content|-moz-max-content|-webkit-min-content|-webkit-max-content",
-        "-webkit-gradient()": "-webkit-gradient( <-webkit-gradient-type> , <-webkit-gradient-point> [, <-webkit-gradient-point>|, <-webkit-gradient-radius> , <-webkit-gradient-point>] [, <-webkit-gradient-radius>]? [, <-webkit-gradient-color-stop>]* )",
-        "-webkit-gradient-color-stop": "from( <color> )|color-stop( [<number-zero-one>|<percentage>] , <color> )|to( <color> )",
-        "-webkit-gradient-point": "[left|center|right|<length-percentage>] [top|center|bottom|<length-percentage>]",
-        "-webkit-gradient-radius": "<length>|<percentage>",
-        "-webkit-gradient-type": "linear|radial",
-        "-webkit-mask-box-repeat": "repeat|stretch|round",
-        "-webkit-mask-clip-style": "border|border-box|padding|padding-box|content|content-box|text",
-        "-ms-filter-function-list": "<-ms-filter-function>+",
-        "-ms-filter-function": "<-ms-filter-function-progid>|<-ms-filter-function-legacy>",
-        "-ms-filter-function-progid": "'progid:' [<ident-token> '.']* [<ident-token>|<function-token> <any-value>? )]",
-        "-ms-filter-function-legacy": "<ident-token>|<function-token> <any-value>? )",
-        "-ms-filter": "<string>",
-        "age": "child|young|old",
-        "attr-name": "<wq-name>",
-        "attr-fallback": "<any-value>",
-        "bg-clip": "<box>|border|text",
-        "bottom": "<length>|auto",
-        "generic-voice": "[<age>? <gender> <integer>?]",
-        "gender": "male|female|neutral",
-        "left": "<length>|auto",
-        "mask-image": "<mask-reference>#",
-        "paint": "none|<color>|<url> [none|<color>]?|context-fill|context-stroke",
-        "right": "<length>|auto",
-        "scroll-timeline-axis": "block|inline|vertical|horizontal",
-        "scroll-timeline-name": "none|<custom-ident>",
-        "single-animation-composition": "replace|add|accumulate",
-        "svg-length": "<percentage>|<length>|<number>",
-        "svg-writing-mode": "lr-tb|rl-tb|tb-rl|lr|rl|tb",
-        "top": "<length>|auto",
-        "x": "<number>",
-        "y": "<number>",
-        "declaration": "<ident-token> : <declaration-value>? ['!' important]?",
-        "declaration-list": "[<declaration>? ';']* <declaration>?",
-        "url": "url( <string> <url-modifier>* )|<url-token>",
-        "url-modifier": "<ident>|<function-token> <any-value> )",
-        "number-zero-one": "<number [0,1]>",
-        "number-one-or-greater": "<number [1,∞]>",
-        "-non-standard-display": "-ms-inline-flexbox|-ms-grid|-ms-inline-grid|-webkit-flex|-webkit-inline-flex|-webkit-box|-webkit-inline-box|-moz-inline-stack|-moz-box|-moz-inline-box"
-    },
-    "properties": {
-        "--*": "<declaration-value>",
-        "-ms-accelerator": "false|true",
-        "-ms-block-progression": "tb|rl|bt|lr",
-        "-ms-content-zoom-chaining": "none|chained",
-        "-ms-content-zooming": "none|zoom",
-        "-ms-content-zoom-limit": "<'-ms-content-zoom-limit-min'> <'-ms-content-zoom-limit-max'>",
-        "-ms-content-zoom-limit-max": "<percentage>",
-        "-ms-content-zoom-limit-min": "<percentage>",
-        "-ms-content-zoom-snap": "<'-ms-content-zoom-snap-type'>||<'-ms-content-zoom-snap-points'>",
-        "-ms-content-zoom-snap-points": "snapInterval( <percentage> , <percentage> )|snapList( <percentage># )",
-        "-ms-content-zoom-snap-type": "none|proximity|mandatory",
-        "-ms-filter": "<string>",
-        "-ms-flow-from": "[none|<custom-ident>]#",
-        "-ms-flow-into": "[none|<custom-ident>]#",
-        "-ms-grid-columns": "none|<track-list>|<auto-track-list>",
-        "-ms-grid-rows": "none|<track-list>|<auto-track-list>",
-        "-ms-high-contrast-adjust": "auto|none",
-        "-ms-hyphenate-limit-chars": "auto|<integer>{1,3}",
-        "-ms-hyphenate-limit-lines": "no-limit|<integer>",
-        "-ms-hyphenate-limit-zone": "<percentage>|<length>",
-        "-ms-ime-align": "auto|after",
-        "-ms-overflow-style": "auto|none|scrollbar|-ms-autohiding-scrollbar",
-        "-ms-scrollbar-3dlight-color": "<color>",
-        "-ms-scrollbar-arrow-color": "<color>",
-        "-ms-scrollbar-base-color": "<color>",
-        "-ms-scrollbar-darkshadow-color": "<color>",
-        "-ms-scrollbar-face-color": "<color>",
-        "-ms-scrollbar-highlight-color": "<color>",
-        "-ms-scrollbar-shadow-color": "<color>",
-        "-ms-scrollbar-track-color": "<color>",
-        "-ms-scroll-chaining": "chained|none",
-        "-ms-scroll-limit": "<'-ms-scroll-limit-x-min'> <'-ms-scroll-limit-y-min'> <'-ms-scroll-limit-x-max'> <'-ms-scroll-limit-y-max'>",
-        "-ms-scroll-limit-x-max": "auto|<length>",
-        "-ms-scroll-limit-x-min": "<length>",
-        "-ms-scroll-limit-y-max": "auto|<length>",
-        "-ms-scroll-limit-y-min": "<length>",
-        "-ms-scroll-rails": "none|railed",
-        "-ms-scroll-snap-points-x": "snapInterval( <length-percentage> , <length-percentage> )|snapList( <length-percentage># )",
-        "-ms-scroll-snap-points-y": "snapInterval( <length-percentage> , <length-percentage> )|snapList( <length-percentage># )",
-        "-ms-scroll-snap-type": "none|proximity|mandatory",
-        "-ms-scroll-snap-x": "<'-ms-scroll-snap-type'> <'-ms-scroll-snap-points-x'>",
-        "-ms-scroll-snap-y": "<'-ms-scroll-snap-type'> <'-ms-scroll-snap-points-y'>",
-        "-ms-scroll-translation": "none|vertical-to-horizontal",
-        "-ms-text-autospace": "none|ideograph-alpha|ideograph-numeric|ideograph-parenthesis|ideograph-space",
-        "-ms-touch-select": "grippers|none",
-        "-ms-user-select": "none|element|text",
-        "-ms-wrap-flow": "auto|both|start|end|maximum|clear",
-        "-ms-wrap-margin": "<length>",
-        "-ms-wrap-through": "wrap|none",
-        "-moz-appearance": "none|button|button-arrow-down|button-arrow-next|button-arrow-previous|button-arrow-up|button-bevel|button-focus|caret|checkbox|checkbox-container|checkbox-label|checkmenuitem|dualbutton|groupbox|listbox|listitem|menuarrow|menubar|menucheckbox|menuimage|menuitem|menuitemtext|menulist|menulist-button|menulist-text|menulist-textfield|menupopup|menuradio|menuseparator|meterbar|meterchunk|progressbar|progressbar-vertical|progresschunk|progresschunk-vertical|radio|radio-container|radio-label|radiomenuitem|range|range-thumb|resizer|resizerpanel|scale-horizontal|scalethumbend|scalethumb-horizontal|scalethumbstart|scalethumbtick|scalethumb-vertical|scale-vertical|scrollbarbutton-down|scrollbarbutton-left|scrollbarbutton-right|scrollbarbutton-up|scrollbarthumb-horizontal|scrollbarthumb-vertical|scrollbartrack-horizontal|scrollbartrack-vertical|searchfield|separator|sheet|spinner|spinner-downbutton|spinner-textfield|spinner-upbutton|splitter|statusbar|statusbarpanel|tab|tabpanel|tabpanels|tab-scroll-arrow-back|tab-scroll-arrow-forward|textfield|textfield-multiline|toolbar|toolbarbutton|toolbarbutton-dropdown|toolbargripper|toolbox|tooltip|treeheader|treeheadercell|treeheadersortarrow|treeitem|treeline|treetwisty|treetwistyopen|treeview|-moz-mac-unified-toolbar|-moz-win-borderless-glass|-moz-win-browsertabbar-toolbox|-moz-win-communicationstext|-moz-win-communications-toolbox|-moz-win-exclude-glass|-moz-win-glass|-moz-win-mediatext|-moz-win-media-toolbox|-moz-window-button-box|-moz-window-button-box-maximized|-moz-window-button-close|-moz-window-button-maximize|-moz-window-button-minimize|-moz-window-button-restore|-moz-window-frame-bottom|-moz-window-frame-left|-moz-window-frame-right|-moz-window-titlebar|-moz-window-titlebar-maximized",
-        "-moz-binding": "<url>|none",
-        "-moz-border-bottom-colors": "<color>+|none",
-        "-moz-border-left-colors": "<color>+|none",
-        "-moz-border-right-colors": "<color>+|none",
-        "-moz-border-top-colors": "<color>+|none",
-        "-moz-context-properties": "none|[fill|fill-opacity|stroke|stroke-opacity]#",
-        "-moz-float-edge": "border-box|content-box|margin-box|padding-box",
-        "-moz-force-broken-image-icon": "0|1",
-        "-moz-image-region": "<shape>|auto",
-        "-moz-orient": "inline|block|horizontal|vertical",
-        "-moz-outline-radius": "<outline-radius>{1,4} [/ <outline-radius>{1,4}]?",
-        "-moz-outline-radius-bottomleft": "<outline-radius>",
-        "-moz-outline-radius-bottomright": "<outline-radius>",
-        "-moz-outline-radius-topleft": "<outline-radius>",
-        "-moz-outline-radius-topright": "<outline-radius>",
-        "-moz-stack-sizing": "ignore|stretch-to-fit",
-        "-moz-text-blink": "none|blink",
-        "-moz-user-focus": "ignore|normal|select-after|select-before|select-menu|select-same|select-all|none",
-        "-moz-user-input": "auto|none|enabled|disabled",
-        "-moz-user-modify": "read-only|read-write|write-only",
-        "-moz-window-dragging": "drag|no-drag",
-        "-moz-window-shadow": "default|menu|tooltip|sheet|none",
-        "-webkit-appearance": "none|button|button-bevel|caps-lock-indicator|caret|checkbox|default-button|inner-spin-button|listbox|listitem|media-controls-background|media-controls-fullscreen-background|media-current-time-display|media-enter-fullscreen-button|media-exit-fullscreen-button|media-fullscreen-button|media-mute-button|media-overlay-play-button|media-play-button|media-seek-back-button|media-seek-forward-button|media-slider|media-sliderthumb|media-time-remaining-display|media-toggle-closed-captions-button|media-volume-slider|media-volume-slider-container|media-volume-sliderthumb|menulist|menulist-button|menulist-text|menulist-textfield|meter|progress-bar|progress-bar-value|push-button|radio|scrollbarbutton-down|scrollbarbutton-left|scrollbarbutton-right|scrollbarbutton-up|scrollbargripper-horizontal|scrollbargripper-vertical|scrollbarthumb-horizontal|scrollbarthumb-vertical|scrollbartrack-horizontal|scrollbartrack-vertical|searchfield|searchfield-cancel-button|searchfield-decoration|searchfield-results-button|searchfield-results-decoration|slider-horizontal|slider-vertical|sliderthumb-horizontal|sliderthumb-vertical|square-button|textarea|textfield|-apple-pay-button",
-        "-webkit-border-before": "<'border-width'>||<'border-style'>||<color>",
-        "-webkit-border-before-color": "<color>",
-        "-webkit-border-before-style": "<'border-style'>",
-        "-webkit-border-before-width": "<'border-width'>",
-        "-webkit-box-reflect": "[above|below|right|left]? <length>? <image>?",
-        "-webkit-line-clamp": "none|<integer>",
-        "-webkit-mask": "[<mask-reference>||<position> [/ <bg-size>]?||<repeat-style>||[<box>|border|padding|content|text]||[<box>|border|padding|content]]#",
-        "-webkit-mask-attachment": "<attachment>#",
-        "-webkit-mask-clip": "[<box>|border|padding|content|text]#",
-        "-webkit-mask-composite": "<composite-style>#",
-        "-webkit-mask-image": "<mask-reference>#",
-        "-webkit-mask-origin": "[<box>|border|padding|content]#",
-        "-webkit-mask-position": "<position>#",
-        "-webkit-mask-position-x": "[<length-percentage>|left|center|right]#",
-        "-webkit-mask-position-y": "[<length-percentage>|top|center|bottom]#",
-        "-webkit-mask-repeat": "<repeat-style>#",
-        "-webkit-mask-repeat-x": "repeat|no-repeat|space|round",
-        "-webkit-mask-repeat-y": "repeat|no-repeat|space|round",
-        "-webkit-mask-size": "<bg-size>#",
-        "-webkit-overflow-scrolling": "auto|touch",
-        "-webkit-tap-highlight-color": "<color>",
-        "-webkit-text-fill-color": "<color>",
-        "-webkit-text-stroke": "<length>||<color>",
-        "-webkit-text-stroke-color": "<color>",
-        "-webkit-text-stroke-width": "<length>",
-        "-webkit-touch-callout": "default|none",
-        "-webkit-user-modify": "read-only|read-write|read-write-plaintext-only",
-        "accent-color": "auto|<color>",
-        "align-content": "normal|<baseline-position>|<content-distribution>|<overflow-position>? <content-position>",
-        "align-items": "normal|stretch|<baseline-position>|[<overflow-position>? <self-position>]",
-        "align-self": "auto|normal|stretch|<baseline-position>|<overflow-position>? <self-position>",
-        "align-tracks": "[normal|<baseline-position>|<content-distribution>|<overflow-position>? <content-position>]#",
-        "all": "initial|inherit|unset|revert|revert-layer",
-        "animation": "<single-animation>#",
-        "animation-composition": "<single-animation-composition>#",
-        "animation-delay": "<time>#",
-        "animation-direction": "<single-animation-direction>#",
-        "animation-duration": "<time>#",
-        "animation-fill-mode": "<single-animation-fill-mode>#",
-        "animation-iteration-count": "<single-animation-iteration-count>#",
-        "animation-name": "[none|<keyframes-name>]#",
-        "animation-play-state": "<single-animation-play-state>#",
-        "animation-timing-function": "<easing-function>#",
-        "animation-timeline": "<single-animation-timeline>#",
-        "appearance": "none|auto|textfield|menulist-button|<compat-auto>",
-        "aspect-ratio": "auto|<ratio>",
-        "azimuth": "<angle>|[[left-side|far-left|left|center-left|center|center-right|right|far-right|right-side]||behind]|leftwards|rightwards",
-        "backdrop-filter": "none|<filter-function-list>",
-        "backface-visibility": "visible|hidden",
-        "background": "[<bg-layer> ,]* <final-bg-layer>",
-        "background-attachment": "<attachment>#",
-        "background-blend-mode": "<blend-mode>#",
-        "background-clip": "<bg-clip>#",
-        "background-color": "<color>",
-        "background-image": "<bg-image>#",
-        "background-origin": "<box>#",
-        "background-position": "<bg-position>#",
-        "background-position-x": "[center|[[left|right|x-start|x-end]? <length-percentage>?]!]#",
-        "background-position-y": "[center|[[top|bottom|y-start|y-end]? <length-percentage>?]!]#",
-        "background-repeat": "<repeat-style>#",
-        "background-size": "<bg-size>#",
-        "block-overflow": "clip|ellipsis|<string>",
-        "block-size": "<'width'>",
-        "border": "<line-width>||<line-style>||<color>",
-        "border-block": "<'border-top-width'>||<'border-top-style'>||<color>",
-        "border-block-color": "<'border-top-color'>{1,2}",
-        "border-block-style": "<'border-top-style'>",
-        "border-block-width": "<'border-top-width'>",
-        "border-block-end": "<'border-top-width'>||<'border-top-style'>||<color>",
-        "border-block-end-color": "<'border-top-color'>",
-        "border-block-end-style": "<'border-top-style'>",
-        "border-block-end-width": "<'border-top-width'>",
-        "border-block-start": "<'border-top-width'>||<'border-top-style'>||<color>",
-        "border-block-start-color": "<'border-top-color'>",
-        "border-block-start-style": "<'border-top-style'>",
-        "border-block-start-width": "<'border-top-width'>",
-        "border-bottom": "<line-width>||<line-style>||<color>",
-        "border-bottom-color": "<'border-top-color'>",
-        "border-bottom-left-radius": "<length-percentage>{1,2}",
-        "border-bottom-right-radius": "<length-percentage>{1,2}",
-        "border-bottom-style": "<line-style>",
-        "border-bottom-width": "<line-width>",
-        "border-collapse": "collapse|separate",
-        "border-color": "<color>{1,4}",
-        "border-end-end-radius": "<length-percentage>{1,2}",
-        "border-end-start-radius": "<length-percentage>{1,2}",
-        "border-image": "<'border-image-source'>||<'border-image-slice'> [/ <'border-image-width'>|/ <'border-image-width'>? / <'border-image-outset'>]?||<'border-image-repeat'>",
-        "border-image-outset": "[<length>|<number>]{1,4}",
-        "border-image-repeat": "[stretch|repeat|round|space]{1,2}",
-        "border-image-slice": "<number-percentage>{1,4}&&fill?",
-        "border-image-source": "none|<image>",
-        "border-image-width": "[<length-percentage>|<number>|auto]{1,4}",
-        "border-inline": "<'border-top-width'>||<'border-top-style'>||<color>",
-        "border-inline-end": "<'border-top-width'>||<'border-top-style'>||<color>",
-        "border-inline-color": "<'border-top-color'>{1,2}",
-        "border-inline-style": "<'border-top-style'>",
-        "border-inline-width": "<'border-top-width'>",
-        "border-inline-end-color": "<'border-top-color'>",
-        "border-inline-end-style": "<'border-top-style'>",
-        "border-inline-end-width": "<'border-top-width'>",
-        "border-inline-start": "<'border-top-width'>||<'border-top-style'>||<color>",
-        "border-inline-start-color": "<'border-top-color'>",
-        "border-inline-start-style": "<'border-top-style'>",
-        "border-inline-start-width": "<'border-top-width'>",
-        "border-left": "<line-width>||<line-style>||<color>",
-        "border-left-color": "<color>",
-        "border-left-style": "<line-style>",
-        "border-left-width": "<line-width>",
-        "border-radius": "<length-percentage>{1,4} [/ <length-percentage>{1,4}]?",
-        "border-right": "<line-width>||<line-style>||<color>",
-        "border-right-color": "<color>",
-        "border-right-style": "<line-style>",
-        "border-right-width": "<line-width>",
-        "border-spacing": "<length> <length>?",
-        "border-start-end-radius": "<length-percentage>{1,2}",
-        "border-start-start-radius": "<length-percentage>{1,2}",
-        "border-style": "<line-style>{1,4}",
-        "border-top": "<line-width>||<line-style>||<color>",
-        "border-top-color": "<color>",
-        "border-top-left-radius": "<length-percentage>{1,2}",
-        "border-top-right-radius": "<length-percentage>{1,2}",
-        "border-top-style": "<line-style>",
-        "border-top-width": "<line-width>",
-        "border-width": "<line-width>{1,4}",
-        "bottom": "<length>|<percentage>|auto",
-        "box-align": "start|center|end|baseline|stretch",
-        "box-decoration-break": "slice|clone",
-        "box-direction": "normal|reverse|inherit",
-        "box-flex": "<number>",
-        "box-flex-group": "<integer>",
-        "box-lines": "single|multiple",
-        "box-ordinal-group": "<integer>",
-        "box-orient": "horizontal|vertical|inline-axis|block-axis|inherit",
-        "box-pack": "start|center|end|justify",
-        "box-shadow": "none|<shadow>#",
-        "box-sizing": "content-box|border-box",
-        "break-after": "auto|avoid|always|all|avoid-page|page|left|right|recto|verso|avoid-column|column|avoid-region|region",
-        "break-before": "auto|avoid|always|all|avoid-page|page|left|right|recto|verso|avoid-column|column|avoid-region|region",
-        "break-inside": "auto|avoid|avoid-page|avoid-column|avoid-region",
-        "caption-side": "top|bottom|block-start|block-end|inline-start|inline-end",
-        "caret": "<'caret-color'>||<'caret-shape'>",
-        "caret-color": "auto|<color>",
-        "caret-shape": "auto|bar|block|underscore",
-        "clear": "none|left|right|both|inline-start|inline-end",
-        "clip": "<shape>|auto",
-        "clip-path": "<clip-source>|[<basic-shape>||<geometry-box>]|none",
-        "color": "<color>",
-        "print-color-adjust": "economy|exact",
-        "color-scheme": "normal|[light|dark|<custom-ident>]+&&only?",
-        "column-count": "<integer>|auto",
-        "column-fill": "auto|balance|balance-all",
-        "column-gap": "normal|<length-percentage>",
-        "column-rule": "<'column-rule-width'>||<'column-rule-style'>||<'column-rule-color'>",
-        "column-rule-color": "<color>",
-        "column-rule-style": "<'border-style'>",
-        "column-rule-width": "<'border-width'>",
-        "column-span": "none|all",
-        "column-width": "<length>|auto",
-        "columns": "<'column-width'>||<'column-count'>",
-        "contain": "none|strict|content|[[size||inline-size]||layout||style||paint]",
-        "contain-intrinsic-size": "[none|<length>|auto <length>]{1,2}",
-        "contain-intrinsic-block-size": "none|<length>|auto <length>",
-        "contain-intrinsic-height": "none|<length>|auto <length>",
-        "contain-intrinsic-inline-size": "none|<length>|auto <length>",
-        "contain-intrinsic-width": "none|<length>|auto <length>",
-        "content": "normal|none|[<content-replacement>|<content-list>] [/ [<string>|<counter>]+]?",
-        "content-visibility": "visible|auto|hidden",
-        "counter-increment": "[<counter-name> <integer>?]+|none",
-        "counter-reset": "[<counter-name> <integer>?|<reversed-counter-name> <integer>?]+|none",
-        "counter-set": "[<counter-name> <integer>?]+|none",
-        "cursor": "[[<url> [<x> <y>]? ,]* [auto|default|none|context-menu|help|pointer|progress|wait|cell|crosshair|text|vertical-text|alias|copy|move|no-drop|not-allowed|e-resize|n-resize|ne-resize|nw-resize|s-resize|se-resize|sw-resize|w-resize|ew-resize|ns-resize|nesw-resize|nwse-resize|col-resize|row-resize|all-scroll|zoom-in|zoom-out|grab|grabbing|hand|-webkit-grab|-webkit-grabbing|-webkit-zoom-in|-webkit-zoom-out|-moz-grab|-moz-grabbing|-moz-zoom-in|-moz-zoom-out]]",
-        "direction": "ltr|rtl",
-        "display": "[<display-outside>||<display-inside>]|<display-listitem>|<display-internal>|<display-box>|<display-legacy>|<-non-standard-display>",
-        "empty-cells": "show|hide",
-        "filter": "none|<filter-function-list>|<-ms-filter-function-list>",
-        "flex": "none|[<'flex-grow'> <'flex-shrink'>?||<'flex-basis'>]",
-        "flex-basis": "content|<'width'>",
-        "flex-direction": "row|row-reverse|column|column-reverse",
-        "flex-flow": "<'flex-direction'>||<'flex-wrap'>",
-        "flex-grow": "<number>",
-        "flex-shrink": "<number>",
-        "flex-wrap": "nowrap|wrap|wrap-reverse",
-        "float": "left|right|none|inline-start|inline-end",
-        "font": "[[<'font-style'>||<font-variant-css21>||<'font-weight'>||<'font-stretch'>]? <'font-size'> [/ <'line-height'>]? <'font-family'>]|caption|icon|menu|message-box|small-caption|status-bar",
-        "font-family": "[<family-name>|<generic-family>]#",
-        "font-feature-settings": "normal|<feature-tag-value>#",
-        "font-kerning": "auto|normal|none",
-        "font-language-override": "normal|<string>",
-        "font-optical-sizing": "auto|none",
-        "font-variation-settings": "normal|[<string> <number>]#",
-        "font-size": "<absolute-size>|<relative-size>|<length-percentage>",
-        "font-size-adjust": "none|[ex-height|cap-height|ch-width|ic-width|ic-height]? [from-font|<number>]",
-        "font-smooth": "auto|never|always|<absolute-size>|<length>",
-        "font-stretch": "<font-stretch-absolute>",
-        "font-style": "normal|italic|oblique <angle>?",
-        "font-synthesis": "none|[weight||style||small-caps]",
-        "font-variant": "normal|none|[<common-lig-values>||<discretionary-lig-values>||<historical-lig-values>||<contextual-alt-values>||stylistic( <feature-value-name> )||historical-forms||styleset( <feature-value-name># )||character-variant( <feature-value-name># )||swash( <feature-value-name> )||ornaments( <feature-value-name> )||annotation( <feature-value-name> )||[small-caps|all-small-caps|petite-caps|all-petite-caps|unicase|titling-caps]||<numeric-figure-values>||<numeric-spacing-values>||<numeric-fraction-values>||ordinal||slashed-zero||<east-asian-variant-values>||<east-asian-width-values>||ruby]",
-        "font-variant-alternates": "normal|[stylistic( <feature-value-name> )||historical-forms||styleset( <feature-value-name># )||character-variant( <feature-value-name># )||swash( <feature-value-name> )||ornaments( <feature-value-name> )||annotation( <feature-value-name> )]",
-        "font-variant-caps": "normal|small-caps|all-small-caps|petite-caps|all-petite-caps|unicase|titling-caps",
-        "font-variant-east-asian": "normal|[<east-asian-variant-values>||<east-asian-width-values>||ruby]",
-        "font-variant-ligatures": "normal|none|[<common-lig-values>||<discretionary-lig-values>||<historical-lig-values>||<contextual-alt-values>]",
-        "font-variant-numeric": "normal|[<numeric-figure-values>||<numeric-spacing-values>||<numeric-fraction-values>||ordinal||slashed-zero]",
-        "font-variant-position": "normal|sub|super",
-        "font-weight": "<font-weight-absolute>|bolder|lighter",
-        "forced-color-adjust": "auto|none",
-        "gap": "<'row-gap'> <'column-gap'>?",
-        "grid": "<'grid-template'>|<'grid-template-rows'> / [auto-flow&&dense?] <'grid-auto-columns'>?|[auto-flow&&dense?] <'grid-auto-rows'>? / <'grid-template-columns'>",
-        "grid-area": "<grid-line> [/ <grid-line>]{0,3}",
-        "grid-auto-columns": "<track-size>+",
-        "grid-auto-flow": "[row|column]||dense",
-        "grid-auto-rows": "<track-size>+",
-        "grid-column": "<grid-line> [/ <grid-line>]?",
-        "grid-column-end": "<grid-line>",
-        "grid-column-gap": "<length-percentage>",
-        "grid-column-start": "<grid-line>",
-        "grid-gap": "<'grid-row-gap'> <'grid-column-gap'>?",
-        "grid-row": "<grid-line> [/ <grid-line>]?",
-        "grid-row-end": "<grid-line>",
-        "grid-row-gap": "<length-percentage>",
-        "grid-row-start": "<grid-line>",
-        "grid-template": "none|[<'grid-template-rows'> / <'grid-template-columns'>]|[<line-names>? <string> <track-size>? <line-names>?]+ [/ <explicit-track-list>]?",
-        "grid-template-areas": "none|<string>+",
-        "grid-template-columns": "none|<track-list>|<auto-track-list>|subgrid <line-name-list>?",
-        "grid-template-rows": "none|<track-list>|<auto-track-list>|subgrid <line-name-list>?",
-        "hanging-punctuation": "none|[first||[force-end|allow-end]||last]",
-        "height": "auto|<length>|<percentage>|min-content|max-content|fit-content|fit-content( <length-percentage> )",
-        "hyphenate-character": "auto|<string>",
-        "hyphens": "none|manual|auto",
-        "image-orientation": "from-image|<angle>|[<angle>? flip]",
-        "image-rendering": "auto|crisp-edges|pixelated|optimizeSpeed|optimizeQuality|<-non-standard-image-rendering>",
-        "image-resolution": "[from-image||<resolution>]&&snap?",
-        "ime-mode": "auto|normal|active|inactive|disabled",
-        "initial-letter": "normal|[<number> <integer>?]",
-        "initial-letter-align": "[auto|alphabetic|hanging|ideographic]",
-        "inline-size": "<'width'>",
-        "input-security": "auto|none",
-        "inset": "<'top'>{1,4}",
-        "inset-block": "<'top'>{1,2}",
-        "inset-block-end": "<'top'>",
-        "inset-block-start": "<'top'>",
-        "inset-inline": "<'top'>{1,2}",
-        "inset-inline-end": "<'top'>",
-        "inset-inline-start": "<'top'>",
-        "isolation": "auto|isolate",
-        "justify-content": "normal|<content-distribution>|<overflow-position>? [<content-position>|left|right]",
-        "justify-items": "normal|stretch|<baseline-position>|<overflow-position>? [<self-position>|left|right]|legacy|legacy&&[left|right|center]",
-        "justify-self": "auto|normal|stretch|<baseline-position>|<overflow-position>? [<self-position>|left|right]",
-        "justify-tracks": "[normal|<content-distribution>|<overflow-position>? [<content-position>|left|right]]#",
-        "left": "<length>|<percentage>|auto",
-        "letter-spacing": "normal|<length-percentage>",
-        "line-break": "auto|loose|normal|strict|anywhere",
-        "line-clamp": "none|<integer>",
-        "line-height": "normal|<number>|<length>|<percentage>",
-        "line-height-step": "<length>",
-        "list-style": "<'list-style-type'>||<'list-style-position'>||<'list-style-image'>",
-        "list-style-image": "<image>|none",
-        "list-style-position": "inside|outside",
-        "list-style-type": "<counter-style>|<string>|none",
-        "margin": "[<length>|<percentage>|auto]{1,4}",
-        "margin-block": "<'margin-left'>{1,2}",
-        "margin-block-end": "<'margin-left'>",
-        "margin-block-start": "<'margin-left'>",
-        "margin-bottom": "<length>|<percentage>|auto",
-        "margin-inline": "<'margin-left'>{1,2}",
-        "margin-inline-end": "<'margin-left'>",
-        "margin-inline-start": "<'margin-left'>",
-        "margin-left": "<length>|<percentage>|auto",
-        "margin-right": "<length>|<percentage>|auto",
-        "margin-top": "<length>|<percentage>|auto",
-        "margin-trim": "none|in-flow|all",
-        "mask": "<mask-layer>#",
-        "mask-border": "<'mask-border-source'>||<'mask-border-slice'> [/ <'mask-border-width'>? [/ <'mask-border-outset'>]?]?||<'mask-border-repeat'>||<'mask-border-mode'>",
-        "mask-border-mode": "luminance|alpha",
-        "mask-border-outset": "[<length>|<number>]{1,4}",
-        "mask-border-repeat": "[stretch|repeat|round|space]{1,2}",
-        "mask-border-slice": "<number-percentage>{1,4} fill?",
-        "mask-border-source": "none|<image>",
-        "mask-border-width": "[<length-percentage>|<number>|auto]{1,4}",
-        "mask-clip": "[<geometry-box>|no-clip]#",
-        "mask-composite": "<compositing-operator>#",
-        "mask-image": "<mask-reference>#",
-        "mask-mode": "<masking-mode>#",
-        "mask-origin": "<geometry-box>#",
-        "mask-position": "<position>#",
-        "mask-repeat": "<repeat-style>#",
-        "mask-size": "<bg-size>#",
-        "mask-type": "luminance|alpha",
-        "masonry-auto-flow": "[pack|next]||[definite-first|ordered]",
-        "math-depth": "auto-add|add( <integer> )|<integer>",
-        "math-shift": "normal|compact",
-        "math-style": "normal|compact",
-        "max-block-size": "<'max-width'>",
-        "max-height": "none|<length-percentage>|min-content|max-content|fit-content|fit-content( <length-percentage> )",
-        "max-inline-size": "<'max-width'>",
-        "max-lines": "none|<integer>",
-        "max-width": "none|<length-percentage>|min-content|max-content|fit-content|fit-content( <length-percentage> )|<-non-standard-width>",
-        "min-block-size": "<'min-width'>",
-        "min-height": "auto|<length>|<percentage>|min-content|max-content|fit-content|fit-content( <length-percentage> )",
-        "min-inline-size": "<'min-width'>",
-        "min-width": "auto|<length>|<percentage>|min-content|max-content|fit-content|fit-content( <length-percentage> )|<-non-standard-width>",
-        "mix-blend-mode": "<blend-mode>|plus-lighter",
-        "object-fit": "fill|contain|cover|none|scale-down",
-        "object-position": "<position>",
-        "offset": "[<'offset-position'>? [<'offset-path'> [<'offset-distance'>||<'offset-rotate'>]?]?]! [/ <'offset-anchor'>]?",
-        "offset-anchor": "auto|<position>",
-        "offset-distance": "<length-percentage>",
-        "offset-path": "none|ray( [<angle>&&<size>&&contain?] )|<path()>|<url>|[<basic-shape>||<geometry-box>]",
-        "offset-position": "auto|<position>",
-        "offset-rotate": "[auto|reverse]||<angle>",
-        "opacity": "<alpha-value>",
-        "order": "<integer>",
-        "orphans": "<integer>",
-        "outline": "[<'outline-color'>||<'outline-style'>||<'outline-width'>]",
-        "outline-color": "<color>|invert",
-        "outline-offset": "<length>",
-        "outline-style": "auto|<'border-style'>",
-        "outline-width": "<line-width>",
-        "overflow": "[visible|hidden|clip|scroll|auto]{1,2}|<-non-standard-overflow>",
-        "overflow-anchor": "auto|none",
-        "overflow-block": "visible|hidden|clip|scroll|auto",
-        "overflow-clip-box": "padding-box|content-box",
-        "overflow-clip-margin": "<visual-box>||<length [0,∞]>",
-        "overflow-inline": "visible|hidden|clip|scroll|auto",
-        "overflow-wrap": "normal|break-word|anywhere",
-        "overflow-x": "visible|hidden|clip|scroll|auto",
-        "overflow-y": "visible|hidden|clip|scroll|auto",
-        "overscroll-behavior": "[contain|none|auto]{1,2}",
-        "overscroll-behavior-block": "contain|none|auto",
-        "overscroll-behavior-inline": "contain|none|auto",
-        "overscroll-behavior-x": "contain|none|auto",
-        "overscroll-behavior-y": "contain|none|auto",
-        "padding": "[<length>|<percentage>]{1,4}",
-        "padding-block": "<'padding-left'>{1,2}",
-        "padding-block-end": "<'padding-left'>",
-        "padding-block-start": "<'padding-left'>",
-        "padding-bottom": "<length>|<percentage>",
-        "padding-inline": "<'padding-left'>{1,2}",
-        "padding-inline-end": "<'padding-left'>",
-        "padding-inline-start": "<'padding-left'>",
-        "padding-left": "<length>|<percentage>",
-        "padding-right": "<length>|<percentage>",
-        "padding-top": "<length>|<percentage>",
-        "page-break-after": "auto|always|avoid|left|right|recto|verso",
-        "page-break-before": "auto|always|avoid|left|right|recto|verso",
-        "page-break-inside": "auto|avoid",
-        "paint-order": "normal|[fill||stroke||markers]",
-        "perspective": "none|<length>",
-        "perspective-origin": "<position>",
-        "place-content": "<'align-content'> <'justify-content'>?",
-        "place-items": "<'align-items'> <'justify-items'>?",
-        "place-self": "<'align-self'> <'justify-self'>?",
-        "pointer-events": "auto|none|visiblePainted|visibleFill|visibleStroke|visible|painted|fill|stroke|all|inherit",
-        "position": "static|relative|absolute|sticky|fixed|-webkit-sticky",
-        "quotes": "none|auto|[<string> <string>]+",
-        "resize": "none|both|horizontal|vertical|block|inline",
-        "right": "<length>|<percentage>|auto",
-        "rotate": "none|<angle>|[x|y|z|<number>{3}]&&<angle>",
-        "row-gap": "normal|<length-percentage>",
-        "ruby-align": "start|center|space-between|space-around",
-        "ruby-merge": "separate|collapse|auto",
-        "ruby-position": "[alternate||[over|under]]|inter-character",
-        "scale": "none|<number>{1,3}",
-        "scrollbar-color": "auto|<color>{2}",
-        "scrollbar-gutter": "auto|stable&&both-edges?",
-        "scrollbar-width": "auto|thin|none",
-        "scroll-behavior": "auto|smooth",
-        "scroll-margin": "<length>{1,4}",
-        "scroll-margin-block": "<length>{1,2}",
-        "scroll-margin-block-start": "<length>",
-        "scroll-margin-block-end": "<length>",
-        "scroll-margin-bottom": "<length>",
-        "scroll-margin-inline": "<length>{1,2}",
-        "scroll-margin-inline-start": "<length>",
-        "scroll-margin-inline-end": "<length>",
-        "scroll-margin-left": "<length>",
-        "scroll-margin-right": "<length>",
-        "scroll-margin-top": "<length>",
-        "scroll-padding": "[auto|<length-percentage>]{1,4}",
-        "scroll-padding-block": "[auto|<length-percentage>]{1,2}",
-        "scroll-padding-block-start": "auto|<length-percentage>",
-        "scroll-padding-block-end": "auto|<length-percentage>",
-        "scroll-padding-bottom": "auto|<length-percentage>",
-        "scroll-padding-inline": "[auto|<length-percentage>]{1,2}",
-        "scroll-padding-inline-start": "auto|<length-percentage>",
-        "scroll-padding-inline-end": "auto|<length-percentage>",
-        "scroll-padding-left": "auto|<length-percentage>",
-        "scroll-padding-right": "auto|<length-percentage>",
-        "scroll-padding-top": "auto|<length-percentage>",
-        "scroll-snap-align": "[none|start|end|center]{1,2}",
-        "scroll-snap-coordinate": "none|<position>#",
-        "scroll-snap-destination": "<position>",
-        "scroll-snap-points-x": "none|repeat( <length-percentage> )",
-        "scroll-snap-points-y": "none|repeat( <length-percentage> )",
-        "scroll-snap-stop": "normal|always",
-        "scroll-snap-type": "none|[x|y|block|inline|both] [mandatory|proximity]?",
-        "scroll-snap-type-x": "none|mandatory|proximity",
-        "scroll-snap-type-y": "none|mandatory|proximity",
-        "scroll-timeline": "<scroll-timeline-name>||<scroll-timeline-axis>",
-        "scroll-timeline-axis": "block|inline|vertical|horizontal",
-        "scroll-timeline-name": "none|<custom-ident>",
-        "shape-image-threshold": "<alpha-value>",
-        "shape-margin": "<length-percentage>",
-        "shape-outside": "none|[<shape-box>||<basic-shape>]|<image>",
-        "tab-size": "<integer>|<length>",
-        "table-layout": "auto|fixed",
-        "text-align": "start|end|left|right|center|justify|match-parent",
-        "text-align-last": "auto|start|end|left|right|center|justify",
-        "text-combine-upright": "none|all|[digits <integer>?]",
-        "text-decoration": "<'text-decoration-line'>||<'text-decoration-style'>||<'text-decoration-color'>||<'text-decoration-thickness'>",
-        "text-decoration-color": "<color>",
-        "text-decoration-line": "none|[underline||overline||line-through||blink]|spelling-error|grammar-error",
-        "text-decoration-skip": "none|[objects||[spaces|[leading-spaces||trailing-spaces]]||edges||box-decoration]",
-        "text-decoration-skip-ink": "auto|all|none",
-        "text-decoration-style": "solid|double|dotted|dashed|wavy",
-        "text-decoration-thickness": "auto|from-font|<length>|<percentage>",
-        "text-emphasis": "<'text-emphasis-style'>||<'text-emphasis-color'>",
-        "text-emphasis-color": "<color>",
-        "text-emphasis-position": "[over|under]&&[right|left]",
-        "text-emphasis-style": "none|[[filled|open]||[dot|circle|double-circle|triangle|sesame]]|<string>",
-        "text-indent": "<length-percentage>&&hanging?&&each-line?",
-        "text-justify": "auto|inter-character|inter-word|none",
-        "text-orientation": "mixed|upright|sideways",
-        "text-overflow": "[clip|ellipsis|<string>]{1,2}",
-        "text-rendering": "auto|optimizeSpeed|optimizeLegibility|geometricPrecision",
-        "text-shadow": "none|<shadow-t>#",
-        "text-size-adjust": "none|auto|<percentage>",
-        "text-transform": "none|capitalize|uppercase|lowercase|full-width|full-size-kana",
-        "text-underline-offset": "auto|<length>|<percentage>",
-        "text-underline-position": "auto|from-font|[under||[left|right]]",
-        "top": "<length>|<percentage>|auto",
-        "touch-action": "auto|none|[[pan-x|pan-left|pan-right]||[pan-y|pan-up|pan-down]||pinch-zoom]|manipulation",
-        "transform": "none|<transform-list>",
-        "transform-box": "content-box|border-box|fill-box|stroke-box|view-box",
-        "transform-origin": "[<length-percentage>|left|center|right|top|bottom]|[[<length-percentage>|left|center|right]&&[<length-percentage>|top|center|bottom]] <length>?",
-        "transform-style": "flat|preserve-3d",
-        "transition": "<single-transition>#",
-        "transition-delay": "<time>#",
-        "transition-duration": "<time>#",
-        "transition-property": "none|<single-transition-property>#",
-        "transition-timing-function": "<easing-function>#",
-        "translate": "none|<length-percentage> [<length-percentage> <length>?]?",
-        "unicode-bidi": "normal|embed|isolate|bidi-override|isolate-override|plaintext|-moz-isolate|-moz-isolate-override|-moz-plaintext|-webkit-isolate|-webkit-isolate-override|-webkit-plaintext",
-        "user-select": "auto|text|none|contain|all",
-        "vertical-align": "baseline|sub|super|text-top|text-bottom|middle|top|bottom|<percentage>|<length>",
-        "visibility": "visible|hidden|collapse",
-        "white-space": "normal|pre|nowrap|pre-wrap|pre-line|break-spaces",
-        "widows": "<integer>",
-        "width": "auto|<length>|<percentage>|min-content|max-content|fit-content|fit-content( <length-percentage> )|fill|stretch|intrinsic|-moz-max-content|-webkit-max-content|-moz-fit-content|-webkit-fit-content",
-        "will-change": "auto|<animateable-feature>#",
-        "word-break": "normal|break-all|keep-all|break-word",
-        "word-spacing": "normal|<length>",
-        "word-wrap": "normal|break-word",
-        "writing-mode": "horizontal-tb|vertical-rl|vertical-lr|sideways-rl|sideways-lr|<svg-writing-mode>",
-        "z-index": "auto|<integer>",
-        "zoom": "normal|reset|<number>|<percentage>",
-        "-moz-background-clip": "padding|border",
-        "-moz-border-radius-bottomleft": "<'border-bottom-left-radius'>",
-        "-moz-border-radius-bottomright": "<'border-bottom-right-radius'>",
-        "-moz-border-radius-topleft": "<'border-top-left-radius'>",
-        "-moz-border-radius-topright": "<'border-bottom-right-radius'>",
-        "-moz-control-character-visibility": "visible|hidden",
-        "-moz-osx-font-smoothing": "auto|grayscale",
-        "-moz-user-select": "none|text|all|-moz-none",
-        "-ms-flex-align": "start|end|center|baseline|stretch",
-        "-ms-flex-item-align": "auto|start|end|center|baseline|stretch",
-        "-ms-flex-line-pack": "start|end|center|justify|distribute|stretch",
-        "-ms-flex-negative": "<'flex-shrink'>",
-        "-ms-flex-pack": "start|end|center|justify|distribute",
-        "-ms-flex-order": "<integer>",
-        "-ms-flex-positive": "<'flex-grow'>",
-        "-ms-flex-preferred-size": "<'flex-basis'>",
-        "-ms-interpolation-mode": "nearest-neighbor|bicubic",
-        "-ms-grid-column-align": "start|end|center|stretch",
-        "-ms-grid-row-align": "start|end|center|stretch",
-        "-ms-hyphenate-limit-last": "none|always|column|page|spread",
-        "-webkit-background-clip": "[<box>|border|padding|content|text]#",
-        "-webkit-column-break-after": "always|auto|avoid",
-        "-webkit-column-break-before": "always|auto|avoid",
-        "-webkit-column-break-inside": "always|auto|avoid",
-        "-webkit-font-smoothing": "auto|none|antialiased|subpixel-antialiased",
-        "-webkit-mask-box-image": "[<url>|<gradient>|none] [<length-percentage>{4} <-webkit-mask-box-repeat>{2}]?",
-        "-webkit-print-color-adjust": "economy|exact",
-        "-webkit-text-security": "none|circle|disc|square",
-        "-webkit-user-drag": "none|element|auto",
-        "-webkit-user-select": "auto|none|text|all",
-        "alignment-baseline": "auto|baseline|before-edge|text-before-edge|middle|central|after-edge|text-after-edge|ideographic|alphabetic|hanging|mathematical",
-        "baseline-shift": "baseline|sub|super|<svg-length>",
-        "behavior": "<url>+",
-        "clip-rule": "nonzero|evenodd",
-        "cue": "<'cue-before'> <'cue-after'>?",
-        "cue-after": "<url> <decibel>?|none",
-        "cue-before": "<url> <decibel>?|none",
-        "dominant-baseline": "auto|use-script|no-change|reset-size|ideographic|alphabetic|hanging|mathematical|central|middle|text-after-edge|text-before-edge",
-        "fill": "<paint>",
-        "fill-opacity": "<number-zero-one>",
-        "fill-rule": "nonzero|evenodd",
-        "glyph-orientation-horizontal": "<angle>",
-        "glyph-orientation-vertical": "<angle>",
-        "kerning": "auto|<svg-length>",
-        "marker": "none|<url>",
-        "marker-end": "none|<url>",
-        "marker-mid": "none|<url>",
-        "marker-start": "none|<url>",
-        "pause": "<'pause-before'> <'pause-after'>?",
-        "pause-after": "<time>|none|x-weak|weak|medium|strong|x-strong",
-        "pause-before": "<time>|none|x-weak|weak|medium|strong|x-strong",
-        "rest": "<'rest-before'> <'rest-after'>?",
-        "rest-after": "<time>|none|x-weak|weak|medium|strong|x-strong",
-        "rest-before": "<time>|none|x-weak|weak|medium|strong|x-strong",
-        "shape-rendering": "auto|optimizeSpeed|crispEdges|geometricPrecision",
-        "src": "[<url> [format( <string># )]?|local( <family-name> )]#",
-        "speak": "auto|none|normal",
-        "speak-as": "normal|spell-out||digits||[literal-punctuation|no-punctuation]",
-        "stroke": "<paint>",
-        "stroke-dasharray": "none|[<svg-length>+]#",
-        "stroke-dashoffset": "<svg-length>",
-        "stroke-linecap": "butt|round|square",
-        "stroke-linejoin": "miter|round|bevel",
-        "stroke-miterlimit": "<number-one-or-greater>",
-        "stroke-opacity": "<number-zero-one>",
-        "stroke-width": "<svg-length>",
-        "text-anchor": "start|middle|end",
-        "unicode-range": "<urange>#",
-        "voice-balance": "<number>|left|center|right|leftwards|rightwards",
-        "voice-duration": "auto|<time>",
-        "voice-family": "[[<family-name>|<generic-voice>] ,]* [<family-name>|<generic-voice>]|preserve",
-        "voice-pitch": "<frequency>&&absolute|[[x-low|low|medium|high|x-high]||[<frequency>|<semitones>|<percentage>]]",
-        "voice-range": "<frequency>&&absolute|[[x-low|low|medium|high|x-high]||[<frequency>|<semitones>|<percentage>]]",
-        "voice-rate": "[normal|x-slow|slow|medium|fast|x-fast]||<percentage>",
-        "voice-stress": "normal|strong|moderate|none|reduced",
-        "voice-volume": "silent|[[x-soft|soft|medium|loud|x-loud]||<decibel>]"
-    },
-    "atrules": {
-        "charset": {
-            "prelude": "<string>",
-            "descriptors": null
-        },
-        "counter-style": {
-            "prelude": "<counter-style-name>",
-            "descriptors": {
-                "additive-symbols": "[<integer>&&<symbol>]#",
-                "fallback": "<counter-style-name>",
-                "negative": "<symbol> <symbol>?",
-                "pad": "<integer>&&<symbol>",
-                "prefix": "<symbol>",
-                "range": "[[<integer>|infinite]{2}]#|auto",
-                "speak-as": "auto|bullets|numbers|words|spell-out|<counter-style-name>",
-                "suffix": "<symbol>",
-                "symbols": "<symbol>+",
-                "system": "cyclic|numeric|alphabetic|symbolic|additive|[fixed <integer>?]|[extends <counter-style-name>]"
-            }
-        },
-        "document": {
-            "prelude": "[<url>|url-prefix( <string> )|domain( <string> )|media-document( <string> )|regexp( <string> )]#",
-            "descriptors": null
-        },
-        "font-face": {
-            "prelude": null,
-            "descriptors": {
-                "ascent-override": "normal|<percentage>",
-                "descent-override": "normal|<percentage>",
-                "font-display": "[auto|block|swap|fallback|optional]",
-                "font-family": "<family-name>",
-                "font-feature-settings": "normal|<feature-tag-value>#",
-                "font-variation-settings": "normal|[<string> <number>]#",
-                "font-stretch": "<font-stretch-absolute>{1,2}",
-                "font-style": "normal|italic|oblique <angle>{0,2}",
-                "font-weight": "<font-weight-absolute>{1,2}",
-                "font-variant": "normal|none|[<common-lig-values>||<discretionary-lig-values>||<historical-lig-values>||<contextual-alt-values>||stylistic( <feature-value-name> )||historical-forms||styleset( <feature-value-name># )||character-variant( <feature-value-name># )||swash( <feature-value-name> )||ornaments( <feature-value-name> )||annotation( <feature-value-name> )||[small-caps|all-small-caps|petite-caps|all-petite-caps|unicase|titling-caps]||<numeric-figure-values>||<numeric-spacing-values>||<numeric-fraction-values>||ordinal||slashed-zero||<east-asian-variant-values>||<east-asian-width-values>||ruby]",
-                "line-gap-override": "normal|<percentage>",
-                "size-adjust": "<percentage>",
-                "src": "[<url> [format( <string># )]?|local( <family-name> )]#",
-                "unicode-range": "<urange>#"
-            }
-        },
-        "font-feature-values": {
-            "prelude": "<family-name>#",
-            "descriptors": null
-        },
-        "import": {
-            "prelude": "[<string>|<url>] [layer|layer( <layer-name> )]? [supports( [<supports-condition>|<declaration>] )]? <media-query-list>?",
-            "descriptors": null
-        },
-        "keyframes": {
-            "prelude": "<keyframes-name>",
-            "descriptors": null
-        },
-        "layer": {
-            "prelude": "[<layer-name>#|<layer-name>?]",
-            "descriptors": null
-        },
-        "media": {
-            "prelude": "<media-query-list>",
-            "descriptors": null
-        },
-        "namespace": {
-            "prelude": "<namespace-prefix>? [<string>|<url>]",
-            "descriptors": null
-        },
-        "page": {
-            "prelude": "<page-selector-list>",
-            "descriptors": {
-                "bleed": "auto|<length>",
-                "marks": "none|[crop||cross]",
-                "size": "<length>{1,2}|auto|[<page-size>||[portrait|landscape]]"
-            }
-        },
-        "property": {
-            "prelude": "<custom-property-name>",
-            "descriptors": {
-                "syntax": "<string>",
-                "inherits": "true|false",
-                "initial-value": "<string>"
-            }
-        },
-        "scroll-timeline": {
-            "prelude": "<timeline-name>",
-            "descriptors": null
-        },
-        "supports": {
-            "prelude": "<supports-condition>",
-            "descriptors": null
-        },
-        "viewport": {
-            "prelude": null,
-            "descriptors": {
-                "height": "<viewport-length>{1,2}",
-                "max-height": "<viewport-length>",
-                "max-width": "<viewport-length>",
-                "max-zoom": "auto|<number>|<percentage>",
-                "min-height": "<viewport-length>",
-                "min-width": "<viewport-length>",
-                "min-zoom": "auto|<number>|<percentage>",
-                "orientation": "auto|portrait|landscape",
-                "user-zoom": "zoom|fixed",
-                "viewport-fit": "auto|contain|cover",
-                "width": "<viewport-length>{1,2}",
-                "zoom": "auto|<number>|<percentage>"
-            }
-        },
-        "nest": {
-            "prelude": "<complex-selector-list>",
-            "descriptors": null
-        }
-    }
-});
-;// ./node_modules/css-tree/lib/syntax/node/AnPlusB.js
-
-
-const AnPlusB_PLUSSIGN = 0x002B;    // U+002B PLUS SIGN (+)
-const AnPlusB_HYPHENMINUS = 0x002D; // U+002D HYPHEN-MINUS (-)
-const AnPlusB_N = 0x006E;           // U+006E LATIN SMALL LETTER N (n)
-const AnPlusB_DISALLOW_SIGN = true;
-const AnPlusB_ALLOW_SIGN = false;
-
-function AnPlusB_checkInteger(offset, disallowSign) {
-    let pos = this.tokenStart + offset;
-    const code = this.charCodeAt(pos);
-
-    if (code === AnPlusB_PLUSSIGN || code === AnPlusB_HYPHENMINUS) {
-        if (disallowSign) {
-            this.error('Number sign is not allowed');
-        }
-        pos++;
-    }
-
-    for (; pos < this.tokenEnd; pos++) {
-        if (!isDigit(this.charCodeAt(pos))) {
-            this.error('Integer is expected', pos);
-        }
-    }
-}
-
-function checkTokenIsInteger(disallowSign) {
-    return AnPlusB_checkInteger.call(this, 0, disallowSign);
-}
-
-function expectCharCode(offset, code) {
-    if (!this.cmpChar(this.tokenStart + offset, code)) {
-        let msg = '';
-
-        switch (code) {
-            case AnPlusB_N:
-                msg = 'N is expected';
-                break;
-            case AnPlusB_HYPHENMINUS:
-                msg = 'HyphenMinus is expected';
-                break;
-        }
-
-        this.error(msg, this.tokenStart + offset);
-    }
-}
-
-// ... <signed-integer>
-// ... ['+' | '-'] <signless-integer>
-function AnPlusB_consumeB() {
-    let offset = 0;
-    let sign = 0;
-    let type = this.tokenType;
-
-    while (type === WhiteSpace || type === Comment) {
-        type = this.lookupType(++offset);
-    }
-
-    if (type !== types_Number) {
-        if (this.isDelim(AnPlusB_PLUSSIGN, offset) ||
-            this.isDelim(AnPlusB_HYPHENMINUS, offset)) {
-            sign = this.isDelim(AnPlusB_PLUSSIGN, offset) ? AnPlusB_PLUSSIGN : AnPlusB_HYPHENMINUS;
-
-            do {
-                type = this.lookupType(++offset);
-            } while (type === WhiteSpace || type === Comment);
-
-            if (type !== types_Number) {
-                this.skip(offset);
-                checkTokenIsInteger.call(this, AnPlusB_DISALLOW_SIGN);
-            }
-        } else {
-            return null;
-        }
-    }
-
-    if (offset > 0) {
-        this.skip(offset);
-    }
-
-    if (sign === 0) {
-        type = this.charCodeAt(this.tokenStart);
-        if (type !== AnPlusB_PLUSSIGN && type !== AnPlusB_HYPHENMINUS) {
-            this.error('Number sign is expected');
-        }
-    }
-
-    checkTokenIsInteger.call(this, sign !== 0);
-    return sign === AnPlusB_HYPHENMINUS ? '-' + this.consume(types_Number) : this.consume(types_Number);
-}
-
-// An+B microsyntax https://www.w3.org/TR/css-syntax-3/#anb
-const AnPlusB_name = 'AnPlusB';
-const structure = {
-    a: [String, null],
-    b: [String, null]
-};
-
-function AnPlusB_parse() {
-    /* eslint-disable brace-style*/
-    const start = this.tokenStart;
-    let a = null;
-    let b = null;
-
-    // <integer>
-    if (this.tokenType === types_Number) {
-        checkTokenIsInteger.call(this, AnPlusB_ALLOW_SIGN);
-        b = this.consume(types_Number);
-    }
-
-    // -n
-    // -n <signed-integer>
-    // -n ['+' | '-'] <signless-integer>
-    // -n- <signless-integer>
-    // <dashndashdigit-ident>
-    else if (this.tokenType === Ident && this.cmpChar(this.tokenStart, AnPlusB_HYPHENMINUS)) {
-        a = '-1';
-
-        expectCharCode.call(this, 1, AnPlusB_N);
-
-        switch (this.tokenEnd - this.tokenStart) {
-            // -n
-            // -n <signed-integer>
-            // -n ['+' | '-'] <signless-integer>
-            case 2:
-                this.next();
-                b = AnPlusB_consumeB.call(this);
-                break;
-
-            // -n- <signless-integer>
-            case 3:
-                expectCharCode.call(this, 2, AnPlusB_HYPHENMINUS);
-
-                this.next();
-                this.skipSC();
-
-                checkTokenIsInteger.call(this, AnPlusB_DISALLOW_SIGN);
-
-                b = '-' + this.consume(types_Number);
-                break;
-
-            // <dashndashdigit-ident>
-            default:
-                expectCharCode.call(this, 2, AnPlusB_HYPHENMINUS);
-                AnPlusB_checkInteger.call(this, 3, AnPlusB_DISALLOW_SIGN);
-                this.next();
-
-                b = this.substrToCursor(start + 2);
-        }
-    }
-
-    // '+'? n
-    // '+'? n <signed-integer>
-    // '+'? n ['+' | '-'] <signless-integer>
-    // '+'? n- <signless-integer>
-    // '+'? <ndashdigit-ident>
-    else if (this.tokenType === Ident || (this.isDelim(AnPlusB_PLUSSIGN) && this.lookupType(1) === Ident)) {
-        let sign = 0;
-        a = '1';
-
-        // just ignore a plus
-        if (this.isDelim(AnPlusB_PLUSSIGN)) {
-            sign = 1;
-            this.next();
-        }
-
-        expectCharCode.call(this, 0, AnPlusB_N);
-
-        switch (this.tokenEnd - this.tokenStart) {
-            // '+'? n
-            // '+'? n <signed-integer>
-            // '+'? n ['+' | '-'] <signless-integer>
-            case 1:
-                this.next();
-                b = AnPlusB_consumeB.call(this);
-                break;
-
-            // '+'? n- <signless-integer>
-            case 2:
-                expectCharCode.call(this, 1, AnPlusB_HYPHENMINUS);
-
-                this.next();
-                this.skipSC();
-
-                checkTokenIsInteger.call(this, AnPlusB_DISALLOW_SIGN);
-
-                b = '-' + this.consume(types_Number);
-                break;
-
-            // '+'? <ndashdigit-ident>
-            default:
-                expectCharCode.call(this, 1, AnPlusB_HYPHENMINUS);
-                AnPlusB_checkInteger.call(this, 2, AnPlusB_DISALLOW_SIGN);
-                this.next();
-
-                b = this.substrToCursor(start + sign + 1);
-        }
-    }
-
-    // <ndashdigit-dimension>
-    // <ndash-dimension> <signless-integer>
-    // <n-dimension>
-    // <n-dimension> <signed-integer>
-    // <n-dimension> ['+' | '-'] <signless-integer>
-    else if (this.tokenType === Dimension) {
-        const code = this.charCodeAt(this.tokenStart);
-        const sign = code === AnPlusB_PLUSSIGN || code === AnPlusB_HYPHENMINUS;
-        let i = this.tokenStart + sign;
-
-        for (; i < this.tokenEnd; i++) {
-            if (!isDigit(this.charCodeAt(i))) {
-                break;
-            }
-        }
-
-        if (i === this.tokenStart + sign) {
-            this.error('Integer is expected', this.tokenStart + sign);
-        }
-
-        expectCharCode.call(this, i - this.tokenStart, AnPlusB_N);
-        a = this.substring(start, i);
-
-        // <n-dimension>
-        // <n-dimension> <signed-integer>
-        // <n-dimension> ['+' | '-'] <signless-integer>
-        if (i + 1 === this.tokenEnd) {
-            this.next();
-            b = AnPlusB_consumeB.call(this);
-        } else {
-            expectCharCode.call(this, i - this.tokenStart + 1, AnPlusB_HYPHENMINUS);
-
-            // <ndash-dimension> <signless-integer>
-            if (i + 2 === this.tokenEnd) {
-                this.next();
-                this.skipSC();
-                checkTokenIsInteger.call(this, AnPlusB_DISALLOW_SIGN);
-                b = '-' + this.consume(types_Number);
-            }
-            // <ndashdigit-dimension>
-            else {
-                AnPlusB_checkInteger.call(this, i - this.tokenStart + 2, AnPlusB_DISALLOW_SIGN);
-                this.next();
-                b = this.substrToCursor(i + 1);
-            }
-        }
-    } else {
-        this.error();
-    }
-
-    if (a !== null && a.charCodeAt(0) === AnPlusB_PLUSSIGN) {
-        a = a.substr(1);
-    }
-
-    if (b !== null && b.charCodeAt(0) === AnPlusB_PLUSSIGN) {
-        b = b.substr(1);
-    }
-
-    return {
-        type: 'AnPlusB',
-        loc: this.getLocation(start, this.tokenStart),
-        a,
-        b
-    };
-}
-
-function AnPlusB_generate(node) {
-    if (node.a) {
-        const a =
-            node.a === '+1' && 'n' ||
-            node.a ===  '1' && 'n' ||
-            node.a === '-1' && '-n' ||
-            node.a + 'n';
-
-        if (node.b) {
-            const b = node.b[0] === '-' || node.b[0] === '+'
-                ? node.b
-                : '+' + node.b;
-            this.tokenize(a + b);
-        } else {
-            this.tokenize(a);
-        }
-    } else {
-        this.tokenize(node.b);
-    }
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/Atrule.js
-
-
-function consumeRaw(startToken) {
-    return this.Raw(startToken, this.consumeUntilLeftCurlyBracketOrSemicolon, true);
-}
-
-function isDeclarationBlockAtrule() {
-    for (let offset = 1, type; type = this.lookupType(offset); offset++) {
-        if (type === RightCurlyBracket) {
-            return true;
-        }
-
-        if (type === LeftCurlyBracket ||
-            type === AtKeyword) {
-            return false;
-        }
-    }
-
-    return false;
-}
-
-
-const Atrule_name = 'Atrule';
-const walkContext = 'atrule';
-const Atrule_structure = {
-    name: String,
-    prelude: ['AtrulePrelude', 'Raw', null],
-    block: ['Block', null]
-};
-
-function Atrule_parse(isDeclaration = false) {
-    const start = this.tokenStart;
-    let name;
-    let nameLowerCase;
-    let prelude = null;
-    let block = null;
-
-    this.eat(AtKeyword);
-
-    name = this.substrToCursor(start + 1);
-    nameLowerCase = name.toLowerCase();
-    this.skipSC();
-
-    // parse prelude
-    if (this.eof === false &&
-        this.tokenType !== LeftCurlyBracket &&
-        this.tokenType !== Semicolon) {
-        if (this.parseAtrulePrelude) {
-            prelude = this.parseWithFallback(this.AtrulePrelude.bind(this, name, isDeclaration), consumeRaw);
-        } else {
-            prelude = consumeRaw.call(this, this.tokenIndex);
-        }
-
-        this.skipSC();
-    }
-
-    switch (this.tokenType) {
-        case Semicolon:
-            this.next();
-            break;
-
-        case LeftCurlyBracket:
-            if (hasOwnProperty.call(this.atrule, nameLowerCase) &&
-                typeof this.atrule[nameLowerCase].block === 'function') {
-                block = this.atrule[nameLowerCase].block.call(this, isDeclaration);
-            } else {
-                // TODO: should consume block content as Raw?
-                block = this.Block(isDeclarationBlockAtrule.call(this));
-            }
-
-            break;
-    }
-
-    return {
-        type: 'Atrule',
-        loc: this.getLocation(start, this.tokenStart),
-        name,
-        prelude,
-        block
-    };
-}
-
-function Atrule_generate(node) {
-    this.token(AtKeyword, '@' + node.name);
-
-    if (node.prelude !== null) {
-        this.node(node.prelude);
-    }
-
-    if (node.block) {
-        this.node(node.block);
-    } else {
-        this.token(Semicolon, ';');
-    }
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/AtrulePrelude.js
-
-
-const AtrulePrelude_name = 'AtrulePrelude';
-const AtrulePrelude_walkContext = 'atrulePrelude';
-const AtrulePrelude_structure = {
-    children: [[]]
-};
-
-function AtrulePrelude_parse(name) {
-    let children = null;
-
-    if (name !== null) {
-        name = name.toLowerCase();
-    }
-
-    this.skipSC();
-
-    if (hasOwnProperty.call(this.atrule, name) &&
-        typeof this.atrule[name].prelude === 'function') {
-        // custom consumer
-        children = this.atrule[name].prelude.call(this);
-    } else {
-        // default consumer
-        children = this.readSequence(this.scope.AtrulePrelude);
-    }
-
-    this.skipSC();
-
-    if (this.eof !== true &&
-        this.tokenType !== LeftCurlyBracket &&
-        this.tokenType !== Semicolon) {
-        this.error('Semicolon or block is expected');
-    }
-
-    return {
-        type: 'AtrulePrelude',
-        loc: this.getLocationFromList(children),
-        children
-    };
-}
-
-function AtrulePrelude_generate(node) {
-    this.children(node);
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/AttributeSelector.js
-
-
-const DOLLARSIGN = 0x0024;       // U+0024 DOLLAR SIGN ($)
-const AttributeSelector_ASTERISK = 0x002A;         // U+002A ASTERISK (*)
-const EQUALSSIGN = 0x003D;       // U+003D EQUALS SIGN (=)
-const CIRCUMFLEXACCENT = 0x005E; // U+005E (^)
-const AttributeSelector_VERTICALLINE = 0x007C;     // U+007C VERTICAL LINE (|)
-const TILDE = 0x007E;            // U+007E TILDE (~)
-
-function getAttributeName() {
-    if (this.eof) {
-        this.error('Unexpected end of input');
-    }
-
-    const start = this.tokenStart;
-    let expectIdent = false;
-
-    if (this.isDelim(AttributeSelector_ASTERISK)) {
-        expectIdent = true;
-        this.next();
-    } else if (!this.isDelim(AttributeSelector_VERTICALLINE)) {
-        this.eat(Ident);
-    }
-
-    if (this.isDelim(AttributeSelector_VERTICALLINE)) {
-        if (this.charCodeAt(this.tokenStart + 1) !== EQUALSSIGN) {
-            this.next();
-            this.eat(Ident);
-        } else if (expectIdent) {
-            this.error('Identifier is expected', this.tokenEnd);
-        }
-    } else if (expectIdent) {
-        this.error('Vertical line is expected');
-    }
-
-    return {
-        type: 'Identifier',
-        loc: this.getLocation(start, this.tokenStart),
-        name: this.substrToCursor(start)
-    };
-}
-
-function getOperator() {
-    const start = this.tokenStart;
-    const code = this.charCodeAt(start);
-
-    if (code !== EQUALSSIGN &&        // =
-        code !== TILDE &&             // ~=
-        code !== CIRCUMFLEXACCENT &&  // ^=
-        code !== DOLLARSIGN &&        // $=
-        code !== AttributeSelector_ASTERISK &&          // *=
-        code !== AttributeSelector_VERTICALLINE         // |=
-    ) {
-        this.error('Attribute selector (=, ~=, ^=, $=, *=, |=) is expected');
-    }
-
-    this.next();
-
-    if (code !== EQUALSSIGN) {
-        if (!this.isDelim(EQUALSSIGN)) {
-            this.error('Equal sign is expected');
-        }
-
-        this.next();
-    }
-
-    return this.substrToCursor(start);
-}
-
-// '[' <wq-name> ']'
-// '[' <wq-name> <attr-matcher> [ <string-token> | <ident-token> ] <attr-modifier>? ']'
-const AttributeSelector_name = 'AttributeSelector';
-const AttributeSelector_structure = {
-    name: 'Identifier',
-    matcher: [String, null],
-    value: ['String', 'Identifier', null],
-    flags: [String, null]
-};
-
-function AttributeSelector_parse() {
-    const start = this.tokenStart;
-    let name;
-    let matcher = null;
-    let value = null;
-    let flags = null;
-
-    this.eat(LeftSquareBracket);
-    this.skipSC();
-
-    name = getAttributeName.call(this);
-    this.skipSC();
-
-    if (this.tokenType !== RightSquareBracket) {
-        // avoid case `[name i]`
-        if (this.tokenType !== Ident) {
-            matcher = getOperator.call(this);
-
-            this.skipSC();
-
-            value = this.tokenType === types_String
-                ? this.String()
-                : this.Identifier();
-
-            this.skipSC();
-        }
-
-        // attribute flags
-        if (this.tokenType === Ident) {
-            flags = this.consume(Ident);
-
-            this.skipSC();
-        }
-    }
-
-    this.eat(RightSquareBracket);
-
-    return {
-        type: 'AttributeSelector',
-        loc: this.getLocation(start, this.tokenStart),
-        name,
-        matcher,
-        value,
-        flags
-    };
-}
-
-function AttributeSelector_generate(node) {
-    this.token(Delim, '[');
-    this.node(node.name);
-
-    if (node.matcher !== null) {
-        this.tokenize(node.matcher);
-        this.node(node.value);
-    }
-
-    if (node.flags !== null) {
-        this.token(Ident, node.flags);
-    }
-
-    this.token(Delim, ']');
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/Block.js
-
-
-const Block_AMPERSAND = 0x0026;       // U+0026 AMPERSAND (&)
-
-function Block_consumeRaw(startToken) {
-    return this.Raw(startToken, null, true);
-}
-function consumeRule() {
-    return this.parseWithFallback(this.Rule, Block_consumeRaw);
-}
-function consumeRawDeclaration(startToken) {
-    return this.Raw(startToken, this.consumeUntilSemicolonIncluded, true);
-}
-function consumeDeclaration() {
-    if (this.tokenType === Semicolon) {
-        return consumeRawDeclaration.call(this, this.tokenIndex);
-    }
-
-    const node = this.parseWithFallback(this.Declaration, consumeRawDeclaration);
-
-    if (this.tokenType === Semicolon) {
-        this.next();
-    }
-
-    return node;
-}
-
-const Block_name = 'Block';
-const Block_walkContext = 'block';
-const Block_structure = {
-    children: [[
-        'Atrule',
-        'Rule',
-        'Declaration'
-    ]]
-};
-
-function Block_parse(isStyleBlock) {
-    const consumer = isStyleBlock ? consumeDeclaration : consumeRule;
-    const start = this.tokenStart;
-    let children = this.createList();
-
-    this.eat(LeftCurlyBracket);
-
-    scan:
-    while (!this.eof) {
-        switch (this.tokenType) {
-            case RightCurlyBracket:
-                break scan;
-
-            case WhiteSpace:
-            case Comment:
-                this.next();
-                break;
-
-            case AtKeyword:
-                children.push(this.parseWithFallback(this.Atrule.bind(this, isStyleBlock), Block_consumeRaw));
-                break;
-
-            default:
-                if (isStyleBlock && this.isDelim(Block_AMPERSAND))  {
-                    children.push(consumeRule.call(this));
-                } else {
-                    children.push(consumer.call(this));
-                }
-        }
-    }
-
-    if (!this.eof) {
-        this.eat(RightCurlyBracket);
-    }
-
-    return {
-        type: 'Block',
-        loc: this.getLocation(start, this.tokenStart),
-        children
-    };
-}
-
-function Block_generate(node) {
-    this.token(LeftCurlyBracket, '{');
-    this.children(node, prev => {
-        if (prev.type === 'Declaration') {
-            this.token(Semicolon, ';');
-        }
-    });
-    this.token(RightCurlyBracket, '}');
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/Brackets.js
-
-
-const Brackets_name = 'Brackets';
-const Brackets_structure = {
-    children: [[]]
-};
-
-function Brackets_parse(readSequence, recognizer) {
-    const start = this.tokenStart;
-    let children = null;
-
-    this.eat(LeftSquareBracket);
-
-    children = readSequence.call(this, recognizer);
-
-    if (!this.eof) {
-        this.eat(RightSquareBracket);
-    }
-
-    return {
-        type: 'Brackets',
-        loc: this.getLocation(start, this.tokenStart),
-        children
-    };
-}
-
-function Brackets_generate(node) {
-    this.token(Delim, '[');
-    this.children(node);
-    this.token(Delim, ']');
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/CDC.js
-
-
-const CDC_name = 'CDC';
-const CDC_structure = [];
-
-function CDC_parse() {
-    const start = this.tokenStart;
-
-    this.eat(CDC); // -->
-
-    return {
-        type: 'CDC',
-        loc: this.getLocation(start, this.tokenStart)
-    };
-}
-
-function CDC_generate() {
-    this.token(CDC, '-->');
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/CDO.js
-
-
-const CDO_name = 'CDO';
-const CDO_structure = [];
-
-function CDO_parse() {
-    const start = this.tokenStart;
-
-    this.eat(CDO); // <!--
-
-    return {
-        type: 'CDO',
-        loc: this.getLocation(start, this.tokenStart)
-    };
-}
-
-function CDO_generate() {
-    this.token(CDO, '<!--');
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/ClassSelector.js
-
-
-const FULLSTOP = 0x002E; // U+002E FULL STOP (.)
-
-// '.' ident
-const ClassSelector_name = 'ClassSelector';
-const ClassSelector_structure = {
-    name: String
-};
-
-function ClassSelector_parse() {
-    this.eatDelim(FULLSTOP);
-
-    return {
-        type: 'ClassSelector',
-        loc: this.getLocation(this.tokenStart - 1, this.tokenEnd),
-        name: this.consume(Ident)
-    };
-}
-
-function ClassSelector_generate(node) {
-    this.token(Delim, '.');
-    this.token(Ident, node.name);
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/Combinator.js
-
-
-const Combinator_PLUSSIGN = 0x002B;        // U+002B PLUS SIGN (+)
-const SOLIDUS = 0x002F;         // U+002F SOLIDUS (/)
-const Combinator_GREATERTHANSIGN = 0x003E; // U+003E GREATER-THAN SIGN (>)
-const Combinator_TILDE = 0x007E;           // U+007E TILDE (~)
-
-const Combinator_name = 'Combinator';
-const Combinator_structure = {
-    name: String
-};
-
-// + | > | ~ | /deep/
-function Combinator_parse() {
-    const start = this.tokenStart;
-    let name;
-
-    switch (this.tokenType) {
-        case WhiteSpace:
-            name = ' ';
-            break;
-
-        case Delim:
-            switch (this.charCodeAt(this.tokenStart)) {
-                case Combinator_GREATERTHANSIGN:
-                case Combinator_PLUSSIGN:
-                case Combinator_TILDE:
-                    this.next();
-                    break;
-
-                case SOLIDUS:
-                    this.next();
-                    this.eatIdent('deep');
-                    this.eatDelim(SOLIDUS);
-                    break;
-
-                default:
-                    this.error('Combinator is expected');
-            }
-
-            name = this.substrToCursor(start);
-            break;
-    }
-
-    return {
-        type: 'Combinator',
-        loc: this.getLocation(start, this.tokenStart),
-        name
-    };
-}
-
-function Combinator_generate(node) {
-    this.tokenize(node.name);
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/Comment.js
-
-
-const Comment_ASTERISK = 0x002A;        // U+002A ASTERISK (*)
-const Comment_SOLIDUS = 0x002F;         // U+002F SOLIDUS (/)
-
-
-const Comment_name = 'Comment';
-const Comment_structure = {
-    value: String
-};
-
-function Comment_parse() {
-    const start = this.tokenStart;
-    let end = this.tokenEnd;
-
-    this.eat(Comment);
-
-    if ((end - start + 2) >= 2 &&
-        this.charCodeAt(end - 2) === Comment_ASTERISK &&
-        this.charCodeAt(end - 1) === Comment_SOLIDUS) {
-        end -= 2;
-    }
-
-    return {
-        type: 'Comment',
-        loc: this.getLocation(start, this.tokenStart),
-        value: this.substring(start + 2, end)
-    };
-}
-
-function Comment_generate(node) {
-    this.token(Comment, '/*' + node.value + '*/');
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/Declaration.js
-
-
-
-const Declaration_EXCLAMATIONMARK = 0x0021; // U+0021 EXCLAMATION MARK (!)
-const Declaration_NUMBERSIGN = 0x0023;      // U+0023 NUMBER SIGN (#)
-const Declaration_DOLLARSIGN = 0x0024;      // U+0024 DOLLAR SIGN ($)
-const Declaration_AMPERSAND = 0x0026;       // U+0026 AMPERSAND (&)
-const Declaration_ASTERISK = 0x002A;        // U+002A ASTERISK (*)
-const Declaration_PLUSSIGN = 0x002B;        // U+002B PLUS SIGN (+)
-const Declaration_SOLIDUS = 0x002F;         // U+002F SOLIDUS (/)
-
-function consumeValueRaw(startToken) {
-    return this.Raw(startToken, this.consumeUntilExclamationMarkOrSemicolon, true);
-}
-
-function consumeCustomPropertyRaw(startToken) {
-    return this.Raw(startToken, this.consumeUntilExclamationMarkOrSemicolon, false);
-}
-
-function consumeValue() {
-    const startValueToken = this.tokenIndex;
-    const value = this.Value();
-
-    if (value.type !== 'Raw' &&
-        this.eof === false &&
-        this.tokenType !== Semicolon &&
-        this.isDelim(Declaration_EXCLAMATIONMARK) === false &&
-        this.isBalanceEdge(startValueToken) === false) {
-        this.error();
-    }
-
-    return value;
-}
-
-const Declaration_name = 'Declaration';
-const Declaration_walkContext = 'declaration';
-const Declaration_structure = {
-    important: [Boolean, String],
-    property: String,
-    value: ['Value', 'Raw']
-};
-
-function Declaration_parse() {
-    const start = this.tokenStart;
-    const startToken = this.tokenIndex;
-    const property = Declaration_readProperty.call(this);
-    const customProperty = isCustomProperty(property);
-    const parseValue = customProperty ? this.parseCustomProperty : this.parseValue;
-    const consumeRaw = customProperty ? consumeCustomPropertyRaw : consumeValueRaw;
-    let important = false;
-    let value;
-
-    this.skipSC();
-    this.eat(Colon);
-
-    const valueStart = this.tokenIndex;
-
-    if (!customProperty) {
-        this.skipSC();
-    }
-
-    if (parseValue) {
-        value = this.parseWithFallback(consumeValue, consumeRaw);
-    } else {
-        value = consumeRaw.call(this, this.tokenIndex);
-    }
-
-    if (customProperty && value.type === 'Value' && value.children.isEmpty) {
-        for (let offset = valueStart - this.tokenIndex; offset <= 0; offset++) {
-            if (this.lookupType(offset) === WhiteSpace) {
-                value.children.appendData({
-                    type: 'WhiteSpace',
-                    loc: null,
-                    value: ' '
-                });
-                break;
-            }
-        }
-    }
-
-    if (this.isDelim(Declaration_EXCLAMATIONMARK)) {
-        important = getImportant.call(this);
-        this.skipSC();
-    }
-
-    // Do not include semicolon to range per spec
-    // https://drafts.csswg.org/css-syntax/#declaration-diagram
-
-    if (this.eof === false &&
-        this.tokenType !== Semicolon &&
-        this.isBalanceEdge(startToken) === false) {
-        this.error();
-    }
-
-    return {
-        type: 'Declaration',
-        loc: this.getLocation(start, this.tokenStart),
-        important,
-        property,
-        value
-    };
-}
-
-function Declaration_generate(node) {
-    this.token(Ident, node.property);
-    this.token(Colon, ':');
-    this.node(node.value);
-
-    if (node.important) {
-        this.token(Delim, '!');
-        this.token(Ident, node.important === true ? 'important' : node.important);
-    }
-}
-
-function Declaration_readProperty() {
-    const start = this.tokenStart;
-
-    // hacks
-    if (this.tokenType === Delim) {
-        switch (this.charCodeAt(this.tokenStart)) {
-            case Declaration_ASTERISK:
-            case Declaration_DOLLARSIGN:
-            case Declaration_PLUSSIGN:
-            case Declaration_NUMBERSIGN:
-            case Declaration_AMPERSAND:
-                this.next();
-                break;
-
-            // TODO: not sure we should support this hack
-            case Declaration_SOLIDUS:
-                this.next();
-                if (this.isDelim(Declaration_SOLIDUS)) {
-                    this.next();
-                }
-                break;
-        }
-    }
-
-    if (this.tokenType === Hash) {
-        this.eat(Hash);
-    } else {
-        this.eat(Ident);
-    }
-
-    return this.substrToCursor(start);
-}
-
-// ! ws* important
-function getImportant() {
-    this.eat(Delim);
-    this.skipSC();
-
-    const important = this.consume(Ident);
-
-    // store original value in case it differ from `important`
-    // for better original source restoring and hacks like `!ie` support
-    return important === 'important' ? true : important;
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/DeclarationList.js
-
-
-const DeclarationList_AMPERSAND = 0x0026;       // U+0026 AMPERSAND (&)
-
-function DeclarationList_consumeRaw(startToken) {
-    return this.Raw(startToken, this.consumeUntilSemicolonIncluded, true);
-}
-
-const DeclarationList_name = 'DeclarationList';
-const DeclarationList_structure = {
-    children: [[
-        'Declaration',
-        'Atrule',
-        'Rule'
-    ]]
-};
-
-function DeclarationList_parse() {
-    const children = this.createList();
-
-    scan:
-    while (!this.eof) {
-        switch (this.tokenType) {
-            case WhiteSpace:
-            case Comment:
-            case Semicolon:
-                this.next();
-                break;
-
-            case AtKeyword:
-                children.push(this.parseWithFallback(this.Atrule.bind(this, true), DeclarationList_consumeRaw));
-                break;
-
-            default:
-                if (this.isDelim(DeclarationList_AMPERSAND))  {
-                    children.push(this.parseWithFallback(this.Rule, DeclarationList_consumeRaw));
-                } else {
-                    children.push(this.parseWithFallback(this.Declaration, DeclarationList_consumeRaw));
-                }
-        }
-    }
-
-    return {
-        type: 'DeclarationList',
-        loc: this.getLocationFromList(children),
-        children
-    };
-}
-
-function DeclarationList_generate(node) {
-    this.children(node, prev => {
-        if (prev.type === 'Declaration') {
-            this.token(Semicolon, ';');
-        }
-    });
-}
-
-
-;// ./node_modules/css-tree/lib/syntax/node/Dimension.js
-
-
-const Dimension_name = 'Dimension';
-const Dimension_structure = {
-    value: String,
-    unit: String
-};
-
-function Dimension_parse() {
-    const start = this.tokenStart;
-    const value = this.consumeNumber(Dimension);
-
-    return {
-        type: 'Dimension',
-        loc: this.getLocation(start, this.tokenStart),
-        value,
-        unit: this.substring(start + value.length, this.tokenStart)
-    };
-}
-
-function Dimension_generate(node) {
-    this.token(Dimension, node.value + node.unit);
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/Function.js
-
-
-
-const Function_name = 'Function';
-const Function_walkContext = 'function';
-const Function_structure = {
-    name: String,
-    children: [[]]
-};
-
-// <function-token> <sequence> )
-function Function_parse(readSequence, recognizer) {
-    const start = this.tokenStart;
-    const name = this.consumeFunctionName();
-    const nameLowerCase = name.toLowerCase();
-    let children;
-
-    children = recognizer.hasOwnProperty(nameLowerCase)
-        ? recognizer[nameLowerCase].call(this, recognizer)
-        : readSequence.call(this, recognizer);
-
-    if (!this.eof) {
-        this.eat(RightParenthesis);
-    }
-
-    return {
-        type: 'Function',
-        loc: this.getLocation(start, this.tokenStart),
-        name,
-        children
-    };
-}
-
-function Function_generate(node) {
-    this.token(Function, node.name + '(');
-    this.children(node);
-    this.token(RightParenthesis, ')');
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/Hash.js
-
-
-// '#' ident
-const xxx = 'XXX';
-const Hash_name = 'Hash';
-const Hash_structure = {
-    value: String
-};
-function Hash_parse() {
-    const start = this.tokenStart;
-
-    this.eat(Hash);
-
-    return {
-        type: 'Hash',
-        loc: this.getLocation(start, this.tokenStart),
-        value: this.substrToCursor(start + 1)
-    };
-}
-function Hash_generate(node) {
-    this.token(Hash, '#' + node.value);
-}
-
-
-;// ./node_modules/css-tree/lib/syntax/node/Identifier.js
-
-
-const Identifier_name = 'Identifier';
-const Identifier_structure = {
-    name: String
-};
-
-function Identifier_parse() {
-    return {
-        type: 'Identifier',
-        loc: this.getLocation(this.tokenStart, this.tokenEnd),
-        name: this.consume(Ident)
-    };
-}
-
-function Identifier_generate(node) {
-    this.token(Ident, node.name);
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/IdSelector.js
-
-
-const IdSelector_name = 'IdSelector';
-const IdSelector_structure = {
-    name: String
-};
-
-function IdSelector_parse() {
-    const start = this.tokenStart;
-
-    // TODO: check value is an ident
-    this.eat(Hash);
-
-    return {
-        type: 'IdSelector',
-        loc: this.getLocation(start, this.tokenStart),
-        name: this.substrToCursor(start + 1)
-    };
-}
-
-function IdSelector_generate(node) {
-    // Using Delim instead of Hash is a hack to avoid for a whitespace between ident and id-selector
-    // in safe mode (e.g. "a#id"), because IE11 doesn't allow a sequence <ident-token> <hash-token>
-    // without a whitespace in values (e.g. "1px solid#000")
-    this.token(Delim, '#' + node.name);
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/MediaFeature.js
-
-
-const MediaFeature_name = 'MediaFeature';
-const MediaFeature_structure = {
-    name: String,
-    value: ['Identifier', 'Number', 'Dimension', 'Ratio', null]
-};
-
-function MediaFeature_parse() {
-    const start = this.tokenStart;
-    let name;
-    let value = null;
-
-    this.eat(LeftParenthesis);
-    this.skipSC();
-
-    name = this.consume(Ident);
-    this.skipSC();
-
-    if (this.tokenType !== RightParenthesis) {
-        this.eat(Colon);
-        this.skipSC();
-
-        switch (this.tokenType) {
-            case types_Number:
-                if (this.lookupNonWSType(1) === Delim) {
-                    value = this.Ratio();
-                } else {
-                    value = this.Number();
-                }
-
-                break;
-
-            case Dimension:
-                value = this.Dimension();
-                break;
-
-            case Ident:
-                value = this.Identifier();
-                break;
-
-            default:
-                this.error('Number, dimension, ratio or identifier is expected');
-        }
-
-        this.skipSC();
-    }
-
-    this.eat(RightParenthesis);
-
-    return {
-        type: 'MediaFeature',
-        loc: this.getLocation(start, this.tokenStart),
-        name,
-        value
-    };
-}
-
-function MediaFeature_generate(node) {
-    this.token(LeftParenthesis, '(');
-    this.token(Ident, node.name);
-
-    if (node.value !== null) {
-        this.token(Colon, ':');
-        this.node(node.value);
-    }
-
-    this.token(RightParenthesis, ')');
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/MediaQuery.js
-
-
-const MediaQuery_name = 'MediaQuery';
-const MediaQuery_structure = {
-    children: [[
-        'Identifier',
-        'MediaFeature',
-        'WhiteSpace'
-    ]]
-};
-
-function MediaQuery_parse() {
-    const children = this.createList();
-    let child = null;
-
-    this.skipSC();
-
-    scan:
-    while (!this.eof) {
-        switch (this.tokenType) {
-            case Comment:
-            case WhiteSpace:
-                this.next();
-                continue;
-
-            case Ident:
-                child = this.Identifier();
-                break;
-
-            case LeftParenthesis:
-                child = this.MediaFeature();
-                break;
-
-            default:
-                break scan;
-        }
-
-        children.push(child);
-    }
-
-    if (child === null) {
-        this.error('Identifier or parenthesis is expected');
-    }
-
-    return {
-        type: 'MediaQuery',
-        loc: this.getLocationFromList(children),
-        children
-    };
-}
-
-function MediaQuery_generate(node) {
-    this.children(node);
-}
-
-
-;// ./node_modules/css-tree/lib/syntax/node/MediaQueryList.js
-
-
-const MediaQueryList_name = 'MediaQueryList';
-const MediaQueryList_structure = {
-    children: [[
-        'MediaQuery'
-    ]]
-};
-
-function MediaQueryList_parse() {
-    const children = this.createList();
-
-    this.skipSC();
-
-    while (!this.eof) {
-        children.push(this.MediaQuery());
-
-        if (this.tokenType !== Comma) {
-            break;
-        }
-
-        this.next();
-    }
-
-    return {
-        type: 'MediaQueryList',
-        loc: this.getLocationFromList(children),
-        children
-    };
-}
-
-function MediaQueryList_generate(node) {
-    this.children(node, () => this.token(Comma, ','));
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/NestingSelector.js
-
-
-const NestingSelector_AMPERSAND = 0x0026;       // U+0026 AMPERSAND (&)
-
-const NestingSelector_name = 'NestingSelector';
-const NestingSelector_structure = {
-};
-
-function NestingSelector_parse() {
-    const start = this.tokenStart;
-
-    this.eatDelim(NestingSelector_AMPERSAND);
-
-    return {
-        type: 'NestingSelector',
-        loc: this.getLocation(start, this.tokenStart)
-    };
-}
-
-function NestingSelector_generate() {
-    this.token(Delim, '&');
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/Nth.js
-
-
-const Nth_name = 'Nth';
-const Nth_structure = {
-    nth: ['AnPlusB', 'Identifier'],
-    selector: ['SelectorList', null]
-};
-
-function Nth_parse() {
-    this.skipSC();
-
-    const start = this.tokenStart;
-    let end = start;
-    let selector = null;
-    let nth;
-
-    if (this.lookupValue(0, 'odd') || this.lookupValue(0, 'even')) {
-        nth = this.Identifier();
-    } else {
-        nth = this.AnPlusB();
-    }
-
-    end = this.tokenStart;
-    this.skipSC();
-
-    if (this.lookupValue(0, 'of')) {
-        this.next();
-
-        selector = this.SelectorList();
-        end = this.tokenStart;
-    }
-
-    return {
-        type: 'Nth',
-        loc: this.getLocation(start, end),
-        nth,
-        selector
-    };
-}
-
-function Nth_generate(node) {
-    this.node(node.nth);
-    if (node.selector !== null) {
-        this.token(Ident, 'of');
-        this.node(node.selector);
-    }
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/Number.js
-
-
-const Number_name = 'Number';
-const Number_structure = {
-    value: String
-};
-
-function Number_parse() {
-    return {
-        type: 'Number',
-        loc: this.getLocation(this.tokenStart, this.tokenEnd),
-        value: this.consume(types_Number)
-    };
-}
-
-function Number_generate(node) {
-    this.token(types_Number, node.value);
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/Operator.js
-// '/' | '*' | ',' | ':' | '+' | '-'
-const Operator_name = 'Operator';
-const Operator_structure = {
-    value: String
-};
-
-function Operator_parse() {
-    const start = this.tokenStart;
-
-    this.next();
-
-    return {
-        type: 'Operator',
-        loc: this.getLocation(start, this.tokenStart),
-        value: this.substrToCursor(start)
-    };
-}
-
-function Operator_generate(node) {
-    this.tokenize(node.value);
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/Parentheses.js
-
-
-const Parentheses_name = 'Parentheses';
-const Parentheses_structure = {
-    children: [[]]
-};
-
-function Parentheses_parse(readSequence, recognizer) {
-    const start = this.tokenStart;
-    let children = null;
-
-    this.eat(LeftParenthesis);
-
-    children = readSequence.call(this, recognizer);
-
-    if (!this.eof) {
-        this.eat(RightParenthesis);
-    }
-
-    return {
-        type: 'Parentheses',
-        loc: this.getLocation(start, this.tokenStart),
-        children
-    };
-}
-
-function Parentheses_generate(node) {
-    this.token(LeftParenthesis, '(');
-    this.children(node);
-    this.token(RightParenthesis, ')');
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/Percentage.js
-
-
-const Percentage_name = 'Percentage';
-const Percentage_structure = {
-    value: String
-};
-
-function Percentage_parse() {
-    return {
-        type: 'Percentage',
-        loc: this.getLocation(this.tokenStart, this.tokenEnd),
-        value: this.consumeNumber(Percentage)
-    };
-}
-
-function Percentage_generate(node) {
-    this.token(Percentage, node.value + '%');
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/PseudoClassSelector.js
-
-
-
-const PseudoClassSelector_name = 'PseudoClassSelector';
-const PseudoClassSelector_walkContext = 'function';
-const PseudoClassSelector_structure = {
-    name: String,
-    children: [['Raw'], null]
-};
-
-// : [ <ident> | <function-token> <any-value>? ) ]
-function PseudoClassSelector_parse() {
-    const start = this.tokenStart;
-    let children = null;
-    let name;
-    let nameLowerCase;
-
-    this.eat(Colon);
-
-    if (this.tokenType === Function) {
-        name = this.consumeFunctionName();
-        nameLowerCase = name.toLowerCase();
-
-        if (hasOwnProperty.call(this.pseudo, nameLowerCase)) {
-            this.skipSC();
-            children = this.pseudo[nameLowerCase].call(this);
-            this.skipSC();
-        } else {
-            children = this.createList();
-            children.push(
-                this.Raw(this.tokenIndex, null, false)
-            );
-        }
-
-        this.eat(RightParenthesis);
-    } else {
-        name = this.consume(Ident);
-    }
-
-    return {
-        type: 'PseudoClassSelector',
-        loc: this.getLocation(start, this.tokenStart),
-        name,
-        children
-    };
-}
-
-function PseudoClassSelector_generate(node) {
-    this.token(Colon, ':');
-
-    if (node.children === null) {
-        this.token(Ident, node.name);
-    } else {
-        this.token(Function, node.name + '(');
-        this.children(node);
-        this.token(RightParenthesis, ')');
-    }
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/PseudoElementSelector.js
-
-
-const PseudoElementSelector_name = 'PseudoElementSelector';
-const PseudoElementSelector_walkContext = 'function';
-const PseudoElementSelector_structure = {
-    name: String,
-    children: [['Raw'], null]
-};
-
-// :: [ <ident> | <function-token> <any-value>? ) ]
-function PseudoElementSelector_parse() {
-    const start = this.tokenStart;
-    let children = null;
-    let name;
-    let nameLowerCase;
-
-    this.eat(Colon);
-    this.eat(Colon);
-
-    if (this.tokenType === Function) {
-        name = this.consumeFunctionName();
-        nameLowerCase = name.toLowerCase();
-
-        if (hasOwnProperty.call(this.pseudo, nameLowerCase)) {
-            this.skipSC();
-            children = this.pseudo[nameLowerCase].call(this);
-            this.skipSC();
-        } else {
-            children = this.createList();
-            children.push(
-                this.Raw(this.tokenIndex, null, false)
-            );
-        }
-
-        this.eat(RightParenthesis);
-    } else {
-        name = this.consume(Ident);
-    }
-
-    return {
-        type: 'PseudoElementSelector',
-        loc: this.getLocation(start, this.tokenStart),
-        name,
-        children
-    };
-}
-
-function PseudoElementSelector_generate(node) {
-    this.token(Colon, ':');
-    this.token(Colon, ':');
-
-    if (node.children === null) {
-        this.token(Ident, node.name);
-    } else {
-        this.token(Function, node.name + '(');
-        this.children(node);
-        this.token(RightParenthesis, ')');
-    }
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/Ratio.js
-
-
-const Ratio_SOLIDUS = 0x002F;  // U+002F SOLIDUS (/)
-const Ratio_FULLSTOP = 0x002E; // U+002E FULL STOP (.)
-
-// Terms of <ratio> should be a positive numbers (not zero or negative)
-// (see https://drafts.csswg.org/mediaqueries-3/#values)
-// However, -o-min-device-pixel-ratio takes fractional values as a ratio's term
-// and this is using by various sites. Therefore we relax checking on parse
-// to test a term is unsigned number without an exponent part.
-// Additional checking may be applied on lexer validation.
-function Ratio_consumeNumber() {
-    this.skipSC();
-
-    const value = this.consume(types_Number);
-
-    for (let i = 0; i < value.length; i++) {
-        const code = value.charCodeAt(i);
-        if (!isDigit(code) && code !== Ratio_FULLSTOP) {
-            this.error('Unsigned number is expected', this.tokenStart - value.length + i);
-        }
-    }
-
-    if (Number(value) === 0) {
-        this.error('Zero number is not allowed', this.tokenStart - value.length);
-    }
-
-    return value;
-}
-
-const Ratio_name = 'Ratio';
-const Ratio_structure = {
-    left: String,
-    right: String
-};
-
-// <positive-integer> S* '/' S* <positive-integer>
-function Ratio_parse() {
-    const start = this.tokenStart;
-    const left = Ratio_consumeNumber.call(this);
-    let right;
-
-    this.skipSC();
-    this.eatDelim(Ratio_SOLIDUS);
-    right = Ratio_consumeNumber.call(this);
-
-    return {
-        type: 'Ratio',
-        loc: this.getLocation(start, this.tokenStart),
-        left,
-        right
-    };
-}
-
-function Ratio_generate(node) {
-    this.token(types_Number, node.left);
-    this.token(Delim, '/');
-    this.token(types_Number, node.right);
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/Raw.js
-
-
-function getOffsetExcludeWS() {
-    if (this.tokenIndex > 0) {
-        if (this.lookupType(-1) === WhiteSpace) {
-            return this.tokenIndex > 1
-                ? this.getTokenStart(this.tokenIndex - 1)
-                : this.firstCharOffset;
-        }
-    }
-
-    return this.tokenStart;
-}
-
-const Raw_name = 'Raw';
-const Raw_structure = {
-    value: String
-};
-
-function Raw_parse(startToken, consumeUntil, excludeWhiteSpace) {
-    const startOffset = this.getTokenStart(startToken);
-    let endOffset;
-
-    this.skipUntilBalanced(startToken, consumeUntil || this.consumeUntilBalanceEnd);
-
-    if (excludeWhiteSpace && this.tokenStart > startOffset) {
-        endOffset = getOffsetExcludeWS.call(this);
-    } else {
-        endOffset = this.tokenStart;
-    }
-
-    return {
-        type: 'Raw',
-        loc: this.getLocation(startOffset, endOffset),
-        value: this.substring(startOffset, endOffset)
-    };
-}
-
-function Raw_generate(node) {
-    this.tokenize(node.value);
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/Rule.js
-
-
-function Rule_consumeRaw(startToken) {
-    return this.Raw(startToken, this.consumeUntilLeftCurlyBracket, true);
-}
-
-function consumePrelude() {
-    const prelude = this.SelectorList();
-
-    if (prelude.type !== 'Raw' &&
-        this.eof === false &&
-        this.tokenType !== LeftCurlyBracket) {
-        this.error();
-    }
-
-    return prelude;
-}
-
-const Rule_name = 'Rule';
-const Rule_walkContext = 'rule';
-const Rule_structure = {
-    prelude: ['SelectorList', 'Raw'],
-    block: ['Block']
-};
-
-function Rule_parse() {
-    const startToken = this.tokenIndex;
-    const startOffset = this.tokenStart;
-    let prelude;
-    let block;
-
-    if (this.parseRulePrelude) {
-        prelude = this.parseWithFallback(consumePrelude, Rule_consumeRaw);
-    } else {
-        prelude = Rule_consumeRaw.call(this, startToken);
-    }
-
-    block = this.Block(true);
-
-    return {
-        type: 'Rule',
-        loc: this.getLocation(startOffset, this.tokenStart),
-        prelude,
-        block
-    };
-}
-function Rule_generate(node) {
-    this.node(node.prelude);
-    this.node(node.block);
-}
-
-
-;// ./node_modules/css-tree/lib/syntax/node/Selector.js
-const Selector_name = 'Selector';
-const Selector_structure = {
-    children: [[
-        'TypeSelector',
-        'IdSelector',
-        'ClassSelector',
-        'AttributeSelector',
-        'PseudoClassSelector',
-        'PseudoElementSelector',
-        'Combinator',
-        'WhiteSpace'
-    ]]
-};
-
-function Selector_parse() {
-    const children = this.readSequence(this.scope.Selector);
-
-    // nothing were consumed
-    if (this.getFirstListNode(children) === null) {
-        this.error('Selector is expected');
-    }
-
-    return {
-        type: 'Selector',
-        loc: this.getLocationFromList(children),
-        children
-    };
-}
-
-function Selector_generate(node) {
-    this.children(node);
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/SelectorList.js
-
-
-const SelectorList_name = 'SelectorList';
-const SelectorList_walkContext = 'selector';
-const SelectorList_structure = {
-    children: [[
-        'Selector',
-        'Raw'
-    ]]
-};
-
-function SelectorList_parse() {
-    const children = this.createList();
-
-    while (!this.eof) {
-        children.push(this.Selector());
-
-        if (this.tokenType === Comma) {
-            this.next();
-            continue;
-        }
-
-        break;
-    }
-
-    return {
-        type: 'SelectorList',
-        loc: this.getLocationFromList(children),
-        children
-    };
-}
-
-function SelectorList_generate(node) {
-    this.children(node, () => this.token(Comma, ','));
-}
-
-;// ./node_modules/css-tree/lib/utils/string.js
-
-
-const REVERSE_SOLIDUS = 0x005c; // U+005C REVERSE SOLIDUS (\)
-const QUOTATION_MARK = 0x0022;  // "
-const string_APOSTROPHE = 0x0027;      // '
-
-function decode(str) {
-    const len = str.length;
-    const firstChar = str.charCodeAt(0);
-    const start = firstChar === QUOTATION_MARK || firstChar === string_APOSTROPHE ? 1 : 0;
-    const end = start === 1 && len > 1 && str.charCodeAt(len - 1) === firstChar ? len - 2 : len - 1;
-    let decoded = '';
-
-    for (let i = start; i <= end; i++) {
-        let code = str.charCodeAt(i);
-
-        if (code === REVERSE_SOLIDUS) {
-            // special case at the ending
-            if (i === end) {
-                // if the next input code point is EOF, do nothing
-                // otherwise include last quote as escaped
-                if (i !== len - 1) {
-                    decoded = str.substr(i + 1);
-                }
-                break;
-            }
-
-            code = str.charCodeAt(++i);
-
-            // consume escaped
-            if (isValidEscape(REVERSE_SOLIDUS, code)) {
-                const escapeStart = i - 1;
-                const escapeEnd = consumeEscaped(str, escapeStart);
-
-                i = escapeEnd - 1;
-                decoded += decodeEscaped(str.substring(escapeStart + 1, escapeEnd));
-            } else {
-                // \r\n
-                if (code === 0x000d && str.charCodeAt(i + 1) === 0x000a) {
-                    i++;
-                }
-            }
-        } else {
-            decoded += str[i];
-        }
-    }
-
-    return decoded;
-}
-
-// https://drafts.csswg.org/cssom/#serialize-a-string
-// § 2.1. Common Serializing Idioms
-function encode(str, apostrophe) {
-    const quote = apostrophe ? '\'' : '"';
-    const quoteCode = apostrophe ? string_APOSTROPHE : QUOTATION_MARK;
-    let encoded = '';
-    let wsBeforeHexIsNeeded = false;
-
-    for (let i = 0; i < str.length; i++) {
-        const code = str.charCodeAt(i);
-
-        // If the character is NULL (U+0000), then the REPLACEMENT CHARACTER (U+FFFD).
-        if (code === 0x0000) {
-            encoded += '\uFFFD';
-            continue;
-        }
-
-        // If the character is in the range [\1-\1f] (U+0001 to U+001F) or is U+007F,
-        // the character escaped as code point.
-        // Note: Do not compare with 0x0001 since 0x0000 is precessed before
-        if (code <= 0x001f || code === 0x007F) {
-            encoded += '\\' + code.toString(16);
-            wsBeforeHexIsNeeded = true;
-            continue;
-        }
-
-        // If the character is '"' (U+0022) or "\" (U+005C), the escaped character.
-        if (code === quoteCode || code === REVERSE_SOLIDUS) {
-            encoded += '\\' + str.charAt(i);
-            wsBeforeHexIsNeeded = false;
-        } else {
-            if (wsBeforeHexIsNeeded && (isHexDigit(code) || isWhiteSpace(code))) {
-                encoded += ' ';
-            }
-
-            // Otherwise, the character itself.
-            encoded += str.charAt(i);
-            wsBeforeHexIsNeeded = false;
-        }
-    }
-
-    return quote + encoded + quote;
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/String.js
-
-
-
-const String_name = 'String';
-const String_structure = {
-    value: String
-};
-
-function String_parse() {
-    return {
-        type: 'String',
-        loc: this.getLocation(this.tokenStart, this.tokenEnd),
-        value: decode(this.consume(types_String))
-    };
-}
-
-function String_generate(node) {
-    this.token(types_String, encode(node.value));
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/StyleSheet.js
-
-
-const StyleSheet_EXCLAMATIONMARK = 0x0021; // U+0021 EXCLAMATION MARK (!)
-
-function StyleSheet_consumeRaw(startToken) {
-    return this.Raw(startToken, null, false);
-}
-
-const StyleSheet_name = 'StyleSheet';
-const StyleSheet_walkContext = 'stylesheet';
-const StyleSheet_structure = {
-    children: [[
-        'Comment',
-        'CDO',
-        'CDC',
-        'Atrule',
-        'Rule',
-        'Raw'
-    ]]
-};
-
-function StyleSheet_parse() {
-    const start = this.tokenStart;
-    const children = this.createList();
-    let child;
-
-    scan:
-    while (!this.eof) {
-        switch (this.tokenType) {
-            case WhiteSpace:
-                this.next();
-                continue;
-
-            case Comment:
-                // ignore comments except exclamation comments (i.e. /*! .. */) on top level
-                if (this.charCodeAt(this.tokenStart + 2) !== StyleSheet_EXCLAMATIONMARK) {
-                    this.next();
-                    continue;
-                }
-
-                child = this.Comment();
-                break;
-
-            case CDO: // <!--
-                child = this.CDO();
-                break;
-
-            case CDC: // -->
-                child = this.CDC();
-                break;
-
-            // CSS Syntax Module Level 3
-            // §2.2 Error handling
-            // At the "top level" of a stylesheet, an <at-keyword-token> starts an at-rule.
-            case AtKeyword:
-                child = this.parseWithFallback(this.Atrule, StyleSheet_consumeRaw);
-                break;
-
-            // Anything else starts a qualified rule ...
-            default:
-                child = this.parseWithFallback(this.Rule, StyleSheet_consumeRaw);
-        }
-
-        children.push(child);
-    }
-
-    return {
-        type: 'StyleSheet',
-        loc: this.getLocation(start, this.tokenStart),
-        children
-    };
-}
-
-function StyleSheet_generate(node) {
-    this.children(node);
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/TypeSelector.js
-
-
-const TypeSelector_ASTERISK = 0x002A;     // U+002A ASTERISK (*)
-const TypeSelector_VERTICALLINE = 0x007C; // U+007C VERTICAL LINE (|)
-
-function eatIdentifierOrAsterisk() {
-    if (this.tokenType !== Ident &&
-        this.isDelim(TypeSelector_ASTERISK) === false) {
-        this.error('Identifier or asterisk is expected');
-    }
-
-    this.next();
-}
-
-const TypeSelector_name = 'TypeSelector';
-const TypeSelector_structure = {
-    name: String
-};
-
-// ident
-// ident|ident
-// ident|*
-// *
-// *|ident
-// *|*
-// |ident
-// |*
-function TypeSelector_parse() {
-    const start = this.tokenStart;
-
-    if (this.isDelim(TypeSelector_VERTICALLINE)) {
-        this.next();
-        eatIdentifierOrAsterisk.call(this);
-    } else {
-        eatIdentifierOrAsterisk.call(this);
-
-        if (this.isDelim(TypeSelector_VERTICALLINE)) {
-            this.next();
-            eatIdentifierOrAsterisk.call(this);
-        }
-    }
-
-    return {
-        type: 'TypeSelector',
-        loc: this.getLocation(start, this.tokenStart),
-        name: this.substrToCursor(start)
-    };
-}
-
-function TypeSelector_generate(node) {
-    this.tokenize(node.name);
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/UnicodeRange.js
-
-
-const UnicodeRange_PLUSSIGN = 0x002B;     // U+002B PLUS SIGN (+)
-const UnicodeRange_HYPHENMINUS = 0x002D;  // U+002D HYPHEN-MINUS (-)
-const UnicodeRange_QUESTIONMARK = 0x003F; // U+003F QUESTION MARK (?)
-
-function eatHexSequence(offset, allowDash) {
-    let len = 0;
-
-    for (let pos = this.tokenStart + offset; pos < this.tokenEnd; pos++) {
-        const code = this.charCodeAt(pos);
-
-        if (code === UnicodeRange_HYPHENMINUS && allowDash && len !== 0) {
-            eatHexSequence.call(this, offset + len + 1, false);
-            return -1;
-        }
-
-        if (!isHexDigit(code)) {
-            this.error(
-                allowDash && len !== 0
-                    ? 'Hyphen minus' + (len < 6 ? ' or hex digit' : '') + ' is expected'
-                    : (len < 6 ? 'Hex digit is expected' : 'Unexpected input'),
-                pos
-            );
-        }
-
-        if (++len > 6) {
-            this.error('Too many hex digits', pos);
-        };
-    }
-
-    this.next();
-    return len;
-}
-
-function eatQuestionMarkSequence(max) {
-    let count = 0;
-
-    while (this.isDelim(UnicodeRange_QUESTIONMARK)) {
-        if (++count > max) {
-            this.error('Too many question marks');
-        }
-
-        this.next();
-    }
-}
-
-function UnicodeRange_startsWith(code) {
-    if (this.charCodeAt(this.tokenStart) !== code) {
-        this.error((code === UnicodeRange_PLUSSIGN ? 'Plus sign' : 'Hyphen minus') + ' is expected');
-    }
-}
-
-// https://drafts.csswg.org/css-syntax/#urange
-// Informally, the <urange> production has three forms:
-// U+0001
-//      Defines a range consisting of a single code point, in this case the code point "1".
-// U+0001-00ff
-//      Defines a range of codepoints between the first and the second value, in this case
-//      the range between "1" and "ff" (255 in decimal) inclusive.
-// U+00??
-//      Defines a range of codepoints where the "?" characters range over all hex digits,
-//      in this case defining the same as the value U+0000-00ff.
-// In each form, a maximum of 6 digits is allowed for each hexadecimal number (if you treat "?" as a hexadecimal digit).
-//
-// <urange> =
-//   u '+' <ident-token> '?'* |
-//   u <dimension-token> '?'* |
-//   u <number-token> '?'* |
-//   u <number-token> <dimension-token> |
-//   u <number-token> <number-token> |
-//   u '+' '?'+
-function scanUnicodeRange() {
-    let hexLength = 0;
-
-    switch (this.tokenType) {
-        case types_Number:
-            // u <number-token> '?'*
-            // u <number-token> <dimension-token>
-            // u <number-token> <number-token>
-            hexLength = eatHexSequence.call(this, 1, true);
-
-            if (this.isDelim(UnicodeRange_QUESTIONMARK)) {
-                eatQuestionMarkSequence.call(this, 6 - hexLength);
-                break;
-            }
-
-            if (this.tokenType === Dimension ||
-                this.tokenType === types_Number) {
-                UnicodeRange_startsWith.call(this, UnicodeRange_HYPHENMINUS);
-                eatHexSequence.call(this, 1, false);
-                break;
-            }
-
-            break;
-
-        case Dimension:
-            // u <dimension-token> '?'*
-            hexLength = eatHexSequence.call(this, 1, true);
-
-            if (hexLength > 0) {
-                eatQuestionMarkSequence.call(this, 6 - hexLength);
-            }
-
-            break;
-
-        default:
-            // u '+' <ident-token> '?'*
-            // u '+' '?'+
-            this.eatDelim(UnicodeRange_PLUSSIGN);
-
-            if (this.tokenType === Ident) {
-                hexLength = eatHexSequence.call(this, 0, true);
-                if (hexLength > 0) {
-                    eatQuestionMarkSequence.call(this, 6 - hexLength);
-                }
-                break;
-            }
-
-            if (this.isDelim(UnicodeRange_QUESTIONMARK)) {
-                this.next();
-                eatQuestionMarkSequence.call(this, 5);
-                break;
-            }
-
-            this.error('Hex digit or question mark is expected');
-    }
-}
-
-const UnicodeRange_name = 'UnicodeRange';
-const UnicodeRange_structure = {
-    value: String
-};
-
-function UnicodeRange_parse() {
-    const start = this.tokenStart;
-
-    // U or u
-    this.eatIdent('u');
-    scanUnicodeRange.call(this);
-
-    return {
-        type: 'UnicodeRange',
-        loc: this.getLocation(start, this.tokenStart),
-        value: this.substrToCursor(start)
-    };
-}
-
-function UnicodeRange_generate(node) {
-    this.tokenize(node.value);
-}
-
-;// ./node_modules/css-tree/lib/utils/url.js
-
-
-const url_SPACE = 0x0020;            // U+0020 SPACE
-const url_REVERSE_SOLIDUS = 0x005c;  // U+005C REVERSE SOLIDUS (\)
-const url_QUOTATION_MARK = 0x0022;   // "
-const url_APOSTROPHE = 0x0027;       // '
-const url_LEFTPARENTHESIS = 0x0028;  // U+0028 LEFT PARENTHESIS (()
-const url_RIGHTPARENTHESIS = 0x0029; // U+0029 RIGHT PARENTHESIS ())
-
-function url_decode(str) {
-    const len = str.length;
-    let start = 4; // length of "url("
-    let end = str.charCodeAt(len - 1) === url_RIGHTPARENTHESIS ? len - 2 : len - 1;
-    let decoded = '';
-
-    while (start < end && isWhiteSpace(str.charCodeAt(start))) {
-        start++;
-    }
-
-    while (start < end && isWhiteSpace(str.charCodeAt(end))) {
-        end--;
-    }
-
-    for (let i = start; i <= end; i++) {
-        let code = str.charCodeAt(i);
-
-        if (code === url_REVERSE_SOLIDUS) {
-            // special case at the ending
-            if (i === end) {
-                // if the next input code point is EOF, do nothing
-                // otherwise include last left parenthesis as escaped
-                if (i !== len - 1) {
-                    decoded = str.substr(i + 1);
-                }
-                break;
-            }
-
-            code = str.charCodeAt(++i);
-
-            // consume escaped
-            if (isValidEscape(url_REVERSE_SOLIDUS, code)) {
-                const escapeStart = i - 1;
-                const escapeEnd = consumeEscaped(str, escapeStart);
-
-                i = escapeEnd - 1;
-                decoded += decodeEscaped(str.substring(escapeStart + 1, escapeEnd));
-            } else {
-                // \r\n
-                if (code === 0x000d && str.charCodeAt(i + 1) === 0x000a) {
-                    i++;
-                }
-            }
-        } else {
-            decoded += str[i];
-        }
-    }
-
-    return decoded;
-}
-
-function url_encode(str) {
-    let encoded = '';
-    let wsBeforeHexIsNeeded = false;
-
-    for (let i = 0; i < str.length; i++) {
-        const code = str.charCodeAt(i);
-
-        // If the character is NULL (U+0000), then the REPLACEMENT CHARACTER (U+FFFD).
-        if (code === 0x0000) {
-            encoded += '\uFFFD';
-            continue;
-        }
-
-        // If the character is in the range [\1-\1f] (U+0001 to U+001F) or is U+007F,
-        // the character escaped as code point.
-        // Note: Do not compare with 0x0001 since 0x0000 is precessed before
-        if (code <= 0x001f || code === 0x007F) {
-            encoded += '\\' + code.toString(16);
-            wsBeforeHexIsNeeded = true;
-            continue;
-        }
-
-        if (code === url_SPACE ||
-            code === url_REVERSE_SOLIDUS ||
-            code === url_QUOTATION_MARK ||
-            code === url_APOSTROPHE ||
-            code === url_LEFTPARENTHESIS ||
-            code === url_RIGHTPARENTHESIS) {
-            encoded += '\\' + str.charAt(i);
-            wsBeforeHexIsNeeded = false;
-        } else {
-            if (wsBeforeHexIsNeeded && isHexDigit(code)) {
-                encoded += ' ';
-            }
-
-            encoded += str.charAt(i);
-            wsBeforeHexIsNeeded = false;
-        }
-    }
-
-    return 'url(' + encoded + ')';
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/Url.js
-
-
-
-
-const Url_name = 'Url';
-const Url_structure = {
-    value: String
-};
-
-// <url-token> | <function-token> <string> )
-function Url_parse() {
-    const start = this.tokenStart;
-    let value;
-
-    switch (this.tokenType) {
-        case Url:
-            value = url_decode(this.consume(Url));
-            break;
-
-        case Function:
-            if (!this.cmpStr(this.tokenStart, this.tokenEnd, 'url(')) {
-                this.error('Function name must be `url`');
-            }
-
-            this.eat(Function);
-            this.skipSC();
-            value = decode(this.consume(types_String));
-            this.skipSC();
-            if (!this.eof) {
-                this.eat(RightParenthesis);
-            }
-            break;
-
-        default:
-            this.error('Url or Function is expected');
-    }
-
-    return {
-        type: 'Url',
-        loc: this.getLocation(start, this.tokenStart),
-        value
-    };
-}
-
-function Url_generate(node) {
-    this.token(Url, url_encode(node.value));
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/Value.js
-const Value_name = 'Value';
-const Value_structure = {
-    children: [[]]
-};
-
-function Value_parse() {
-    const start = this.tokenStart;
-    const children = this.readSequence(this.scope.Value);
-
-    return {
-        type: 'Value',
-        loc: this.getLocation(start, this.tokenStart),
-        children
-    };
-}
-
-function Value_generate(node) {
-    this.children(node);
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/WhiteSpace.js
-
-
-const WhiteSpace_SPACE = Object.freeze({
-    type: 'WhiteSpace',
-    loc: null,
-    value: ' '
-});
-
-const WhiteSpace_name = 'WhiteSpace';
-const WhiteSpace_structure = {
-    value: String
-};
-
-function WhiteSpace_parse() {
-    this.eat(WhiteSpace);
-    return WhiteSpace_SPACE;
-
-    // return {
-    //     type: 'WhiteSpace',
-    //     loc: this.getLocation(this.tokenStart, this.tokenEnd),
-    //     value: this.consume(WHITESPACE)
-    // };
-}
-
-function WhiteSpace_generate(node) {
-    this.token(WhiteSpace, node.value);
-}
-
-;// ./node_modules/css-tree/lib/syntax/node/index.js
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-;// ./node_modules/css-tree/lib/syntax/config/lexer.js
-
-
-
-/* harmony default export */ const lexer = ({
-    generic: true,
-    ...data,
-    node: node_namespaceObject
-});
-
-;// ./node_modules/css-tree/lib/syntax/scope/default.js
-
-
-const default_NUMBERSIGN = 0x0023;  // U+0023 NUMBER SIGN (#)
-const default_ASTERISK = 0x002A;    // U+002A ASTERISK (*)
-const default_PLUSSIGN = 0x002B;    // U+002B PLUS SIGN (+)
-const default_HYPHENMINUS = 0x002D; // U+002D HYPHEN-MINUS (-)
-const default_SOLIDUS = 0x002F;     // U+002F SOLIDUS (/)
-const default_U = 0x0075;           // U+0075 LATIN SMALL LETTER U (u)
-
-function defaultRecognizer(context) {
-    switch (this.tokenType) {
-        case Hash:
-            return this.Hash();
-
-        case Comma:
-            return this.Operator();
-
-        case LeftParenthesis:
-            return this.Parentheses(this.readSequence, context.recognizer);
-
-        case LeftSquareBracket:
-            return this.Brackets(this.readSequence, context.recognizer);
-
-        case types_String:
-            return this.String();
-
-        case Dimension:
-            return this.Dimension();
-
-        case Percentage:
-            return this.Percentage();
-
-        case types_Number:
-            return this.Number();
-
-        case Function:
-            return this.cmpStr(this.tokenStart, this.tokenEnd, 'url(')
-                ? this.Url()
-                : this.Function(this.readSequence, context.recognizer);
-
-        case Url:
-            return this.Url();
-
-        case Ident:
-            // check for unicode range, it should start with u+ or U+
-            if (this.cmpChar(this.tokenStart, default_U) &&
-                this.cmpChar(this.tokenStart + 1, default_PLUSSIGN)) {
-                return this.UnicodeRange();
-            } else {
-                return this.Identifier();
-            }
-
-        case Delim: {
-            const code = this.charCodeAt(this.tokenStart);
-
-            if (code === default_SOLIDUS ||
-                code === default_ASTERISK ||
-                code === default_PLUSSIGN ||
-                code === default_HYPHENMINUS) {
-                return this.Operator(); // TODO: replace with Delim
-            }
-
-            // TODO: produce a node with Delim node type
-
-            if (code === default_NUMBERSIGN) {
-                this.error('Hex or identifier is expected', this.tokenStart + 1);
-            }
-
-            break;
-        }
-    }
-};
-
-;// ./node_modules/css-tree/lib/syntax/scope/atrulePrelude.js
-
-
-/* harmony default export */ const atrulePrelude = ({
-    getNode: defaultRecognizer
-});
-
-;// ./node_modules/css-tree/lib/syntax/scope/selector.js
-
-
-const selector_NUMBERSIGN = 0x0023;      // U+0023 NUMBER SIGN (#)
-const selector_AMPERSAND = 0x0026;       // U+0026 AMPERSAND (&)
-const selector_ASTERISK = 0x002A;        // U+002A ASTERISK (*)
-const selector_PLUSSIGN = 0x002B;        // U+002B PLUS SIGN (+)
-const selector_SOLIDUS = 0x002F;         // U+002F SOLIDUS (/)
-const selector_FULLSTOP = 0x002E;        // U+002E FULL STOP (.)
-const selector_GREATERTHANSIGN = 0x003E; // U+003E GREATER-THAN SIGN (>)
-const selector_VERTICALLINE = 0x007C;    // U+007C VERTICAL LINE (|)
-const selector_TILDE = 0x007E;           // U+007E TILDE (~)
-
-function onWhiteSpace(next, children) {
-    if (children.last !== null && children.last.type !== 'Combinator' &&
-        next !== null && next.type !== 'Combinator') {
-        children.push({  // FIXME: this.Combinator() should be used instead
-            type: 'Combinator',
-            loc: null,
-            name: ' '
-        });
-    }
-}
-
-function getNode() {
-    switch (this.tokenType) {
-        case LeftSquareBracket:
-            return this.AttributeSelector();
-
-        case Hash:
-            return this.IdSelector();
-
-        case Colon:
-            if (this.lookupType(1) === Colon) {
-                return this.PseudoElementSelector();
-            } else {
-                return this.PseudoClassSelector();
-            }
-
-        case Ident:
-            return this.TypeSelector();
-
-        case types_Number:
-        case Percentage:
-            return this.Percentage();
-
-        case Dimension:
-            // throws when .123ident
-            if (this.charCodeAt(this.tokenStart) === selector_FULLSTOP) {
-                this.error('Identifier is expected', this.tokenStart + 1);
-            }
-            break;
-
-        case Delim: {
-            const code = this.charCodeAt(this.tokenStart);
-
-            switch (code) {
-                case selector_PLUSSIGN:
-                case selector_GREATERTHANSIGN:
-                case selector_TILDE:
-                case selector_SOLIDUS:  // /deep/
-                    return this.Combinator();
-
-                case selector_FULLSTOP:
-                    return this.ClassSelector();
-
-                case selector_ASTERISK:
-                case selector_VERTICALLINE:
-                    return this.TypeSelector();
-
-                case selector_NUMBERSIGN:
-                    return this.IdSelector();
-
-                case selector_AMPERSAND:
-                    return this.NestingSelector();
-            }
-
-            break;
-        }
-    }
-};
-
-/* harmony default export */ const selector = ({
-    onWhiteSpace,
-    getNode
-});
-
-;// ./node_modules/css-tree/lib/syntax/function/expression.js
-Object.defineProperty(expression, "name", { value: "default", configurable: true });
-// legacy IE function
-// expression( <any-value> )
-/* harmony default export */ function expression() {
-    return this.createSingleNodeList(
-        this.Raw(this.tokenIndex, null, false)
-    );
-}
-
-;// ./node_modules/css-tree/lib/syntax/function/var.js
-Object.defineProperty(function_var, "name", { value: "default", configurable: true });
-
-
-// var( <ident> , <value>? )
-/* harmony default export */ function function_var() {
-    const children = this.createList();
-
-    this.skipSC();
-
-    // NOTE: Don't check more than a first argument is an ident, rest checks are for lexer
-    children.push(this.Identifier());
-
-    this.skipSC();
-
-    if (this.tokenType === Comma) {
-        children.push(this.Operator());
-
-        const startIndex = this.tokenIndex;
-        const value = this.parseCustomProperty
-            ? this.Value(null)
-            : this.Raw(this.tokenIndex, this.consumeUntilExclamationMarkOrSemicolon, false);
-
-        if (value.type === 'Value' && value.children.isEmpty) {
-            for (let offset = startIndex - this.tokenIndex; offset <= 0; offset++) {
-                if (this.lookupType(offset) === WhiteSpace) {
-                    value.children.appendData({
-                        type: 'WhiteSpace',
-                        loc: null,
-                        value: ' '
-                    });
-                    break;
-                }
-            }
-        }
-
-        children.push(value);
-    }
-
-    return children;
-};
-
-;// ./node_modules/css-tree/lib/syntax/scope/value.js
-
-
-
-
-function isPlusMinusOperator(node) {
-    return (
-        node !== null &&
-        node.type === 'Operator' &&
-        (node.value[node.value.length - 1] === '-' || node.value[node.value.length - 1] === '+')
-    );
-}
-
-/* harmony default export */ const value = ({
-    getNode: defaultRecognizer,
-    onWhiteSpace(next, children) {
-        if (isPlusMinusOperator(next)) {
-            next.value = ' ' + next.value;
-        }
-        if (isPlusMinusOperator(children.last)) {
-            children.last.value += ' ';
-        }
-    },
-    'expression': expression,
-    'var': function_var
-});
-
-;// ./node_modules/css-tree/lib/syntax/scope/index.js
-
-
-
-
-;// ./node_modules/css-tree/lib/syntax/atrule/font-face.js
-/* harmony default export */ const font_face = ({
-    parse: {
-        prelude: null,
-        block() {
-            return this.Block(true);
-        }
-    }
-});
-
-;// ./node_modules/css-tree/lib/syntax/atrule/import.js
-
-
-/* harmony default export */ const atrule_import = ({
-    parse: {
-        prelude() {
-            const children = this.createList();
-
-            this.skipSC();
-
-            switch (this.tokenType) {
-                case types_String:
-                    children.push(this.String());
-                    break;
-
-                case Url:
-                case Function:
-                    children.push(this.Url());
-                    break;
-
-                default:
-                    this.error('String or url() is expected');
-            }
-
-            if (this.lookupNonWSType(0) === Ident ||
-                this.lookupNonWSType(0) === LeftParenthesis) {
-                children.push(this.MediaQueryList());
-            }
-
-            return children;
-        },
-        block: null
-    }
-});
-
-;// ./node_modules/css-tree/lib/syntax/atrule/media.js
-/* harmony default export */ const media = ({
-    parse: {
-        prelude() {
-            return this.createSingleNodeList(
-                this.MediaQueryList()
-            );
-        },
-        block(isStyleBlock = false) {
-            return this.Block(isStyleBlock);
-        }
-    }
-});
-
-;// ./node_modules/css-tree/lib/syntax/atrule/nest.js
-/* harmony default export */ const nest = ({
-    parse: {
-        prelude() {
-            return this.createSingleNodeList(
-                this.SelectorList()
-            );
-        },
-        block() {
-            return this.Block(true);
-        }
-    }
-});
-
-;// ./node_modules/css-tree/lib/syntax/atrule/page.js
-/* harmony default export */ const page = ({
-    parse: {
-        prelude() {
-            return this.createSingleNodeList(
-                this.SelectorList()
-            );
-        },
-        block() {
-            return this.Block(true);
-        }
-    }
-});
-
-;// ./node_modules/css-tree/lib/syntax/atrule/supports.js
-
-
-function supports_consumeRaw() {
-    return this.createSingleNodeList(
-        this.Raw(this.tokenIndex, null, false)
-    );
-}
-
-function parentheses() {
-    this.skipSC();
-
-    if (this.tokenType === Ident &&
-        this.lookupNonWSType(1) === Colon) {
-        return this.createSingleNodeList(
-            this.Declaration()
-        );
-    }
-
-    return supports_readSequence.call(this);
-}
-
-function supports_readSequence() {
-    const children = this.createList();
-    let child;
-
-    this.skipSC();
-
-    scan:
-    while (!this.eof) {
-        switch (this.tokenType) {
-            case Comment:
-            case WhiteSpace:
-                this.next();
-                continue;
-
-            case Function:
-                child = this.Function(supports_consumeRaw, this.scope.AtrulePrelude);
-                break;
-
-            case Ident:
-                child = this.Identifier();
-                break;
-
-            case LeftParenthesis:
-                child = this.Parentheses(parentheses, this.scope.AtrulePrelude);
-                break;
-
-            default:
-                break scan;
-        }
-
-        children.push(child);
-    }
-
-    return children;
-}
-
-/* harmony default export */ const supports = ({
-    parse: {
-        prelude() {
-            const children = supports_readSequence.call(this);
-
-            if (this.getFirstListNode(children) === null) {
-                this.error('Condition is expected');
-            }
-
-            return children;
-        },
-        block(isStyleBlock = false) {
-            return this.Block(isStyleBlock);
-        }
-    }
-});
-
-;// ./node_modules/css-tree/lib/syntax/atrule/index.js
-
-
-
-
-
-
-
-/* harmony default export */ const atrule = ({
-    'font-face': font_face,
-    'import': atrule_import,
-    media: media,
-    nest: nest,
-    page: page,
-    supports: supports
-});
-
-;// ./node_modules/css-tree/lib/syntax/pseudo/index.js
-const selectorList = {
-    parse() {
-        return this.createSingleNodeList(
-            this.SelectorList()
-        );
-    }
-};
-
-const pseudo_selector = {
-    parse() {
-        return this.createSingleNodeList(
-            this.Selector()
-        );
-    }
-};
-
-const identList = {
-    parse() {
-        return this.createSingleNodeList(
-            this.Identifier()
-        );
-    }
-};
-
-const nth = {
-    parse() {
-        return this.createSingleNodeList(
-            this.Nth()
-        );
-    }
-};
-
-/* harmony default export */ const pseudo = ({
-    'dir': identList,
-    'has': selectorList,
-    'lang': identList,
-    'matches': selectorList,
-    'is': selectorList,
-    '-moz-any': selectorList,
-    '-webkit-any': selectorList,
-    'where': selectorList,
-    'not': selectorList,
-    'nth-child': nth,
-    'nth-last-child': nth,
-    'nth-last-of-type': nth,
-    'nth-of-type': nth,
-    'slotted': pseudo_selector,
-    'host': pseudo_selector,
-    'host-context': pseudo_selector
-});
-
-;// ./node_modules/css-tree/lib/syntax/node/index-parse.js
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-;// ./node_modules/css-tree/lib/syntax/config/parser.js
-
-
-
-
-
-/* harmony default export */ const parser = ({
-    parseContext: {
-        default: 'StyleSheet',
-        stylesheet: 'StyleSheet',
-        atrule: 'Atrule',
-        atrulePrelude(options) {
-            return this.AtrulePrelude(options.atrule ? String(options.atrule) : null);
-        },
-        mediaQueryList: 'MediaQueryList',
-        mediaQuery: 'MediaQuery',
-        rule: 'Rule',
-        selectorList: 'SelectorList',
-        selector: 'Selector',
-        block() {
-            return this.Block(true);
-        },
-        declarationList: 'DeclarationList',
-        declaration: 'Declaration',
-        value: 'Value'
-    },
-    scope: scope_namespaceObject,
-    atrule: atrule,
-    pseudo: pseudo,
-    node: index_parse_namespaceObject
-});
-
-;// ./node_modules/css-tree/lib/syntax/config/walker.js
-
-
-/* harmony default export */ const walker = ({
-    node: node_namespaceObject
-});
-
-;// ./node_modules/css-tree/lib/syntax/index.js
-
-
-
-
-
-/* harmony default export */ const syntax = (create({
-    ...lexer,
-    ...parser,
-    ...walker
-}));
-
-;// ./node_modules/css-tree/lib/utils/clone.js
-/* unused harmony import specifier */ var clone_List;
-
-
-function clone(node) {
-    const result = {};
-
-    for (const key in node) {
-        let value = node[key];
-
-        if (value) {
-            if (Array.isArray(value) || value instanceof clone_List) {
-                value = value.map(clone);
-            } else if (value.constructor === Object) {
-                value = clone(value);
-            }
-        }
-
-        result[key] = value;
-    }
-
-    return result;
-}
-
-;// ./node_modules/css-tree/lib/utils/ident.js
-/* unused harmony import specifier */ var ident_isValidEscape;
-/* unused harmony import specifier */ var ident_consumeEscaped;
-/* unused harmony import specifier */ var ident_decodeEscaped;
-/* unused harmony import specifier */ var ident_isName;
-
-
-const ident_REVERSE_SOLIDUS = 0x005c; // U+005C REVERSE SOLIDUS (\)
-
-function ident_decode(str) {
-    const end = str.length - 1;
-    let decoded = '';
-
-    for (let i = 0; i < str.length; i++) {
-        let code = str.charCodeAt(i);
-
-        if (code === ident_REVERSE_SOLIDUS) {
-            // special case at the ending
-            if (i === end) {
-                // if the next input code point is EOF, do nothing
-                break;
-            }
-
-            code = str.charCodeAt(++i);
-
-            // consume escaped
-            if (ident_isValidEscape(ident_REVERSE_SOLIDUS, code)) {
-                const escapeStart = i - 1;
-                const escapeEnd = ident_consumeEscaped(str, escapeStart);
-
-                i = escapeEnd - 1;
-                decoded += ident_decodeEscaped(str.substring(escapeStart + 1, escapeEnd));
-            } else {
-                // \r\n
-                if (code === 0x000d && str.charCodeAt(i + 1) === 0x000a) {
-                    i++;
-                }
-            }
-        } else {
-            decoded += str[i];
-        }
-    }
-
-    return decoded;
-}
-
-// https://drafts.csswg.org/cssom/#serialize-an-identifier
-// § 2.1. Common Serializing Idioms
-function ident_encode(str) {
-    let encoded = '';
-
-    // If the character is the first character and is a "-" (U+002D),
-    // and there is no second character, then the escaped character.
-    // Note: That's means a single dash string "-" return as escaped dash,
-    // so move the condition out of the main loop
-    if (str.length === 1 && str.charCodeAt(0) === 0x002D) {
-        return '\\-';
-    }
-
-    // To serialize an identifier means to create a string represented
-    // by the concatenation of, for each character of the identifier:
-    for (let i = 0; i < str.length; i++) {
-        const code = str.charCodeAt(i);
-
-        // If the character is NULL (U+0000), then the REPLACEMENT CHARACTER (U+FFFD).
-        if (code === 0x0000) {
-            encoded += '\uFFFD';
-            continue;
-        }
-
-        if (
-            // If the character is in the range [\1-\1f] (U+0001 to U+001F) or is U+007F ...
-            // Note: Do not compare with 0x0001 since 0x0000 is precessed before
-            code <= 0x001F || code === 0x007F ||
-            // [or] ... is in the range [0-9] (U+0030 to U+0039),
-            (code >= 0x0030 && code <= 0x0039 && (
-                // If the character is the first character ...
-                i === 0 ||
-                // If the character is the second character ... and the first character is a "-" (U+002D)
-                i === 1 && str.charCodeAt(0) === 0x002D
-            ))
-        ) {
-            // ... then the character escaped as code point.
-            encoded += '\\' + code.toString(16) + ' ';
-            continue;
-        }
-
-        // If the character is not handled by one of the above rules and is greater
-        // than or equal to U+0080, is "-" (U+002D) or "_" (U+005F), or is in one
-        // of the ranges [0-9] (U+0030 to U+0039), [A-Z] (U+0041 to U+005A),
-        // or \[a-z] (U+0061 to U+007A), then the character itself.
-        if (ident_isName(code)) {
-            encoded += str.charAt(i);
-        } else {
-            // Otherwise, the escaped character.
-            encoded += '\\' + str.charAt(i);
-        }
-    }
-
-    return encoded;
-}
-
-;// ./node_modules/css-tree/lib/index.js
-
-
-
-
-
-
-
-
-
-
-
-
-
-const {
-    tokenize: lib_tokenize,
-    parse: lib_parse,
-    generate: lib_generate,
-    lexer: lib_lexer,
-    createLexer,
-
-    walk: lib_walk,
-    find,
-    findLast,
-    findAll,
-
-    toPlainObject,
-    fromPlainObject,
-
-    fork
-} = syntax;
-
+;// external "csstree"
+const external_csstree_namespaceObject = csstree;
 // EXTERNAL MODULE: external "CryptoJS"
 var external_CryptoJS_ = __webpack_require__("crypto-js");
 ;// ./src/rules/special/original/jjwxc.ts
@@ -34803,8 +24079,8 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                     const cssText = Array.from(doc.querySelectorAll("style"))
                         .map((s) => s.innerText)
                         .join("\n");
-                    const ast = lib_parse(cssText);
-                    lib_walk(ast, function (node) {
+                    const ast = external_csstree_namespaceObject.parse(cssText);
+                    external_csstree_namespaceObject.walk(ast, function (node) {
                         if (node.type === "Declaration" && node.property === "content") {
                             const value = (node.value.children.toArray()?.[0]).value;
                             const selectorList = (this.rule?.prelude).children.toArray();
@@ -34834,7 +24110,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                             }
                         }
                     });
-                    lib_walk(ast, function (node) {
+                    external_csstree_namespaceObject.walk(ast, function (node) {
                         if (node.type === "Declaration" && node.property === "display") {
                             const value = (node.value.children.toArray()?.[0]).name;
                             const selectorList = (this.rule?.prelude).children.toArray();
@@ -41287,7 +30563,7 @@ var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
 var Chapter = __webpack_require__("./src/main/Chapter.ts");
 // EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
 var Book = __webpack_require__("./src/main/Book.ts");
-// EXTERNAL MODULE: ./src/rules.ts + 11 modules
+// EXTERNAL MODULE: ./src/rules.ts + 12 modules
 var rules = __webpack_require__("./src/rules.ts");
 ;// ./src/rules/lib/haitangtxtImageDecode.ts
 function replaceHaitangtxtImage(inputText) {
@@ -42985,6 +32261,280 @@ class Pilishuwu extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */ 
 
 /***/ },
 
+/***/ "./src/rules/special/reprint/sbxh.ts"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   sbxh: () => (/* binding */ sbxh)
+/* harmony export */ });
+/* harmony import */ var _onePage_template__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+const sbxh = () => (0,_onePage_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: getBookname(),
+    author: getAuthor(),
+    introDom: getIntroDom(),
+    introDomPatch: (dom) => dom,
+    coverUrl: getCoverUrl(),
+    aList: getChapterList(),
+    getAName: (aElem) => {
+        const neTitle = aElem.querySelector(".ne-title");
+        return neTitle?.textContent?.trim() || aElem.textContent?.trim() || "";
+    },
+    getContentFromUrl: async (chapterUrl, _chapterName, _charset) => {
+        try {
+            return await fetchChapterContent(chapterUrl);
+        }
+        catch (err) {
+            _log__WEBPACK_IMPORTED_MODULE_2___default().warn(`[sbxh] chapter download failed: ${chapterUrl}`, err);
+            return null;
+        }
+    },
+    contentPatch: (content) => {
+        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__.rm)("script, style, iframe, ins", false, content);
+        return content;
+    },
+    concurrencyLimit: 1,
+    sleepTime: 1000,
+    needLogin: false,
+    nsfw: false,
+    language: "ko",
+});
+async function fetchChapterContent(chapterUrl) {
+    const ids = extractIdsFromUrl(chapterUrl);
+    if (!ids) {
+        _log__WEBPACK_IMPORTED_MODULE_2___default().warn(`[sbxh] cannot parse novelId/episodeId from ${chapterUrl}`);
+        return null;
+    }
+    _log__WEBPACK_IMPORTED_MODULE_2___default().debug(`[sbxh] fetching chapter HTML: ${chapterUrl}`);
+    const html = await fetch(chapterUrl, { credentials: "include" }).then((r) => r.text());
+    if (isCaptchaHtml(html)) {
+        _log__WEBPACK_IMPORTED_MODULE_2___default().warn(`[sbxh] chapter requires captcha: ${chapterUrl}`);
+        return createCaptchaMessage();
+    }
+    const token = extractEscapedJsonString(html, "token");
+    const cookieName = extractEscapedJsonString(html, "cookieName") ?? "nv";
+    if (!token) {
+        _log__WEBPACK_IMPORTED_MODULE_2___default().warn(`[sbxh] could not extract token from ${chapterUrl}`);
+        return null;
+    }
+    let cookie = readCookie(cookieName);
+    if (!cookie) {
+        await fetch("/api/nv-issue", {
+            method: "POST",
+            credentials: "same-origin",
+            cache: "no-store",
+        }).catch(() => null);
+        cookie = readCookie(cookieName);
+    }
+    if (!cookie) {
+        _log__WEBPACK_IMPORTED_MODULE_2___default().warn(`[sbxh] ${cookieName} cookie not set after nv-issue`);
+        return null;
+    }
+    const nonceBytes = crypto.getRandomValues(new Uint8Array(24));
+    const nonce = base64UrlEncode(nonceBytes);
+    const proof = await hmacSha256Base64Url(cookie, `${token}.${nonce}.${navigator.userAgent}`);
+    const resp = await fetch("/api/novel-content", {
+        method: "POST",
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: {
+            "content-type": "application/json",
+            "x-novel-client": "shadow-v2",
+        },
+        body: JSON.stringify({
+            novelId: ids.novelId,
+            episodeId: ids.episodeId,
+            token,
+            nonce,
+            proof,
+        }),
+    });
+    if (!resp.ok) {
+        _log__WEBPACK_IMPORTED_MODULE_2___default().warn(`[sbxh] /api/novel-content HTTP ${resp.status}`);
+        return null;
+    }
+    const data = (await resp.json().catch(() => null));
+    if (!data || !data.ok || data.empty || !data.payload) {
+        _log__WEBPACK_IMPORTED_MODULE_2___default().warn(`[sbxh] novel-content invalid reply`, data);
+        return null;
+    }
+    const xorKey = cookie.split(".")[0] ?? "";
+    if (!xorKey) {
+        _log__WEBPACK_IMPORTED_MODULE_2___default().warn(`[sbxh] cookie has no key segment`);
+        return null;
+    }
+    const decrypted = xorDecryptBase64Url(data.payload, xorKey);
+    return renderChapterPayload(decrypted);
+}
+function extractIdsFromUrl(url) {
+    const m = url.match(/\/novel\/(\d+)\/(\d+)/);
+    if (!m)
+        return null;
+    return { novelId: m[1], episodeId: m[2] };
+}
+function extractEscapedJsonString(html, key) {
+    const marker = '\\"' + key + '\\":\\"';
+    const start = html.indexOf(marker);
+    if (start < 0)
+        return null;
+    const valueStart = start + marker.length;
+    const valueEnd = html.indexOf('\\"', valueStart);
+    if (valueEnd < 0)
+        return null;
+    return html.slice(valueStart, valueEnd);
+}
+function readCookie(name) {
+    for (const raw of document.cookie.split(";")) {
+        const trimmed = raw.trim();
+        if (!trimmed)
+            continue;
+        const eq = trimmed.indexOf("=");
+        if (eq < 0)
+            continue;
+        const k = trimmed.slice(0, eq);
+        if (k === name) {
+            try {
+                return decodeURIComponent(trimmed.slice(eq + 1));
+            }
+            catch {
+                return trimmed.slice(eq + 1);
+            }
+        }
+    }
+    return null;
+}
+function base64UrlEncode(bytes) {
+    let bin = "";
+    for (let i = 0; i < bytes.length; i++)
+        bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function base64UrlDecode(s) {
+    let b64 = s.replace(/-/g, "+").replace(/_/g, "/");
+    while (b64.length % 4)
+        b64 += "=";
+    const bin = atob(b64);
+    const out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++)
+        out[i] = bin.charCodeAt(i);
+    return out;
+}
+async function hmacSha256Base64Url(keyStr, message) {
+    const enc = new TextEncoder();
+    const key = await crypto.subtle.importKey("raw", enc.encode(keyStr), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+    const sig = new Uint8Array(await crypto.subtle.sign("HMAC", key, enc.encode(message)));
+    return base64UrlEncode(sig);
+}
+function xorDecryptBase64Url(payloadB64u, keyB64u) {
+    const payload = base64UrlDecode(payloadB64u);
+    const key = base64UrlDecode(keyB64u);
+    if (key.length === 0)
+        return "";
+    const out = new Uint8Array(payload.length);
+    for (let i = 0; i < payload.length; i++) {
+        out[i] = payload[i] ^ key[i % key.length];
+    }
+    return new TextDecoder("utf-8").decode(out);
+}
+function renderChapterPayload(decrypted) {
+    const container = document.createElement("div");
+    container.className = "novel-epub-rendered";
+    let parsed = null;
+    if (decrypted.startsWith("{")) {
+        try {
+            parsed = JSON.parse(decrypted);
+        }
+        catch {
+            parsed = null;
+        }
+    }
+    if (parsed && parsed.kind === "html" && typeof parsed.html === "string") {
+        container.innerHTML = parsed.html;
+    }
+    else {
+        const text = parsed && parsed.kind === "text" && typeof parsed.text === "string"
+            ? parsed.text
+            : decrypted;
+        const paragraphs = text
+            .split(/\n{2,}/)
+            .map((s) => s.trim())
+            .filter((s) => s.length > 0);
+        for (const para of paragraphs) {
+            const p = document.createElement("p");
+            p.textContent = para;
+            container.appendChild(p);
+        }
+    }
+    return container;
+}
+function isCaptchaHtml(html) {
+    return (html.includes("Just a moment") ||
+        /id=["']?challenge-(running|form)|class=["']?cf-browser-verification/.test(html));
+}
+function getBookname() {
+    const h1 = document.querySelector(".novel-detail h1");
+    const text = h1?.textContent?.trim();
+    if (text && text.length > 0 && text.length < 100) {
+        return text;
+    }
+    const titlePart = document.title.split(">")[0]?.trim();
+    return titlePart || document.title.trim();
+}
+function getAuthor() {
+    const firstSpan = document.querySelector(".nd-meta span:first-child");
+    const text = firstSpan?.textContent?.trim();
+    if (text && text.length > 0 && text.length < 30) {
+        return text;
+    }
+    return "";
+}
+function getIntroDom() {
+    const el = document.querySelector(".nd-desc");
+    if (el?.textContent?.trim()) {
+        return el;
+    }
+    return undefined;
+}
+function getCoverUrl() {
+    const img = document.querySelector(".nd-thumb img");
+    return img?.src || null;
+}
+function getChapterList() {
+    const list = document.querySelectorAll("ul.novel-eps li a");
+    if (list.length > 0) {
+        return list;
+    }
+    return [];
+}
+function createCaptchaMessage() {
+    const container = document.createElement("div");
+    const title = document.createElement("p");
+    title.style.fontWeight = "bold";
+    title.style.fontSize = "1.2em";
+    title.textContent = "⚠️ Cloudflare 인증이 필요합니다 (需要 Cloudflare 验证)";
+    container.appendChild(title);
+    const p1 = document.createElement("p");
+    p1.textContent = "Cloudflare 인증을 통과해야 컨텐츠를 확인할 수 있습니다.";
+    container.appendChild(p1);
+    const divider = document.createElement("hr");
+    container.appendChild(divider);
+    const hint = document.createElement("p");
+    hint.style.color = "#666";
+    hint.textContent = "请在浏览器中通过 Cloudflare 验证后重新下载此章节。";
+    container.appendChild(hint);
+    return container;
+}
+
+
+/***/ },
+
 /***/ "./src/rules/special/reprint/sudugu.ts"
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
@@ -43268,7 +32818,7 @@ var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
 var Chapter = __webpack_require__("./src/main/Chapter.ts");
 // EXTERNAL MODULE: ./src/main/Book.ts + 1 modules
 var Book = __webpack_require__("./src/main/Book.ts");
-// EXTERNAL MODULE: ./src/rules.ts + 11 modules
+// EXTERNAL MODULE: ./src/rules.ts + 12 modules
 var rules = __webpack_require__("./src/rules.ts");
 // EXTERNAL MODULE: ./src/lib/attachments.ts + 1 modules
 var attachments = __webpack_require__("./src/lib/attachments.ts");
@@ -46281,14 +35831,6 @@ function pLimit(concurrency) {
 }
 
 
-/***/ },
-
-/***/ "./node_modules/mime-db/db.json"
-(module) {
-
-"use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"application/1d-interleaved-parityfec":{"source":"iana"},"application/3gpdash-qoe-report+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/3gpp-ims+xml":{"source":"iana","compressible":true},"application/3gpphal+json":{"source":"iana","compressible":true},"application/3gpphalforms+json":{"source":"iana","compressible":true},"application/a2l":{"source":"iana"},"application/ace+cbor":{"source":"iana"},"application/ace+json":{"source":"iana","compressible":true},"application/ace-groupcomm+cbor":{"source":"iana"},"application/ace-trl+cbor":{"source":"iana"},"application/activemessage":{"source":"iana"},"application/activity+json":{"source":"iana","compressible":true},"application/aif+cbor":{"source":"iana"},"application/aif+json":{"source":"iana","compressible":true},"application/alto-cdni+json":{"source":"iana","compressible":true},"application/alto-cdnifilter+json":{"source":"iana","compressible":true},"application/alto-costmap+json":{"source":"iana","compressible":true},"application/alto-costmapfilter+json":{"source":"iana","compressible":true},"application/alto-directory+json":{"source":"iana","compressible":true},"application/alto-endpointcost+json":{"source":"iana","compressible":true},"application/alto-endpointcostparams+json":{"source":"iana","compressible":true},"application/alto-endpointprop+json":{"source":"iana","compressible":true},"application/alto-endpointpropparams+json":{"source":"iana","compressible":true},"application/alto-error+json":{"source":"iana","compressible":true},"application/alto-networkmap+json":{"source":"iana","compressible":true},"application/alto-networkmapfilter+json":{"source":"iana","compressible":true},"application/alto-propmap+json":{"source":"iana","compressible":true},"application/alto-propmapparams+json":{"source":"iana","compressible":true},"application/alto-tips+json":{"source":"iana","compressible":true},"application/alto-tipsparams+json":{"source":"iana","compressible":true},"application/alto-updatestreamcontrol+json":{"source":"iana","compressible":true},"application/alto-updatestreamparams+json":{"source":"iana","compressible":true},"application/aml":{"source":"iana"},"application/andrew-inset":{"source":"iana","extensions":["ez"]},"application/appinstaller":{"compressible":false,"extensions":["appinstaller"]},"application/applefile":{"source":"iana"},"application/applixware":{"source":"apache","extensions":["aw"]},"application/appx":{"compressible":false,"extensions":["appx"]},"application/appxbundle":{"compressible":false,"extensions":["appxbundle"]},"application/at+jwt":{"source":"iana"},"application/atf":{"source":"iana"},"application/atfx":{"source":"iana"},"application/atom+xml":{"source":"iana","compressible":true,"extensions":["atom"]},"application/atomcat+xml":{"source":"iana","compressible":true,"extensions":["atomcat"]},"application/atomdeleted+xml":{"source":"iana","compressible":true,"extensions":["atomdeleted"]},"application/atomicmail":{"source":"iana"},"application/atomsvc+xml":{"source":"iana","compressible":true,"extensions":["atomsvc"]},"application/atsc-dwd+xml":{"source":"iana","compressible":true,"extensions":["dwd"]},"application/atsc-dynamic-event-message":{"source":"iana"},"application/atsc-held+xml":{"source":"iana","compressible":true,"extensions":["held"]},"application/atsc-rdt+json":{"source":"iana","compressible":true},"application/atsc-rsat+xml":{"source":"iana","compressible":true,"extensions":["rsat"]},"application/atxml":{"source":"iana"},"application/auth-policy+xml":{"source":"iana","compressible":true},"application/automationml-aml+xml":{"source":"iana","compressible":true,"extensions":["aml"]},"application/automationml-amlx+zip":{"source":"iana","compressible":false,"extensions":["amlx"]},"application/bacnet-xdd+zip":{"source":"iana","compressible":false},"application/batch-smtp":{"source":"iana"},"application/bdoc":{"compressible":false,"extensions":["bdoc"]},"application/beep+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/bufr":{"source":"iana"},"application/c2pa":{"source":"iana"},"application/calendar+json":{"source":"iana","compressible":true},"application/calendar+xml":{"source":"iana","compressible":true,"extensions":["xcs"]},"application/call-completion":{"source":"iana"},"application/cals-1840":{"source":"iana"},"application/captive+json":{"source":"iana","compressible":true},"application/cbor":{"source":"iana"},"application/cbor-seq":{"source":"iana"},"application/cccex":{"source":"iana"},"application/ccmp+xml":{"source":"iana","compressible":true},"application/ccxml+xml":{"source":"iana","compressible":true,"extensions":["ccxml"]},"application/cda+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/cdfx+xml":{"source":"iana","compressible":true,"extensions":["cdfx"]},"application/cdmi-capability":{"source":"iana","extensions":["cdmia"]},"application/cdmi-container":{"source":"iana","extensions":["cdmic"]},"application/cdmi-domain":{"source":"iana","extensions":["cdmid"]},"application/cdmi-object":{"source":"iana","extensions":["cdmio"]},"application/cdmi-queue":{"source":"iana","extensions":["cdmiq"]},"application/cdni":{"source":"iana"},"application/ce+cbor":{"source":"iana"},"application/cea":{"source":"iana"},"application/cea-2018+xml":{"source":"iana","compressible":true},"application/cellml+xml":{"source":"iana","compressible":true},"application/cfw":{"source":"iana"},"application/cid-edhoc+cbor-seq":{"source":"iana"},"application/city+json":{"source":"iana","compressible":true},"application/city+json-seq":{"source":"iana"},"application/clr":{"source":"iana"},"application/clue+xml":{"source":"iana","compressible":true},"application/clue_info+xml":{"source":"iana","compressible":true},"application/cms":{"source":"iana"},"application/cnrp+xml":{"source":"iana","compressible":true},"application/coap-eap":{"source":"iana"},"application/coap-group+json":{"source":"iana","compressible":true},"application/coap-payload":{"source":"iana"},"application/commonground":{"source":"iana"},"application/concise-problem-details+cbor":{"source":"iana"},"application/conference-info+xml":{"source":"iana","compressible":true},"application/cose":{"source":"iana"},"application/cose-key":{"source":"iana"},"application/cose-key-set":{"source":"iana"},"application/cose-x509":{"source":"iana"},"application/cpl+xml":{"source":"iana","compressible":true,"extensions":["cpl"]},"application/csrattrs":{"source":"iana"},"application/csta+xml":{"source":"iana","compressible":true},"application/cstadata+xml":{"source":"iana","compressible":true},"application/csvm+json":{"source":"iana","compressible":true},"application/cu-seeme":{"source":"apache","extensions":["cu"]},"application/cwl":{"source":"iana","extensions":["cwl"]},"application/cwl+json":{"source":"iana","compressible":true},"application/cwl+yaml":{"source":"iana"},"application/cwt":{"source":"iana"},"application/cybercash":{"source":"iana"},"application/dart":{"compressible":true},"application/dash+xml":{"source":"iana","compressible":true,"extensions":["mpd"]},"application/dash-patch+xml":{"source":"iana","compressible":true,"extensions":["mpp"]},"application/dashdelta":{"source":"iana"},"application/davmount+xml":{"source":"iana","compressible":true,"extensions":["davmount"]},"application/dca-rft":{"source":"iana"},"application/dcd":{"source":"iana"},"application/dec-dx":{"source":"iana"},"application/dialog-info+xml":{"source":"iana","compressible":true},"application/dicom":{"source":"iana","extensions":["dcm"]},"application/dicom+json":{"source":"iana","compressible":true},"application/dicom+xml":{"source":"iana","compressible":true},"application/dii":{"source":"iana"},"application/dit":{"source":"iana"},"application/dns":{"source":"iana"},"application/dns+json":{"source":"iana","compressible":true},"application/dns-message":{"source":"iana"},"application/docbook+xml":{"source":"apache","compressible":true,"extensions":["dbk"]},"application/dots+cbor":{"source":"iana"},"application/dpop+jwt":{"source":"iana"},"application/dskpp+xml":{"source":"iana","compressible":true},"application/dssc+der":{"source":"iana","extensions":["dssc"]},"application/dssc+xml":{"source":"iana","compressible":true,"extensions":["xdssc"]},"application/dvcs":{"source":"iana"},"application/eat+cwt":{"source":"iana"},"application/eat+jwt":{"source":"iana"},"application/eat-bun+cbor":{"source":"iana"},"application/eat-bun+json":{"source":"iana","compressible":true},"application/eat-ucs+cbor":{"source":"iana"},"application/eat-ucs+json":{"source":"iana","compressible":true},"application/ecmascript":{"source":"apache","compressible":true,"extensions":["ecma"]},"application/edhoc+cbor-seq":{"source":"iana"},"application/edi-consent":{"source":"iana"},"application/edi-x12":{"source":"iana","compressible":false},"application/edifact":{"source":"iana","compressible":false},"application/efi":{"source":"iana"},"application/elm+json":{"source":"iana","charset":"UTF-8","compressible":true},"application/elm+xml":{"source":"iana","compressible":true},"application/emergencycalldata.cap+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/emergencycalldata.comment+xml":{"source":"iana","compressible":true},"application/emergencycalldata.control+xml":{"source":"iana","compressible":true},"application/emergencycalldata.deviceinfo+xml":{"source":"iana","compressible":true},"application/emergencycalldata.ecall.msd":{"source":"iana"},"application/emergencycalldata.legacyesn+json":{"source":"iana","compressible":true},"application/emergencycalldata.providerinfo+xml":{"source":"iana","compressible":true},"application/emergencycalldata.serviceinfo+xml":{"source":"iana","compressible":true},"application/emergencycalldata.subscriberinfo+xml":{"source":"iana","compressible":true},"application/emergencycalldata.veds+xml":{"source":"iana","compressible":true},"application/emma+xml":{"source":"iana","compressible":true,"extensions":["emma"]},"application/emotionml+xml":{"source":"iana","compressible":true,"extensions":["emotionml"]},"application/encaprtp":{"source":"iana"},"application/entity-statement+jwt":{"source":"iana"},"application/epp+xml":{"source":"iana","compressible":true},"application/epub+zip":{"source":"iana","compressible":false,"extensions":["epub"]},"application/eshop":{"source":"iana"},"application/exi":{"source":"iana","extensions":["exi"]},"application/expect-ct-report+json":{"source":"iana","compressible":true},"application/express":{"source":"iana","extensions":["exp"]},"application/fastinfoset":{"source":"iana"},"application/fastsoap":{"source":"iana"},"application/fdf":{"source":"iana","extensions":["fdf"]},"application/fdt+xml":{"source":"iana","compressible":true,"extensions":["fdt"]},"application/fhir+json":{"source":"iana","charset":"UTF-8","compressible":true},"application/fhir+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/fido.trusted-apps+json":{"compressible":true},"application/fits":{"source":"iana"},"application/flexfec":{"source":"iana"},"application/font-sfnt":{"source":"iana"},"application/font-tdpfr":{"source":"iana","extensions":["pfr"]},"application/font-woff":{"source":"iana","compressible":false},"application/framework-attributes+xml":{"source":"iana","compressible":true},"application/geo+json":{"source":"iana","compressible":true,"extensions":["geojson"]},"application/geo+json-seq":{"source":"iana"},"application/geopackage+sqlite3":{"source":"iana"},"application/geopose+json":{"source":"iana","compressible":true},"application/geoxacml+json":{"source":"iana","compressible":true},"application/geoxacml+xml":{"source":"iana","compressible":true},"application/gltf-buffer":{"source":"iana"},"application/gml+xml":{"source":"iana","compressible":true,"extensions":["gml"]},"application/gnap-binding-jws":{"source":"iana"},"application/gnap-binding-jwsd":{"source":"iana"},"application/gnap-binding-rotation-jws":{"source":"iana"},"application/gnap-binding-rotation-jwsd":{"source":"iana"},"application/gpx+xml":{"source":"apache","compressible":true,"extensions":["gpx"]},"application/grib":{"source":"iana"},"application/gxf":{"source":"apache","extensions":["gxf"]},"application/gzip":{"source":"iana","compressible":false,"extensions":["gz"]},"application/h224":{"source":"iana"},"application/held+xml":{"source":"iana","compressible":true},"application/hjson":{"extensions":["hjson"]},"application/hl7v2+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/http":{"source":"iana"},"application/hyperstudio":{"source":"iana","extensions":["stk"]},"application/ibe-key-request+xml":{"source":"iana","compressible":true},"application/ibe-pkg-reply+xml":{"source":"iana","compressible":true},"application/ibe-pp-data":{"source":"iana"},"application/iges":{"source":"iana"},"application/im-iscomposing+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/index":{"source":"iana"},"application/index.cmd":{"source":"iana"},"application/index.obj":{"source":"iana"},"application/index.response":{"source":"iana"},"application/index.vnd":{"source":"iana"},"application/inkml+xml":{"source":"iana","compressible":true,"extensions":["ink","inkml"]},"application/iotp":{"source":"iana"},"application/ipfix":{"source":"iana","extensions":["ipfix"]},"application/ipp":{"source":"iana"},"application/isup":{"source":"iana"},"application/its+xml":{"source":"iana","compressible":true,"extensions":["its"]},"application/java-archive":{"source":"iana","compressible":false,"extensions":["jar","war","ear"]},"application/java-serialized-object":{"source":"apache","compressible":false,"extensions":["ser"]},"application/java-vm":{"source":"apache","compressible":false,"extensions":["class"]},"application/javascript":{"source":"apache","charset":"UTF-8","compressible":true,"extensions":["js"]},"application/jf2feed+json":{"source":"iana","compressible":true},"application/jose":{"source":"iana"},"application/jose+json":{"source":"iana","compressible":true},"application/jrd+json":{"source":"iana","compressible":true},"application/jscalendar+json":{"source":"iana","compressible":true},"application/jscontact+json":{"source":"iana","compressible":true},"application/json":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["json","map"]},"application/json-patch+json":{"source":"iana","compressible":true},"application/json-seq":{"source":"iana"},"application/json5":{"extensions":["json5"]},"application/jsonml+json":{"source":"apache","compressible":true,"extensions":["jsonml"]},"application/jsonpath":{"source":"iana"},"application/jwk+json":{"source":"iana","compressible":true},"application/jwk-set+json":{"source":"iana","compressible":true},"application/jwk-set+jwt":{"source":"iana"},"application/jwt":{"source":"iana"},"application/kpml-request+xml":{"source":"iana","compressible":true},"application/kpml-response+xml":{"source":"iana","compressible":true},"application/ld+json":{"source":"iana","compressible":true,"extensions":["jsonld"]},"application/lgr+xml":{"source":"iana","compressible":true,"extensions":["lgr"]},"application/link-format":{"source":"iana"},"application/linkset":{"source":"iana"},"application/linkset+json":{"source":"iana","compressible":true},"application/load-control+xml":{"source":"iana","compressible":true},"application/logout+jwt":{"source":"iana"},"application/lost+xml":{"source":"iana","compressible":true,"extensions":["lostxml"]},"application/lostsync+xml":{"source":"iana","compressible":true},"application/lpf+zip":{"source":"iana","compressible":false},"application/lxf":{"source":"iana"},"application/mac-binhex40":{"source":"iana","extensions":["hqx"]},"application/mac-compactpro":{"source":"apache","extensions":["cpt"]},"application/macwriteii":{"source":"iana"},"application/mads+xml":{"source":"iana","compressible":true,"extensions":["mads"]},"application/manifest+json":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["webmanifest"]},"application/marc":{"source":"iana","extensions":["mrc"]},"application/marcxml+xml":{"source":"iana","compressible":true,"extensions":["mrcx"]},"application/mathematica":{"source":"iana","extensions":["ma","nb","mb"]},"application/mathml+xml":{"source":"iana","compressible":true,"extensions":["mathml"]},"application/mathml-content+xml":{"source":"iana","compressible":true},"application/mathml-presentation+xml":{"source":"iana","compressible":true},"application/mbms-associated-procedure-description+xml":{"source":"iana","compressible":true},"application/mbms-deregister+xml":{"source":"iana","compressible":true},"application/mbms-envelope+xml":{"source":"iana","compressible":true},"application/mbms-msk+xml":{"source":"iana","compressible":true},"application/mbms-msk-response+xml":{"source":"iana","compressible":true},"application/mbms-protection-description+xml":{"source":"iana","compressible":true},"application/mbms-reception-report+xml":{"source":"iana","compressible":true},"application/mbms-register+xml":{"source":"iana","compressible":true},"application/mbms-register-response+xml":{"source":"iana","compressible":true},"application/mbms-schedule+xml":{"source":"iana","compressible":true},"application/mbms-user-service-description+xml":{"source":"iana","compressible":true},"application/mbox":{"source":"iana","extensions":["mbox"]},"application/media-policy-dataset+xml":{"source":"iana","compressible":true,"extensions":["mpf"]},"application/media_control+xml":{"source":"iana","compressible":true},"application/mediaservercontrol+xml":{"source":"iana","compressible":true,"extensions":["mscml"]},"application/merge-patch+json":{"source":"iana","compressible":true},"application/metalink+xml":{"source":"apache","compressible":true,"extensions":["metalink"]},"application/metalink4+xml":{"source":"iana","compressible":true,"extensions":["meta4"]},"application/mets+xml":{"source":"iana","compressible":true,"extensions":["mets"]},"application/mf4":{"source":"iana"},"application/mikey":{"source":"iana"},"application/mipc":{"source":"iana"},"application/missing-blocks+cbor-seq":{"source":"iana"},"application/mmt-aei+xml":{"source":"iana","compressible":true,"extensions":["maei"]},"application/mmt-usd+xml":{"source":"iana","compressible":true,"extensions":["musd"]},"application/mods+xml":{"source":"iana","compressible":true,"extensions":["mods"]},"application/moss-keys":{"source":"iana"},"application/moss-signature":{"source":"iana"},"application/mosskey-data":{"source":"iana"},"application/mosskey-request":{"source":"iana"},"application/mp21":{"source":"iana","extensions":["m21","mp21"]},"application/mp4":{"source":"iana","extensions":["mp4","mpg4","mp4s","m4p"]},"application/mpeg4-generic":{"source":"iana"},"application/mpeg4-iod":{"source":"iana"},"application/mpeg4-iod-xmt":{"source":"iana"},"application/mrb-consumer+xml":{"source":"iana","compressible":true},"application/mrb-publish+xml":{"source":"iana","compressible":true},"application/msc-ivr+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/msc-mixer+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/msix":{"compressible":false,"extensions":["msix"]},"application/msixbundle":{"compressible":false,"extensions":["msixbundle"]},"application/msword":{"source":"iana","compressible":false,"extensions":["doc","dot"]},"application/mud+json":{"source":"iana","compressible":true},"application/multipart-core":{"source":"iana"},"application/mxf":{"source":"iana","extensions":["mxf"]},"application/n-quads":{"source":"iana","extensions":["nq"]},"application/n-triples":{"source":"iana","extensions":["nt"]},"application/nasdata":{"source":"iana"},"application/news-checkgroups":{"source":"iana","charset":"US-ASCII"},"application/news-groupinfo":{"source":"iana","charset":"US-ASCII"},"application/news-transmission":{"source":"iana"},"application/nlsml+xml":{"source":"iana","compressible":true},"application/node":{"source":"iana","extensions":["cjs"]},"application/nss":{"source":"iana"},"application/oauth-authz-req+jwt":{"source":"iana"},"application/oblivious-dns-message":{"source":"iana"},"application/ocsp-request":{"source":"iana"},"application/ocsp-response":{"source":"iana"},"application/octet-stream":{"source":"iana","compressible":true,"extensions":["bin","dms","lrf","mar","so","dist","distz","pkg","bpk","dump","elc","deploy","exe","dll","deb","dmg","iso","img","msi","msp","msm","buffer"]},"application/oda":{"source":"iana","extensions":["oda"]},"application/odm+xml":{"source":"iana","compressible":true},"application/odx":{"source":"iana"},"application/oebps-package+xml":{"source":"iana","compressible":true,"extensions":["opf"]},"application/ogg":{"source":"iana","compressible":false,"extensions":["ogx"]},"application/ohttp-keys":{"source":"iana"},"application/omdoc+xml":{"source":"apache","compressible":true,"extensions":["omdoc"]},"application/onenote":{"source":"apache","extensions":["onetoc","onetoc2","onetmp","onepkg","one","onea"]},"application/opc-nodeset+xml":{"source":"iana","compressible":true},"application/oscore":{"source":"iana"},"application/oxps":{"source":"iana","extensions":["oxps"]},"application/p21":{"source":"iana"},"application/p21+zip":{"source":"iana","compressible":false},"application/p2p-overlay+xml":{"source":"iana","compressible":true,"extensions":["relo"]},"application/parityfec":{"source":"iana"},"application/passport":{"source":"iana"},"application/patch-ops-error+xml":{"source":"iana","compressible":true,"extensions":["xer"]},"application/pdf":{"source":"iana","compressible":false,"extensions":["pdf"]},"application/pdx":{"source":"iana"},"application/pem-certificate-chain":{"source":"iana"},"application/pgp-encrypted":{"source":"iana","compressible":false,"extensions":["pgp"]},"application/pgp-keys":{"source":"iana","extensions":["asc"]},"application/pgp-signature":{"source":"iana","extensions":["sig","asc"]},"application/pics-rules":{"source":"apache","extensions":["prf"]},"application/pidf+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/pidf-diff+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/pkcs10":{"source":"iana","extensions":["p10"]},"application/pkcs12":{"source":"iana"},"application/pkcs7-mime":{"source":"iana","extensions":["p7m","p7c"]},"application/pkcs7-signature":{"source":"iana","extensions":["p7s"]},"application/pkcs8":{"source":"iana","extensions":["p8"]},"application/pkcs8-encrypted":{"source":"iana"},"application/pkix-attr-cert":{"source":"iana","extensions":["ac"]},"application/pkix-cert":{"source":"iana","extensions":["cer"]},"application/pkix-crl":{"source":"iana","extensions":["crl"]},"application/pkix-pkipath":{"source":"iana","extensions":["pkipath"]},"application/pkixcmp":{"source":"iana","extensions":["pki"]},"application/pls+xml":{"source":"iana","compressible":true,"extensions":["pls"]},"application/poc-settings+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/postscript":{"source":"iana","compressible":true,"extensions":["ai","eps","ps"]},"application/ppsp-tracker+json":{"source":"iana","compressible":true},"application/private-token-issuer-directory":{"source":"iana"},"application/private-token-request":{"source":"iana"},"application/private-token-response":{"source":"iana"},"application/problem+json":{"source":"iana","compressible":true},"application/problem+xml":{"source":"iana","compressible":true},"application/provenance+xml":{"source":"iana","compressible":true,"extensions":["provx"]},"application/provided-claims+jwt":{"source":"iana"},"application/prs.alvestrand.titrax-sheet":{"source":"iana"},"application/prs.cww":{"source":"iana","extensions":["cww"]},"application/prs.cyn":{"source":"iana","charset":"7-BIT"},"application/prs.hpub+zip":{"source":"iana","compressible":false},"application/prs.implied-document+xml":{"source":"iana","compressible":true},"application/prs.implied-executable":{"source":"iana"},"application/prs.implied-object+json":{"source":"iana","compressible":true},"application/prs.implied-object+json-seq":{"source":"iana"},"application/prs.implied-object+yaml":{"source":"iana"},"application/prs.implied-structure":{"source":"iana"},"application/prs.mayfile":{"source":"iana"},"application/prs.nprend":{"source":"iana"},"application/prs.plucker":{"source":"iana"},"application/prs.rdf-xml-crypt":{"source":"iana"},"application/prs.vcfbzip2":{"source":"iana"},"application/prs.xsf+xml":{"source":"iana","compressible":true,"extensions":["xsf"]},"application/pskc+xml":{"source":"iana","compressible":true,"extensions":["pskcxml"]},"application/pvd+json":{"source":"iana","compressible":true},"application/qsig":{"source":"iana"},"application/raml+yaml":{"compressible":true,"extensions":["raml"]},"application/raptorfec":{"source":"iana"},"application/rdap+json":{"source":"iana","compressible":true},"application/rdf+xml":{"source":"iana","compressible":true,"extensions":["rdf","owl"]},"application/reginfo+xml":{"source":"iana","compressible":true,"extensions":["rif"]},"application/relax-ng-compact-syntax":{"source":"iana","extensions":["rnc"]},"application/remote-printing":{"source":"apache"},"application/reputon+json":{"source":"iana","compressible":true},"application/resolve-response+jwt":{"source":"iana"},"application/resource-lists+xml":{"source":"iana","compressible":true,"extensions":["rl"]},"application/resource-lists-diff+xml":{"source":"iana","compressible":true,"extensions":["rld"]},"application/rfc+xml":{"source":"iana","compressible":true},"application/riscos":{"source":"iana"},"application/rlmi+xml":{"source":"iana","compressible":true},"application/rls-services+xml":{"source":"iana","compressible":true,"extensions":["rs"]},"application/route-apd+xml":{"source":"iana","compressible":true,"extensions":["rapd"]},"application/route-s-tsid+xml":{"source":"iana","compressible":true,"extensions":["sls"]},"application/route-usd+xml":{"source":"iana","compressible":true,"extensions":["rusd"]},"application/rpki-checklist":{"source":"iana"},"application/rpki-ghostbusters":{"source":"iana","extensions":["gbr"]},"application/rpki-manifest":{"source":"iana","extensions":["mft"]},"application/rpki-publication":{"source":"iana"},"application/rpki-roa":{"source":"iana","extensions":["roa"]},"application/rpki-signed-tal":{"source":"iana"},"application/rpki-updown":{"source":"iana"},"application/rsd+xml":{"source":"apache","compressible":true,"extensions":["rsd"]},"application/rss+xml":{"source":"apache","compressible":true,"extensions":["rss"]},"application/rtf":{"source":"iana","compressible":true,"extensions":["rtf"]},"application/rtploopback":{"source":"iana"},"application/rtx":{"source":"iana"},"application/samlassertion+xml":{"source":"iana","compressible":true},"application/samlmetadata+xml":{"source":"iana","compressible":true},"application/sarif+json":{"source":"iana","compressible":true},"application/sarif-external-properties+json":{"source":"iana","compressible":true},"application/sbe":{"source":"iana"},"application/sbml+xml":{"source":"iana","compressible":true,"extensions":["sbml"]},"application/scaip+xml":{"source":"iana","compressible":true},"application/scim+json":{"source":"iana","compressible":true},"application/scvp-cv-request":{"source":"iana","extensions":["scq"]},"application/scvp-cv-response":{"source":"iana","extensions":["scs"]},"application/scvp-vp-request":{"source":"iana","extensions":["spq"]},"application/scvp-vp-response":{"source":"iana","extensions":["spp"]},"application/sdp":{"source":"iana","extensions":["sdp"]},"application/secevent+jwt":{"source":"iana"},"application/senml+cbor":{"source":"iana"},"application/senml+json":{"source":"iana","compressible":true},"application/senml+xml":{"source":"iana","compressible":true,"extensions":["senmlx"]},"application/senml-etch+cbor":{"source":"iana"},"application/senml-etch+json":{"source":"iana","compressible":true},"application/senml-exi":{"source":"iana"},"application/sensml+cbor":{"source":"iana"},"application/sensml+json":{"source":"iana","compressible":true},"application/sensml+xml":{"source":"iana","compressible":true,"extensions":["sensmlx"]},"application/sensml-exi":{"source":"iana"},"application/sep+xml":{"source":"iana","compressible":true},"application/sep-exi":{"source":"iana"},"application/session-info":{"source":"iana"},"application/set-payment":{"source":"iana"},"application/set-payment-initiation":{"source":"iana","extensions":["setpay"]},"application/set-registration":{"source":"iana"},"application/set-registration-initiation":{"source":"iana","extensions":["setreg"]},"application/sgml":{"source":"iana"},"application/sgml-open-catalog":{"source":"iana"},"application/shf+xml":{"source":"iana","compressible":true,"extensions":["shf"]},"application/sieve":{"source":"iana","extensions":["siv","sieve"]},"application/simple-filter+xml":{"source":"iana","compressible":true},"application/simple-message-summary":{"source":"iana"},"application/simplesymbolcontainer":{"source":"iana"},"application/sipc":{"source":"iana"},"application/slate":{"source":"iana"},"application/smil":{"source":"apache"},"application/smil+xml":{"source":"iana","compressible":true,"extensions":["smi","smil"]},"application/smpte336m":{"source":"iana"},"application/soap+fastinfoset":{"source":"iana"},"application/soap+xml":{"source":"iana","compressible":true},"application/sparql-query":{"source":"iana","extensions":["rq"]},"application/sparql-results+xml":{"source":"iana","compressible":true,"extensions":["srx"]},"application/spdx+json":{"source":"iana","compressible":true},"application/spirits-event+xml":{"source":"iana","compressible":true},"application/sql":{"source":"iana","extensions":["sql"]},"application/srgs":{"source":"iana","extensions":["gram"]},"application/srgs+xml":{"source":"iana","compressible":true,"extensions":["grxml"]},"application/sru+xml":{"source":"iana","compressible":true,"extensions":["sru"]},"application/ssdl+xml":{"source":"apache","compressible":true,"extensions":["ssdl"]},"application/sslkeylogfile":{"source":"iana"},"application/ssml+xml":{"source":"iana","compressible":true,"extensions":["ssml"]},"application/st2110-41":{"source":"iana"},"application/stix+json":{"source":"iana","compressible":true},"application/stratum":{"source":"iana"},"application/swid+cbor":{"source":"iana"},"application/swid+xml":{"source":"iana","compressible":true,"extensions":["swidtag"]},"application/tamp-apex-update":{"source":"iana"},"application/tamp-apex-update-confirm":{"source":"iana"},"application/tamp-community-update":{"source":"iana"},"application/tamp-community-update-confirm":{"source":"iana"},"application/tamp-error":{"source":"iana"},"application/tamp-sequence-adjust":{"source":"iana"},"application/tamp-sequence-adjust-confirm":{"source":"iana"},"application/tamp-status-query":{"source":"iana"},"application/tamp-status-response":{"source":"iana"},"application/tamp-update":{"source":"iana"},"application/tamp-update-confirm":{"source":"iana"},"application/tar":{"compressible":true},"application/taxii+json":{"source":"iana","compressible":true},"application/td+json":{"source":"iana","compressible":true},"application/tei+xml":{"source":"iana","compressible":true,"extensions":["tei","teicorpus"]},"application/tetra_isi":{"source":"iana"},"application/thraud+xml":{"source":"iana","compressible":true,"extensions":["tfi"]},"application/timestamp-query":{"source":"iana"},"application/timestamp-reply":{"source":"iana"},"application/timestamped-data":{"source":"iana","extensions":["tsd"]},"application/tlsrpt+gzip":{"source":"iana"},"application/tlsrpt+json":{"source":"iana","compressible":true},"application/tm+json":{"source":"iana","compressible":true},"application/tnauthlist":{"source":"iana"},"application/toc+cbor":{"source":"iana"},"application/token-introspection+jwt":{"source":"iana"},"application/toml":{"source":"iana","compressible":true,"extensions":["toml"]},"application/trickle-ice-sdpfrag":{"source":"iana"},"application/trig":{"source":"iana","extensions":["trig"]},"application/trust-chain+json":{"source":"iana","compressible":true},"application/trust-mark+jwt":{"source":"iana"},"application/trust-mark-delegation+jwt":{"source":"iana"},"application/ttml+xml":{"source":"iana","compressible":true,"extensions":["ttml"]},"application/tve-trigger":{"source":"iana"},"application/tzif":{"source":"iana"},"application/tzif-leap":{"source":"iana"},"application/ubjson":{"compressible":false,"extensions":["ubj"]},"application/uccs+cbor":{"source":"iana"},"application/ujcs+json":{"source":"iana","compressible":true},"application/ulpfec":{"source":"iana"},"application/urc-grpsheet+xml":{"source":"iana","compressible":true},"application/urc-ressheet+xml":{"source":"iana","compressible":true,"extensions":["rsheet"]},"application/urc-targetdesc+xml":{"source":"iana","compressible":true,"extensions":["td"]},"application/urc-uisocketdesc+xml":{"source":"iana","compressible":true},"application/vc":{"source":"iana"},"application/vc+cose":{"source":"iana"},"application/vc+jwt":{"source":"iana"},"application/vcard+json":{"source":"iana","compressible":true},"application/vcard+xml":{"source":"iana","compressible":true},"application/vemmi":{"source":"iana"},"application/vividence.scriptfile":{"source":"apache"},"application/vnd.1000minds.decision-model+xml":{"source":"iana","compressible":true,"extensions":["1km"]},"application/vnd.1ob":{"source":"iana"},"application/vnd.3gpp-prose+xml":{"source":"iana","compressible":true},"application/vnd.3gpp-prose-pc3a+xml":{"source":"iana","compressible":true},"application/vnd.3gpp-prose-pc3ach+xml":{"source":"iana","compressible":true},"application/vnd.3gpp-prose-pc3ch+xml":{"source":"iana","compressible":true},"application/vnd.3gpp-prose-pc8+xml":{"source":"iana","compressible":true},"application/vnd.3gpp-v2x-local-service-information":{"source":"iana"},"application/vnd.3gpp.5gnas":{"source":"iana"},"application/vnd.3gpp.5gsa2x":{"source":"iana"},"application/vnd.3gpp.5gsa2x-local-service-information":{"source":"iana"},"application/vnd.3gpp.5gsv2x":{"source":"iana"},"application/vnd.3gpp.5gsv2x-local-service-information":{"source":"iana"},"application/vnd.3gpp.access-transfer-events+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.bsf+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.crs+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.current-location-discovery+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.gmop+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.gtpc":{"source":"iana"},"application/vnd.3gpp.interworking-data":{"source":"iana"},"application/vnd.3gpp.lpp":{"source":"iana"},"application/vnd.3gpp.mc-signalling-ear":{"source":"iana"},"application/vnd.3gpp.mcdata-affiliation-command+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-msgstore-ctrl-request+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-payload":{"source":"iana"},"application/vnd.3gpp.mcdata-regroup+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-service-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-signalling":{"source":"iana"},"application/vnd.3gpp.mcdata-ue-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcdata-user-profile+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-affiliation-command+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-floor-request+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-location-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-mbms-usage-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-regroup+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-service-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-signed+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-ue-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-ue-init-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcptt-user-profile+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-affiliation-command+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-location-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-mbms-usage-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-regroup+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-service-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-transmission-request+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-ue-config+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mcvideo-user-profile+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.mid-call+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.ngap":{"source":"iana"},"application/vnd.3gpp.pfcp":{"source":"iana"},"application/vnd.3gpp.pic-bw-large":{"source":"iana","extensions":["plb"]},"application/vnd.3gpp.pic-bw-small":{"source":"iana","extensions":["psb"]},"application/vnd.3gpp.pic-bw-var":{"source":"iana","extensions":["pvb"]},"application/vnd.3gpp.pinapp-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.s1ap":{"source":"iana"},"application/vnd.3gpp.seal-group-doc+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.seal-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.seal-location-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.seal-mbms-usage-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.seal-network-qos-management-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.seal-ue-config-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.seal-unicast-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.seal-user-profile-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.sms":{"source":"iana"},"application/vnd.3gpp.sms+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.srvcc-ext+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.srvcc-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.state-and-event-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.ussd+xml":{"source":"iana","compressible":true},"application/vnd.3gpp.v2x":{"source":"iana"},"application/vnd.3gpp.vae-info+xml":{"source":"iana","compressible":true},"application/vnd.3gpp2.bcmcsinfo+xml":{"source":"iana","compressible":true},"application/vnd.3gpp2.sms":{"source":"iana"},"application/vnd.3gpp2.tcap":{"source":"iana","extensions":["tcap"]},"application/vnd.3lightssoftware.imagescal":{"source":"iana"},"application/vnd.3m.post-it-notes":{"source":"iana","extensions":["pwn"]},"application/vnd.accpac.simply.aso":{"source":"iana","extensions":["aso"]},"application/vnd.accpac.simply.imp":{"source":"iana","extensions":["imp"]},"application/vnd.acm.addressxfer+json":{"source":"iana","compressible":true},"application/vnd.acm.chatbot+json":{"source":"iana","compressible":true},"application/vnd.acucobol":{"source":"iana","extensions":["acu"]},"application/vnd.acucorp":{"source":"iana","extensions":["atc","acutc"]},"application/vnd.adobe.air-application-installer-package+zip":{"source":"apache","compressible":false,"extensions":["air"]},"application/vnd.adobe.flash.movie":{"source":"iana"},"application/vnd.adobe.formscentral.fcdt":{"source":"iana","extensions":["fcdt"]},"application/vnd.adobe.fxp":{"source":"iana","extensions":["fxp","fxpl"]},"application/vnd.adobe.partial-upload":{"source":"iana"},"application/vnd.adobe.xdp+xml":{"source":"iana","compressible":true,"extensions":["xdp"]},"application/vnd.adobe.xfdf":{"source":"apache","extensions":["xfdf"]},"application/vnd.aether.imp":{"source":"iana"},"application/vnd.afpc.afplinedata":{"source":"iana"},"application/vnd.afpc.afplinedata-pagedef":{"source":"iana"},"application/vnd.afpc.cmoca-cmresource":{"source":"iana"},"application/vnd.afpc.foca-charset":{"source":"iana"},"application/vnd.afpc.foca-codedfont":{"source":"iana"},"application/vnd.afpc.foca-codepage":{"source":"iana"},"application/vnd.afpc.modca":{"source":"iana"},"application/vnd.afpc.modca-cmtable":{"source":"iana"},"application/vnd.afpc.modca-formdef":{"source":"iana"},"application/vnd.afpc.modca-mediummap":{"source":"iana"},"application/vnd.afpc.modca-objectcontainer":{"source":"iana"},"application/vnd.afpc.modca-overlay":{"source":"iana"},"application/vnd.afpc.modca-pagesegment":{"source":"iana"},"application/vnd.age":{"source":"iana","extensions":["age"]},"application/vnd.ah-barcode":{"source":"apache"},"application/vnd.ahead.space":{"source":"iana","extensions":["ahead"]},"application/vnd.airzip.filesecure.azf":{"source":"iana","extensions":["azf"]},"application/vnd.airzip.filesecure.azs":{"source":"iana","extensions":["azs"]},"application/vnd.amadeus+json":{"source":"iana","compressible":true},"application/vnd.amazon.ebook":{"source":"apache","extensions":["azw"]},"application/vnd.amazon.mobi8-ebook":{"source":"iana"},"application/vnd.americandynamics.acc":{"source":"iana","extensions":["acc"]},"application/vnd.amiga.ami":{"source":"iana","extensions":["ami"]},"application/vnd.amundsen.maze+xml":{"source":"iana","compressible":true},"application/vnd.android.ota":{"source":"iana"},"application/vnd.android.package-archive":{"source":"apache","compressible":false,"extensions":["apk"]},"application/vnd.anki":{"source":"iana"},"application/vnd.anser-web-certificate-issue-initiation":{"source":"iana","extensions":["cii"]},"application/vnd.anser-web-funds-transfer-initiation":{"source":"apache","extensions":["fti"]},"application/vnd.antix.game-component":{"source":"iana","extensions":["atx"]},"application/vnd.apache.arrow.file":{"source":"iana"},"application/vnd.apache.arrow.stream":{"source":"iana"},"application/vnd.apache.parquet":{"source":"iana"},"application/vnd.apache.thrift.binary":{"source":"iana"},"application/vnd.apache.thrift.compact":{"source":"iana"},"application/vnd.apache.thrift.json":{"source":"iana"},"application/vnd.apexlang":{"source":"iana"},"application/vnd.api+json":{"source":"iana","compressible":true},"application/vnd.aplextor.warrp+json":{"source":"iana","compressible":true},"application/vnd.apothekende.reservation+json":{"source":"iana","compressible":true},"application/vnd.apple.installer+xml":{"source":"iana","compressible":true,"extensions":["mpkg"]},"application/vnd.apple.keynote":{"source":"iana","extensions":["key"]},"application/vnd.apple.mpegurl":{"source":"iana","extensions":["m3u8"]},"application/vnd.apple.numbers":{"source":"iana","extensions":["numbers"]},"application/vnd.apple.pages":{"source":"iana","extensions":["pages"]},"application/vnd.apple.pkpass":{"compressible":false,"extensions":["pkpass"]},"application/vnd.arastra.swi":{"source":"apache"},"application/vnd.aristanetworks.swi":{"source":"iana","extensions":["swi"]},"application/vnd.artisan+json":{"source":"iana","compressible":true},"application/vnd.artsquare":{"source":"iana"},"application/vnd.astraea-software.iota":{"source":"iana","extensions":["iota"]},"application/vnd.audiograph":{"source":"iana","extensions":["aep"]},"application/vnd.autodesk.fbx":{"extensions":["fbx"]},"application/vnd.autopackage":{"source":"iana"},"application/vnd.avalon+json":{"source":"iana","compressible":true},"application/vnd.avistar+xml":{"source":"iana","compressible":true},"application/vnd.balsamiq.bmml+xml":{"source":"iana","compressible":true,"extensions":["bmml"]},"application/vnd.balsamiq.bmpr":{"source":"iana"},"application/vnd.banana-accounting":{"source":"iana"},"application/vnd.bbf.usp.error":{"source":"iana"},"application/vnd.bbf.usp.msg":{"source":"iana"},"application/vnd.bbf.usp.msg+json":{"source":"iana","compressible":true},"application/vnd.bekitzur-stech+json":{"source":"iana","compressible":true},"application/vnd.belightsoft.lhzd+zip":{"source":"iana","compressible":false},"application/vnd.belightsoft.lhzl+zip":{"source":"iana","compressible":false},"application/vnd.bint.med-content":{"source":"iana"},"application/vnd.biopax.rdf+xml":{"source":"iana","compressible":true},"application/vnd.blink-idb-value-wrapper":{"source":"iana"},"application/vnd.blueice.multipass":{"source":"iana","extensions":["mpm"]},"application/vnd.bluetooth.ep.oob":{"source":"iana"},"application/vnd.bluetooth.le.oob":{"source":"iana"},"application/vnd.bmi":{"source":"iana","extensions":["bmi"]},"application/vnd.bpf":{"source":"iana"},"application/vnd.bpf3":{"source":"iana"},"application/vnd.businessobjects":{"source":"iana","extensions":["rep"]},"application/vnd.byu.uapi+json":{"source":"iana","compressible":true},"application/vnd.bzip3":{"source":"iana"},"application/vnd.c3voc.schedule+xml":{"source":"iana","compressible":true},"application/vnd.cab-jscript":{"source":"iana"},"application/vnd.canon-cpdl":{"source":"iana"},"application/vnd.canon-lips":{"source":"iana"},"application/vnd.capasystems-pg+json":{"source":"iana","compressible":true},"application/vnd.cendio.thinlinc.clientconf":{"source":"iana"},"application/vnd.century-systems.tcp_stream":{"source":"iana"},"application/vnd.chemdraw+xml":{"source":"iana","compressible":true,"extensions":["cdxml"]},"application/vnd.chess-pgn":{"source":"iana"},"application/vnd.chipnuts.karaoke-mmd":{"source":"iana","extensions":["mmd"]},"application/vnd.ciedi":{"source":"iana"},"application/vnd.cinderella":{"source":"iana","extensions":["cdy"]},"application/vnd.cirpack.isdn-ext":{"source":"iana"},"application/vnd.citationstyles.style+xml":{"source":"iana","compressible":true,"extensions":["csl"]},"application/vnd.claymore":{"source":"iana","extensions":["cla"]},"application/vnd.cloanto.rp9":{"source":"iana","extensions":["rp9"]},"application/vnd.clonk.c4group":{"source":"iana","extensions":["c4g","c4d","c4f","c4p","c4u"]},"application/vnd.cluetrust.cartomobile-config":{"source":"iana","extensions":["c11amc"]},"application/vnd.cluetrust.cartomobile-config-pkg":{"source":"iana","extensions":["c11amz"]},"application/vnd.cncf.helm.chart.content.v1.tar+gzip":{"source":"iana"},"application/vnd.cncf.helm.chart.provenance.v1.prov":{"source":"iana"},"application/vnd.cncf.helm.config.v1+json":{"source":"iana","compressible":true},"application/vnd.coffeescript":{"source":"iana"},"application/vnd.collabio.xodocuments.document":{"source":"iana"},"application/vnd.collabio.xodocuments.document-template":{"source":"iana"},"application/vnd.collabio.xodocuments.presentation":{"source":"iana"},"application/vnd.collabio.xodocuments.presentation-template":{"source":"iana"},"application/vnd.collabio.xodocuments.spreadsheet":{"source":"iana"},"application/vnd.collabio.xodocuments.spreadsheet-template":{"source":"iana"},"application/vnd.collection+json":{"source":"iana","compressible":true},"application/vnd.collection.doc+json":{"source":"iana","compressible":true},"application/vnd.collection.next+json":{"source":"iana","compressible":true},"application/vnd.comicbook+zip":{"source":"iana","compressible":false},"application/vnd.comicbook-rar":{"source":"iana"},"application/vnd.commerce-battelle":{"source":"iana"},"application/vnd.commonspace":{"source":"iana","extensions":["csp"]},"application/vnd.contact.cmsg":{"source":"iana","extensions":["cdbcmsg"]},"application/vnd.coreos.ignition+json":{"source":"iana","compressible":true},"application/vnd.cosmocaller":{"source":"iana","extensions":["cmc"]},"application/vnd.crick.clicker":{"source":"iana","extensions":["clkx"]},"application/vnd.crick.clicker.keyboard":{"source":"iana","extensions":["clkk"]},"application/vnd.crick.clicker.palette":{"source":"iana","extensions":["clkp"]},"application/vnd.crick.clicker.template":{"source":"iana","extensions":["clkt"]},"application/vnd.crick.clicker.wordbank":{"source":"iana","extensions":["clkw"]},"application/vnd.criticaltools.wbs+xml":{"source":"iana","compressible":true,"extensions":["wbs"]},"application/vnd.cryptii.pipe+json":{"source":"iana","compressible":true},"application/vnd.crypto-shade-file":{"source":"iana"},"application/vnd.cryptomator.encrypted":{"source":"iana"},"application/vnd.cryptomator.vault":{"source":"iana"},"application/vnd.ctc-posml":{"source":"iana","extensions":["pml"]},"application/vnd.ctct.ws+xml":{"source":"iana","compressible":true},"application/vnd.cups-pdf":{"source":"iana"},"application/vnd.cups-postscript":{"source":"iana"},"application/vnd.cups-ppd":{"source":"iana","extensions":["ppd"]},"application/vnd.cups-raster":{"source":"iana"},"application/vnd.cups-raw":{"source":"iana"},"application/vnd.curl":{"source":"iana"},"application/vnd.curl.car":{"source":"apache","extensions":["car"]},"application/vnd.curl.pcurl":{"source":"apache","extensions":["pcurl"]},"application/vnd.cyan.dean.root+xml":{"source":"iana","compressible":true},"application/vnd.cybank":{"source":"iana"},"application/vnd.cyclonedx+json":{"source":"iana","compressible":true},"application/vnd.cyclonedx+xml":{"source":"iana","compressible":true},"application/vnd.d2l.coursepackage1p0+zip":{"source":"iana","compressible":false},"application/vnd.d3m-dataset":{"source":"iana"},"application/vnd.d3m-problem":{"source":"iana"},"application/vnd.dart":{"source":"iana","compressible":true,"extensions":["dart"]},"application/vnd.data-vision.rdz":{"source":"iana","extensions":["rdz"]},"application/vnd.datalog":{"source":"iana"},"application/vnd.datapackage+json":{"source":"iana","compressible":true},"application/vnd.dataresource+json":{"source":"iana","compressible":true},"application/vnd.dbf":{"source":"iana","extensions":["dbf"]},"application/vnd.dcmp+xml":{"source":"iana","compressible":true,"extensions":["dcmp"]},"application/vnd.debian.binary-package":{"source":"iana"},"application/vnd.dece.data":{"source":"iana","extensions":["uvf","uvvf","uvd","uvvd"]},"application/vnd.dece.ttml+xml":{"source":"iana","compressible":true,"extensions":["uvt","uvvt"]},"application/vnd.dece.unspecified":{"source":"iana","extensions":["uvx","uvvx"]},"application/vnd.dece.zip":{"source":"iana","extensions":["uvz","uvvz"]},"application/vnd.denovo.fcselayout-link":{"source":"iana","extensions":["fe_launch"]},"application/vnd.desmume.movie":{"source":"iana"},"application/vnd.dir-bi.plate-dl-nosuffix":{"source":"iana"},"application/vnd.dm.delegation+xml":{"source":"iana","compressible":true},"application/vnd.dna":{"source":"iana","extensions":["dna"]},"application/vnd.document+json":{"source":"iana","compressible":true},"application/vnd.dolby.mlp":{"source":"apache","extensions":["mlp"]},"application/vnd.dolby.mobile.1":{"source":"iana"},"application/vnd.dolby.mobile.2":{"source":"iana"},"application/vnd.doremir.scorecloud-binary-document":{"source":"iana"},"application/vnd.dpgraph":{"source":"iana","extensions":["dpg"]},"application/vnd.dreamfactory":{"source":"iana","extensions":["dfac"]},"application/vnd.drive+json":{"source":"iana","compressible":true},"application/vnd.ds-keypoint":{"source":"apache","extensions":["kpxx"]},"application/vnd.dtg.local":{"source":"iana"},"application/vnd.dtg.local.flash":{"source":"iana"},"application/vnd.dtg.local.html":{"source":"iana"},"application/vnd.dvb.ait":{"source":"iana","extensions":["ait"]},"application/vnd.dvb.dvbisl+xml":{"source":"iana","compressible":true},"application/vnd.dvb.dvbj":{"source":"iana"},"application/vnd.dvb.esgcontainer":{"source":"iana"},"application/vnd.dvb.ipdcdftnotifaccess":{"source":"iana"},"application/vnd.dvb.ipdcesgaccess":{"source":"iana"},"application/vnd.dvb.ipdcesgaccess2":{"source":"iana"},"application/vnd.dvb.ipdcesgpdd":{"source":"iana"},"application/vnd.dvb.ipdcroaming":{"source":"iana"},"application/vnd.dvb.iptv.alfec-base":{"source":"iana"},"application/vnd.dvb.iptv.alfec-enhancement":{"source":"iana"},"application/vnd.dvb.notif-aggregate-root+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-container+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-generic+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-ia-msglist+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-ia-registration-request+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-ia-registration-response+xml":{"source":"iana","compressible":true},"application/vnd.dvb.notif-init+xml":{"source":"iana","compressible":true},"application/vnd.dvb.pfr":{"source":"iana"},"application/vnd.dvb.service":{"source":"iana","extensions":["svc"]},"application/vnd.dxr":{"source":"iana"},"application/vnd.dynageo":{"source":"iana","extensions":["geo"]},"application/vnd.dzr":{"source":"iana"},"application/vnd.easykaraoke.cdgdownload":{"source":"iana"},"application/vnd.ecdis-update":{"source":"iana"},"application/vnd.ecip.rlp":{"source":"iana"},"application/vnd.eclipse.ditto+json":{"source":"iana","compressible":true},"application/vnd.ecowin.chart":{"source":"iana","extensions":["mag"]},"application/vnd.ecowin.filerequest":{"source":"iana"},"application/vnd.ecowin.fileupdate":{"source":"iana"},"application/vnd.ecowin.series":{"source":"iana"},"application/vnd.ecowin.seriesrequest":{"source":"iana"},"application/vnd.ecowin.seriesupdate":{"source":"iana"},"application/vnd.efi.img":{"source":"iana"},"application/vnd.efi.iso":{"source":"iana"},"application/vnd.eln+zip":{"source":"iana","compressible":false},"application/vnd.emclient.accessrequest+xml":{"source":"iana","compressible":true},"application/vnd.enliven":{"source":"iana","extensions":["nml"]},"application/vnd.enphase.envoy":{"source":"iana"},"application/vnd.eprints.data+xml":{"source":"iana","compressible":true},"application/vnd.epson.esf":{"source":"iana","extensions":["esf"]},"application/vnd.epson.msf":{"source":"iana","extensions":["msf"]},"application/vnd.epson.quickanime":{"source":"iana","extensions":["qam"]},"application/vnd.epson.salt":{"source":"iana","extensions":["slt"]},"application/vnd.epson.ssf":{"source":"iana","extensions":["ssf"]},"application/vnd.ericsson.quickcall":{"source":"iana"},"application/vnd.erofs":{"source":"iana"},"application/vnd.espass-espass+zip":{"source":"iana","compressible":false},"application/vnd.eszigno3+xml":{"source":"iana","compressible":true,"extensions":["es3","et3"]},"application/vnd.etsi.aoc+xml":{"source":"iana","compressible":true},"application/vnd.etsi.asic-e+zip":{"source":"iana","compressible":false},"application/vnd.etsi.asic-s+zip":{"source":"iana","compressible":false},"application/vnd.etsi.cug+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvcommand+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvdiscovery+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvprofile+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvsad-bc+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvsad-cod+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvsad-npvr+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvservice+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvsync+xml":{"source":"iana","compressible":true},"application/vnd.etsi.iptvueprofile+xml":{"source":"iana","compressible":true},"application/vnd.etsi.mcid+xml":{"source":"iana","compressible":true},"application/vnd.etsi.mheg5":{"source":"iana"},"application/vnd.etsi.overload-control-policy-dataset+xml":{"source":"iana","compressible":true},"application/vnd.etsi.pstn+xml":{"source":"iana","compressible":true},"application/vnd.etsi.sci+xml":{"source":"iana","compressible":true},"application/vnd.etsi.simservs+xml":{"source":"iana","compressible":true},"application/vnd.etsi.timestamp-token":{"source":"iana"},"application/vnd.etsi.tsl+xml":{"source":"iana","compressible":true},"application/vnd.etsi.tsl.der":{"source":"iana"},"application/vnd.eu.kasparian.car+json":{"source":"iana","compressible":true},"application/vnd.eudora.data":{"source":"iana"},"application/vnd.evolv.ecig.profile":{"source":"iana"},"application/vnd.evolv.ecig.settings":{"source":"iana"},"application/vnd.evolv.ecig.theme":{"source":"iana"},"application/vnd.exstream-empower+zip":{"source":"iana","compressible":false},"application/vnd.exstream-package":{"source":"iana"},"application/vnd.ezpix-album":{"source":"iana","extensions":["ez2"]},"application/vnd.ezpix-package":{"source":"iana","extensions":["ez3"]},"application/vnd.f-secure.mobile":{"source":"iana"},"application/vnd.familysearch.gedcom+zip":{"source":"iana","compressible":false},"application/vnd.fastcopy-disk-image":{"source":"iana"},"application/vnd.fdf":{"source":"apache","extensions":["fdf"]},"application/vnd.fdsn.mseed":{"source":"iana","extensions":["mseed"]},"application/vnd.fdsn.seed":{"source":"iana","extensions":["seed","dataless"]},"application/vnd.fdsn.stationxml+xml":{"source":"iana","charset":"XML-BASED","compressible":true},"application/vnd.ffsns":{"source":"iana"},"application/vnd.ficlab.flb+zip":{"source":"iana","compressible":false},"application/vnd.filmit.zfc":{"source":"iana"},"application/vnd.fints":{"source":"iana"},"application/vnd.firemonkeys.cloudcell":{"source":"iana"},"application/vnd.flographit":{"source":"iana","extensions":["gph"]},"application/vnd.fluxtime.clip":{"source":"iana","extensions":["ftc"]},"application/vnd.font-fontforge-sfd":{"source":"iana"},"application/vnd.framemaker":{"source":"iana","extensions":["fm","frame","maker","book"]},"application/vnd.freelog.comic":{"source":"iana"},"application/vnd.frogans.fnc":{"source":"apache","extensions":["fnc"]},"application/vnd.frogans.ltf":{"source":"apache","extensions":["ltf"]},"application/vnd.fsc.weblaunch":{"source":"iana","extensions":["fsc"]},"application/vnd.fujifilm.fb.docuworks":{"source":"iana"},"application/vnd.fujifilm.fb.docuworks.binder":{"source":"iana"},"application/vnd.fujifilm.fb.docuworks.container":{"source":"iana"},"application/vnd.fujifilm.fb.jfi+xml":{"source":"iana","compressible":true},"application/vnd.fujitsu.oasys":{"source":"iana","extensions":["oas"]},"application/vnd.fujitsu.oasys2":{"source":"iana","extensions":["oa2"]},"application/vnd.fujitsu.oasys3":{"source":"iana","extensions":["oa3"]},"application/vnd.fujitsu.oasysgp":{"source":"iana","extensions":["fg5"]},"application/vnd.fujitsu.oasysprs":{"source":"iana","extensions":["bh2"]},"application/vnd.fujixerox.art-ex":{"source":"iana"},"application/vnd.fujixerox.art4":{"source":"iana"},"application/vnd.fujixerox.ddd":{"source":"iana","extensions":["ddd"]},"application/vnd.fujixerox.docuworks":{"source":"iana","extensions":["xdw"]},"application/vnd.fujixerox.docuworks.binder":{"source":"iana","extensions":["xbd"]},"application/vnd.fujixerox.docuworks.container":{"source":"iana"},"application/vnd.fujixerox.hbpl":{"source":"iana"},"application/vnd.fut-misnet":{"source":"iana"},"application/vnd.futoin+cbor":{"source":"iana"},"application/vnd.futoin+json":{"source":"iana","compressible":true},"application/vnd.fuzzysheet":{"source":"iana","extensions":["fzs"]},"application/vnd.ga4gh.passport+jwt":{"source":"iana"},"application/vnd.genomatix.tuxedo":{"source":"iana","extensions":["txd"]},"application/vnd.genozip":{"source":"iana"},"application/vnd.gentics.grd+json":{"source":"iana","compressible":true},"application/vnd.gentoo.catmetadata+xml":{"source":"iana","compressible":true},"application/vnd.gentoo.ebuild":{"source":"iana"},"application/vnd.gentoo.eclass":{"source":"iana"},"application/vnd.gentoo.gpkg":{"source":"iana"},"application/vnd.gentoo.manifest":{"source":"iana"},"application/vnd.gentoo.pkgmetadata+xml":{"source":"iana","compressible":true},"application/vnd.gentoo.xpak":{"source":"iana"},"application/vnd.geo+json":{"source":"apache","compressible":true},"application/vnd.geocube+xml":{"source":"apache","compressible":true},"application/vnd.geogebra.file":{"source":"iana","extensions":["ggb"]},"application/vnd.geogebra.pinboard":{"source":"iana"},"application/vnd.geogebra.slides":{"source":"iana","extensions":["ggs"]},"application/vnd.geogebra.tool":{"source":"iana","extensions":["ggt"]},"application/vnd.geometry-explorer":{"source":"iana","extensions":["gex","gre"]},"application/vnd.geonext":{"source":"iana","extensions":["gxt"]},"application/vnd.geoplan":{"source":"iana","extensions":["g2w"]},"application/vnd.geospace":{"source":"iana","extensions":["g3w"]},"application/vnd.gerber":{"source":"iana"},"application/vnd.globalplatform.card-content-mgt":{"source":"iana"},"application/vnd.globalplatform.card-content-mgt-response":{"source":"iana"},"application/vnd.gmx":{"source":"iana","extensions":["gmx"]},"application/vnd.gnu.taler.exchange+json":{"source":"iana","compressible":true},"application/vnd.gnu.taler.merchant+json":{"source":"iana","compressible":true},"application/vnd.google-apps.audio":{},"application/vnd.google-apps.document":{"compressible":false,"extensions":["gdoc"]},"application/vnd.google-apps.drawing":{"compressible":false,"extensions":["gdraw"]},"application/vnd.google-apps.drive-sdk":{"compressible":false},"application/vnd.google-apps.file":{},"application/vnd.google-apps.folder":{"compressible":false},"application/vnd.google-apps.form":{"compressible":false,"extensions":["gform"]},"application/vnd.google-apps.fusiontable":{},"application/vnd.google-apps.jam":{"compressible":false,"extensions":["gjam"]},"application/vnd.google-apps.mail-layout":{},"application/vnd.google-apps.map":{"compressible":false,"extensions":["gmap"]},"application/vnd.google-apps.photo":{},"application/vnd.google-apps.presentation":{"compressible":false,"extensions":["gslides"]},"application/vnd.google-apps.script":{"compressible":false,"extensions":["gscript"]},"application/vnd.google-apps.shortcut":{},"application/vnd.google-apps.site":{"compressible":false,"extensions":["gsite"]},"application/vnd.google-apps.spreadsheet":{"compressible":false,"extensions":["gsheet"]},"application/vnd.google-apps.unknown":{},"application/vnd.google-apps.video":{},"application/vnd.google-earth.kml+xml":{"source":"iana","compressible":true,"extensions":["kml"]},"application/vnd.google-earth.kmz":{"source":"iana","compressible":false,"extensions":["kmz"]},"application/vnd.gov.sk.e-form+xml":{"source":"apache","compressible":true},"application/vnd.gov.sk.e-form+zip":{"source":"iana","compressible":false},"application/vnd.gov.sk.xmldatacontainer+xml":{"source":"iana","compressible":true,"extensions":["xdcf"]},"application/vnd.gpxsee.map+xml":{"source":"iana","compressible":true},"application/vnd.grafeq":{"source":"iana","extensions":["gqf","gqs"]},"application/vnd.gridmp":{"source":"iana"},"application/vnd.groove-account":{"source":"iana","extensions":["gac"]},"application/vnd.groove-help":{"source":"iana","extensions":["ghf"]},"application/vnd.groove-identity-message":{"source":"iana","extensions":["gim"]},"application/vnd.groove-injector":{"source":"iana","extensions":["grv"]},"application/vnd.groove-tool-message":{"source":"iana","extensions":["gtm"]},"application/vnd.groove-tool-template":{"source":"iana","extensions":["tpl"]},"application/vnd.groove-vcard":{"source":"iana","extensions":["vcg"]},"application/vnd.hal+json":{"source":"iana","compressible":true},"application/vnd.hal+xml":{"source":"iana","compressible":true,"extensions":["hal"]},"application/vnd.handheld-entertainment+xml":{"source":"iana","compressible":true,"extensions":["zmm"]},"application/vnd.hbci":{"source":"iana","extensions":["hbci"]},"application/vnd.hc+json":{"source":"iana","compressible":true},"application/vnd.hcl-bireports":{"source":"iana"},"application/vnd.hdt":{"source":"iana"},"application/vnd.heroku+json":{"source":"iana","compressible":true},"application/vnd.hhe.lesson-player":{"source":"iana","extensions":["les"]},"application/vnd.hp-hpgl":{"source":"iana","extensions":["hpgl"]},"application/vnd.hp-hpid":{"source":"iana","extensions":["hpid"]},"application/vnd.hp-hps":{"source":"iana","extensions":["hps"]},"application/vnd.hp-jlyt":{"source":"iana","extensions":["jlt"]},"application/vnd.hp-pcl":{"source":"iana","extensions":["pcl"]},"application/vnd.hp-pclxl":{"source":"iana","extensions":["pclxl"]},"application/vnd.hsl":{"source":"iana"},"application/vnd.httphone":{"source":"iana"},"application/vnd.hydrostatix.sof-data":{"source":"iana","extensions":["sfd-hdstx"]},"application/vnd.hyper+json":{"source":"iana","compressible":true},"application/vnd.hyper-item+json":{"source":"iana","compressible":true},"application/vnd.hyperdrive+json":{"source":"iana","compressible":true},"application/vnd.hzn-3d-crossword":{"source":"iana"},"application/vnd.ibm.afplinedata":{"source":"apache"},"application/vnd.ibm.electronic-media":{"source":"iana"},"application/vnd.ibm.minipay":{"source":"iana","extensions":["mpy"]},"application/vnd.ibm.modcap":{"source":"apache","extensions":["afp","listafp","list3820"]},"application/vnd.ibm.rights-management":{"source":"iana","extensions":["irm"]},"application/vnd.ibm.secure-container":{"source":"iana","extensions":["sc"]},"application/vnd.iccprofile":{"source":"iana","extensions":["icc","icm"]},"application/vnd.ieee.1905":{"source":"iana"},"application/vnd.igloader":{"source":"iana","extensions":["igl"]},"application/vnd.imagemeter.folder+zip":{"source":"iana","compressible":false},"application/vnd.imagemeter.image+zip":{"source":"iana","compressible":false},"application/vnd.immervision-ivp":{"source":"iana","extensions":["ivp"]},"application/vnd.immervision-ivu":{"source":"iana","extensions":["ivu"]},"application/vnd.ims.imsccv1p1":{"source":"iana"},"application/vnd.ims.imsccv1p2":{"source":"iana"},"application/vnd.ims.imsccv1p3":{"source":"iana"},"application/vnd.ims.lis.v2.result+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolconsumerprofile+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolproxy+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolproxy.id+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolsettings+json":{"source":"iana","compressible":true},"application/vnd.ims.lti.v2.toolsettings.simple+json":{"source":"iana","compressible":true},"application/vnd.informedcontrol.rms+xml":{"source":"iana","compressible":true},"application/vnd.informix-visionary":{"source":"apache"},"application/vnd.infotech.project":{"source":"iana"},"application/vnd.infotech.project+xml":{"source":"iana","compressible":true},"application/vnd.innopath.wamp.notification":{"source":"iana"},"application/vnd.insors.igm":{"source":"iana","extensions":["igm"]},"application/vnd.intercon.formnet":{"source":"iana","extensions":["xpw","xpx"]},"application/vnd.intergeo":{"source":"iana","extensions":["i2g"]},"application/vnd.intertrust.digibox":{"source":"iana"},"application/vnd.intertrust.nncp":{"source":"iana"},"application/vnd.intu.qbo":{"source":"iana","extensions":["qbo"]},"application/vnd.intu.qfx":{"source":"iana","extensions":["qfx"]},"application/vnd.ipfs.ipns-record":{"source":"iana"},"application/vnd.ipld.car":{"source":"iana"},"application/vnd.ipld.dag-cbor":{"source":"iana"},"application/vnd.ipld.dag-json":{"source":"iana"},"application/vnd.ipld.raw":{"source":"iana"},"application/vnd.iptc.g2.catalogitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.conceptitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.knowledgeitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.newsitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.newsmessage+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.packageitem+xml":{"source":"iana","compressible":true},"application/vnd.iptc.g2.planningitem+xml":{"source":"iana","compressible":true},"application/vnd.ipunplugged.rcprofile":{"source":"iana","extensions":["rcprofile"]},"application/vnd.irepository.package+xml":{"source":"iana","compressible":true,"extensions":["irp"]},"application/vnd.is-xpr":{"source":"iana","extensions":["xpr"]},"application/vnd.isac.fcs":{"source":"iana","extensions":["fcs"]},"application/vnd.iso11783-10+zip":{"source":"iana","compressible":false},"application/vnd.jam":{"source":"iana","extensions":["jam"]},"application/vnd.japannet-directory-service":{"source":"iana"},"application/vnd.japannet-jpnstore-wakeup":{"source":"iana"},"application/vnd.japannet-payment-wakeup":{"source":"iana"},"application/vnd.japannet-registration":{"source":"iana"},"application/vnd.japannet-registration-wakeup":{"source":"iana"},"application/vnd.japannet-setstore-wakeup":{"source":"iana"},"application/vnd.japannet-verification":{"source":"iana"},"application/vnd.japannet-verification-wakeup":{"source":"iana"},"application/vnd.jcp.javame.midlet-rms":{"source":"iana","extensions":["rms"]},"application/vnd.jisp":{"source":"iana","extensions":["jisp"]},"application/vnd.joost.joda-archive":{"source":"iana","extensions":["joda"]},"application/vnd.jsk.isdn-ngn":{"source":"iana"},"application/vnd.kahootz":{"source":"iana","extensions":["ktz","ktr"]},"application/vnd.kde.karbon":{"source":"iana","extensions":["karbon"]},"application/vnd.kde.kchart":{"source":"iana","extensions":["chrt"]},"application/vnd.kde.kformula":{"source":"iana","extensions":["kfo"]},"application/vnd.kde.kivio":{"source":"iana","extensions":["flw"]},"application/vnd.kde.kontour":{"source":"iana","extensions":["kon"]},"application/vnd.kde.kpresenter":{"source":"iana","extensions":["kpr","kpt"]},"application/vnd.kde.kspread":{"source":"iana","extensions":["ksp"]},"application/vnd.kde.kword":{"source":"iana","extensions":["kwd","kwt"]},"application/vnd.kdl":{"source":"iana"},"application/vnd.kenameaapp":{"source":"iana","extensions":["htke"]},"application/vnd.keyman.kmp+zip":{"source":"iana","compressible":false},"application/vnd.keyman.kmx":{"source":"iana"},"application/vnd.kidspiration":{"source":"iana","extensions":["kia"]},"application/vnd.kinar":{"source":"iana","extensions":["kne","knp"]},"application/vnd.koan":{"source":"iana","extensions":["skp","skd","skt","skm"]},"application/vnd.kodak-descriptor":{"source":"iana","extensions":["sse"]},"application/vnd.las":{"source":"iana"},"application/vnd.las.las+json":{"source":"iana","compressible":true},"application/vnd.las.las+xml":{"source":"iana","compressible":true,"extensions":["lasxml"]},"application/vnd.laszip":{"source":"iana"},"application/vnd.ldev.productlicensing":{"source":"iana"},"application/vnd.leap+json":{"source":"iana","compressible":true},"application/vnd.liberty-request+xml":{"source":"iana","compressible":true},"application/vnd.llamagraphics.life-balance.desktop":{"source":"iana","extensions":["lbd"]},"application/vnd.llamagraphics.life-balance.exchange+xml":{"source":"iana","compressible":true,"extensions":["lbe"]},"application/vnd.logipipe.circuit+zip":{"source":"iana","compressible":false},"application/vnd.loom":{"source":"iana"},"application/vnd.lotus-1-2-3":{"source":"iana","extensions":["123"]},"application/vnd.lotus-approach":{"source":"iana","extensions":["apr"]},"application/vnd.lotus-freelance":{"source":"iana","extensions":["pre"]},"application/vnd.lotus-notes":{"source":"iana","extensions":["nsf"]},"application/vnd.lotus-organizer":{"source":"iana","extensions":["org"]},"application/vnd.lotus-screencam":{"source":"iana","extensions":["scm"]},"application/vnd.lotus-wordpro":{"source":"iana","extensions":["lwp"]},"application/vnd.macports.portpkg":{"source":"iana","extensions":["portpkg"]},"application/vnd.mapbox-vector-tile":{"source":"iana","extensions":["mvt"]},"application/vnd.marlin.drm.actiontoken+xml":{"source":"iana","compressible":true},"application/vnd.marlin.drm.conftoken+xml":{"source":"iana","compressible":true},"application/vnd.marlin.drm.license+xml":{"source":"iana","compressible":true},"application/vnd.marlin.drm.mdcf":{"source":"iana"},"application/vnd.mason+json":{"source":"iana","compressible":true},"application/vnd.maxar.archive.3tz+zip":{"source":"iana","compressible":false},"application/vnd.maxmind.maxmind-db":{"source":"iana"},"application/vnd.mcd":{"source":"iana","extensions":["mcd"]},"application/vnd.mdl":{"source":"iana"},"application/vnd.mdl-mbsdf":{"source":"iana"},"application/vnd.medcalcdata":{"source":"iana","extensions":["mc1"]},"application/vnd.mediastation.cdkey":{"source":"iana","extensions":["cdkey"]},"application/vnd.medicalholodeck.recordxr":{"source":"iana"},"application/vnd.meridian-slingshot":{"source":"iana"},"application/vnd.mermaid":{"source":"iana"},"application/vnd.mfer":{"source":"iana","extensions":["mwf"]},"application/vnd.mfmp":{"source":"iana","extensions":["mfm"]},"application/vnd.micro+json":{"source":"iana","compressible":true},"application/vnd.micrografx.flo":{"source":"iana","extensions":["flo"]},"application/vnd.micrografx.igx":{"source":"iana","extensions":["igx"]},"application/vnd.microsoft.portable-executable":{"source":"iana"},"application/vnd.microsoft.windows.thumbnail-cache":{"source":"iana"},"application/vnd.miele+json":{"source":"iana","compressible":true},"application/vnd.mif":{"source":"iana","extensions":["mif"]},"application/vnd.minisoft-hp3000-save":{"source":"iana"},"application/vnd.mitsubishi.misty-guard.trustweb":{"source":"iana"},"application/vnd.mobius.daf":{"source":"iana","extensions":["daf"]},"application/vnd.mobius.dis":{"source":"iana","extensions":["dis"]},"application/vnd.mobius.mbk":{"source":"iana","extensions":["mbk"]},"application/vnd.mobius.mqy":{"source":"iana","extensions":["mqy"]},"application/vnd.mobius.msl":{"source":"iana","extensions":["msl"]},"application/vnd.mobius.plc":{"source":"iana","extensions":["plc"]},"application/vnd.mobius.txf":{"source":"iana","extensions":["txf"]},"application/vnd.modl":{"source":"iana"},"application/vnd.mophun.application":{"source":"iana","extensions":["mpn"]},"application/vnd.mophun.certificate":{"source":"iana","extensions":["mpc"]},"application/vnd.motorola.flexsuite":{"source":"iana"},"application/vnd.motorola.flexsuite.adsi":{"source":"iana"},"application/vnd.motorola.flexsuite.fis":{"source":"iana"},"application/vnd.motorola.flexsuite.gotap":{"source":"iana"},"application/vnd.motorola.flexsuite.kmr":{"source":"iana"},"application/vnd.motorola.flexsuite.ttc":{"source":"iana"},"application/vnd.motorola.flexsuite.wem":{"source":"iana"},"application/vnd.motorola.iprm":{"source":"iana"},"application/vnd.mozilla.xul+xml":{"source":"iana","compressible":true,"extensions":["xul"]},"application/vnd.ms-3mfdocument":{"source":"iana"},"application/vnd.ms-artgalry":{"source":"iana","extensions":["cil"]},"application/vnd.ms-asf":{"source":"iana"},"application/vnd.ms-cab-compressed":{"source":"iana","extensions":["cab"]},"application/vnd.ms-color.iccprofile":{"source":"apache"},"application/vnd.ms-excel":{"source":"iana","compressible":false,"extensions":["xls","xlm","xla","xlc","xlt","xlw"]},"application/vnd.ms-excel.addin.macroenabled.12":{"source":"iana","extensions":["xlam"]},"application/vnd.ms-excel.sheet.binary.macroenabled.12":{"source":"iana","extensions":["xlsb"]},"application/vnd.ms-excel.sheet.macroenabled.12":{"source":"iana","extensions":["xlsm"]},"application/vnd.ms-excel.template.macroenabled.12":{"source":"iana","extensions":["xltm"]},"application/vnd.ms-fontobject":{"source":"iana","compressible":true,"extensions":["eot"]},"application/vnd.ms-htmlhelp":{"source":"iana","extensions":["chm"]},"application/vnd.ms-ims":{"source":"iana","extensions":["ims"]},"application/vnd.ms-lrm":{"source":"iana","extensions":["lrm"]},"application/vnd.ms-office.activex+xml":{"source":"iana","compressible":true},"application/vnd.ms-officetheme":{"source":"iana","extensions":["thmx"]},"application/vnd.ms-opentype":{"source":"apache","compressible":true},"application/vnd.ms-outlook":{"compressible":false,"extensions":["msg"]},"application/vnd.ms-package.obfuscated-opentype":{"source":"apache"},"application/vnd.ms-pki.seccat":{"source":"apache","extensions":["cat"]},"application/vnd.ms-pki.stl":{"source":"apache","extensions":["stl"]},"application/vnd.ms-playready.initiator+xml":{"source":"iana","compressible":true},"application/vnd.ms-powerpoint":{"source":"iana","compressible":false,"extensions":["ppt","pps","pot"]},"application/vnd.ms-powerpoint.addin.macroenabled.12":{"source":"iana","extensions":["ppam"]},"application/vnd.ms-powerpoint.presentation.macroenabled.12":{"source":"iana","extensions":["pptm"]},"application/vnd.ms-powerpoint.slide.macroenabled.12":{"source":"iana","extensions":["sldm"]},"application/vnd.ms-powerpoint.slideshow.macroenabled.12":{"source":"iana","extensions":["ppsm"]},"application/vnd.ms-powerpoint.template.macroenabled.12":{"source":"iana","extensions":["potm"]},"application/vnd.ms-printdevicecapabilities+xml":{"source":"iana","compressible":true},"application/vnd.ms-printing.printticket+xml":{"source":"apache","compressible":true},"application/vnd.ms-printschematicket+xml":{"source":"iana","compressible":true},"application/vnd.ms-project":{"source":"iana","extensions":["mpp","mpt"]},"application/vnd.ms-tnef":{"source":"iana"},"application/vnd.ms-visio.viewer":{"extensions":["vdx"]},"application/vnd.ms-windows.devicepairing":{"source":"iana"},"application/vnd.ms-windows.nwprinting.oob":{"source":"iana"},"application/vnd.ms-windows.printerpairing":{"source":"iana"},"application/vnd.ms-windows.wsd.oob":{"source":"iana"},"application/vnd.ms-wmdrm.lic-chlg-req":{"source":"iana"},"application/vnd.ms-wmdrm.lic-resp":{"source":"iana"},"application/vnd.ms-wmdrm.meter-chlg-req":{"source":"iana"},"application/vnd.ms-wmdrm.meter-resp":{"source":"iana"},"application/vnd.ms-word.document.macroenabled.12":{"source":"iana","extensions":["docm"]},"application/vnd.ms-word.template.macroenabled.12":{"source":"iana","extensions":["dotm"]},"application/vnd.ms-works":{"source":"iana","extensions":["wps","wks","wcm","wdb"]},"application/vnd.ms-wpl":{"source":"iana","extensions":["wpl"]},"application/vnd.ms-xpsdocument":{"source":"iana","compressible":false,"extensions":["xps"]},"application/vnd.msa-disk-image":{"source":"iana"},"application/vnd.mseq":{"source":"iana","extensions":["mseq"]},"application/vnd.msgpack":{"source":"iana"},"application/vnd.msign":{"source":"iana"},"application/vnd.multiad.creator":{"source":"iana"},"application/vnd.multiad.creator.cif":{"source":"iana"},"application/vnd.music-niff":{"source":"iana"},"application/vnd.musician":{"source":"iana","extensions":["mus"]},"application/vnd.muvee.style":{"source":"iana","extensions":["msty"]},"application/vnd.mynfc":{"source":"iana","extensions":["taglet"]},"application/vnd.nacamar.ybrid+json":{"source":"iana","compressible":true},"application/vnd.nato.bindingdataobject+cbor":{"source":"iana"},"application/vnd.nato.bindingdataobject+json":{"source":"iana","compressible":true},"application/vnd.nato.bindingdataobject+xml":{"source":"iana","compressible":true,"extensions":["bdo"]},"application/vnd.nato.openxmlformats-package.iepd+zip":{"source":"iana","compressible":false},"application/vnd.ncd.control":{"source":"iana"},"application/vnd.ncd.reference":{"source":"iana"},"application/vnd.nearst.inv+json":{"source":"iana","compressible":true},"application/vnd.nebumind.line":{"source":"iana"},"application/vnd.nervana":{"source":"iana"},"application/vnd.netfpx":{"source":"iana"},"application/vnd.neurolanguage.nlu":{"source":"iana","extensions":["nlu"]},"application/vnd.nimn":{"source":"iana"},"application/vnd.nintendo.nitro.rom":{"source":"iana"},"application/vnd.nintendo.snes.rom":{"source":"iana"},"application/vnd.nitf":{"source":"iana","extensions":["ntf","nitf"]},"application/vnd.noblenet-directory":{"source":"iana","extensions":["nnd"]},"application/vnd.noblenet-sealer":{"source":"iana","extensions":["nns"]},"application/vnd.noblenet-web":{"source":"iana","extensions":["nnw"]},"application/vnd.nokia.catalogs":{"source":"iana"},"application/vnd.nokia.conml+wbxml":{"source":"iana"},"application/vnd.nokia.conml+xml":{"source":"iana","compressible":true},"application/vnd.nokia.iptv.config+xml":{"source":"iana","compressible":true},"application/vnd.nokia.isds-radio-presets":{"source":"iana"},"application/vnd.nokia.landmark+wbxml":{"source":"iana"},"application/vnd.nokia.landmark+xml":{"source":"iana","compressible":true},"application/vnd.nokia.landmarkcollection+xml":{"source":"iana","compressible":true},"application/vnd.nokia.n-gage.ac+xml":{"source":"iana","compressible":true,"extensions":["ac"]},"application/vnd.nokia.n-gage.data":{"source":"iana","extensions":["ngdat"]},"application/vnd.nokia.n-gage.symbian.install":{"source":"apache","extensions":["n-gage"]},"application/vnd.nokia.ncd":{"source":"iana"},"application/vnd.nokia.pcd+wbxml":{"source":"iana"},"application/vnd.nokia.pcd+xml":{"source":"iana","compressible":true},"application/vnd.nokia.radio-preset":{"source":"iana","extensions":["rpst"]},"application/vnd.nokia.radio-presets":{"source":"iana","extensions":["rpss"]},"application/vnd.novadigm.edm":{"source":"iana","extensions":["edm"]},"application/vnd.novadigm.edx":{"source":"iana","extensions":["edx"]},"application/vnd.novadigm.ext":{"source":"iana","extensions":["ext"]},"application/vnd.ntt-local.content-share":{"source":"iana"},"application/vnd.ntt-local.file-transfer":{"source":"iana"},"application/vnd.ntt-local.ogw_remote-access":{"source":"iana"},"application/vnd.ntt-local.sip-ta_remote":{"source":"iana"},"application/vnd.ntt-local.sip-ta_tcp_stream":{"source":"iana"},"application/vnd.oai.workflows":{"source":"iana"},"application/vnd.oai.workflows+json":{"source":"iana","compressible":true},"application/vnd.oai.workflows+yaml":{"source":"iana"},"application/vnd.oasis.opendocument.base":{"source":"iana"},"application/vnd.oasis.opendocument.chart":{"source":"iana","extensions":["odc"]},"application/vnd.oasis.opendocument.chart-template":{"source":"iana","extensions":["otc"]},"application/vnd.oasis.opendocument.database":{"source":"apache","extensions":["odb"]},"application/vnd.oasis.opendocument.formula":{"source":"iana","extensions":["odf"]},"application/vnd.oasis.opendocument.formula-template":{"source":"iana","extensions":["odft"]},"application/vnd.oasis.opendocument.graphics":{"source":"iana","compressible":false,"extensions":["odg"]},"application/vnd.oasis.opendocument.graphics-template":{"source":"iana","extensions":["otg"]},"application/vnd.oasis.opendocument.image":{"source":"iana","extensions":["odi"]},"application/vnd.oasis.opendocument.image-template":{"source":"iana","extensions":["oti"]},"application/vnd.oasis.opendocument.presentation":{"source":"iana","compressible":false,"extensions":["odp"]},"application/vnd.oasis.opendocument.presentation-template":{"source":"iana","extensions":["otp"]},"application/vnd.oasis.opendocument.spreadsheet":{"source":"iana","compressible":false,"extensions":["ods"]},"application/vnd.oasis.opendocument.spreadsheet-template":{"source":"iana","extensions":["ots"]},"application/vnd.oasis.opendocument.text":{"source":"iana","compressible":false,"extensions":["odt"]},"application/vnd.oasis.opendocument.text-master":{"source":"iana","extensions":["odm"]},"application/vnd.oasis.opendocument.text-master-template":{"source":"iana"},"application/vnd.oasis.opendocument.text-template":{"source":"iana","extensions":["ott"]},"application/vnd.oasis.opendocument.text-web":{"source":"iana","extensions":["oth"]},"application/vnd.obn":{"source":"iana"},"application/vnd.ocf+cbor":{"source":"iana"},"application/vnd.oci.image.manifest.v1+json":{"source":"iana","compressible":true},"application/vnd.oftn.l10n+json":{"source":"iana","compressible":true},"application/vnd.oipf.contentaccessdownload+xml":{"source":"iana","compressible":true},"application/vnd.oipf.contentaccessstreaming+xml":{"source":"iana","compressible":true},"application/vnd.oipf.cspg-hexbinary":{"source":"iana"},"application/vnd.oipf.dae.svg+xml":{"source":"iana","compressible":true},"application/vnd.oipf.dae.xhtml+xml":{"source":"iana","compressible":true},"application/vnd.oipf.mippvcontrolmessage+xml":{"source":"iana","compressible":true},"application/vnd.oipf.pae.gem":{"source":"iana"},"application/vnd.oipf.spdiscovery+xml":{"source":"iana","compressible":true},"application/vnd.oipf.spdlist+xml":{"source":"iana","compressible":true},"application/vnd.oipf.ueprofile+xml":{"source":"iana","compressible":true},"application/vnd.oipf.userprofile+xml":{"source":"iana","compressible":true},"application/vnd.olpc-sugar":{"source":"iana","extensions":["xo"]},"application/vnd.oma-scws-config":{"source":"iana"},"application/vnd.oma-scws-http-request":{"source":"iana"},"application/vnd.oma-scws-http-response":{"source":"iana"},"application/vnd.oma.bcast.associated-procedure-parameter+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.drm-trigger+xml":{"source":"apache","compressible":true},"application/vnd.oma.bcast.imd+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.ltkm":{"source":"iana"},"application/vnd.oma.bcast.notification+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.provisioningtrigger":{"source":"iana"},"application/vnd.oma.bcast.sgboot":{"source":"iana"},"application/vnd.oma.bcast.sgdd+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.sgdu":{"source":"iana"},"application/vnd.oma.bcast.simple-symbol-container":{"source":"iana"},"application/vnd.oma.bcast.smartcard-trigger+xml":{"source":"apache","compressible":true},"application/vnd.oma.bcast.sprov+xml":{"source":"iana","compressible":true},"application/vnd.oma.bcast.stkm":{"source":"iana"},"application/vnd.oma.cab-address-book+xml":{"source":"iana","compressible":true},"application/vnd.oma.cab-feature-handler+xml":{"source":"iana","compressible":true},"application/vnd.oma.cab-pcc+xml":{"source":"iana","compressible":true},"application/vnd.oma.cab-subs-invite+xml":{"source":"iana","compressible":true},"application/vnd.oma.cab-user-prefs+xml":{"source":"iana","compressible":true},"application/vnd.oma.dcd":{"source":"iana"},"application/vnd.oma.dcdc":{"source":"iana"},"application/vnd.oma.dd2+xml":{"source":"iana","compressible":true,"extensions":["dd2"]},"application/vnd.oma.drm.risd+xml":{"source":"iana","compressible":true},"application/vnd.oma.group-usage-list+xml":{"source":"iana","compressible":true},"application/vnd.oma.lwm2m+cbor":{"source":"iana"},"application/vnd.oma.lwm2m+json":{"source":"iana","compressible":true},"application/vnd.oma.lwm2m+tlv":{"source":"iana"},"application/vnd.oma.pal+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.detailed-progress-report+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.final-report+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.groups+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.invocation-descriptor+xml":{"source":"iana","compressible":true},"application/vnd.oma.poc.optimized-progress-report+xml":{"source":"iana","compressible":true},"application/vnd.oma.push":{"source":"iana"},"application/vnd.oma.scidm.messages+xml":{"source":"iana","compressible":true},"application/vnd.oma.xcap-directory+xml":{"source":"iana","compressible":true},"application/vnd.omads-email+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.omads-file+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.omads-folder+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.omaloc-supl-init":{"source":"iana"},"application/vnd.onepager":{"source":"iana"},"application/vnd.onepagertamp":{"source":"iana"},"application/vnd.onepagertamx":{"source":"iana"},"application/vnd.onepagertat":{"source":"iana"},"application/vnd.onepagertatp":{"source":"iana"},"application/vnd.onepagertatx":{"source":"iana"},"application/vnd.onvif.metadata":{"source":"iana"},"application/vnd.openblox.game+xml":{"source":"iana","compressible":true,"extensions":["obgx"]},"application/vnd.openblox.game-binary":{"source":"iana"},"application/vnd.openeye.oeb":{"source":"iana"},"application/vnd.openofficeorg.extension":{"source":"apache","extensions":["oxt"]},"application/vnd.openstreetmap.data+xml":{"source":"iana","compressible":true,"extensions":["osm"]},"application/vnd.opentimestamps.ots":{"source":"iana"},"application/vnd.openvpi.dspx+json":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.custom-properties+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.customxmlproperties+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawing+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.chart+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.chartshapes+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.diagramcolors+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.diagramdata+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.diagramlayout+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.drawingml.diagramstyle+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.extended-properties+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.commentauthors+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.comments+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.handoutmaster+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.notesmaster+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.notesslide+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.presentation":{"source":"iana","compressible":false,"extensions":["pptx"]},"application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.presprops+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slide":{"source":"iana","extensions":["sldx"]},"application/vnd.openxmlformats-officedocument.presentationml.slide+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slidelayout+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slidemaster+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slideshow":{"source":"iana","extensions":["ppsx"]},"application/vnd.openxmlformats-officedocument.presentationml.slideshow.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.slideupdateinfo+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.tablestyles+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.tags+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.template":{"source":"iana","extensions":["potx"]},"application/vnd.openxmlformats-officedocument.presentationml.template.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.presentationml.viewprops+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.calcchain+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.connections+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.dialogsheet+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.externallink+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.pivotcachedefinition+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.pivotcacherecords+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.pivottable+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.querytable+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.revisionheaders+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.revisionlog+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.sharedstrings+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":{"source":"iana","compressible":false,"extensions":["xlsx"]},"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.sheetmetadata+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.tablesinglecells+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.template":{"source":"iana","extensions":["xltx"]},"application/vnd.openxmlformats-officedocument.spreadsheetml.template.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.usernames+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.volatiledependencies+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.theme+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.themeoverride+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.vmldrawing":{"source":"iana"},"application/vnd.openxmlformats-officedocument.wordprocessingml.comments+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.document":{"source":"iana","compressible":false,"extensions":["docx"]},"application/vnd.openxmlformats-officedocument.wordprocessingml.document.glossary+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.endnotes+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.fonttable+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.footnotes+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.template":{"source":"iana","extensions":["dotx"]},"application/vnd.openxmlformats-officedocument.wordprocessingml.template.main+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-officedocument.wordprocessingml.websettings+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-package.core-properties+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-package.digital-signature-xmlsignature+xml":{"source":"iana","compressible":true},"application/vnd.openxmlformats-package.relationships+xml":{"source":"iana","compressible":true},"application/vnd.oracle.resource+json":{"source":"iana","compressible":true},"application/vnd.orange.indata":{"source":"iana"},"application/vnd.osa.netdeploy":{"source":"iana"},"application/vnd.osgeo.mapguide.package":{"source":"iana","extensions":["mgp"]},"application/vnd.osgi.bundle":{"source":"iana"},"application/vnd.osgi.dp":{"source":"iana","extensions":["dp"]},"application/vnd.osgi.subsystem":{"source":"iana","extensions":["esa"]},"application/vnd.otps.ct-kip+xml":{"source":"iana","compressible":true},"application/vnd.oxli.countgraph":{"source":"iana"},"application/vnd.pagerduty+json":{"source":"iana","compressible":true},"application/vnd.palm":{"source":"iana","extensions":["pdb","pqa","oprc"]},"application/vnd.panoply":{"source":"iana"},"application/vnd.paos.xml":{"source":"iana"},"application/vnd.patentdive":{"source":"iana"},"application/vnd.patientecommsdoc":{"source":"iana"},"application/vnd.pawaafile":{"source":"iana","extensions":["paw"]},"application/vnd.pcos":{"source":"iana"},"application/vnd.pg.format":{"source":"iana","extensions":["str"]},"application/vnd.pg.osasli":{"source":"iana","extensions":["ei6"]},"application/vnd.piaccess.application-licence":{"source":"iana"},"application/vnd.picsel":{"source":"iana","extensions":["efif"]},"application/vnd.pmi.widget":{"source":"iana","extensions":["wg"]},"application/vnd.poc.group-advertisement+xml":{"source":"iana","compressible":true},"application/vnd.pocketlearn":{"source":"iana","extensions":["plf"]},"application/vnd.powerbuilder6":{"source":"iana","extensions":["pbd"]},"application/vnd.powerbuilder6-s":{"source":"iana"},"application/vnd.powerbuilder7":{"source":"iana"},"application/vnd.powerbuilder7-s":{"source":"iana"},"application/vnd.powerbuilder75":{"source":"iana"},"application/vnd.powerbuilder75-s":{"source":"iana"},"application/vnd.preminet":{"source":"iana"},"application/vnd.previewsystems.box":{"source":"iana","extensions":["box"]},"application/vnd.procrate.brushset":{"extensions":["brushset"]},"application/vnd.procreate.brush":{"extensions":["brush"]},"application/vnd.procreate.dream":{"extensions":["drm"]},"application/vnd.proteus.magazine":{"source":"iana","extensions":["mgz"]},"application/vnd.psfs":{"source":"iana"},"application/vnd.pt.mundusmundi":{"source":"iana"},"application/vnd.publishare-delta-tree":{"source":"iana","extensions":["qps"]},"application/vnd.pvi.ptid1":{"source":"iana","extensions":["ptid"]},"application/vnd.pwg-multiplexed":{"source":"iana"},"application/vnd.pwg-xhtml-print+xml":{"source":"iana","compressible":true,"extensions":["xhtm"]},"application/vnd.qualcomm.brew-app-res":{"source":"iana"},"application/vnd.quarantainenet":{"source":"iana"},"application/vnd.quark.quarkxpress":{"source":"iana","extensions":["qxd","qxt","qwd","qwt","qxl","qxb"]},"application/vnd.quobject-quoxdocument":{"source":"iana"},"application/vnd.radisys.moml+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit-conf+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit-conn+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit-dialog+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-audit-stream+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-conf+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-base+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-fax-detect+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-fax-sendrecv+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-group+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-speech+xml":{"source":"iana","compressible":true},"application/vnd.radisys.msml-dialog-transform+xml":{"source":"iana","compressible":true},"application/vnd.rainstor.data":{"source":"iana"},"application/vnd.rapid":{"source":"iana"},"application/vnd.rar":{"source":"iana","extensions":["rar"]},"application/vnd.realvnc.bed":{"source":"iana","extensions":["bed"]},"application/vnd.recordare.musicxml":{"source":"iana","extensions":["mxl"]},"application/vnd.recordare.musicxml+xml":{"source":"iana","compressible":true,"extensions":["musicxml"]},"application/vnd.relpipe":{"source":"iana"},"application/vnd.renlearn.rlprint":{"source":"iana"},"application/vnd.resilient.logic":{"source":"iana"},"application/vnd.restful+json":{"source":"iana","compressible":true},"application/vnd.rig.cryptonote":{"source":"iana","extensions":["cryptonote"]},"application/vnd.rim.cod":{"source":"apache","extensions":["cod"]},"application/vnd.rn-realmedia":{"source":"apache","extensions":["rm"]},"application/vnd.rn-realmedia-vbr":{"source":"apache","extensions":["rmvb"]},"application/vnd.route66.link66+xml":{"source":"iana","compressible":true,"extensions":["link66"]},"application/vnd.rs-274x":{"source":"iana"},"application/vnd.ruckus.download":{"source":"iana"},"application/vnd.s3sms":{"source":"iana"},"application/vnd.sailingtracker.track":{"source":"iana","extensions":["st"]},"application/vnd.sar":{"source":"iana"},"application/vnd.sbm.cid":{"source":"iana"},"application/vnd.sbm.mid2":{"source":"iana"},"application/vnd.scribus":{"source":"iana"},"application/vnd.sealed.3df":{"source":"iana"},"application/vnd.sealed.csf":{"source":"iana"},"application/vnd.sealed.doc":{"source":"iana"},"application/vnd.sealed.eml":{"source":"iana"},"application/vnd.sealed.mht":{"source":"iana"},"application/vnd.sealed.net":{"source":"iana"},"application/vnd.sealed.ppt":{"source":"iana"},"application/vnd.sealed.tiff":{"source":"iana"},"application/vnd.sealed.xls":{"source":"iana"},"application/vnd.sealedmedia.softseal.html":{"source":"iana"},"application/vnd.sealedmedia.softseal.pdf":{"source":"iana"},"application/vnd.seemail":{"source":"iana","extensions":["see"]},"application/vnd.seis+json":{"source":"iana","compressible":true},"application/vnd.sema":{"source":"iana","extensions":["sema"]},"application/vnd.semd":{"source":"iana","extensions":["semd"]},"application/vnd.semf":{"source":"iana","extensions":["semf"]},"application/vnd.shade-save-file":{"source":"iana"},"application/vnd.shana.informed.formdata":{"source":"iana","extensions":["ifm"]},"application/vnd.shana.informed.formtemplate":{"source":"iana","extensions":["itp"]},"application/vnd.shana.informed.interchange":{"source":"iana","extensions":["iif"]},"application/vnd.shana.informed.package":{"source":"iana","extensions":["ipk"]},"application/vnd.shootproof+json":{"source":"iana","compressible":true},"application/vnd.shopkick+json":{"source":"iana","compressible":true},"application/vnd.shp":{"source":"iana"},"application/vnd.shx":{"source":"iana"},"application/vnd.sigrok.session":{"source":"iana"},"application/vnd.simtech-mindmapper":{"source":"iana","extensions":["twd","twds"]},"application/vnd.siren+json":{"source":"iana","compressible":true},"application/vnd.sketchometry":{"source":"iana"},"application/vnd.smaf":{"source":"iana","extensions":["mmf"]},"application/vnd.smart.notebook":{"source":"iana"},"application/vnd.smart.teacher":{"source":"iana","extensions":["teacher"]},"application/vnd.smintio.portals.archive":{"source":"iana"},"application/vnd.snesdev-page-table":{"source":"iana"},"application/vnd.software602.filler.form+xml":{"source":"iana","compressible":true,"extensions":["fo"]},"application/vnd.software602.filler.form-xml-zip":{"source":"iana"},"application/vnd.solent.sdkm+xml":{"source":"iana","compressible":true,"extensions":["sdkm","sdkd"]},"application/vnd.spotfire.dxp":{"source":"iana","extensions":["dxp"]},"application/vnd.spotfire.sfs":{"source":"iana","extensions":["sfs"]},"application/vnd.sqlite3":{"source":"iana"},"application/vnd.sss-cod":{"source":"iana"},"application/vnd.sss-dtf":{"source":"iana"},"application/vnd.sss-ntf":{"source":"iana"},"application/vnd.stardivision.calc":{"source":"apache","extensions":["sdc"]},"application/vnd.stardivision.draw":{"source":"apache","extensions":["sda"]},"application/vnd.stardivision.impress":{"source":"apache","extensions":["sdd"]},"application/vnd.stardivision.math":{"source":"apache","extensions":["smf"]},"application/vnd.stardivision.writer":{"source":"apache","extensions":["sdw","vor"]},"application/vnd.stardivision.writer-global":{"source":"apache","extensions":["sgl"]},"application/vnd.stepmania.package":{"source":"iana","extensions":["smzip"]},"application/vnd.stepmania.stepchart":{"source":"iana","extensions":["sm"]},"application/vnd.street-stream":{"source":"iana"},"application/vnd.sun.wadl+xml":{"source":"iana","compressible":true,"extensions":["wadl"]},"application/vnd.sun.xml.calc":{"source":"apache","extensions":["sxc"]},"application/vnd.sun.xml.calc.template":{"source":"apache","extensions":["stc"]},"application/vnd.sun.xml.draw":{"source":"apache","extensions":["sxd"]},"application/vnd.sun.xml.draw.template":{"source":"apache","extensions":["std"]},"application/vnd.sun.xml.impress":{"source":"apache","extensions":["sxi"]},"application/vnd.sun.xml.impress.template":{"source":"apache","extensions":["sti"]},"application/vnd.sun.xml.math":{"source":"apache","extensions":["sxm"]},"application/vnd.sun.xml.writer":{"source":"apache","extensions":["sxw"]},"application/vnd.sun.xml.writer.global":{"source":"apache","extensions":["sxg"]},"application/vnd.sun.xml.writer.template":{"source":"apache","extensions":["stw"]},"application/vnd.sus-calendar":{"source":"iana","extensions":["sus","susp"]},"application/vnd.svd":{"source":"iana","extensions":["svd"]},"application/vnd.swiftview-ics":{"source":"iana"},"application/vnd.sybyl.mol2":{"source":"iana"},"application/vnd.sycle+xml":{"source":"iana","compressible":true},"application/vnd.syft+json":{"source":"iana","compressible":true},"application/vnd.symbian.install":{"source":"apache","extensions":["sis","sisx"]},"application/vnd.syncml+xml":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["xsm"]},"application/vnd.syncml.dm+wbxml":{"source":"iana","charset":"UTF-8","extensions":["bdm"]},"application/vnd.syncml.dm+xml":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["xdm"]},"application/vnd.syncml.dm.notification":{"source":"iana"},"application/vnd.syncml.dmddf+wbxml":{"source":"iana"},"application/vnd.syncml.dmddf+xml":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["ddf"]},"application/vnd.syncml.dmtnds+wbxml":{"source":"iana"},"application/vnd.syncml.dmtnds+xml":{"source":"iana","charset":"UTF-8","compressible":true},"application/vnd.syncml.ds.notification":{"source":"iana"},"application/vnd.tableschema+json":{"source":"iana","compressible":true},"application/vnd.tao.intent-module-archive":{"source":"iana","extensions":["tao"]},"application/vnd.tcpdump.pcap":{"source":"iana","extensions":["pcap","cap","dmp"]},"application/vnd.think-cell.ppttc+json":{"source":"iana","compressible":true},"application/vnd.tmd.mediaflex.api+xml":{"source":"iana","compressible":true},"application/vnd.tml":{"source":"iana"},"application/vnd.tmobile-livetv":{"source":"iana","extensions":["tmo"]},"application/vnd.tri.onesource":{"source":"iana"},"application/vnd.trid.tpt":{"source":"iana","extensions":["tpt"]},"application/vnd.triscape.mxs":{"source":"iana","extensions":["mxs"]},"application/vnd.trueapp":{"source":"iana","extensions":["tra"]},"application/vnd.truedoc":{"source":"iana"},"application/vnd.ubisoft.webplayer":{"source":"iana"},"application/vnd.ufdl":{"source":"iana","extensions":["ufd","ufdl"]},"application/vnd.uic.osdm+json":{"source":"iana","compressible":true},"application/vnd.uiq.theme":{"source":"iana","extensions":["utz"]},"application/vnd.umajin":{"source":"iana","extensions":["umj"]},"application/vnd.unity":{"source":"iana","extensions":["unityweb"]},"application/vnd.uoml+xml":{"source":"iana","compressible":true,"extensions":["uoml","uo"]},"application/vnd.uplanet.alert":{"source":"iana"},"application/vnd.uplanet.alert-wbxml":{"source":"iana"},"application/vnd.uplanet.bearer-choice":{"source":"iana"},"application/vnd.uplanet.bearer-choice-wbxml":{"source":"iana"},"application/vnd.uplanet.cacheop":{"source":"iana"},"application/vnd.uplanet.cacheop-wbxml":{"source":"iana"},"application/vnd.uplanet.channel":{"source":"iana"},"application/vnd.uplanet.channel-wbxml":{"source":"iana"},"application/vnd.uplanet.list":{"source":"iana"},"application/vnd.uplanet.list-wbxml":{"source":"iana"},"application/vnd.uplanet.listcmd":{"source":"iana"},"application/vnd.uplanet.listcmd-wbxml":{"source":"iana"},"application/vnd.uplanet.signal":{"source":"iana"},"application/vnd.uri-map":{"source":"iana"},"application/vnd.valve.source.material":{"source":"iana"},"application/vnd.vcx":{"source":"iana","extensions":["vcx"]},"application/vnd.vd-study":{"source":"iana"},"application/vnd.vectorworks":{"source":"iana"},"application/vnd.vel+json":{"source":"iana","compressible":true},"application/vnd.veraison.tsm-report+cbor":{"source":"iana"},"application/vnd.veraison.tsm-report+json":{"source":"iana","compressible":true},"application/vnd.verimatrix.vcas":{"source":"iana"},"application/vnd.veritone.aion+json":{"source":"iana","compressible":true},"application/vnd.veryant.thin":{"source":"iana"},"application/vnd.ves.encrypted":{"source":"iana"},"application/vnd.vidsoft.vidconference":{"source":"iana"},"application/vnd.visio":{"source":"iana","extensions":["vsd","vst","vss","vsw","vsdx","vtx"]},"application/vnd.visionary":{"source":"iana","extensions":["vis"]},"application/vnd.vividence.scriptfile":{"source":"iana"},"application/vnd.vocalshaper.vsp4":{"source":"iana"},"application/vnd.vsf":{"source":"iana","extensions":["vsf"]},"application/vnd.wap.sic":{"source":"iana"},"application/vnd.wap.slc":{"source":"iana"},"application/vnd.wap.wbxml":{"source":"iana","charset":"UTF-8","extensions":["wbxml"]},"application/vnd.wap.wmlc":{"source":"iana","extensions":["wmlc"]},"application/vnd.wap.wmlscriptc":{"source":"iana","extensions":["wmlsc"]},"application/vnd.wasmflow.wafl":{"source":"iana"},"application/vnd.webturbo":{"source":"iana","extensions":["wtb"]},"application/vnd.wfa.dpp":{"source":"iana"},"application/vnd.wfa.p2p":{"source":"iana"},"application/vnd.wfa.wsc":{"source":"iana"},"application/vnd.windows.devicepairing":{"source":"iana"},"application/vnd.wmc":{"source":"iana"},"application/vnd.wmf.bootstrap":{"source":"iana"},"application/vnd.wolfram.mathematica":{"source":"iana"},"application/vnd.wolfram.mathematica.package":{"source":"iana"},"application/vnd.wolfram.player":{"source":"iana","extensions":["nbp"]},"application/vnd.wordlift":{"source":"iana"},"application/vnd.wordperfect":{"source":"iana","extensions":["wpd"]},"application/vnd.wqd":{"source":"iana","extensions":["wqd"]},"application/vnd.wrq-hp3000-labelled":{"source":"iana"},"application/vnd.wt.stf":{"source":"iana","extensions":["stf"]},"application/vnd.wv.csp+wbxml":{"source":"iana"},"application/vnd.wv.csp+xml":{"source":"iana","compressible":true},"application/vnd.wv.ssp+xml":{"source":"iana","compressible":true},"application/vnd.xacml+json":{"source":"iana","compressible":true},"application/vnd.xara":{"source":"iana","extensions":["xar"]},"application/vnd.xarin.cpj":{"source":"iana"},"application/vnd.xecrets-encrypted":{"source":"iana"},"application/vnd.xfdl":{"source":"iana","extensions":["xfdl"]},"application/vnd.xfdl.webform":{"source":"iana"},"application/vnd.xmi+xml":{"source":"iana","compressible":true},"application/vnd.xmpie.cpkg":{"source":"iana"},"application/vnd.xmpie.dpkg":{"source":"iana"},"application/vnd.xmpie.plan":{"source":"iana"},"application/vnd.xmpie.ppkg":{"source":"iana"},"application/vnd.xmpie.xlim":{"source":"iana"},"application/vnd.yamaha.hv-dic":{"source":"iana","extensions":["hvd"]},"application/vnd.yamaha.hv-script":{"source":"iana","extensions":["hvs"]},"application/vnd.yamaha.hv-voice":{"source":"iana","extensions":["hvp"]},"application/vnd.yamaha.openscoreformat":{"source":"iana","extensions":["osf"]},"application/vnd.yamaha.openscoreformat.osfpvg+xml":{"source":"iana","compressible":true,"extensions":["osfpvg"]},"application/vnd.yamaha.remote-setup":{"source":"iana"},"application/vnd.yamaha.smaf-audio":{"source":"iana","extensions":["saf"]},"application/vnd.yamaha.smaf-phrase":{"source":"iana","extensions":["spf"]},"application/vnd.yamaha.through-ngn":{"source":"iana"},"application/vnd.yamaha.tunnel-udpencap":{"source":"iana"},"application/vnd.yaoweme":{"source":"iana"},"application/vnd.yellowriver-custom-menu":{"source":"iana","extensions":["cmp"]},"application/vnd.zul":{"source":"iana","extensions":["zir","zirz"]},"application/vnd.zzazz.deck+xml":{"source":"iana","compressible":true,"extensions":["zaz"]},"application/voicexml+xml":{"source":"iana","compressible":true,"extensions":["vxml"]},"application/voucher-cms+json":{"source":"iana","compressible":true},"application/voucher-jws+json":{"source":"iana","compressible":true},"application/vp":{"source":"iana"},"application/vp+cose":{"source":"iana"},"application/vp+jwt":{"source":"iana"},"application/vq-rtcpxr":{"source":"iana"},"application/wasm":{"source":"iana","compressible":true,"extensions":["wasm"]},"application/watcherinfo+xml":{"source":"iana","compressible":true,"extensions":["wif"]},"application/webpush-options+json":{"source":"iana","compressible":true},"application/whoispp-query":{"source":"iana"},"application/whoispp-response":{"source":"iana"},"application/widget":{"source":"iana","extensions":["wgt"]},"application/winhlp":{"source":"apache","extensions":["hlp"]},"application/wita":{"source":"iana"},"application/wordperfect5.1":{"source":"iana"},"application/wsdl+xml":{"source":"iana","compressible":true,"extensions":["wsdl"]},"application/wspolicy+xml":{"source":"iana","compressible":true,"extensions":["wspolicy"]},"application/x-7z-compressed":{"source":"apache","compressible":false,"extensions":["7z"]},"application/x-abiword":{"source":"apache","extensions":["abw"]},"application/x-ace-compressed":{"source":"apache","extensions":["ace"]},"application/x-amf":{"source":"apache"},"application/x-apple-diskimage":{"source":"apache","extensions":["dmg"]},"application/x-arj":{"compressible":false,"extensions":["arj"]},"application/x-authorware-bin":{"source":"apache","extensions":["aab","x32","u32","vox"]},"application/x-authorware-map":{"source":"apache","extensions":["aam"]},"application/x-authorware-seg":{"source":"apache","extensions":["aas"]},"application/x-bcpio":{"source":"apache","extensions":["bcpio"]},"application/x-bdoc":{"compressible":false,"extensions":["bdoc"]},"application/x-bittorrent":{"source":"apache","extensions":["torrent"]},"application/x-blender":{"extensions":["blend"]},"application/x-blorb":{"source":"apache","extensions":["blb","blorb"]},"application/x-bzip":{"source":"apache","compressible":false,"extensions":["bz"]},"application/x-bzip2":{"source":"apache","compressible":false,"extensions":["bz2","boz"]},"application/x-cbr":{"source":"apache","extensions":["cbr","cba","cbt","cbz","cb7"]},"application/x-cdlink":{"source":"apache","extensions":["vcd"]},"application/x-cfs-compressed":{"source":"apache","extensions":["cfs"]},"application/x-chat":{"source":"apache","extensions":["chat"]},"application/x-chess-pgn":{"source":"apache","extensions":["pgn"]},"application/x-chrome-extension":{"extensions":["crx"]},"application/x-cocoa":{"source":"nginx","extensions":["cco"]},"application/x-compress":{"source":"apache"},"application/x-compressed":{"extensions":["rar"]},"application/x-conference":{"source":"apache","extensions":["nsc"]},"application/x-cpio":{"source":"apache","extensions":["cpio"]},"application/x-csh":{"source":"apache","extensions":["csh"]},"application/x-deb":{"compressible":false},"application/x-debian-package":{"source":"apache","extensions":["deb","udeb"]},"application/x-dgc-compressed":{"source":"apache","extensions":["dgc"]},"application/x-director":{"source":"apache","extensions":["dir","dcr","dxr","cst","cct","cxt","w3d","fgd","swa"]},"application/x-doom":{"source":"apache","extensions":["wad"]},"application/x-dtbncx+xml":{"source":"apache","compressible":true,"extensions":["ncx"]},"application/x-dtbook+xml":{"source":"apache","compressible":true,"extensions":["dtb"]},"application/x-dtbresource+xml":{"source":"apache","compressible":true,"extensions":["res"]},"application/x-dvi":{"source":"apache","compressible":false,"extensions":["dvi"]},"application/x-envoy":{"source":"apache","extensions":["evy"]},"application/x-eva":{"source":"apache","extensions":["eva"]},"application/x-font-bdf":{"source":"apache","extensions":["bdf"]},"application/x-font-dos":{"source":"apache"},"application/x-font-framemaker":{"source":"apache"},"application/x-font-ghostscript":{"source":"apache","extensions":["gsf"]},"application/x-font-libgrx":{"source":"apache"},"application/x-font-linux-psf":{"source":"apache","extensions":["psf"]},"application/x-font-pcf":{"source":"apache","extensions":["pcf"]},"application/x-font-snf":{"source":"apache","extensions":["snf"]},"application/x-font-speedo":{"source":"apache"},"application/x-font-sunos-news":{"source":"apache"},"application/x-font-type1":{"source":"apache","extensions":["pfa","pfb","pfm","afm"]},"application/x-font-vfont":{"source":"apache"},"application/x-freearc":{"source":"apache","extensions":["arc"]},"application/x-futuresplash":{"source":"apache","extensions":["spl"]},"application/x-gca-compressed":{"source":"apache","extensions":["gca"]},"application/x-glulx":{"source":"apache","extensions":["ulx"]},"application/x-gnumeric":{"source":"apache","extensions":["gnumeric"]},"application/x-gramps-xml":{"source":"apache","extensions":["gramps"]},"application/x-gtar":{"source":"apache","extensions":["gtar"]},"application/x-gzip":{"source":"apache"},"application/x-hdf":{"source":"apache","extensions":["hdf"]},"application/x-httpd-php":{"compressible":true,"extensions":["php"]},"application/x-install-instructions":{"source":"apache","extensions":["install"]},"application/x-ipynb+json":{"compressible":true,"extensions":["ipynb"]},"application/x-iso9660-image":{"source":"apache","extensions":["iso"]},"application/x-iwork-keynote-sffkey":{"extensions":["key"]},"application/x-iwork-numbers-sffnumbers":{"extensions":["numbers"]},"application/x-iwork-pages-sffpages":{"extensions":["pages"]},"application/x-java-archive-diff":{"source":"nginx","extensions":["jardiff"]},"application/x-java-jnlp-file":{"source":"apache","compressible":false,"extensions":["jnlp"]},"application/x-javascript":{"compressible":true},"application/x-keepass2":{"extensions":["kdbx"]},"application/x-latex":{"source":"apache","compressible":false,"extensions":["latex"]},"application/x-lua-bytecode":{"extensions":["luac"]},"application/x-lzh-compressed":{"source":"apache","extensions":["lzh","lha"]},"application/x-makeself":{"source":"nginx","extensions":["run"]},"application/x-mie":{"source":"apache","extensions":["mie"]},"application/x-mobipocket-ebook":{"source":"apache","extensions":["prc","mobi"]},"application/x-mpegurl":{"compressible":false},"application/x-ms-application":{"source":"apache","extensions":["application"]},"application/x-ms-shortcut":{"source":"apache","extensions":["lnk"]},"application/x-ms-wmd":{"source":"apache","extensions":["wmd"]},"application/x-ms-wmz":{"source":"apache","extensions":["wmz"]},"application/x-ms-xbap":{"source":"apache","extensions":["xbap"]},"application/x-msaccess":{"source":"apache","extensions":["mdb"]},"application/x-msbinder":{"source":"apache","extensions":["obd"]},"application/x-mscardfile":{"source":"apache","extensions":["crd"]},"application/x-msclip":{"source":"apache","extensions":["clp"]},"application/x-msdos-program":{"extensions":["exe"]},"application/x-msdownload":{"source":"apache","extensions":["exe","dll","com","bat","msi"]},"application/x-msmediaview":{"source":"apache","extensions":["mvb","m13","m14"]},"application/x-msmetafile":{"source":"apache","extensions":["wmf","wmz","emf","emz"]},"application/x-msmoney":{"source":"apache","extensions":["mny"]},"application/x-mspublisher":{"source":"apache","extensions":["pub"]},"application/x-msschedule":{"source":"apache","extensions":["scd"]},"application/x-msterminal":{"source":"apache","extensions":["trm"]},"application/x-mswrite":{"source":"apache","extensions":["wri"]},"application/x-netcdf":{"source":"apache","extensions":["nc","cdf"]},"application/x-ns-proxy-autoconfig":{"compressible":true,"extensions":["pac"]},"application/x-nzb":{"source":"apache","extensions":["nzb"]},"application/x-perl":{"source":"nginx","extensions":["pl","pm"]},"application/x-pilot":{"source":"nginx","extensions":["prc","pdb"]},"application/x-pkcs12":{"source":"apache","compressible":false,"extensions":["p12","pfx"]},"application/x-pkcs7-certificates":{"source":"apache","extensions":["p7b","spc"]},"application/x-pkcs7-certreqresp":{"source":"apache","extensions":["p7r"]},"application/x-pki-message":{"source":"iana"},"application/x-rar-compressed":{"source":"apache","compressible":false,"extensions":["rar"]},"application/x-redhat-package-manager":{"source":"nginx","extensions":["rpm"]},"application/x-research-info-systems":{"source":"apache","extensions":["ris"]},"application/x-sea":{"source":"nginx","extensions":["sea"]},"application/x-sh":{"source":"apache","compressible":true,"extensions":["sh"]},"application/x-shar":{"source":"apache","extensions":["shar"]},"application/x-shockwave-flash":{"source":"apache","compressible":false,"extensions":["swf"]},"application/x-silverlight-app":{"source":"apache","extensions":["xap"]},"application/x-sql":{"source":"apache","extensions":["sql"]},"application/x-stuffit":{"source":"apache","compressible":false,"extensions":["sit"]},"application/x-stuffitx":{"source":"apache","extensions":["sitx"]},"application/x-subrip":{"source":"apache","extensions":["srt"]},"application/x-sv4cpio":{"source":"apache","extensions":["sv4cpio"]},"application/x-sv4crc":{"source":"apache","extensions":["sv4crc"]},"application/x-t3vm-image":{"source":"apache","extensions":["t3"]},"application/x-tads":{"source":"apache","extensions":["gam"]},"application/x-tar":{"source":"apache","compressible":true,"extensions":["tar"]},"application/x-tcl":{"source":"apache","extensions":["tcl","tk"]},"application/x-tex":{"source":"apache","extensions":["tex"]},"application/x-tex-tfm":{"source":"apache","extensions":["tfm"]},"application/x-texinfo":{"source":"apache","extensions":["texinfo","texi"]},"application/x-tgif":{"source":"apache","extensions":["obj"]},"application/x-ustar":{"source":"apache","extensions":["ustar"]},"application/x-virtualbox-hdd":{"compressible":true,"extensions":["hdd"]},"application/x-virtualbox-ova":{"compressible":true,"extensions":["ova"]},"application/x-virtualbox-ovf":{"compressible":true,"extensions":["ovf"]},"application/x-virtualbox-vbox":{"compressible":true,"extensions":["vbox"]},"application/x-virtualbox-vbox-extpack":{"compressible":false,"extensions":["vbox-extpack"]},"application/x-virtualbox-vdi":{"compressible":true,"extensions":["vdi"]},"application/x-virtualbox-vhd":{"compressible":true,"extensions":["vhd"]},"application/x-virtualbox-vmdk":{"compressible":true,"extensions":["vmdk"]},"application/x-wais-source":{"source":"apache","extensions":["src"]},"application/x-web-app-manifest+json":{"compressible":true,"extensions":["webapp"]},"application/x-www-form-urlencoded":{"source":"iana","compressible":true},"application/x-x509-ca-cert":{"source":"iana","extensions":["der","crt","pem"]},"application/x-x509-ca-ra-cert":{"source":"iana"},"application/x-x509-next-ca-cert":{"source":"iana"},"application/x-xfig":{"source":"apache","extensions":["fig"]},"application/x-xliff+xml":{"source":"apache","compressible":true,"extensions":["xlf"]},"application/x-xpinstall":{"source":"apache","compressible":false,"extensions":["xpi"]},"application/x-xz":{"source":"apache","extensions":["xz"]},"application/x-zip-compressed":{"extensions":["zip"]},"application/x-zmachine":{"source":"apache","extensions":["z1","z2","z3","z4","z5","z6","z7","z8"]},"application/x400-bp":{"source":"iana"},"application/xacml+xml":{"source":"iana","compressible":true},"application/xaml+xml":{"source":"apache","compressible":true,"extensions":["xaml"]},"application/xcap-att+xml":{"source":"iana","compressible":true,"extensions":["xav"]},"application/xcap-caps+xml":{"source":"iana","compressible":true,"extensions":["xca"]},"application/xcap-diff+xml":{"source":"iana","compressible":true,"extensions":["xdf"]},"application/xcap-el+xml":{"source":"iana","compressible":true,"extensions":["xel"]},"application/xcap-error+xml":{"source":"iana","compressible":true},"application/xcap-ns+xml":{"source":"iana","compressible":true,"extensions":["xns"]},"application/xcon-conference-info+xml":{"source":"iana","compressible":true},"application/xcon-conference-info-diff+xml":{"source":"iana","compressible":true},"application/xenc+xml":{"source":"iana","compressible":true,"extensions":["xenc"]},"application/xfdf":{"source":"iana","extensions":["xfdf"]},"application/xhtml+xml":{"source":"iana","compressible":true,"extensions":["xhtml","xht"]},"application/xhtml-voice+xml":{"source":"apache","compressible":true},"application/xliff+xml":{"source":"iana","compressible":true,"extensions":["xlf"]},"application/xml":{"source":"iana","compressible":true,"extensions":["xml","xsl","xsd","rng"]},"application/xml-dtd":{"source":"iana","compressible":true,"extensions":["dtd"]},"application/xml-external-parsed-entity":{"source":"iana"},"application/xml-patch+xml":{"source":"iana","compressible":true},"application/xmpp+xml":{"source":"iana","compressible":true},"application/xop+xml":{"source":"iana","compressible":true,"extensions":["xop"]},"application/xproc+xml":{"source":"apache","compressible":true,"extensions":["xpl"]},"application/xslt+xml":{"source":"iana","compressible":true,"extensions":["xsl","xslt"]},"application/xspf+xml":{"source":"apache","compressible":true,"extensions":["xspf"]},"application/xv+xml":{"source":"iana","compressible":true,"extensions":["mxml","xhvml","xvml","xvm"]},"application/yaml":{"source":"iana"},"application/yang":{"source":"iana","extensions":["yang"]},"application/yang-data+cbor":{"source":"iana"},"application/yang-data+json":{"source":"iana","compressible":true},"application/yang-data+xml":{"source":"iana","compressible":true},"application/yang-patch+json":{"source":"iana","compressible":true},"application/yang-patch+xml":{"source":"iana","compressible":true},"application/yang-sid+json":{"source":"iana","compressible":true},"application/yin+xml":{"source":"iana","compressible":true,"extensions":["yin"]},"application/zip":{"source":"iana","compressible":false,"extensions":["zip"]},"application/zip+dotlottie":{"extensions":["lottie"]},"application/zlib":{"source":"iana"},"application/zstd":{"source":"iana"},"audio/1d-interleaved-parityfec":{"source":"iana"},"audio/32kadpcm":{"source":"iana"},"audio/3gpp":{"source":"iana","compressible":false,"extensions":["3gpp"]},"audio/3gpp2":{"source":"iana"},"audio/aac":{"source":"iana","extensions":["adts","aac"]},"audio/ac3":{"source":"iana"},"audio/adpcm":{"source":"apache","extensions":["adp"]},"audio/amr":{"source":"iana","extensions":["amr"]},"audio/amr-wb":{"source":"iana"},"audio/amr-wb+":{"source":"iana"},"audio/aptx":{"source":"iana"},"audio/asc":{"source":"iana"},"audio/atrac-advanced-lossless":{"source":"iana"},"audio/atrac-x":{"source":"iana"},"audio/atrac3":{"source":"iana"},"audio/basic":{"source":"iana","compressible":false,"extensions":["au","snd"]},"audio/bv16":{"source":"iana"},"audio/bv32":{"source":"iana"},"audio/clearmode":{"source":"iana"},"audio/cn":{"source":"iana"},"audio/dat12":{"source":"iana"},"audio/dls":{"source":"iana"},"audio/dsr-es201108":{"source":"iana"},"audio/dsr-es202050":{"source":"iana"},"audio/dsr-es202211":{"source":"iana"},"audio/dsr-es202212":{"source":"iana"},"audio/dv":{"source":"iana"},"audio/dvi4":{"source":"iana"},"audio/eac3":{"source":"iana"},"audio/encaprtp":{"source":"iana"},"audio/evrc":{"source":"iana"},"audio/evrc-qcp":{"source":"iana"},"audio/evrc0":{"source":"iana"},"audio/evrc1":{"source":"iana"},"audio/evrcb":{"source":"iana"},"audio/evrcb0":{"source":"iana"},"audio/evrcb1":{"source":"iana"},"audio/evrcnw":{"source":"iana"},"audio/evrcnw0":{"source":"iana"},"audio/evrcnw1":{"source":"iana"},"audio/evrcwb":{"source":"iana"},"audio/evrcwb0":{"source":"iana"},"audio/evrcwb1":{"source":"iana"},"audio/evs":{"source":"iana"},"audio/flac":{"source":"iana"},"audio/flexfec":{"source":"iana"},"audio/fwdred":{"source":"iana"},"audio/g711-0":{"source":"iana"},"audio/g719":{"source":"iana"},"audio/g722":{"source":"iana"},"audio/g7221":{"source":"iana"},"audio/g723":{"source":"iana"},"audio/g726-16":{"source":"iana"},"audio/g726-24":{"source":"iana"},"audio/g726-32":{"source":"iana"},"audio/g726-40":{"source":"iana"},"audio/g728":{"source":"iana"},"audio/g729":{"source":"iana"},"audio/g7291":{"source":"iana"},"audio/g729d":{"source":"iana"},"audio/g729e":{"source":"iana"},"audio/gsm":{"source":"iana"},"audio/gsm-efr":{"source":"iana"},"audio/gsm-hr-08":{"source":"iana"},"audio/ilbc":{"source":"iana"},"audio/ip-mr_v2.5":{"source":"iana"},"audio/isac":{"source":"apache"},"audio/l16":{"source":"iana"},"audio/l20":{"source":"iana"},"audio/l24":{"source":"iana","compressible":false},"audio/l8":{"source":"iana"},"audio/lpc":{"source":"iana"},"audio/matroska":{"source":"iana"},"audio/melp":{"source":"iana"},"audio/melp1200":{"source":"iana"},"audio/melp2400":{"source":"iana"},"audio/melp600":{"source":"iana"},"audio/mhas":{"source":"iana"},"audio/midi":{"source":"apache","extensions":["mid","midi","kar","rmi"]},"audio/midi-clip":{"source":"iana"},"audio/mobile-xmf":{"source":"iana","extensions":["mxmf"]},"audio/mp3":{"compressible":false,"extensions":["mp3"]},"audio/mp4":{"source":"iana","compressible":false,"extensions":["m4a","mp4a","m4b"]},"audio/mp4a-latm":{"source":"iana"},"audio/mpa":{"source":"iana"},"audio/mpa-robust":{"source":"iana"},"audio/mpeg":{"source":"iana","compressible":false,"extensions":["mpga","mp2","mp2a","mp3","m2a","m3a"]},"audio/mpeg4-generic":{"source":"iana"},"audio/musepack":{"source":"apache"},"audio/ogg":{"source":"iana","compressible":false,"extensions":["oga","ogg","spx","opus"]},"audio/opus":{"source":"iana"},"audio/parityfec":{"source":"iana"},"audio/pcma":{"source":"iana"},"audio/pcma-wb":{"source":"iana"},"audio/pcmu":{"source":"iana"},"audio/pcmu-wb":{"source":"iana"},"audio/prs.sid":{"source":"iana"},"audio/qcelp":{"source":"iana"},"audio/raptorfec":{"source":"iana"},"audio/red":{"source":"iana"},"audio/rtp-enc-aescm128":{"source":"iana"},"audio/rtp-midi":{"source":"iana"},"audio/rtploopback":{"source":"iana"},"audio/rtx":{"source":"iana"},"audio/s3m":{"source":"apache","extensions":["s3m"]},"audio/scip":{"source":"iana"},"audio/silk":{"source":"apache","extensions":["sil"]},"audio/smv":{"source":"iana"},"audio/smv-qcp":{"source":"iana"},"audio/smv0":{"source":"iana"},"audio/sofa":{"source":"iana"},"audio/sp-midi":{"source":"iana"},"audio/speex":{"source":"iana"},"audio/t140c":{"source":"iana"},"audio/t38":{"source":"iana"},"audio/telephone-event":{"source":"iana"},"audio/tetra_acelp":{"source":"iana"},"audio/tetra_acelp_bb":{"source":"iana"},"audio/tone":{"source":"iana"},"audio/tsvcis":{"source":"iana"},"audio/uemclip":{"source":"iana"},"audio/ulpfec":{"source":"iana"},"audio/usac":{"source":"iana"},"audio/vdvi":{"source":"iana"},"audio/vmr-wb":{"source":"iana"},"audio/vnd.3gpp.iufp":{"source":"iana"},"audio/vnd.4sb":{"source":"iana"},"audio/vnd.audiokoz":{"source":"iana"},"audio/vnd.celp":{"source":"iana"},"audio/vnd.cisco.nse":{"source":"iana"},"audio/vnd.cmles.radio-events":{"source":"iana"},"audio/vnd.cns.anp1":{"source":"iana"},"audio/vnd.cns.inf1":{"source":"iana"},"audio/vnd.dece.audio":{"source":"iana","extensions":["uva","uvva"]},"audio/vnd.digital-winds":{"source":"iana","extensions":["eol"]},"audio/vnd.dlna.adts":{"source":"iana"},"audio/vnd.dolby.heaac.1":{"source":"iana"},"audio/vnd.dolby.heaac.2":{"source":"iana"},"audio/vnd.dolby.mlp":{"source":"iana"},"audio/vnd.dolby.mps":{"source":"iana"},"audio/vnd.dolby.pl2":{"source":"iana"},"audio/vnd.dolby.pl2x":{"source":"iana"},"audio/vnd.dolby.pl2z":{"source":"iana"},"audio/vnd.dolby.pulse.1":{"source":"iana"},"audio/vnd.dra":{"source":"iana","extensions":["dra"]},"audio/vnd.dts":{"source":"iana","extensions":["dts"]},"audio/vnd.dts.hd":{"source":"iana","extensions":["dtshd"]},"audio/vnd.dts.uhd":{"source":"iana"},"audio/vnd.dvb.file":{"source":"iana"},"audio/vnd.everad.plj":{"source":"iana"},"audio/vnd.hns.audio":{"source":"iana"},"audio/vnd.lucent.voice":{"source":"iana","extensions":["lvp"]},"audio/vnd.ms-playready.media.pya":{"source":"iana","extensions":["pya"]},"audio/vnd.nokia.mobile-xmf":{"source":"iana"},"audio/vnd.nortel.vbk":{"source":"iana"},"audio/vnd.nuera.ecelp4800":{"source":"iana","extensions":["ecelp4800"]},"audio/vnd.nuera.ecelp7470":{"source":"iana","extensions":["ecelp7470"]},"audio/vnd.nuera.ecelp9600":{"source":"iana","extensions":["ecelp9600"]},"audio/vnd.octel.sbc":{"source":"iana"},"audio/vnd.presonus.multitrack":{"source":"iana"},"audio/vnd.qcelp":{"source":"apache"},"audio/vnd.rhetorex.32kadpcm":{"source":"iana"},"audio/vnd.rip":{"source":"iana","extensions":["rip"]},"audio/vnd.rn-realaudio":{"compressible":false},"audio/vnd.sealedmedia.softseal.mpeg":{"source":"iana"},"audio/vnd.vmx.cvsd":{"source":"iana"},"audio/vnd.wave":{"compressible":false},"audio/vorbis":{"source":"iana","compressible":false},"audio/vorbis-config":{"source":"iana"},"audio/wav":{"compressible":false,"extensions":["wav"]},"audio/wave":{"compressible":false,"extensions":["wav"]},"audio/webm":{"source":"apache","compressible":false,"extensions":["weba"]},"audio/x-aac":{"source":"apache","compressible":false,"extensions":["aac"]},"audio/x-aiff":{"source":"apache","extensions":["aif","aiff","aifc"]},"audio/x-caf":{"source":"apache","compressible":false,"extensions":["caf"]},"audio/x-flac":{"source":"apache","extensions":["flac"]},"audio/x-m4a":{"source":"nginx","extensions":["m4a"]},"audio/x-matroska":{"source":"apache","extensions":["mka"]},"audio/x-mpegurl":{"source":"apache","extensions":["m3u"]},"audio/x-ms-wax":{"source":"apache","extensions":["wax"]},"audio/x-ms-wma":{"source":"apache","extensions":["wma"]},"audio/x-pn-realaudio":{"source":"apache","extensions":["ram","ra"]},"audio/x-pn-realaudio-plugin":{"source":"apache","extensions":["rmp"]},"audio/x-realaudio":{"source":"nginx","extensions":["ra"]},"audio/x-tta":{"source":"apache"},"audio/x-wav":{"source":"apache","extensions":["wav"]},"audio/xm":{"source":"apache","extensions":["xm"]},"chemical/x-cdx":{"source":"apache","extensions":["cdx"]},"chemical/x-cif":{"source":"apache","extensions":["cif"]},"chemical/x-cmdf":{"source":"apache","extensions":["cmdf"]},"chemical/x-cml":{"source":"apache","extensions":["cml"]},"chemical/x-csml":{"source":"apache","extensions":["csml"]},"chemical/x-pdb":{"source":"apache"},"chemical/x-xyz":{"source":"apache","extensions":["xyz"]},"font/collection":{"source":"iana","extensions":["ttc"]},"font/otf":{"source":"iana","compressible":true,"extensions":["otf"]},"font/sfnt":{"source":"iana"},"font/ttf":{"source":"iana","compressible":true,"extensions":["ttf"]},"font/woff":{"source":"iana","extensions":["woff"]},"font/woff2":{"source":"iana","extensions":["woff2"]},"image/aces":{"source":"iana","extensions":["exr"]},"image/apng":{"source":"iana","compressible":false,"extensions":["apng"]},"image/avci":{"source":"iana","extensions":["avci"]},"image/avcs":{"source":"iana","extensions":["avcs"]},"image/avif":{"source":"iana","compressible":false,"extensions":["avif"]},"image/bmp":{"source":"iana","compressible":true,"extensions":["bmp","dib"]},"image/cgm":{"source":"iana","extensions":["cgm"]},"image/dicom-rle":{"source":"iana","extensions":["drle"]},"image/dpx":{"source":"iana","extensions":["dpx"]},"image/emf":{"source":"iana","extensions":["emf"]},"image/fits":{"source":"iana","extensions":["fits"]},"image/g3fax":{"source":"iana","extensions":["g3"]},"image/gif":{"source":"iana","compressible":false,"extensions":["gif"]},"image/heic":{"source":"iana","extensions":["heic"]},"image/heic-sequence":{"source":"iana","extensions":["heics"]},"image/heif":{"source":"iana","extensions":["heif"]},"image/heif-sequence":{"source":"iana","extensions":["heifs"]},"image/hej2k":{"source":"iana","extensions":["hej2"]},"image/ief":{"source":"iana","extensions":["ief"]},"image/j2c":{"source":"iana"},"image/jaii":{"source":"iana","extensions":["jaii"]},"image/jais":{"source":"iana","extensions":["jais"]},"image/jls":{"source":"iana","extensions":["jls"]},"image/jp2":{"source":"iana","compressible":false,"extensions":["jp2","jpg2"]},"image/jpeg":{"source":"iana","compressible":false,"extensions":["jpg","jpeg","jpe"]},"image/jph":{"source":"iana","extensions":["jph"]},"image/jphc":{"source":"iana","extensions":["jhc"]},"image/jpm":{"source":"iana","compressible":false,"extensions":["jpm","jpgm"]},"image/jpx":{"source":"iana","compressible":false,"extensions":["jpx","jpf"]},"image/jxl":{"source":"iana","extensions":["jxl"]},"image/jxr":{"source":"iana","extensions":["jxr"]},"image/jxra":{"source":"iana","extensions":["jxra"]},"image/jxrs":{"source":"iana","extensions":["jxrs"]},"image/jxs":{"source":"iana","extensions":["jxs"]},"image/jxsc":{"source":"iana","extensions":["jxsc"]},"image/jxsi":{"source":"iana","extensions":["jxsi"]},"image/jxss":{"source":"iana","extensions":["jxss"]},"image/ktx":{"source":"iana","extensions":["ktx"]},"image/ktx2":{"source":"iana","extensions":["ktx2"]},"image/naplps":{"source":"iana"},"image/pjpeg":{"compressible":false,"extensions":["jfif"]},"image/png":{"source":"iana","compressible":false,"extensions":["png"]},"image/prs.btif":{"source":"iana","extensions":["btif","btf"]},"image/prs.pti":{"source":"iana","extensions":["pti"]},"image/pwg-raster":{"source":"iana"},"image/sgi":{"source":"apache","extensions":["sgi"]},"image/svg+xml":{"source":"iana","compressible":true,"extensions":["svg","svgz"]},"image/t38":{"source":"iana","extensions":["t38"]},"image/tiff":{"source":"iana","compressible":false,"extensions":["tif","tiff"]},"image/tiff-fx":{"source":"iana","extensions":["tfx"]},"image/vnd.adobe.photoshop":{"source":"iana","compressible":true,"extensions":["psd"]},"image/vnd.airzip.accelerator.azv":{"source":"iana","extensions":["azv"]},"image/vnd.clip":{"source":"iana"},"image/vnd.cns.inf2":{"source":"iana"},"image/vnd.dece.graphic":{"source":"iana","extensions":["uvi","uvvi","uvg","uvvg"]},"image/vnd.djvu":{"source":"iana","extensions":["djvu","djv"]},"image/vnd.dvb.subtitle":{"source":"iana","extensions":["sub"]},"image/vnd.dwg":{"source":"iana","extensions":["dwg"]},"image/vnd.dxf":{"source":"iana","extensions":["dxf"]},"image/vnd.fastbidsheet":{"source":"iana","extensions":["fbs"]},"image/vnd.fpx":{"source":"iana","extensions":["fpx"]},"image/vnd.fst":{"source":"iana","extensions":["fst"]},"image/vnd.fujixerox.edmics-mmr":{"source":"iana","extensions":["mmr"]},"image/vnd.fujixerox.edmics-rlc":{"source":"iana","extensions":["rlc"]},"image/vnd.globalgraphics.pgb":{"source":"iana"},"image/vnd.microsoft.icon":{"source":"iana","compressible":true,"extensions":["ico"]},"image/vnd.mix":{"source":"iana"},"image/vnd.mozilla.apng":{"source":"iana"},"image/vnd.ms-dds":{"compressible":true,"extensions":["dds"]},"image/vnd.ms-modi":{"source":"iana","extensions":["mdi"]},"image/vnd.ms-photo":{"source":"apache","extensions":["wdp"]},"image/vnd.net-fpx":{"source":"iana","extensions":["npx"]},"image/vnd.pco.b16":{"source":"iana","extensions":["b16"]},"image/vnd.radiance":{"source":"iana"},"image/vnd.sealed.png":{"source":"iana"},"image/vnd.sealedmedia.softseal.gif":{"source":"iana"},"image/vnd.sealedmedia.softseal.jpg":{"source":"iana"},"image/vnd.svf":{"source":"iana"},"image/vnd.tencent.tap":{"source":"iana","extensions":["tap"]},"image/vnd.valve.source.texture":{"source":"iana","extensions":["vtf"]},"image/vnd.wap.wbmp":{"source":"iana","extensions":["wbmp"]},"image/vnd.xiff":{"source":"iana","extensions":["xif"]},"image/vnd.zbrush.pcx":{"source":"iana","extensions":["pcx"]},"image/webp":{"source":"iana","extensions":["webp"]},"image/wmf":{"source":"iana","extensions":["wmf"]},"image/x-3ds":{"source":"apache","extensions":["3ds"]},"image/x-adobe-dng":{"extensions":["dng"]},"image/x-cmu-raster":{"source":"apache","extensions":["ras"]},"image/x-cmx":{"source":"apache","extensions":["cmx"]},"image/x-emf":{"source":"iana"},"image/x-freehand":{"source":"apache","extensions":["fh","fhc","fh4","fh5","fh7"]},"image/x-icon":{"source":"apache","compressible":true,"extensions":["ico"]},"image/x-jng":{"source":"nginx","extensions":["jng"]},"image/x-mrsid-image":{"source":"apache","extensions":["sid"]},"image/x-ms-bmp":{"source":"nginx","compressible":true,"extensions":["bmp"]},"image/x-pcx":{"source":"apache","extensions":["pcx"]},"image/x-pict":{"source":"apache","extensions":["pic","pct"]},"image/x-portable-anymap":{"source":"apache","extensions":["pnm"]},"image/x-portable-bitmap":{"source":"apache","extensions":["pbm"]},"image/x-portable-graymap":{"source":"apache","extensions":["pgm"]},"image/x-portable-pixmap":{"source":"apache","extensions":["ppm"]},"image/x-rgb":{"source":"apache","extensions":["rgb"]},"image/x-tga":{"source":"apache","extensions":["tga"]},"image/x-wmf":{"source":"iana"},"image/x-xbitmap":{"source":"apache","extensions":["xbm"]},"image/x-xcf":{"compressible":false},"image/x-xpixmap":{"source":"apache","extensions":["xpm"]},"image/x-xwindowdump":{"source":"apache","extensions":["xwd"]},"message/bhttp":{"source":"iana"},"message/cpim":{"source":"iana"},"message/delivery-status":{"source":"iana"},"message/disposition-notification":{"source":"iana","extensions":["disposition-notification"]},"message/external-body":{"source":"iana"},"message/feedback-report":{"source":"iana"},"message/global":{"source":"iana","extensions":["u8msg"]},"message/global-delivery-status":{"source":"iana","extensions":["u8dsn"]},"message/global-disposition-notification":{"source":"iana","extensions":["u8mdn"]},"message/global-headers":{"source":"iana","extensions":["u8hdr"]},"message/http":{"source":"iana","compressible":false},"message/imdn+xml":{"source":"iana","compressible":true},"message/mls":{"source":"iana"},"message/news":{"source":"apache"},"message/ohttp-req":{"source":"iana"},"message/ohttp-res":{"source":"iana"},"message/partial":{"source":"iana","compressible":false},"message/rfc822":{"source":"iana","compressible":true,"extensions":["eml","mime","mht","mhtml"]},"message/s-http":{"source":"apache"},"message/sip":{"source":"iana"},"message/sipfrag":{"source":"iana"},"message/tracking-status":{"source":"iana"},"message/vnd.si.simp":{"source":"apache"},"message/vnd.wfa.wsc":{"source":"iana","extensions":["wsc"]},"model/3mf":{"source":"iana","extensions":["3mf"]},"model/e57":{"source":"iana"},"model/gltf+json":{"source":"iana","compressible":true,"extensions":["gltf"]},"model/gltf-binary":{"source":"iana","compressible":true,"extensions":["glb"]},"model/iges":{"source":"iana","compressible":false,"extensions":["igs","iges"]},"model/jt":{"source":"iana","extensions":["jt"]},"model/mesh":{"source":"iana","compressible":false,"extensions":["msh","mesh","silo"]},"model/mtl":{"source":"iana","extensions":["mtl"]},"model/obj":{"source":"iana","extensions":["obj"]},"model/prc":{"source":"iana","extensions":["prc"]},"model/step":{"source":"iana","extensions":["step","stp","stpnc","p21","210"]},"model/step+xml":{"source":"iana","compressible":true,"extensions":["stpx"]},"model/step+zip":{"source":"iana","compressible":false,"extensions":["stpz"]},"model/step-xml+zip":{"source":"iana","compressible":false,"extensions":["stpxz"]},"model/stl":{"source":"iana","extensions":["stl"]},"model/u3d":{"source":"iana","extensions":["u3d"]},"model/vnd.bary":{"source":"iana","extensions":["bary"]},"model/vnd.cld":{"source":"iana","extensions":["cld"]},"model/vnd.collada+xml":{"source":"iana","compressible":true,"extensions":["dae"]},"model/vnd.dwf":{"source":"iana","extensions":["dwf"]},"model/vnd.flatland.3dml":{"source":"iana"},"model/vnd.gdl":{"source":"iana","extensions":["gdl"]},"model/vnd.gs-gdl":{"source":"apache"},"model/vnd.gs.gdl":{"source":"iana"},"model/vnd.gtw":{"source":"iana","extensions":["gtw"]},"model/vnd.moml+xml":{"source":"iana","compressible":true},"model/vnd.mts":{"source":"iana","extensions":["mts"]},"model/vnd.opengex":{"source":"iana","extensions":["ogex"]},"model/vnd.parasolid.transmit.binary":{"source":"iana","extensions":["x_b"]},"model/vnd.parasolid.transmit.text":{"source":"iana","extensions":["x_t"]},"model/vnd.pytha.pyox":{"source":"iana","extensions":["pyo","pyox"]},"model/vnd.rosette.annotated-data-model":{"source":"iana"},"model/vnd.sap.vds":{"source":"iana","extensions":["vds"]},"model/vnd.usda":{"source":"iana","extensions":["usda"]},"model/vnd.usdz+zip":{"source":"iana","compressible":false,"extensions":["usdz"]},"model/vnd.valve.source.compiled-map":{"source":"iana","extensions":["bsp"]},"model/vnd.vtu":{"source":"iana","extensions":["vtu"]},"model/vrml":{"source":"iana","compressible":false,"extensions":["wrl","vrml"]},"model/x3d+binary":{"source":"apache","compressible":false,"extensions":["x3db","x3dbz"]},"model/x3d+fastinfoset":{"source":"iana","extensions":["x3db"]},"model/x3d+vrml":{"source":"apache","compressible":false,"extensions":["x3dv","x3dvz"]},"model/x3d+xml":{"source":"iana","compressible":true,"extensions":["x3d","x3dz"]},"model/x3d-vrml":{"source":"iana","extensions":["x3dv"]},"multipart/alternative":{"source":"iana","compressible":false},"multipart/appledouble":{"source":"iana"},"multipart/byteranges":{"source":"iana"},"multipart/digest":{"source":"iana"},"multipart/encrypted":{"source":"iana","compressible":false},"multipart/form-data":{"source":"iana","compressible":false},"multipart/header-set":{"source":"iana"},"multipart/mixed":{"source":"iana"},"multipart/multilingual":{"source":"iana"},"multipart/parallel":{"source":"iana"},"multipart/related":{"source":"iana","compressible":false},"multipart/report":{"source":"iana"},"multipart/signed":{"source":"iana","compressible":false},"multipart/vnd.bint.med-plus":{"source":"iana"},"multipart/voice-message":{"source":"iana"},"multipart/x-mixed-replace":{"source":"iana"},"text/1d-interleaved-parityfec":{"source":"iana"},"text/cache-manifest":{"source":"iana","compressible":true,"extensions":["appcache","manifest"]},"text/calendar":{"source":"iana","extensions":["ics","ifb"]},"text/calender":{"compressible":true},"text/cmd":{"compressible":true},"text/coffeescript":{"extensions":["coffee","litcoffee"]},"text/cql":{"source":"iana"},"text/cql-expression":{"source":"iana"},"text/cql-identifier":{"source":"iana"},"text/css":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["css"]},"text/csv":{"source":"iana","compressible":true,"extensions":["csv"]},"text/csv-schema":{"source":"iana"},"text/directory":{"source":"iana"},"text/dns":{"source":"iana"},"text/ecmascript":{"source":"apache"},"text/encaprtp":{"source":"iana"},"text/enriched":{"source":"iana"},"text/fhirpath":{"source":"iana"},"text/flexfec":{"source":"iana"},"text/fwdred":{"source":"iana"},"text/gff3":{"source":"iana"},"text/grammar-ref-list":{"source":"iana"},"text/hl7v2":{"source":"iana"},"text/html":{"source":"iana","compressible":true,"extensions":["html","htm","shtml"]},"text/jade":{"extensions":["jade"]},"text/javascript":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["js","mjs"]},"text/jcr-cnd":{"source":"iana"},"text/jsx":{"compressible":true,"extensions":["jsx"]},"text/less":{"compressible":true,"extensions":["less"]},"text/markdown":{"source":"iana","compressible":true,"extensions":["md","markdown"]},"text/mathml":{"source":"nginx","extensions":["mml"]},"text/mdx":{"compressible":true,"extensions":["mdx"]},"text/mizar":{"source":"iana"},"text/n3":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["n3"]},"text/parameters":{"source":"iana","charset":"UTF-8"},"text/parityfec":{"source":"iana"},"text/plain":{"source":"iana","compressible":true,"extensions":["txt","text","conf","def","list","log","in","ini"]},"text/provenance-notation":{"source":"iana","charset":"UTF-8"},"text/prs.fallenstein.rst":{"source":"iana"},"text/prs.lines.tag":{"source":"iana","extensions":["dsc"]},"text/prs.prop.logic":{"source":"iana"},"text/prs.texi":{"source":"iana"},"text/raptorfec":{"source":"iana"},"text/red":{"source":"iana"},"text/rfc822-headers":{"source":"iana"},"text/richtext":{"source":"iana","compressible":true,"extensions":["rtx"]},"text/rtf":{"source":"iana","compressible":true,"extensions":["rtf"]},"text/rtp-enc-aescm128":{"source":"iana"},"text/rtploopback":{"source":"iana"},"text/rtx":{"source":"iana"},"text/sgml":{"source":"iana","extensions":["sgml","sgm"]},"text/shaclc":{"source":"iana"},"text/shex":{"source":"iana","extensions":["shex"]},"text/slim":{"extensions":["slim","slm"]},"text/spdx":{"source":"iana","extensions":["spdx"]},"text/strings":{"source":"iana"},"text/stylus":{"extensions":["stylus","styl"]},"text/t140":{"source":"iana"},"text/tab-separated-values":{"source":"iana","compressible":true,"extensions":["tsv"]},"text/troff":{"source":"iana","extensions":["t","tr","roff","man","me","ms"]},"text/turtle":{"source":"iana","charset":"UTF-8","extensions":["ttl"]},"text/ulpfec":{"source":"iana"},"text/uri-list":{"source":"iana","compressible":true,"extensions":["uri","uris","urls"]},"text/vcard":{"source":"iana","compressible":true,"extensions":["vcard"]},"text/vnd.a":{"source":"iana"},"text/vnd.abc":{"source":"iana"},"text/vnd.ascii-art":{"source":"iana"},"text/vnd.curl":{"source":"iana","extensions":["curl"]},"text/vnd.curl.dcurl":{"source":"apache","extensions":["dcurl"]},"text/vnd.curl.mcurl":{"source":"apache","extensions":["mcurl"]},"text/vnd.curl.scurl":{"source":"apache","extensions":["scurl"]},"text/vnd.debian.copyright":{"source":"iana","charset":"UTF-8"},"text/vnd.dmclientscript":{"source":"iana"},"text/vnd.dvb.subtitle":{"source":"iana","extensions":["sub"]},"text/vnd.esmertec.theme-descriptor":{"source":"iana","charset":"UTF-8"},"text/vnd.exchangeable":{"source":"iana"},"text/vnd.familysearch.gedcom":{"source":"iana","extensions":["ged"]},"text/vnd.ficlab.flt":{"source":"iana"},"text/vnd.fly":{"source":"iana","extensions":["fly"]},"text/vnd.fmi.flexstor":{"source":"iana","extensions":["flx"]},"text/vnd.gml":{"source":"iana"},"text/vnd.graphviz":{"source":"iana","extensions":["gv"]},"text/vnd.hans":{"source":"iana"},"text/vnd.hgl":{"source":"iana"},"text/vnd.in3d.3dml":{"source":"iana","extensions":["3dml"]},"text/vnd.in3d.spot":{"source":"iana","extensions":["spot"]},"text/vnd.iptc.newsml":{"source":"iana"},"text/vnd.iptc.nitf":{"source":"iana"},"text/vnd.latex-z":{"source":"iana"},"text/vnd.motorola.reflex":{"source":"iana"},"text/vnd.ms-mediapackage":{"source":"iana"},"text/vnd.net2phone.commcenter.command":{"source":"iana"},"text/vnd.radisys.msml-basic-layout":{"source":"iana"},"text/vnd.senx.warpscript":{"source":"iana"},"text/vnd.si.uricatalogue":{"source":"apache"},"text/vnd.sosi":{"source":"iana"},"text/vnd.sun.j2me.app-descriptor":{"source":"iana","charset":"UTF-8","extensions":["jad"]},"text/vnd.trolltech.linguist":{"source":"iana","charset":"UTF-8"},"text/vnd.vcf":{"source":"iana"},"text/vnd.wap.si":{"source":"iana"},"text/vnd.wap.sl":{"source":"iana"},"text/vnd.wap.wml":{"source":"iana","extensions":["wml"]},"text/vnd.wap.wmlscript":{"source":"iana","extensions":["wmls"]},"text/vnd.zoo.kcl":{"source":"iana"},"text/vtt":{"source":"iana","charset":"UTF-8","compressible":true,"extensions":["vtt"]},"text/wgsl":{"source":"iana","extensions":["wgsl"]},"text/x-asm":{"source":"apache","extensions":["s","asm"]},"text/x-c":{"source":"apache","extensions":["c","cc","cxx","cpp","h","hh","dic"]},"text/x-component":{"source":"nginx","extensions":["htc"]},"text/x-fortran":{"source":"apache","extensions":["f","for","f77","f90"]},"text/x-gwt-rpc":{"compressible":true},"text/x-handlebars-template":{"extensions":["hbs"]},"text/x-java-source":{"source":"apache","extensions":["java"]},"text/x-jquery-tmpl":{"compressible":true},"text/x-lua":{"extensions":["lua"]},"text/x-markdown":{"compressible":true,"extensions":["mkd"]},"text/x-nfo":{"source":"apache","extensions":["nfo"]},"text/x-opml":{"source":"apache","extensions":["opml"]},"text/x-org":{"compressible":true,"extensions":["org"]},"text/x-pascal":{"source":"apache","extensions":["p","pas"]},"text/x-processing":{"compressible":true,"extensions":["pde"]},"text/x-sass":{"extensions":["sass"]},"text/x-scss":{"extensions":["scss"]},"text/x-setext":{"source":"apache","extensions":["etx"]},"text/x-sfv":{"source":"apache","extensions":["sfv"]},"text/x-suse-ymp":{"compressible":true,"extensions":["ymp"]},"text/x-uuencode":{"source":"apache","extensions":["uu"]},"text/x-vcalendar":{"source":"apache","extensions":["vcs"]},"text/x-vcard":{"source":"apache","extensions":["vcf"]},"text/xml":{"source":"iana","compressible":true,"extensions":["xml"]},"text/xml-external-parsed-entity":{"source":"iana"},"text/yaml":{"compressible":true,"extensions":["yaml","yml"]},"video/1d-interleaved-parityfec":{"source":"iana"},"video/3gpp":{"source":"iana","extensions":["3gp","3gpp"]},"video/3gpp-tt":{"source":"iana"},"video/3gpp2":{"source":"iana","extensions":["3g2"]},"video/av1":{"source":"iana"},"video/bmpeg":{"source":"iana"},"video/bt656":{"source":"iana"},"video/celb":{"source":"iana"},"video/dv":{"source":"iana"},"video/encaprtp":{"source":"iana"},"video/evc":{"source":"iana"},"video/ffv1":{"source":"iana"},"video/flexfec":{"source":"iana"},"video/h261":{"source":"iana","extensions":["h261"]},"video/h263":{"source":"iana","extensions":["h263"]},"video/h263-1998":{"source":"iana"},"video/h263-2000":{"source":"iana"},"video/h264":{"source":"iana","extensions":["h264"]},"video/h264-rcdo":{"source":"iana"},"video/h264-svc":{"source":"iana"},"video/h265":{"source":"iana"},"video/h266":{"source":"iana"},"video/iso.segment":{"source":"iana","extensions":["m4s"]},"video/jpeg":{"source":"iana","extensions":["jpgv"]},"video/jpeg2000":{"source":"iana"},"video/jpm":{"source":"apache","extensions":["jpm","jpgm"]},"video/jxsv":{"source":"iana"},"video/lottie+json":{"source":"iana","compressible":true},"video/matroska":{"source":"iana"},"video/matroska-3d":{"source":"iana"},"video/mj2":{"source":"iana","extensions":["mj2","mjp2"]},"video/mp1s":{"source":"iana"},"video/mp2p":{"source":"iana"},"video/mp2t":{"source":"iana","extensions":["ts","m2t","m2ts","mts"]},"video/mp4":{"source":"iana","compressible":false,"extensions":["mp4","mp4v","mpg4"]},"video/mp4v-es":{"source":"iana"},"video/mpeg":{"source":"iana","compressible":false,"extensions":["mpeg","mpg","mpe","m1v","m2v"]},"video/mpeg4-generic":{"source":"iana"},"video/mpv":{"source":"iana"},"video/nv":{"source":"iana"},"video/ogg":{"source":"iana","compressible":false,"extensions":["ogv"]},"video/parityfec":{"source":"iana"},"video/pointer":{"source":"iana"},"video/quicktime":{"source":"iana","compressible":false,"extensions":["qt","mov"]},"video/raptorfec":{"source":"iana"},"video/raw":{"source":"iana"},"video/rtp-enc-aescm128":{"source":"iana"},"video/rtploopback":{"source":"iana"},"video/rtx":{"source":"iana"},"video/scip":{"source":"iana"},"video/smpte291":{"source":"iana"},"video/smpte292m":{"source":"iana"},"video/ulpfec":{"source":"iana"},"video/vc1":{"source":"iana"},"video/vc2":{"source":"iana"},"video/vnd.cctv":{"source":"iana"},"video/vnd.dece.hd":{"source":"iana","extensions":["uvh","uvvh"]},"video/vnd.dece.mobile":{"source":"iana","extensions":["uvm","uvvm"]},"video/vnd.dece.mp4":{"source":"iana"},"video/vnd.dece.pd":{"source":"iana","extensions":["uvp","uvvp"]},"video/vnd.dece.sd":{"source":"iana","extensions":["uvs","uvvs"]},"video/vnd.dece.video":{"source":"iana","extensions":["uvv","uvvv"]},"video/vnd.directv.mpeg":{"source":"iana"},"video/vnd.directv.mpeg-tts":{"source":"iana"},"video/vnd.dlna.mpeg-tts":{"source":"iana"},"video/vnd.dvb.file":{"source":"iana","extensions":["dvb"]},"video/vnd.fvt":{"source":"iana","extensions":["fvt"]},"video/vnd.hns.video":{"source":"iana"},"video/vnd.iptvforum.1dparityfec-1010":{"source":"iana"},"video/vnd.iptvforum.1dparityfec-2005":{"source":"iana"},"video/vnd.iptvforum.2dparityfec-1010":{"source":"iana"},"video/vnd.iptvforum.2dparityfec-2005":{"source":"iana"},"video/vnd.iptvforum.ttsavc":{"source":"iana"},"video/vnd.iptvforum.ttsmpeg2":{"source":"iana"},"video/vnd.motorola.video":{"source":"iana"},"video/vnd.motorola.videop":{"source":"iana"},"video/vnd.mpegurl":{"source":"iana","extensions":["mxu","m4u"]},"video/vnd.ms-playready.media.pyv":{"source":"iana","extensions":["pyv"]},"video/vnd.nokia.interleaved-multimedia":{"source":"iana"},"video/vnd.nokia.mp4vr":{"source":"iana"},"video/vnd.nokia.videovoip":{"source":"iana"},"video/vnd.objectvideo":{"source":"iana"},"video/vnd.planar":{"source":"iana"},"video/vnd.radgamettools.bink":{"source":"iana"},"video/vnd.radgamettools.smacker":{"source":"apache"},"video/vnd.sealed.mpeg1":{"source":"iana"},"video/vnd.sealed.mpeg4":{"source":"iana"},"video/vnd.sealed.swf":{"source":"iana"},"video/vnd.sealedmedia.softseal.mov":{"source":"iana"},"video/vnd.uvvu.mp4":{"source":"iana","extensions":["uvu","uvvu"]},"video/vnd.vivo":{"source":"iana","extensions":["viv"]},"video/vnd.youtube.yt":{"source":"iana"},"video/vp8":{"source":"iana"},"video/vp9":{"source":"iana"},"video/webm":{"source":"apache","compressible":false,"extensions":["webm"]},"video/x-f4v":{"source":"apache","extensions":["f4v"]},"video/x-fli":{"source":"apache","extensions":["fli"]},"video/x-flv":{"source":"apache","compressible":false,"extensions":["flv"]},"video/x-m4v":{"source":"apache","extensions":["m4v"]},"video/x-matroska":{"source":"apache","compressible":false,"extensions":["mkv","mk3d","mks"]},"video/x-mng":{"source":"apache","extensions":["mng"]},"video/x-ms-asf":{"source":"apache","extensions":["asf","asx"]},"video/x-ms-vob":{"source":"apache","extensions":["vob"]},"video/x-ms-wm":{"source":"apache","extensions":["wm"]},"video/x-ms-wmv":{"source":"apache","compressible":false,"extensions":["wmv"]},"video/x-ms-wmx":{"source":"apache","extensions":["wmx"]},"video/x-ms-wvx":{"source":"apache","extensions":["wvx"]},"video/x-msvideo":{"source":"apache","extensions":["avi"]},"video/x-sgi-movie":{"source":"apache","extensions":["movie"]},"video/x-smv":{"source":"apache","extensions":["smv"]},"x-conference/x-cooltalk":{"source":"apache","extensions":["ice"]},"x-shader/x-fragment":{"compressible":true},"x-shader/x-vertex":{"compressible":true}}');
-
 /***/ }
 
 /******/ 	});
@@ -46452,2856 +35994,12 @@ var __webpack_exports__ = {};
 (() => {
 "use strict";
 
-// EXTERNAL MODULE: ./src/lib/GM.ts
-var src_GM = __webpack_require__("./src/lib/GM.ts");
-// EXTERNAL MODULE: ./node_modules/loglevel/lib/loglevel.js
-var loglevel = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-var loglevel_default = /*#__PURE__*/__webpack_require__.n(loglevel);
-;// ./src/lib/localStorageExpired.ts
-
-function storageAvailable(type) {
-    let storage;
-    try {
-        storage = window[type];
-        const x = "__storage_test__";
-        storage.setItem(x, x);
-        storage.removeItem(x);
-        return true;
-    }
-    catch (e) {
-        return (e instanceof DOMException &&
-            (e.code === 22 ||
-                e.code === 1014 ||
-                e.name === "QuotaExceededError" ||
-                e.name === "NS_ERROR_DOM_QUOTA_REACHED") &&
-            storage &&
-            storage.length !== 0);
-    }
-}
-class LocalStorageExpired {
-    storage;
-    constructor() {
-        if (storageAvailable("localStorage")) {
-            this.storage = window.localStorage;
-            this.init();
-        }
-        else {
-            throw new Error("当前浏览器不支持 localStorage");
-        }
-    }
-    set(key, value, expired) {
-        const storage = this.storage;
-        try {
-            storage[key] = JSON.stringify(value);
-            if (expired) {
-                storage[`${key}__expires__`] = Date.now() + 1000 * expired;
-            }
-        }
-        catch (error) {
-            loglevel_default().error(error);
-        }
-    }
-    get(key) {
-        const storage = this.storage;
-        const expired = storage[`${key}__expires__`] ?? false;
-        const now = Date.now();
-        if (expired && now >= expired) {
-            this.remove(key);
-            return;
-        }
-        if (expired) {
-            try {
-                return JSON.parse(storage[key]);
-            }
-            catch (error) {
-                return storage[key];
-            }
-        }
-        else {
-            return storage[key];
-        }
-    }
-    remove(key) {
-        const storage = this.storage;
-        if (storage[key]) {
-            delete storage[key];
-            if (storage[`${key}__expires__`]) {
-                delete storage[`${key}__expires__`];
-            }
-        }
-    }
-    init() {
-        const reg = new RegExp("__expires__$");
-        const storage = this.storage;
-        const keys = Object.keys(storage);
-        keys.forEach((key) => {
-            if (!reg.test(key)) {
-                this.get(key);
-            }
-        });
-    }
-}
-
-// EXTERNAL MODULE: ./src/setting.ts
-var src_setting = __webpack_require__("./src/setting.ts");
-;// ./src/detect.ts
-/* unused harmony import specifier */ var fetchWithTimeout;
-
-
-
-
-function checkObjct(name) {
-    const target = window[name];
-    const targetLength = target.toString().length;
-    const targetPrototype = target.prototype;
-    const nativeFunctionRe = /function \w+\(\) {\n?(\s+)?\[native code]\n?(\s+)?}/;
-    try {
-        if (targetPrototype === undefined ||
-            Boolean(target.toString().match(nativeFunctionRe))) {
-            return [true, targetLength].join(", ");
-        }
-    }
-    catch {
-        return [true, targetLength].join(", ");
-    }
-    return [false, targetLength].join(", ");
-}
-function streamSupport() {
-    return (typeof ReadableStream !== "undefined" &&
-        typeof WritableStream !== "undefined" &&
-        typeof TransformStream !== "undefined");
-}
-function mitmPageAvailability(url) {
-    return new Promise((resolve, reject) => {
-        fetchWithTimeout(url, {}, 2500)
-            .then((resp) => resolve(true))
-            .catch((error) => resolve(false));
-    });
-}
-async function TM_4_14_bug_Detect() {
-    if (src_GM/* _GM_info */.JX.scriptHandler === "Tampermonkey" &&
-        src_GM/* _GM_info */.JX.version?.startsWith("4.14")) {
-        const blob = new Blob(["test"]);
-        const arrayBuffer = await blob.arrayBuffer();
-        if (arrayBuffer === undefined) {
-            alert(`检测到您当前使用的脚本管理器为 Tampermonkey 4.14。
-Tampermonkey 4.14 因存在 Bug 将导致小说下载器脚本无法正常运行，详情可参见：https://github.com/Tampermonkey/tampermonkey/issues/1418 。
-如您想继续使用小说下载器脚本，请您更换 Tampermonkey 版本，或使用 Violentmonkey 脚本管理器。
-如果您不欲更改版本或更换脚本管理器，同时不想再看到本提示，您可以暂时禁用小说下载器脚本。`);
-            throw new Error("Tampermonkey 4.14 Bug Detect");
-        }
-    }
-}
-const environments = async () => {
-    await TM_4_14_bug_Detect();
-    return {
-        当前时间: new Date().toISOString(),
-        当前页URL: document.location.href,
-        workerId: window.workerId,
-        当前页Referrer: document.referrer,
-        浏览器UA: navigator.userAgent,
-        浏览器语言: navigator.languages,
-        设备运行平台: navigator.platform,
-        设备内存: navigator.deviceMemory ?? "",
-        CPU核心数: navigator.hardwareConcurrency,
-        eval: checkObjct("eval"),
-        fetch: checkObjct("fetch"),
-        XMLHttpRequest: checkObjct("XMLHttpRequest"),
-        streamSupport: streamSupport(),
-        window: Object.keys(window).length,
-        localStorage: storageAvailable("localStorage"),
-        sessionStorage: storageAvailable("sessionStorage"),
-        Cookie: navigator.cookieEnabled,
-        doNotTrack: navigator.doNotTrack ?? 0,
-        enableDebug: src_setting/* enableDebug */.Nw.value,
-        TxtDownload: src_setting/* TxtDownload */.Jv.value,
-        EpubDownload: src_setting/* EpubDownload */.Zz.value,
-        customDownload: src_setting/* customDownload */.WZ.value,
-        concurrencyLimit: src_setting/* concurrencyLimit */.ri.value,
-        sleepTime: src_setting/* sleepTime */.Xl.value,
-        maxSleepTime: src_setting/* maxSleepTime */.Fe.value,
-        ScriptHandler: src_GM/* _GM_info */.JX.scriptHandler,
-        "ScriptHandler version": src_GM/* _GM_info */.JX.version,
-        "Novel-downloader version": src_GM/* _GM_info */.JX.script.version,
-    };
-};
-
-// EXTERNAL MODULE: ./src/lib/misc.ts
-var misc = __webpack_require__("./src/lib/misc.ts");
-;// ./src/global.ts
-
-
-function init() {
-    window.workerId = (0,misc/* randomUUID */.N4)();
-    window.downloading = false;
-    window.localStorageExpired = new LocalStorageExpired();
-    const stopController = new AbortController();
-    const stopFlag = stopController.signal;
-    window.stopController = stopController;
-    window.stopFlag = stopFlag;
-    window.failedCount = 0;
-}
-
-// EXTERNAL MODULE: external "Vue"
-var external_Vue_ = __webpack_require__("vue");
-;// ./src/ui/fixVue.ts
-
-
-globalThis.Function = new Proxy(Function, {
-    construct(target, args) {
-        const code = args[args.length - 1];
-        if (code.includes("Vue") && code.includes("_Vue")) {
-            loglevel_default().debug("Function hook:" + code);
-            return hookVue();
-        }
-        else {
-            return new target(...args);
-        }
-        function hookVue() {
-            args[args.length - 1] = "with (Vue) {" + code + "}";
-            return new Proxy(new target(...["Vue", ...args]), {
-                apply(targetI, thisArg, argumentsList) {
-                    const newArgumentsList = [external_Vue_, ...argumentsList];
-                    return Reflect.apply(targetI, thisArg, newArgumentsList);
-                },
-            });
-        }
-    },
+(async () => {
+    const { run } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/bootstrap/top.ts"));
+    await run();
+})().catch((err) => {
+    console.error("[novel-downloader] bootstrap failed", err);
 });
-
-// EXTERNAL MODULE: ./src/lib/dom.ts
-var dom = __webpack_require__("./src/lib/dom.ts");
-;// ./src/router/download.ts
-async function getRule() {
-    const host = document.location.host;
-    let ruleClass;
-    switch (host) {
-        case "101kks.com": {
-            const { c101kanshu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/101kanshu.ts"));
-            ruleClass = c101kanshu();
-            break;
-        }
-        case "www.sudugu.com": {
-            const { Sudugu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/sudugu.ts"));
-            ruleClass = Sudugu;
-            break;
-        }
-        case "www.biquge66.com":
-        case "www.xkzw.org": {
-            const { Xkzw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/xkzw.ts"));
-            ruleClass = Xkzw;
-            break;
-        }
-        case "book.sfacg.com": {
-            const { Sfacg } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/sfacg.ts"));
-            ruleClass = Sfacg;
-            break;
-        }
-        case "api.langge.cf": {
-            const { Langge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/langge.ts"));
-            ruleClass = Langge;
-            break;
-        }
-        case "lcread.com":
-        case "www.lcread.com": {
-            const { Lcread } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/lcread.ts"));
-            ruleClass = Lcread;
-            break;
-        }
-        case "www.lightnovel.fun": {
-            const { Lightnovel } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/lightnovel.ts"));
-            ruleClass = Lightnovel;
-            break;
-        }
-        case "xr.unionread.net": {
-            const { XRUnionread } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/unionread.ts"));
-            ruleClass = XRUnionread;
-            break;
-        }
-        case "www.hetushu.com":
-        case "www.hetubook.com":
-        case "hetushu.com":
-        case "hetubook.com": {
-            const { Hetushu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/hetushu.ts"));
-            ruleClass = Hetushu;
-            break;
-        }
-        case "book.qidian.com":
-        case "www.qidian.com": {
-            const { Qidian } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/qidian.ts"));
-            ruleClass = Qidian;
-            break;
-        }
-        case "www.jjwxc.net": {
-            const { Jjwxc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/jjwxc.ts"));
-            ruleClass = Jjwxc;
-            break;
-        }
-        case "www.zongheng.com":
-        case "book.zongheng.com":
-        case "huayu.zongheng.com": {
-            const { Zongheng } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/zongheng.ts"));
-            ruleClass = Zongheng;
-            break;
-        }
-        case "read.zongheng.com": {
-            const { Zongheng } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/readzongheng.ts"));
-            ruleClass = Zongheng;
-            break;
-        }
-        case "www.17k.com": {
-            const { C17k } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/17k.ts"));
-            ruleClass = C17k;
-            break;
-        }
-        case "www.shuhai.com":
-        case "mm.shuhai.com": {
-            const { Shuhai } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/shuhai.ts"));
-            ruleClass = Shuhai;
-            break;
-        }
-        case "gongzicp.com":
-        case "www.gongzicp.com":
-        case "m.gongzicp.com": {
-            const { Gongzicp } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/gongzicp.ts"));
-            ruleClass = Gongzicp;
-            break;
-        }
-        case "www.ciweimao.com": {
-            const { Ciweimao } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ciweimao.ts"));
-            ruleClass = Ciweimao;
-            break;
-        }
-        case "www.linovel.net": {
-            const { Linovel } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/linovel.ts"));
-            ruleClass = Linovel;
-            break;
-        }
-        case "www.tadu.com": {
-            const { Tadu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/tadu.ts"));
-            ruleClass = Tadu;
-            break;
-        }
-        case "www.idejian.com": {
-            const { Idejian } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/idejian.ts"));
-            ruleClass = Idejian;
-            break;
-        }
-        case "www.qimao.com": {
-            const { Qimao } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/qimao.ts"));
-            ruleClass = Qimao;
-            break;
-        }
-        case "sosad.fun":
-        case "www.sosad.fun":
-        case "wenzhan.org":
-        case "www.wenzhan.org":
-        case "sosadfun.com":
-        case "www.sosadfun.com":
-        case "xn--pxtr7m5ny.com":
-        case "www.xn--pxtr7m5ny.com":
-        case "xn--pxtr7m.com":
-        case "www.xn--pxtr7m.com":
-        case "xn--pxtr7m5ny.net":
-        case "www.xn--pxtr7m5ny.net":
-        case "xn--pxtr7m.net":
-        case "www.xn--pxtr7m.net":
-        case "sosadfun.link":
-        case "www.sosadfun.link": {
-            const { Sosadfun } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/sosadfun.ts"));
-            ruleClass = Sosadfun;
-            break;
-        }
-        case "www.fushuwang.org": {
-            const { Fushuwang } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/fushuwang.ts"));
-            ruleClass = Fushuwang;
-            break;
-        }
-        case regExpMatch(/lofter\.com$/): {
-            const { Lofter } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/lofter.ts"));
-            ruleClass = Lofter;
-            break;
-        }
-        case "www.shubl.com":
-        case "shubl.com": {
-            const { Shubl } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ciweimao.ts"));
-            ruleClass = Shubl;
-            break;
-        }
-        case "m.haitangtxt.net": {
-            const { haitangtxt } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/haitangtxt.ts"));
-            ruleClass = haitangtxt();
-            break;
-        }
-        case "ebook.longmabook.com":
-        case "www.longmabookcn.com":
-        case "ebook.lmbooks.com":
-        case "www.lmebooks.com":
-        case "www.haitbook.com":
-        case "www.htwhbook.com":
-        case "www.myhtebook.com":
-        case "www.lovehtbooks.com":
-        case "www.myhtebooks.com":
-        case "www.myhtlmebook.com":
-        case "jp.myhtebook.com":
-        case "jp.myhtlmebook.com":
-        case "ebook.urhtbooks.com":
-        case "www.urhtbooks.com":
-        case "www.newhtbook.com":
-        case "www.lvhtebook.com":
-        case "jp.lvhtebook.com":
-        case "www.haitangbook.com":
-        case "www.htlvbooks.com": {
-            const { Longmabook } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/longmabook.ts"));
-            ruleClass = Longmabook;
-            break;
-        }
-        case "www.kanunu8.com": {
-            const { Kanunu8 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/kanunu8.ts"));
-            ruleClass = Kanunu8;
-            break;
-        }
-        case "www.ciyuanji.com": {
-            const { Ciyuanji } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ciyuanji.ts"));
-            ruleClass = Ciyuanji;
-            break;
-        }
-        case "www.shaoniandream.com": {
-            const { Shaoniandream } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/shaoniandream.ts"));
-            ruleClass = Shaoniandream;
-            break;
-        }
-        case "www.pixiv.net": {
-            const { Pixiv } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/pixiv.ts"));
-            ruleClass = Pixiv;
-            break;
-        }
-        case "www.myrics.com": {
-            const { Myrics } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/myrics.ts"));
-            ruleClass = Myrics;
-            break;
-        }
-        case "www.hanwujinian.com": {
-            const { Hanwujinian } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/hanwujinian.ts"));
-            ruleClass = Hanwujinian;
-            break;
-        }
-        case "www.cool18.com": {
-            const { Cool18 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/cool18.ts"));
-            ruleClass = Cool18;
-            break;
-        }
-        case "www.xrzww.com":
-        case "xrzww.com": {
-            const { Xrzww } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/xrzww.ts"));
-            ruleClass = Xrzww;
-            break;
-        }
-        case "www.youdubook.com":
-        case "youdubook.com": {
-            const { Youdubook } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/youdubook.ts"));
-            ruleClass = Youdubook;
-            break;
-        }
-        case "new-read.readmoo.com": {
-            const { Readmoo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/readmoo.ts"));
-            ruleClass = Readmoo;
-            break;
-        }
-        case "www.iqingguo.com": {
-            const { Iqingguo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/iqingguo.ts"));
-            ruleClass = Iqingguo;
-            break;
-        }
-        case "cddaoyue.cn":
-        case "www.cddaoyue.cn": {
-            const { Duread } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ciweimao.ts"));
-            ruleClass = Duread;
-            break;
-        }
-        case "www.99csw.com": {
-            const { I99csw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/99csw.ts"));
-            ruleClass = I99csw;
-            break;
-        }
-        case "www.ttkan.co":
-        case "cn.ttkan.co":
-        case "tw.ttkan.co": {
-            const { Ttkan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/ttkan.ts"));
-            ruleClass = Ttkan;
-            break;
-        }
-        case "www.uukanshu.com": {
-            const { uukanshu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/uukanshu.ts"));
-            ruleClass = uukanshu();
-            break;
-        }
-        case "uukanshu.cc": {
-            const { uukanshuCc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/uukanshuCc.ts"));
-            ruleClass = uukanshuCc();
-            break;
-        }
-        case "www.westnovel.com": {
-            const { westnovel } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/westnovel.ts"));
-            ruleClass = westnovel();
-            break;
-        }
-        case "www.soxscc.net":
-        case "www.soxscc.org":
-        case "www.soxs.cc":
-        case "www.soxscc.cc":
-        case "www.soshuwu.com": {
-            const { soxscc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/soxscc.ts"));
-            ruleClass = soxscc();
-            break;
-        }
-        case "www.630shu.net": {
-            const { c630shu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/630shu.ts"));
-            ruleClass = c630shu;
-            break;
-        }
-        case "www.trxs.cc":
-        case "www.trxs.me":
-        case "www.trxs123.com":
-        case "www.jpxs123.com":
-        case "www.tongrenquan.org":
-        case "www.tongrenquan.me":
-        case "trxs.cc":
-        case "trxs.me":
-        case "trxs123.com":
-        case "jpxs123.com":
-        case "tongrenquan.me":
-        case "tongrenquan.org": {
-            const { trxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/trxs.ts"));
-            ruleClass = trxs();
-            break;
-        }
-        case "www.256wenku.com": {
-            const { c256wxc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/256wxc.ts"));
-            ruleClass = c256wxc;
-            break;
-        }
-        case "www.fxshu.top": {
-            const { fuxiaoshu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/fuxiaoshu.ts"));
-            ruleClass = fuxiaoshu;
-            break;
-        }
-        case "www.wanbengo.com": {
-            const { wanben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/wanben.ts"));
-            ruleClass = wanben();
-            break;
-        }
-        case "masiro.me": {
-            const { masiro } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/masiro.ts"));
-            ruleClass = masiro();
-            break;
-        }
-        case "kakuyomu.jp": {
-            const { kakuyomu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/kakuyomu.ts"));
-            ruleClass = kakuyomu();
-            break;
-        }
-        case "ncode.syosetu.com":
-        case "novel18.syosetu.com": {
-            const { syosetu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/syosetu.ts"));
-            ruleClass = syosetu();
-            break;
-        }
-        case "syosetu.org": {
-            const { syosetuOrg } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/syosetu.ts"));
-            ruleClass = syosetuOrg();
-            break;
-        }
-        case "zhaoze.vip":
-        case "houhuayuan.vip": {
-            const { houhuayuan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/houhuayuan.ts"));
-            ruleClass = houhuayuan();
-            break;
-        }
-        case "www.dushu.com": {
-            const { dushu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/dushu.ts"));
-            ruleClass = dushu();
-            break;
-        }
-        case "www.tianyabooks.com": {
-            const { tianyabooks } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/tianyabooks.ts"));
-            ruleClass = tianyabooks();
-            break;
-        }
-        case "www.aixdzs.com": {
-            const { aixdzs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/aixdzs.ts"));
-            ruleClass = aixdzs();
-            break;
-        }
-        case "colorful-fantasybooks.com": {
-            const { fantasybooks } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/colorful-fantasybooks.ts"));
-            ruleClass = fantasybooks();
-            break;
-        }
-        case "www.dizishu.cc":
-        case "www.qu-la.com": {
-            const { dizishu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/dizishu.ts"));
-            ruleClass = dizishu();
-            break;
-        }
-        case "www.akatsuki-novels.com": {
-            const { akatsuki } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/akatsuki.ts"));
-            ruleClass = akatsuki();
-            break;
-        }
-        case "www.alphapolis.co.jp": {
-            const { alphapolis } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/alphapolis.ts"));
-            ruleClass = alphapolis();
-            break;
-        }
-        case "hongxiuzhao.net": {
-            const { hongxiuzhao } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/hongxiuzhao.ts"));
-            ruleClass = hongxiuzhao();
-            break;
-        }
-        case "www.xbyuan.com": {
-            const { xbyuan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/xbyuan.ts"));
-            ruleClass = xbyuan();
-            break;
-        }
-        case "www.quanzhifashi.com": {
-            const { qzxsw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/qzxsw.ts"));
-            ruleClass = qzxsw();
-            break;
-        }
-        case "www.boqugew.com": {
-            const { boqugew } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/boqugew.ts"));
-            ruleClass = boqugew();
-            break;
-        }
-        case "www.qbtr.cc": {
-            const { qbtrcc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/qbtrcc.ts"));
-            ruleClass = qbtrcc();
-            break;
-        }
-        case "b.guidaye.com": {
-            const { guidaye } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/guidaye.ts"));
-            ruleClass = await guidaye();
-            break;
-        }
-        case "www.xbanxia.la":
-        case "www.xbanxia.cc": {
-            const { banxia } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/banxia.ts"));
-            ruleClass = banxia();
-            break;
-        }
-        case "www.zgzl.net": {
-            const { zgzl } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/zgzl.ts"));
-            ruleClass = zgzl();
-            break;
-        }
-        case "www.zhenhunxiaoshuo.com": {
-            const { zhenhunxiaoshuo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/zhenhunxiaoshuo.ts"));
-            ruleClass = zhenhunxiaoshuo();
-            break;
-        }
-        case "www.52shuku.vip": {
-            const pathname = document.location.pathname;
-            const chapterPattern = /.*\/.*_\d+.html/;
-            if (!chapterPattern.test(pathname)) {
-                const { i52shuku } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/52shuku.ts"));
-                ruleClass = i52shuku();
-                break;
-            }
-            throw new Error("This is a chapter page, not a book page.");
-        }
-        case "m.bixiange.me": {
-            const { bixiange } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/bixiange.ts"));
-            ruleClass = bixiange();
-            break;
-        }
-        case "www.rmkbr.com": {
-            const { yiqushuzhai } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/yiqushuzhai.ts"));
-            ruleClass = yiqushuzhai();
-            break;
-        }
-        case "www.dbxsd.com": {
-            const { dubuxiaoshuo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/dubuxiaoshuo.ts"));
-            ruleClass = dubuxiaoshuo();
-            break;
-        }
-        case "wxscs.com":
-        case "www.wxscs.com":
-        case "wxsck.com":
-        case "www.wxsck.com": {
-            const { wanxiangshucheng } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/wanxiangshucheng.ts"));
-            ruleClass = wanxiangshucheng();
-            break;
-        }
-        case "www.biquge345.com": {
-            const { biquge345 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/biquge345.ts"));
-            ruleClass = biquge345();
-            break;
-        }
-        case "www.beqege.cc": {
-            const { biqugecc } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/biqugecc.ts"));
-            ruleClass = biqugecc();
-            break;
-        }
-        case "m.mjyhb.com": {
-            const { mjyhb } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/mjyhb.ts"));
-            ruleClass = mjyhb();
-            break;
-        }
-        case "m.fly-dreams.com": {
-            const { flydreams } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/fly-dreams.ts"));
-            ruleClass = flydreams();
-            break;
-        }
-        case "www.23dishuge.com": {
-            const { dishuge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/dishuge.ts"));
-            ruleClass = dishuge();
-            break;
-        }
-        case "www.69hsw.com":
-        case "www.69hao.com":
-        case "www.69hsz.net": {
-            const { c69shuba } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/69shuba.ts"));
-            ruleClass = c69shuba();
-            break;
-        }
-        case "m.shauthor.com": {
-            const { shauthor } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/shauthor.ts"));
-            ruleClass = shauthor();
-            break;
-        }
-        case "m.chenkuan.com": {
-            const { chenkuan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/chenkuan.ts"));
-            ruleClass = chenkuan();
-            break;
-        }
-        case "m.baihexs.com": {
-            const { baihexs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/baihexs.ts"));
-            ruleClass = baihexs();
-            break;
-        }
-        case "novelup.plus": {
-            const { novelup } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/original/novelup.ts"));
-            ruleClass = novelup();
-            break;
-        }
-        case "www.piaotia.com": {
-            const { ptwxz } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/ptwxz.ts"));
-            ruleClass = ptwxz();
-            break;
-        }
-        case "m.wanbengo.com": {
-            const { wanben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/wanben.ts"));
-            ruleClass = wanben();
-            break;
-        }
-        case "www.biquge.tw": {
-            const { biqugetw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/biqugetw.ts"));
-            ruleClass = biqugetw();
-            break;
-        }
-        case "m.xszj.org":
-        case "xszj.org": {
-            const { xszj } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/xszj.ts"));
-            ruleClass = xszj();
-            break;
-        }
-        case "www.fdhxs.com": {
-            const { haitangshuwu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/haitangshuwu.ts"));
-            ruleClass = haitangshuwu();
-            break;
-        }
-        case "pornhulu.com":
-        case "xn--yhqvcx66l.xnxnxn7.xyz":
-        case "321dh.org":
-        case "www.alicesw.com": {
-            const { alicesw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/alicesw.ts"));
-            ruleClass = alicesw();
-            break;
-        }
-        case "www.xfxs1.com": {
-            const { xianfengxiaoshuo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/xianfengxiaoshuo.ts"));
-            ruleClass = xianfengxiaoshuo();
-            break;
-        }
-        case "www.ruochu.com": {
-            const { ruochu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/original/ruochu.ts"));
-            ruleClass = ruochu();
-            break;
-        }
-        case "www.1pwx.com": {
-            const { xiaoshuodaquan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/1pwx.ts"));
-            ruleClass = xiaoshuodaquan();
-            break;
-        }
-        case "www.wenku8.net": {
-            const { wenku8 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/wenku8.ts"));
-            ruleClass = wenku8();
-            break;
-        }
-        case "www.linovelib.com": {
-            const { linovelib } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/linovelib.ts"));
-            ruleClass = linovelib();
-            break;
-        }
-        case "www.bilinovel.com": {
-            const { wlinovelib } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/linovelib.ts"));
-            ruleClass = wlinovelib();
-            break;
-        }
-        case "www.yibige.cc": {
-            const { yibige } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/yibige.ts"));
-            ruleClass = yibige();
-            break;
-        }
-        case "www.wangshugu.org": {
-            const { washuge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/washuge.ts"));
-            ruleClass = washuge();
-            break;
-        }
-        case "www.shencou.com": {
-            const { shencou } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/shencou.ts"));
-            ruleClass = shencou();
-            break;
-        }
-        case "jingcaiyuedu6.com": {
-            const { jingcaiyuedu6 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/jingcaiyuedu6.ts"));
-            ruleClass = jingcaiyuedu6();
-            break;
-        }
-        case "www.uaa.com": {
-            const { uaa } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/uaa.ts"));
-            ruleClass = uaa();
-            break;
-        }
-        case "www.18kanshu.com": {
-            const { c18kanshu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/18kanshu.ts"));
-            ruleClass = c18kanshu();
-            break;
-        }
-        case "www.ihuaben.com": {
-            const { ihuaben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/ihuaben.ts"));
-            ruleClass = ihuaben;
-            break;
-        }
-        case "www.kadokado.com.tw": {
-            const { kadokado } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/kadokado.ts"));
-            ruleClass = kadokado;
-            break;
-        }
-        case "www.po18.tw": {
-            const { po18 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/po18.ts"));
-            ruleClass = po18;
-            break;
-        }
-        case "b.faloo.com": {
-            const { faloo } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/faloo.ts"));
-            ruleClass = faloo;
-            break;
-        }
-        case "novelpia.jp": {
-            const { novelpia } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/novelpia.ts"));
-            ruleClass = novelpia;
-            break;
-        }
-        case "book.qq.com": {
-            const { QQBook } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/qqbook.ts"));
-            ruleClass = QQBook;
-            break;
-        }
-        case "www.60ksw.com": {
-            const { i60ksw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/60ksw.ts"));
-            ruleClass = i60ksw();
-            break;
-        }
-        case "www.penana.com": {
-            const { penana } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/penana.ts"));
-            ruleClass = penana();
-            break;
-        }
-        case "www.lzdzw.com": {
-            const { lzdzw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/lzdzw.ts"));
-            ruleClass = lzdzw;
-            break;
-        }
-        case "www.doufuyuedu.com": {
-            const { doufuyuedu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/doufuyuedu.ts"));
-            ruleClass = doufuyuedu;
-            break;
-        }
-        case "czbooks.net": {
-            const { czbooks } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/czbooks.ts"));
-            ruleClass = czbooks();
-            break;
-        }
-        case "www.xiaoshuowu.com": {
-            const { xiaoshuowu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/twoPage/xiaoshuowu.ts"));
-            ruleClass = xiaoshuowu();
-            break;
-        }
-        case "twkan.com": {
-            const { twkan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/twkan.ts"));
-            ruleClass = twkan();
-            break;
-        }
-        case "www.69shuba.com":
-        case "69shuba.cx": {
-            const { c69shu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/69shu.ts"));
-            ruleClass = c69shu();
-            break;
-        }
-        case "book.xbookcn.net": {
-            const { xbookcn } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/xbookcn.ts"));
-            ruleClass = xbookcn();
-            break;
-        }
-        case "www.69yuedu.net": {
-            const { c69yuedu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/69yuedu.ts"));
-            ruleClass = c69yuedu();
-            break;
-        }
-        case "www.haiwaishubao.com": {
-            const { haiwaishubao } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePageWithMultiIndexPage/haiwaishubao.ts"));
-            ruleClass = haiwaishubao();
-            break;
-        }
-        case "www.quanshuzhai.com": {
-            const { quanshuzhai } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/mbtxt/quanshuzhai.ts"));
-            ruleClass = quanshuzhai();
-            break;
-        }
-        case "www.mbtxt.la": {
-            const { mbtxt } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/mbtxt/mbtxt.ts"));
-            ruleClass = mbtxt();
-            break;
-        }
-        case "www.bqu9.cc":
-        case "www.bq06.cc": {
-            const { bqu9 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = bqu9();
-            break;
-        }
-        case "www.666biquge.com":
-        case "www.xiunews.com":
-        case "www.23xsww.cc":
-        case "www.biququ.com":
-        case "www.ddyveshu.cc":
-        case "www.81book.com":
-        case "www.81zw.com":
-        case "www.fuguoduxs.com":
-        case "www.shubaowa.org":
-        case "www.aixiaxs.net":
-        case "www.banzhuer.org":
-        case "www.007zw.com": {
-            const { common } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = common();
-            break;
-        }
-        case "www.mht99.com": {
-            const { mht } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/mht.ts"));
-            ruleClass = mht();
-            break;
-        }
-        case "www.xsbiquge.la":
-        case "www.xbiquge.tw": {
-            const { xbiquge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = xbiquge();
-            break;
-        }
-        case "www.luoqiuzw.com": {
-            const { luoqiuzw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = luoqiuzw();
-            break;
-        }
-        case "dijiuben.com": {
-            const { dijiubook } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = dijiubook();
-            break;
-        }
-        case "www.biquzw.la": {
-            const { biquwx } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = biquwx();
-            break;
-        }
-        case "www.i25zw.com": {
-            const { c25zw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = c25zw();
-            break;
-        }
-        case "www.tycqzw.com": {
-            const { tycqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = tycqxs();
-            break;
-        }
-        case "www.ranwen.la": {
-            const { ranwen } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = ranwen();
-            break;
-        }
-        case "www.lvsewx.com": {
-            const { lusetxt } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = lusetxt();
-            break;
-        }
-        case "www.biquge5200.cc": {
-            const { b5200 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = b5200();
-            break;
-        }
-        case "www.yqxsge.cc": {
-            const { yqxs } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = yqxs();
-            break;
-        }
-        case "www.bixia3.com": {
-            const { bxwx333 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = bxwx333();
-            break;
-        }
-        case "www.ibiquge.la": {
-            const { xbiqugeLa } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = xbiqugeLa();
-            break;
-        }
-        case "www.yiruan.la": {
-            const { yruan } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = yruan();
-            break;
-        }
-        case "www.ishuquge.org": {
-            const { shuquge } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = shuquge();
-            break;
-        }
-        case "www.gashuw.com": {
-            const { gebiqu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = gebiqu();
-            break;
-        }
-        case "www.lewenn.net": {
-            const { lewenn } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = lewenn();
-            break;
-        }
-        case "www.xyb3.net": {
-            const { xyb3 } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = xyb3();
-            break;
-        }
-        case "www.wanben.info": {
-            const { xinwanben } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/nextPage.ts"));
-            ruleClass = xinwanben();
-            break;
-        }
-        case "www.ywggzy.com": {
-            const { ywggzy } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/nextPage.ts"));
-            ruleClass = ywggzy();
-            break;
-        }
-        case "www.mijiashe.com": {
-            const { mijiashe } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/nextPage.ts"));
-            ruleClass = mijiashe();
-            break;
-        }
-        case "m.kuangguwenhua.com": {
-            const { znlzd } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/multiIndexNextPage.ts"));
-            ruleClass = znlzd();
-            break;
-        }
-        case "www.266ks.com": {
-            const { c226ks } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/multiIndexNextPage.ts"));
-            ruleClass = c226ks();
-            break;
-        }
-        case "www.42zw.la": {
-            const { la42zw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/biquge/onePage.ts"));
-            ruleClass = la42zw();
-            break;
-        }
-        case "www.bilibili.com": {
-            const { Bilibili } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/bilibili.ts"));
-            ruleClass = Bilibili;
-            break;
-        }
-        case "www.esjzone.cc":
-        case "www.esjzone.one":
-        case "esjzone.one": {
-            const { esjzone } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/esjzone.ts"));
-            ruleClass = esjzone;
-            break;
-        }
-        case "fanqienovel.com": {
-            const { fanqie } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/original/fanqie.ts"));
-            ruleClass = fanqie;
-            break;
-        }
-        case "www.mangguoshufang.com":
-        case "mangguoshufang.com": {
-            const { Mangguoshufang } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/mangguoshufang.ts"));
-            ruleClass = Mangguoshufang;
-            break;
-        }
-        case "www.pilibook.net":
-        case "www.mozishuwu.com": {
-            const { Pilishuwu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/pilishuwu.ts"));
-            ruleClass = Pilishuwu;
-            break;
-        }
-        case "www.xiguashuwu.com": {
-            const { Xiguashuwu } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/xiguashuwu.ts"));
-            ruleClass = Xiguashuwu;
-            break;
-        }
-        case "www.zjsw.org": {
-            const { zjsw } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/zjsw.ts"));
-            ruleClass = zjsw();
-            break;
-        }
-        default: {
-            if (/^booktoki\d+\.com$/.test(host) || /^www\.booktoki\d+\.com$/.test(host)) {
-                const { booktoki } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/special/reprint/booktoki.ts"));
-                ruleClass = booktoki();
-                break;
-            }
-            throw new Error("Not Found Rule!");
-        }
-    }
-    return new ruleClass();
-    function regExpMatch(regexp) {
-        if (regexp.test(host)) {
-            return host;
-        }
-    }
-}
-
-;// ./src/lib/adBlocker.ts
-function floatBuster() {
-    if (window !== window.top) {
-        return;
-    }
-    let tstart;
-    const ttl = 30000;
-    let delay = 0;
-    const delayStep = 50;
-    const buster = () => {
-        const button = document.querySelector("#button-div");
-        if (button) {
-            getFixNearby(button).forEach((node) => node.remove());
-            tstart = Date.now();
-        }
-        const progress = document.querySelector("#nd-progress");
-        if (progress) {
-            getFixNearby(progress).forEach((node) => node.remove());
-            tstart = Date.now();
-        }
-        const setting = document.querySelector("#nd-setting");
-        if (setting) {
-            getFixNearby(setting).forEach((node) => node.remove());
-            tstart = Date.now();
-        }
-        if (Date.now() - tstart < ttl) {
-            delay = Math.min(delay + delayStep, 1000);
-            setTimeout(buster, delay);
-        }
-    };
-    const domReady = (ev) => {
-        if (ev) {
-            document.removeEventListener(ev.type, domReady);
-        }
-        tstart = Date.now();
-        setTimeout(buster, delay);
-    };
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", domReady);
-    }
-    else {
-        domReady();
-    }
-    function getFixNearby(elem) {
-        return Array.from(document.querySelectorAll("body *")).filter((node) => {
-            const { position, visibility, zIndex } = window.getComputedStyle(node);
-            return (node !== elem &&
-                !(node.compareDocumentPosition(elem) &
-                    Node.DOCUMENT_POSITION_CONTAINS ||
-                    node.compareDocumentPosition(elem) &
-                        Node.DOCUMENT_POSITION_CONTAINED_BY) &&
-                !["button-div", "nd-progress", "nd-setting"].includes(node.id) &&
-                visibility === "visible" &&
-                (position === "fixed" || parseInt(zIndex, 10) >= 1000) &&
-                (nearTest(node, elem) || parseInt(zIndex, 10) > 10 ** 9));
-        });
-        function nearTest(node, element) {
-            if (isOverlap(getVertex(node), getVertex(element))) {
-                return true;
-            }
-            else {
-                return isNearby(getVertex(node), getVertex(element));
-            }
-            function getVertex(ele) {
-                const { left, top, right, bottom } = ele.getBoundingClientRect();
-                return [
-                    [left, top],
-                    [right, top],
-                    [left, bottom],
-                    [right, bottom],
-                ];
-            }
-            function isOverlap(rec1, rec2) {
-                const [left1, top1] = rec1[0];
-                const [right1, bottom1] = rec1[3];
-                const [left2, top2] = rec2[0];
-                const [right2, bottom2] = rec2[3];
-                return (!(right1 < left2 || right2 < left1) &&
-                    !(bottom1 < top2 || bottom2 < top1));
-            }
-            function isNearby(rec1, rec2) {
-                const docEl = document.documentElement;
-                const vw = Math.min(docEl.clientWidth, window.innerWidth);
-                const vh = Math.min(docEl.clientHeight, window.innerHeight);
-                const diagonal = Math.sqrt(vw ** 2 + vh ** 2);
-                for (const [x1, y1] of rec1) {
-                    for (const [x2, y2] of rec2) {
-                        const distance = Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
-                        if (distance < diagonal * 0.1) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-        }
-    }
-}
-
-;// ./src/router/ui.ts
-
-const defaultObject = {
-    type: "download",
-};
-const errorObject = {
-    type: "error",
-};
-function getUI() {
-    const host = document.location.host;
-    switch (host) {
-        case "wap.ishuquge.org": {
-            return () => {
-                const id = /(\d+)\.html$/.exec(document.location.pathname)?.[1];
-                if (!id) {
-                    return errorObject;
-                }
-                return {
-                    type: "jump",
-                    jumpFunction() {
-                        document.location.href = `https://www.ishuquge.org/txt/${id}/index.html`;
-                    },
-                };
-            };
-        }
-        case "m.wanben.info": {
-            return () => ({
-                type: "jump",
-                jumpFunction() {
-                    document.location.host = "www.wanben.info";
-                },
-            });
-        }
-        case "www.tadu.com": {
-            return () => {
-                const re = /^\/book\/\d+\/?$/;
-                if (re.test(document.location.pathname)) {
-                    return defaultObject;
-                }
-                else {
-                    return errorObject;
-                }
-            };
-        }
-        case "www.kanunu8.com": {
-            return () => {
-                if (document.body.innerHTML.includes("作者：") ||
-                    document.body.innerHTML.includes("作者:") ||
-                    document.body.innerHTML.includes("内容简介")) {
-                    return defaultObject;
-                }
-                else {
-                    return errorObject;
-                }
-            };
-        }
-        case "www.ddyucshu.cc": {
-            return () => {
-                return {
-                    type: "jump",
-                    jumpFunction: () => {
-                        document.location.href = document.location.href.replace("ddyucshu.cc", 'ddyveshu.cc');
-                    },
-                };
-            };
-        }
-        case "www.ciyuanji.com": {
-            return () => {
-                if (document.location.pathname.startsWith("/bookDetails/info")) {
-                    return {
-                        type: "jump",
-                        jumpFunction: () => (document.location.pathname = document.location.pathname.replace("/bookDetails/info", "/bookDetails/catalog")),
-                    };
-                }
-                else {
-                    return defaultObject;
-                }
-            };
-        }
-        case "m.jjwxc.com":
-        case "m.jjwxc.net": {
-            return () => {
-                return {
-                    type: "jump",
-                    jumpFunction: () => {
-                        const regex = /https:\/\/m\.jjwxc\.(com|net)\/book2\/(\d+)/;
-                        document.location.href = document.location.href.replace(regex, 'https://www.jjwxc.net/onebook.php?novelid=$2');
-                    },
-                };
-            };
-        }
-        case "ebook.longmabook.com":
-        case "www.longmabookcn.com":
-        case "ebook.lmbooks.com":
-        case "www.lmebooks.com":
-        case "www.haitbook.com":
-        case "www.htwhbook.com":
-        case "www.myhtebook.com":
-        case "www.lovehtbooks.com":
-        case "www.myhtebooks.com":
-        case "www.myhtlmebook.com":
-        case "jp.myhtebook.com":
-        case "jp.myhtlmebook.com":
-        case "ebook.urhtbooks.com":
-        case "www.urhtbooks.com":
-        case "www.newhtbook.com":
-        case "www.lvhtebook.com":
-        case "jp.lvhtebook.com":
-        case "www.haitangbook.com":
-        case "www.htlvbooks.com": {
-            return () => {
-                const params = new URLSearchParams(document.location.search);
-                if (params.get("act") === "showinfo" &&
-                    params.has("bookwritercode") &&
-                    params.has("bookid")) {
-                    return defaultObject;
-                }
-                return errorObject;
-            };
-        }
-        case "m.sfacg.com": {
-            return () => {
-                const bookId = /(\d+)\/?$/.exec(document.location.pathname)?.[1];
-                if (bookId) {
-                    return {
-                        type: "jump",
-                        jumpFunction: () => (document.location.href = `https://book.sfacg.com/Novel/${bookId}/MainIndex/`),
-                    };
-                }
-                else {
-                    return errorObject;
-                }
-            };
-        }
-        case "book.sfacg.com": {
-            return () => {
-                const jump = /^\/Novel\/\d+\/?$/.test(document.location.pathname);
-                if (jump) {
-                    const bookId = /(\d+)\/?$/.exec(document.location.pathname)?.[1];
-                    if (bookId) {
-                        return {
-                            type: "jump",
-                            jumpFunction: () => (document.location.href = `https://book.sfacg.com/Novel/${bookId}/MainIndex/`),
-                        };
-                    }
-                    else {
-                        return errorObject;
-                    }
-                }
-                else {
-                    return defaultObject;
-                }
-            };
-        }
-        case "m.lvsewx.com": {
-            return () => ({
-                type: "jump",
-                jumpFunction: () => (document.location.host = "www.lvsewx.com"),
-            });
-        }
-        case "www.cool18.com": {
-            return () => {
-                const url = new URL(document.location.href);
-                if (url.searchParams.get("act") === "threadview" &&
-                    url.searchParams.has("tid")) {
-                    return defaultObject;
-                }
-                else {
-                    return errorObject;
-                }
-            };
-        }
-        case "www.fxshu.top": {
-            const style = document.createElement("style");
-            style.innerHTML = `
-          img {
-            font-size: 1em;
-          }
-        `;
-            document.head.appendChild(style);
-            return () => {
-                return defaultObject;
-            };
-        }
-        case "read.zongheng.com":
-        case "www.zongheng.com":
-        case "book.zongheng.com":
-        case "huayu.zongheng.com": {
-            const style = document.createElement("style");
-            style.innerHTML = `
-          img {
-            font-size: 1em;
-          }
-        `;
-            document.head.appendChild(style);
-            return () => {
-                if (document.location.pathname.startsWith("/book/")) {
-                    return {
-                        type: "jump",
-                        jumpFunction: () => (document.location.pathname = document.location.pathname.replace(/^\/book\//, "/showchapter/")),
-                    };
-                }
-                else {
-                    return defaultObject;
-                }
-            };
-        }
-        case "www.17k.com": {
-            return () => {
-                if (document.location.pathname.startsWith("/book/")) {
-                    return {
-                        type: "jump",
-                        jumpFunction: () => (document.location.pathname = document.location.pathname.replace(/^\/book\//, "/list/")),
-                    };
-                }
-                else {
-                    return defaultObject;
-                }
-            };
-        }
-        case "www.linovelib.com": {
-            return () => {
-                if (document.location.pathname.endsWith(".html")) {
-                    return {
-                        type: "jump",
-                        jumpFunction: () => (document.location.pathname = document.location.pathname.replace(/\.html$/, "/catalog")),
-                    };
-                }
-                else {
-                    return defaultObject;
-                }
-            };
-        }
-        case "www.bilinovel.com": {
-            return () => {
-                if (document.location.pathname.endsWith("/catalog")) {
-                    return {
-                        type: "jump",
-                        jumpFunction: () => (document.location.pathname = document.location.pathname.replace(/\/catalog$/, ".html")),
-                    };
-                }
-                else {
-                    return defaultObject;
-                }
-            };
-        }
-        case "masiro.me": {
-            return () => {
-                if (document.querySelector(".error-box")) {
-                    return errorObject;
-                }
-                else {
-                    return defaultObject;
-                }
-            };
-        }
-        case "www.ywggzy.com":
-        case "www.yiruan.la":
-        case "www.ishuquge.org":
-        case "www.gashuw.com":
-        case "www.81book.com":
-        case "www.81zw.com":
-        case "www.fuguoduxs.com":
-        case "www.shubaowa.org":
-        case "www.aixiaxs.net":
-        case "www.banzhuer.org":
-        case "www.007zw.com":
-        case "www.wanben.info":
-        case "www.mht99.com":
-        case "www.xbiquge.tw":
-        case "www.xsbiquge.la":
-        case "www.luoqiuzw.com":
-        case "dijiuben.com":
-        case "www.biquzw.la":
-        case "www.i25zw.com":
-        case "www.tycqzw.com":
-        case "www.ranwen.la":
-        case "www.biquge5200.cc":
-        case "www.yqxsge.cc":
-        case "www.bixia3.com":
-        case "www.quanshuzhai.com":
-        case "www.ibiquge.la": {
-            return () => {
-                floatBuster();
-                return defaultObject;
-            };
-        }
-        case "new-read.readmoo.com": {
-            return () => ({ type: "download", isSettingSeen: false });
-        }
-        case "www.myrics.com": {
-            return () => {
-                if (document.location.pathname.endsWith("/menu")) {
-                    return {
-                        type: "jump",
-                        jumpFunction: () => {
-                            document.location.pathname = document.location.pathname.replace(/\/menu$/, "");
-                        },
-                    };
-                }
-                else {
-                    return defaultObject;
-                }
-            };
-        }
-        case "www.piaotia.com": {
-            return () => {
-                if (document.location.pathname.startsWith("/list/")) {
-                    return {
-                        type: "jump",
-                        jumpFunction: () => {
-                            const p = document.location.pathname.match(/\/list\/(\w+)\//)?.[1];
-                            if (!p) {
-                                return errorObject;
-                            }
-                            document.location.pathname = `/${p}/`;
-                        },
-                    };
-                }
-                else {
-                    return defaultObject;
-                }
-            };
-        }
-        case "www.soxscc.net":
-        case "www.soxscc.org":
-        case "www.soxs.cc":
-        case "www.soxscc.cc":
-        case "www.soshuwu.com": {
-            return () => {
-                if (document.location.pathname.startsWith("/book/")) {
-                    return {
-                        type: "jump",
-                        jumpFunction: () => {
-                            document.location.pathname = document.location.pathname
-                                .replace(/^\/book/, "")
-                                .replace(/\.html/, "/");
-                        },
-                    };
-                }
-                else {
-                    return defaultObject;
-                }
-            };
-        }
-        case "www.wenku8.net": {
-            return () => {
-                if (document.location.pathname.startsWith("/book/")) {
-                    return {
-                        type: "jump",
-                        jumpFunction: () => {
-                            const href = document.querySelector("#content > div:nth-child(1) > div:nth-child(6) > div:nth-child(1) > span:nth-child(1) > fieldset:nth-child(1) > div:nth-child(2) > a:nth-child(1)")?.href;
-                            if (href) {
-                                document.location.href = href;
-                            }
-                            else {
-                                return errorObject;
-                            }
-                        },
-                    };
-                }
-                else {
-                    return defaultObject;
-                }
-            };
-        }
-        case "hongxiuzhao.net": {
-            return () => {
-                if (document.querySelector(".cover")) {
-                    return defaultObject;
-                }
-                else {
-                    return errorObject;
-                }
-            };
-        }
-        case "www.quanzhifashi.com":
-        case "www.42zw.la":
-        case "www.boqugew.com":
-        case "www.qbtr.cc":
-        case "b.guidaye.com":
-        case "www.qimao.com": {
-            return () => {
-                document.querySelector("li.qm-tab-list-item:nth-child(2) > div")?.dispatchEvent(new MouseEvent('click'));
-                return defaultObject;
-            };
-        }
-        default: {
-            return () => {
-                return defaultObject;
-            };
-        }
-    }
-}
-
-;// ./src/ui/button.html
-// Module
-var code = `<div id="button-div" class="button-div">
-  <div v-if="uiObj.type !== 'error'">
-    <div v-if="uiObj.type === 'jump'" class="jump">
-      <button class="nd-fab" v-on:click="jumpButtonClick">
-        <img v-bind:src="imgJump" alt="jump">
-      </button>
-    </div>
-    <div v-if="uiObj.type === 'download'" class="download">
-      <button class="nd-fab" v-on:click="startButtonClick">
-        <img v-bind:src="imgStart" alt="start">
-      </button>
-      <button v-if="isSettingSeen" class="nd-fab nd-fab-small" v-on:click="settingButtonClick" title="设置">
-        <img v-bind:src="imgSetting" alt="setting">
-      </button>
-    </div>
-  </div>
-</div>
-`;
-// Exports
-/* harmony default export */ const ui_button = (code);
-// EXTERNAL MODULE: ./src/ui/button.less
-var src_ui_button = __webpack_require__("./src/ui/button.less");
-// EXTERNAL MODULE: ./node_modules/file-saver/dist/FileSaver.min.js
-var FileSaver_min = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
-;// ./src/debug.ts
-
-
-async function debug() {
-    const rule = await getRule();
-    let book;
-    if (typeof window._book !== "undefined") {
-        book = window._book;
-    }
-    else {
-        book = await rule.bookParse();
-    }
-    unsafeWindow.rule = rule;
-    unsafeWindow.book = book;
-    window._book = book;
-    unsafeWindow.saveAs = FileSaver_min.saveAs;
-    const { parse, fetchAndParse, gfetchAndParse } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/lib/readability.ts"));
-    unsafeWindow.readability = {
-        parse,
-        fetchAndParse,
-        gfetchAndParse,
-    };
-    unsafeWindow.stopController = window.stopController;
-    return;
-}
-
-// EXTERNAL MODULE: ./src/main/main.ts
-var main = __webpack_require__("./src/main/main.ts");
-// EXTERNAL MODULE: ./src/save/misc.ts
-var save_misc = __webpack_require__("./src/save/misc.ts");
-;// ./src/ui/ChapterList.html
-// Module
-var ChapterList_code = `<div>
-  <div v-if="loading">
-    <div class="chapter-list-loading">
-      <h2 v-if="failed" style="color: rgb(var(--mdui-color-error, 179,38,30));">加载章节失败！</h2>
-      <div v-else style="display:flex;flex-direction:column;align-items:center;gap:16px;">
-        <div class="nd-spinner"></div>
-        <h2>正在载入章节列表中，请耐心等待……</h2>
-      </div>
-    </div>
-  </div>
-  <div v-else class="chapter-list" style="display: block;position: relative;">
-    <div v-for="sectionObj in sectionsObj" v-show="isSectionSeen(sectionObj)" v-bind:key="sectionObj.sectionNumber" class="section">
-      <h3 v-if="sectionObj.sectionName" class="section-label">
-        {{ sectionObj.sectionName }}
-      </h3>
-      <div v-for="chapter in sectionObj.chpaters" v-show="isChapterSeen(chapter)" v-bind:key="chapter.chapterNumber" class="chapter" v-bind:class="{
-              good: this.filter(chapter),
-              bad: !this.filter(chapter),
-              warning: this.warningFilter(chapter)
-            }" v-bind:title="chapter.chapterNumber">
-        <a rel="noopener noreferrer" target="_blank" v-bind:class="{
-                disabled: this.isChapterDisabled(chapter),
-              }" v-bind:href="chapter.chapterUrl">{{ chapter.chapterName }}</a>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-// Exports
-/* harmony default export */ const ChapterList = (ChapterList_code);
-// EXTERNAL MODULE: ./src/ui/ChapterList.less
-var ui_ChapterList = __webpack_require__("./src/ui/ChapterList.less");
-;// ./src/ui/ChapterList.ts
-
-
-
-
-
-
-
-
-
-async function getSections() {
-    if (window._sections &&
-        window._url === document.location.href) {
-        return window._sections;
-    }
-    else {
-        const rule = await getRule();
-        const book = await rule.bookParse();
-        window._book = book;
-        window._url = document.location.href;
-        if (unsafeWindow.saveOptions?.chapterSort) {
-            window._sections = (0,save_misc/* getSectionsObj */.e)(book.chapters, unsafeWindow.saveOptions?.chapterSort);
-        }
-        else {
-            window._sections = (0,save_misc/* getSectionsObj */.e)(book.chapters);
-        }
-        return window._sections;
-    }
-}
-const style = (0,dom/* createStyle */._r)(ui_ChapterList/* default */.A);
-/* harmony default export */ const src_ui_ChapterList = ((0,external_Vue_.defineComponent)({
-    name: "ChapterList",
-    setup() {
-        const sectionsObj = (0,external_Vue_.reactive)([]);
-        const loading = (0,external_Vue_.ref)(true);
-        const failed = (0,external_Vue_.ref)(false);
-        (0,external_Vue_.onMounted)(async () => {
-            if (sectionsObj.length === 0) {
-                try {
-                    const _sectionsObj = await getSections();
-                    Object.assign(sectionsObj, _sectionsObj);
-                    loading.value = false;
-                }
-                catch (error) {
-                    loglevel_default().error(error);
-                    failed.value = true;
-                }
-            }
-        });
-        const filterSetting = (0,external_Vue_.inject)("filterSetting");
-        const filter = (chapter) => {
-            if (chapter.status === main/* Status */.nW.aborted) {
-                return false;
-            }
-            if (filterSetting.value) {
-                const filterFunction = getFilterFunction(filterSetting.value.arg, filterSetting.value.functionBody);
-                if (typeof filterFunction === "function") {
-                    return filterFunction(chapter);
-                }
-            }
-            return true;
-        };
-        const warningFilter = (chapter) => {
-            return chapter.isVIP && chapter.isPaid !== true;
-        };
-        const isChapterDisabled = (chapter) => {
-            return !chapter?.chapterUrl;
-        };
-        const isChapterSeen = (chapter) => {
-            return !(filterSetting.value.hiddenBad && !filter(chapter));
-        };
-        const isSectionSeen = (sectionObj) => {
-            const chapters = sectionObj.chpaters;
-            return chapters.some((chapter) => isChapterSeen(chapter));
-        };
-        return {
-            sectionsObj,
-            loading,
-            failed,
-            filter,
-            warningFilter,
-            isChapterDisabled,
-            isChapterSeen,
-            isSectionSeen,
-        };
-    },
-    template: ChapterList,
-}));
-
-// EXTERNAL MODULE: ./src/ui/FilterTab.css
-var FilterTab = __webpack_require__("./src/ui/FilterTab.css");
-;// ./src/ui/FilterTab.html
-// Module
-var FilterTab_code = `<div>
-  <div class="setting-section filter-setting">
-    <div v-if="filterType !== 'null'" class="filter-input">
-      <mdui-text-field :value="arg" @input="arg = \$event.target.value" label="请输入过滤的条件" variant="outlined" style="width: 100%;"></mdui-text-field>
-    </div>
-    
-    <div class="filter-setter">
-<div class="setting-item">
-        <span class="setting-label">当前过滤方法：</span>
-        <mdui-select :value="filterType" @change="filterType = \$event.target.value" variant="outlined">
-          <mdui-menu-item v-for="filterOption in filterOptionList" v-bind:value="filterOption[0]">{{ filterOption[1]["abbreviation"] }}</mdui-menu-item>
-        </mdui-select>
-      </div>
-
-      <div class="setting-switches" style="margin-top: 12px;">
-        <div class="setting-item" @click="hiddenBad = !hiddenBad">
-          <span class="setting-label">只显示符合条件章节</span>
-          <mdui-switch :checked="hiddenBad" @change="hiddenBad = \$event.target.checked" @click.stop></mdui-switch>
-        </div>
-      </div>
-
-      <div class="filter-description" v-html="filterDescription" style="margin-top: 16px;"></div>
-      <div v-if="false">
-        <span class="good"></span>
-        <span class="warning"></span>
-        <span class="bad"></span>
-      </div>
-    </div>
-  </div>
-  <chapter-list>
-</div>
-`;
-// Exports
-/* harmony default export */ const ui_FilterTab = (FilterTab_code);
-;// ./src/ui/FilterTab.ts
-
-
-
-
-
-const filterOptionDict = {
-    null: {
-        raw: () => {
-            return () => true;
-        },
-        description: "<p>不应用任何过滤器（默认）</p>",
-        abbreviation: "无",
-    },
-    number: {
-        raw: (arg) => {
-            function characterCheck() {
-                return /^[\s\d\-,，]+$/.test(arg);
-            }
-            function match(s, n) {
-                switch (true) {
-                    case /^\d+$/.test(s): {
-                        const _m = s.match(/^(\d+)$/);
-                        if (_m?.length === 2) {
-                            const m = parseInt(_m[1]);
-                            if (m === n) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-                    case /^\d+-\d+$/.test(s): {
-                        const _m = s.match(/^(\d+)-(\d+)$/);
-                        if (_m?.length === 3) {
-                            const m = _m.map((_s) => Number(_s));
-                            if (n >= m[1] && n <= m[2]) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-                    case /^\d+-$/.test(s): {
-                        const _m = s.match(/^(\d+)-$/);
-                        if (_m?.length === 2) {
-                            const m = parseInt(_m[1]);
-                            if (n >= m) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-                    case /^-\d+$/.test(s): {
-                        const _m = s.match(/^-(\d+)$/);
-                        if (_m?.length === 2) {
-                            const m = parseInt(_m[1]);
-                            if (n <= m) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-                    default: {
-                        return false;
-                    }
-                }
-            }
-            if (!characterCheck()) {
-                return;
-            }
-            return (chapter) => {
-                const n = chapter.chapterNumber;
-                const ss = arg.split(/[,，]/).map((s) => s.replace(/\s/g, "").trim());
-                return ss.map((s) => match(s, n)).some((b) => b);
-            };
-        },
-        description: "<p>基于章节序号过滤，章节序号可通过章节标题悬停查看。</p><p>支持以下格式：13, 1-5, 2-, -89。可通过分号（,）使用多个表达式。</p>",
-        abbreviation: "章节序号",
-    },
-    baseOnString: {
-        raw: (arg) => {
-            return (chapter) => {
-                return (chapter && chapter.chapterName?.includes(arg)) || false;
-            };
-        },
-        description: "<p>过滤出所有包含过滤条件字符的章节</p>",
-        abbreviation: "章节标题",
-    },
-};
-function getFunctionBody(fn) {
-    return `return (${fn.toString()})(arg)`;
-}
-function getFilterFunction(arg, functionBody) {
-    const filterFunctionFactor = new Function("arg", functionBody);
-    const filterFunction = filterFunctionFactor(arg);
-    if (typeof filterFunction === "function") {
-        return filterFunction;
-    }
-    else {
-        return undefined;
-    }
-}
-/* harmony default export */ const src_ui_FilterTab = ((0,external_Vue_.defineComponent)({
-    components: { "chapter-list": src_ui_ChapterList },
-    emits: ["filterupdate"],
-    setup(props, { emit }) {
-        const arg = (0,external_Vue_.ref)("");
-        const hiddenBad = (0,external_Vue_.ref)(true);
-        const filterType = (0,external_Vue_.ref)("null");
-        const filterOptionList = Object.entries(filterOptionDict);
-        const functionBody = (0,external_Vue_.computed)(() => getFunctionBody(filterOptionDict[filterType.value].raw));
-        const filterDescription = (0,external_Vue_.computed)(() => filterOptionDict[filterType.value].description);
-        const filterSetting = (0,external_Vue_.computed)(() => ({
-            arg: arg.value,
-            hiddenBad: hiddenBad.value,
-            filterType: filterType.value,
-            functionBody: functionBody.value,
-        }));
-        (0,external_Vue_.provide)("filterSetting", filterSetting);
-        (0,external_Vue_.watch)(filterSetting, () => {
-            emit("filterupdate", filterSetting.value);
-        }, {
-            deep: true,
-        });
-        const getFilterSetting = (0,external_Vue_.inject)("getFilterSetting");
-        (0,external_Vue_.onMounted)(() => {
-            const faterFilterSetting = getFilterSetting();
-            if (faterFilterSetting) {
-                arg.value = faterFilterSetting.arg;
-                hiddenBad.value = faterFilterSetting.hiddenBad;
-                filterType.value = faterFilterSetting.filterType;
-            }
-        });
-        return {
-            arg,
-            hiddenBad,
-            filterType,
-            filterOptionList,
-            filterDescription,
-        };
-    },
-    template: ui_FilterTab,
-}));
-const FilterTab_style = (0,dom/* createStyle */._r)(FilterTab/* default */.A);
-
-// EXTERNAL MODULE: ./src/log.ts
-var log = __webpack_require__("./src/log.ts");
-;// ./src/ui/LogUI.ts
-
-
-/* harmony default export */ const LogUI = ((0,external_Vue_.defineComponent)({
-    name: "LogUI",
-    setup(props, context) {
-        const logText = (0,external_Vue_.ref)("");
-        let requestID;
-        (0,external_Vue_.onMounted)(() => {
-            logText.value = (0,log/* getLogText */.gh)();
-            function step() {
-                logText.value = (0,log/* getLogText */.gh)();
-                requestID = globalThis.requestAnimationFrame(step);
-            }
-            requestID = globalThis.requestAnimationFrame(step);
-        });
-        (0,external_Vue_.onUnmounted)(() => {
-            if (requestID) {
-                globalThis.cancelAnimationFrame(requestID);
-            }
-        });
-        return { logText };
-    },
-    template: `
-    <div class="log">
-    <pre v-html="logText" id="novel-downloader-log"></pre>
-    </div>`,
-}));
-
-;// ./src/ui/setting.html
-// Module
-var setting_code = `<div>
-  <mdui-dialog v-bind:open="openStatus === 'true'" headline="设置" close-on-esc v-on:closed="onSettingClosed(\$event)" class="nd-setting-dialog">
-    <div id="nd-setting" class="nd-setting">
-      <mdui-tabs v-bind:value="setting.currentTab" v-on:change="onTabChange" variant="secondary" full-width>
-        <mdui-tab value="tab-1">基本设置</mdui-tab>
-        <mdui-tab value="tab-2">自定义筛选条件</mdui-tab>
-        <mdui-tab v-if="setting.enableTestPage" value="tab-3">抓取测试</mdui-tab>
-        <mdui-tab v-if="setting.enableTestPage" value="tab-4">日志</mdui-tab>
-
-        <mdui-tab-panel id="nd-setting-tab-1" slot="panel" value="tab-1" class="tab-panel">
-          <div class="setting-section">
-            <div class="setting-switches">
-              <div class="setting-item" @click="setting.enableDebug = !setting.enableDebug">
-                <span class="setting-label">启用调试模式（输出更详细日志）</span>
-                <mdui-switch :checked="setting.enableDebug" @change="setting.enableDebug = \$event.target.checked" @click.stop></mdui-switch>
-              </div>
-              <div class="setting-item" @click="setting.TxtDownload = !setting.TxtDownload">
-                <span class="setting-label">下载 Txt 文件</span>
-                <mdui-switch :checked="setting.TxtDownload" @change="setting.TxtDownload = \$event.target.checked" @click.stop></mdui-switch>
-              </div>
-              <div class="setting-item" @click="setting.EpubDownload = !setting.EpubDownload">
-                <span class="setting-label">下载 Epub 文件</span>
-                <mdui-switch :checked="setting.EpubDownload" @change="setting.EpubDownload = \$event.target.checked" @click.stop></mdui-switch>
-              </div>
-              <div class="setting-item" @click="setting.enableTestPage = !setting.enableTestPage">
-                <span class="setting-label">启用测试视图</span>
-                <mdui-switch :checked="setting.enableTestPage" @change="setting.enableTestPage = \$event.target.checked" @click.stop></mdui-switch>
-              </div>
-
-          <mdui-divider></mdui-divider>
-
-          <div class="setting-section">
-            <h3 class="section-title">自定义下载参数</h3>
-            <div class="setting-item" @click="setting.customDownload = !setting.customDownload">
-              <span class="setting-label">启用自定义下载设置</span>
-              <mdui-switch :checked="setting.customDownload" @change="setting.customDownload = \$event.target.checked" @click.stop></mdui-switch>
-            </div>
-            <div class="setting-grid" v-show="setting.customDownload">
-              <mdui-text-field :value="setting.concurrencyLimit" @input="setting.concurrencyLimit = Number(\$event.target.value)" label="并行下载线程数" type="number" variant="outlined"></mdui-text-field>
-              <mdui-text-field :value="setting.sleepTime" @input="setting.sleepTime = Number(\$event.target.value)" label="下载间隔 (ms)" type="number" variant="outlined"></mdui-text-field>
-              <mdui-text-field :value="setting.maxSleepTime" @input="setting.maxSleepTime = Number(\$event.target.value)" variant="outlined" class="full-width-field"></mdui-text-field>
-            </div>
-          </div>
-
-          <mdui-divider></mdui-divider>
-
-          <div class="setting-section">
-            <h3 class="section-title">自定义保存参数</h3>
-            <mdui-radio-group :value="setting.chooseSaveOption" @change="setting.chooseSaveOption = \$event.target.value">
-              <mdui-radio v-for="item of saveOptions" v-bind:key="item.key" v-bind:value="item.key">{{ item.value }}</mdui-radio>
-            </mdui-radio-group>
-          </div>
-        </div></div></mdui-tab-panel>
-
-        <mdui-tab-panel slot="panel" value="tab-2" class="tab-panel">
-          <filter-tab v-on:filterupdate="saveFilter">
-        </mdui-tab-panel>
-
-        <mdui-tab-panel v-if="setting.enableTestPage" slot="panel" value="tab-3" class="tab-panel">
-          <test-ui></test-ui>
-        </mdui-tab-panel>
-
-        <mdui-tab-panel v-if="setting.enableTestPage" slot="panel" value="tab-4" class="tab-panel">
-          <log-ui></log-ui>
-        </mdui-tab-panel>
-      </mdui-tabs>
-    </div>
-
-    <mdui-button slot="action" variant="text" v-on:click="closeSetting">取消</mdui-button>
-    <mdui-button slot="action" variant="tonal" v-on:click="closeAndSaveSetting">保存</mdui-button>
-  </mdui-dialog>
-</div>
-`;
-// Exports
-/* harmony default export */ const setting = (setting_code);
-// EXTERNAL MODULE: ./src/ui/setting.less
-var ui_setting = __webpack_require__("./src/ui/setting.less");
-// EXTERNAL MODULE: ./src/lib/attachments.ts + 1 modules
-var attachments = __webpack_require__("./src/lib/attachments.ts");
-;// ./src/ui/TestUI.html
-// Module
-var TestUI_code = `<div>
-  <div id="test-page-div">
-    <h2>元数据</h2>
-    <mdui-card variant="outlined" style="padding: 12px; margin-bottom: 16px;">
-      <table>
-        <tbody>
-          <tr v-for="(value, key) in metaData">
-            <td>{{ key }}</td>
-            <td v-html="getData(key, value)"></td>
-          </tr>
-        </tbody>
-      </table>
-    </mdui-card>
-
-    <mdui-divider></mdui-divider>
-
-    <h2>章节测试</h2>
-    <div class="preview-chapter-setting">
-      <mdui-text-field v-model="chapterNumber" label="预览章节序号" type="text" variant="outlined" style="flex: 1;"></mdui-text-field>
-      <mdui-button @click="previewChapter" :disabled="isLoading" variant="tonal">预览</mdui-button>
-    </div>
-    <div v-if="isLoading" class="loading-spinner">
-      <div class="nd-spinner"></div>
-      <p>正在加载章节中...</p>
-    </div>
-    <div v-else-if="this.isSeenChapter(chapter)">
-      <h4>
-        <a rel="noopener noreferrer" target="_blank" v-bind:href="chapter.chapterUrl">{{ chapter.chapterName }}</a>
-      </h4>
-      <div class="chapter" v-html="getChapterHtml(chapter)"></div>
-    </div>
-    <div v-else>
-      <p v-if="this.isChapterFailed(chapter)">章节加载失败！</p>
-      <p v-else>请输入章节序号并点击预览</p>
-    </div>
-  </div>
-</div>
-`;
-// Exports
-/* harmony default export */ const TestUI = (TestUI_code);
-// EXTERNAL MODULE: ./src/ui/TestUI.less
-var ui_TestUI = __webpack_require__("./src/ui/TestUI.less");
-;// ./src/ui/TestUI.ts
-
-
-
-
-
-
-
-/* harmony default export */ const src_ui_TestUI = ((0,external_Vue_.defineComponent)({
-    name: "TestUI",
-    setup() {
-        const book = (0,external_Vue_.reactive)({});
-        const isLoading = (0,external_Vue_.ref)(false);
-        async function waitBook() {
-            while (true) {
-                await (0,misc/* sleep */.yy)(500);
-                if (window._book) {
-                    return window._book;
-                }
-            }
-        }
-        const metaData = (0,external_Vue_.reactive)({});
-        function getData(key, value) {
-            if (key === "封面") {
-                return `<img src="${value[0]}" alt="${value[1]}">`;
-            }
-            if (key === "简介" && value instanceof HTMLElement) {
-                return value.outerHTML;
-            }
-            if (key === "网址" && typeof value === "string") {
-                return `<a href="${value}">${value}</a>`;
-            }
-            return value;
-        }
-        const chapter = (0,external_Vue_.reactive)({});
-        const chapterNumber = (0,external_Vue_.ref)(-99);
-        function getInitChapterNumber() {
-            if (book) {
-                const chapters = book.chapters;
-                const cns = chapters
-                    .filter((c) => {
-                    if (c.status === main/* Status */.nW.aborted) {
-                        return false;
-                    }
-                    if (c.isVIP && c.isPaid !== true) {
-                        return false;
-                    }
-                    return true;
-                })
-                    .map((c) => c.chapterNumber);
-                cns.sort();
-                return cns.slice(-3)[0];
-            }
-        }
-        async function initChapter(n) {
-            const chapters = book.chapters;
-            const _chapter = chapters.filter((c) => c.chapterNumber === n)[0];
-            if (_chapter) {
-                if (_chapter.status === main/* Status */.nW.pending) {
-                    await _chapter.init();
-                    Object.assign(chapter, _chapter);
-                }
-                else {
-                    Object.assign(chapter, _chapter);
-                }
-            }
-        }
-        async function previewChapter() {
-            isLoading.value = true;
-            try {
-                let n = chapterNumber.value;
-                if (typeof n === "string") {
-                    n = parseInt(n, 10);
-                }
-                if (!isNaN(n) && n !== -99) {
-                    await initChapter(n);
-                }
-            }
-            finally {
-                isLoading.value = false;
-            }
-        }
-        function isSeenChapter(_chapter) {
-            return _chapter.status === main/* Status */.nW.finished;
-        }
-        function isChapterFailed(_chapter) {
-            return (_chapter.status === main/* Status */.nW.failed || _chapter.status === main/* Status */.nW.aborted);
-        }
-        function getChapterHtml(_chapter) {
-            const html = _chapter.contentHTML?.cloneNode(true);
-            const nodes = html?.querySelectorAll("img, audio");
-            if (nodes) {
-                Array.from(nodes).forEach((node) => {
-                    const url = node.title || node.alt;
-                    node.src = getObjectUrl(url);
-                });
-            }
-            return html?.outerHTML;
-        }
-        (0,external_Vue_.onMounted)(async () => {
-            const _book = await waitBook();
-            Object.assign(book, _book);
-            const coverUrl = _book?.additionalMetadate?.cover?.url ?? "";
-            const coverSrc = coverUrl ? getObjectUrl(coverUrl) : "";
-            const _metaData = {
-                封面: [coverSrc, coverUrl],
-                题名: _book?.bookname ?? "None",
-                作者: _book?.author ?? "None",
-                网址: _book?.bookUrl,
-                简介: _book?.introductionHTML ?? "",
-            };
-            Object.assign(metaData, _metaData);
-            const cn = getInitChapterNumber();
-            if (cn) {
-                chapterNumber.value = cn;
-            }
-            if (!coverSrc) {
-                const maxWait = 10000;
-                const startTime = Date.now();
-                const pollCover = async () => {
-                    if (Date.now() - startTime > maxWait)
-                        return;
-                    const newCoverUrl = book?.additionalMetadate?.cover?.url ?? "";
-                    if (newCoverUrl) {
-                        const newCoverSrc = getObjectUrl(newCoverUrl);
-                        if (newCoverSrc) {
-                            metaData["封面"] = [newCoverSrc, newCoverUrl];
-                            return;
-                        }
-                    }
-                    await (0,misc/* sleep */.yy)(300);
-                    pollCover();
-                };
-                pollCover();
-            }
-        });
-        function getObjectUrl(url) {
-            const attachment = (0,attachments/* getAttachmentClassCache */._s)(url);
-            if (attachment?.Blob) {
-                const blob = attachment.Blob;
-                const src = URL.createObjectURL(blob);
-                return src;
-            }
-            return "";
-        }
-        return {
-            metaData,
-            getData,
-            chapter,
-            isSeenChapter,
-            isChapterFailed,
-            getChapterHtml,
-            chapterNumber,
-            previewChapter,
-            isLoading,
-        };
-    },
-    template: TestUI,
-}));
-const TestUI_style = (0,dom/* createStyle */._r)(ui_TestUI/* default */.A);
-
-;// ./src/ui/setting.ts
-
-
-
-
-
-
-
-
-
-
-
-
-const setting_style = (0,dom/* createStyle */._r)(ui_setting/* default */.A);
-const el = (0,dom/* createEl */.a_)(`<div id="setting"></div>`);
-const app = (0,external_Vue_.createApp)({
-    name: "nd-setting",
-    components: { "filter-tab": src_ui_FilterTab, "log-ui": LogUI, "test-ui": src_ui_TestUI },
-    setup() {
-        const setting = (0,external_Vue_.reactive)({});
-        let settingBackup = {};
-        const saveOptions = [
-            { key: "null", value: "不使用自定义保存参数", options: {} },
-            {
-                key: "chapter_name",
-                value: "将章节名称格式修改为 第xx章 xxxx",
-                options: {
-                    getchapterName: (chapter) => {
-                        if (chapter.chapterName) {
-                            return `第${chapter.chapterNumber.toString()}章 ${chapter.chapterName}`;
-                        }
-                        else {
-                            return `第${chapter.chapterNumber.toString()}章`;
-                        }
-                    },
-                },
-            },
-            {
-                key: "txt_space",
-                value: "txt文档每个自然段前加两个空格",
-                options: {
-                    genChapterText: (chapterName, contentText) => {
-                        contentText = contentText
-                            .split("\n")
-                            .map((line) => {
-                            if (line.trim() === "") {
-                                return line;
-                            }
-                            else {
-                                return line.replace(/^/, "    ");
-                            }
-                        })
-                            .join("\n");
-                        return `## ${chapterName}\n\n${contentText}\n\n`;
-                    },
-                },
-            },
-            {
-                key: "epub_space",
-                value: "epub文档删除章节空行",
-                options: {
-                    genChapterEpub: (contentXHTML) => {
-                        return contentXHTML.replaceAll("<p><br /></p>", "")
-                            .replaceAll("<p><br/></p>", "")
-                            .replaceAll(/(<br\s*\/?>\s*)+/g, "<br />");
-                    },
-                },
-            },
-            {
-                key: "reverse_chapters",
-                value: "保存章节时倒序排列",
-                options: {
-                    chapterSort: (a, b) => {
-                        if (a.chapterNumber > b.chapterNumber) {
-                            return -1;
-                        }
-                        if (a.chapterNumber === b.chapterNumber) {
-                            return 0;
-                        }
-                        if (a.chapterNumber < b.chapterNumber) {
-                            return 1;
-                        }
-                        return 0;
-                    },
-                },
-            },
-        ];
-        setting.enableDebug = GM_getValue('enableDebug', src_setting/* enableDebug */.Nw.value);
-        src_setting/* enableDebug */.Nw.value = setting.enableDebug ?? src_setting/* enableDebug */.Nw.value;
-        src_setting/* enableDebug */.Nw.value ? loglevel_default().setLevel("trace") : loglevel_default().setLevel("info");
-        if (src_setting/* enableDebug */.Nw.value) {
-            debug();
-        }
-        setting.TxtDownload = GM_getValue('TxtDownload', src_setting/* TxtDownload */.Jv.value);
-        src_setting/* TxtDownload */.Jv.value = setting.TxtDownload ?? src_setting/* TxtDownload */.Jv.value;
-        setting.EpubDownload = GM_getValue('EpubDownload', src_setting/* EpubDownload */.Zz.value);
-        src_setting/* EpubDownload */.Zz.value = setting.EpubDownload ?? src_setting/* EpubDownload */.Zz.value;
-        setting.customDownload = GM_getValue('customDownload', false);
-        src_setting/* customDownload */.WZ.value = setting.customDownload ?? src_setting/* customDownload */.WZ.value;
-        setting.concurrencyLimit = GM_getValue('concurrencyLimit', src_setting/* concurrencyLimit */.ri.value);
-        src_setting/* concurrencyLimit */.ri.value = setting.concurrencyLimit ?? src_setting/* concurrencyLimit */.ri.value;
-        setting.sleepTime = GM_getValue('sleepTime', src_setting/* sleepTime */.Xl.value);
-        src_setting/* sleepTime */.Xl.value = setting.sleepTime ?? src_setting/* sleepTime */.Xl.value;
-        setting.maxSleepTime = GM_getValue('maxSleepTime', src_setting/* maxSleepTime */.Fe.value);
-        src_setting/* maxSleepTime */.Fe.value = setting.maxSleepTime ?? src_setting/* maxSleepTime */.Fe.value;
-        setting.enableTestPage = GM_getValue('enableTestPage', false);
-        setting.chooseSaveOption = GM_getValue('chooseSaveOption', 'null');
-        setting.filterSetting = GM_getValue('filterSetting', undefined);
-        setting.currentTab = GM_getValue('currentTab', 'tab-1');
-        let isOverWriteSaveOptions = false;
-        const curSaveOption = () => {
-            const _s = saveOptions.find((s) => s.key === setting.chooseSaveOption);
-            if (_s) {
-                isOverWriteSaveOptions = true;
-                return _s.options;
-            }
-            else {
-                return saveOptions[0].options;
-            }
-        };
-        if (isOverWriteSaveOptions)
-            unsafeWindow.saveOptions = curSaveOption();
-        const closeDialog = () => {
-            document.querySelector("#nd-shadow-host")?.shadowRoot?.querySelector("dialog-ui")?.setAttribute("status", "false");
-        };
-        const saveFilter = (filterSetting) => {
-            setting.filterSetting = (0,misc/* deepcopy */.OJ)(filterSetting);
-            GM_setValue('filterSetting', setting.filterSetting);
-            closeDialog();
-        };
-        const getFilterSetting = () => {
-            if (setting.filterSetting) {
-                return setting.filterSetting;
-            }
-            else {
-                return;
-            }
-        };
-        (0,external_Vue_.provide)("getFilterSetting", getFilterSetting);
-        const setConfig = (config) => {
-            setEnableDebug();
-            setTxtDownload();
-            setEpubDownload();
-            setCustomDownloadOption();
-            setCustomSaveOption();
-            setCustomFilter();
-            saveAllSettings();
-            function setEnableDebug() {
-                if (typeof config.enableDebug === "boolean") {
-                    config.enableDebug ? loglevel_default().setLevel("trace") : loglevel_default().setLevel("info");
-                    src_setting/* enableDebug */.Nw.value = config.enableDebug;
-                    if (config.enableDebug) {
-                        debug();
-                    }
-                    loglevel_default().info(`[Init]enableDebug: ${src_setting/* enableDebug */.Nw.value}`);
-                }
-            }
-            function setTxtDownload() {
-                if (typeof config.TxtDownload === "boolean") {
-                    src_setting/* TxtDownload */.Jv.value = config.TxtDownload;
-                    loglevel_default().info(`[Init]TxtDownload: ${src_setting/* TxtDownload */.Jv.value}`);
-                }
-            }
-            function setEpubDownload() {
-                if (typeof config.EpubDownload === "boolean") {
-                    src_setting/* EpubDownload */.Zz.value = config.EpubDownload;
-                    loglevel_default().info(`[Init]EpubDownload: ${src_setting/* EpubDownload */.Zz.value}`);
-                }
-            }
-            function setCustomDownloadOption() {
-                if (typeof config.customDownload === "boolean") {
-                    src_setting/* customDownload */.WZ.value = config.customDownload;
-                    loglevel_default().info(`[Init]customDownload: ${src_setting/* customDownload */.WZ.value}`);
-                }
-                if (typeof config.concurrencyLimit === "number") {
-                    src_setting/* concurrencyLimit */.ri.value = config.concurrencyLimit;
-                    loglevel_default().info(`[Init]concurrencyLimit: ${src_setting/* concurrencyLimit */.ri.value}`);
-                }
-                if (typeof config.sleepTime === "number") {
-                    src_setting/* sleepTime */.Xl.value = config.sleepTime;
-                    loglevel_default().info(`[Init]sleepTime: ${src_setting/* sleepTime */.Xl.value}`);
-                }
-                if (typeof config.maxSleepTime === "number") {
-                    src_setting/* maxSleepTime */.Fe.value = config.maxSleepTime;
-                    loglevel_default().info(`[Init]maxSleepTime: ${src_setting/* maxSleepTime */.Fe.value}`);
-                }
-            }
-            function setCustomSaveOption() {
-                unsafeWindow.saveOptions = curSaveOption();
-            }
-            function setCustomFilter() {
-                if (config.filterSetting) {
-                    if (config.filterSetting.filterType === "null") {
-                        unsafeWindow.chapterFilter = undefined;
-                    }
-                    else {
-                        const filterFunction = getFilterFunction(config.filterSetting.arg, config.filterSetting.functionBody);
-                        if (filterFunction) {
-                            unsafeWindow.chapterFilter = (chapter) => {
-                                if (chapter.status === main/* Status */.nW.aborted) {
-                                    return false;
-                                }
-                                return filterFunction(chapter);
-                            };
-                        }
-                    }
-                }
-            }
-            function saveAllSettings() {
-                GM_setValue('enableDebug', config.enableDebug);
-                GM_setValue('TxtDownload', config.TxtDownload);
-                GM_setValue('EpubDownload', config.EpubDownload);
-                GM_setValue('customDownload', config.customDownload);
-                GM_setValue('concurrencyLimit', config.concurrencyLimit);
-                GM_setValue('sleepTime', config.sleepTime);
-                GM_setValue('maxSleepTime', config.maxSleepTime);
-                GM_setValue('enableTestPage', config.enableTestPage);
-                GM_setValue('chooseSaveOption', config.chooseSaveOption);
-                GM_setValue('filterSetting', config.filterSetting);
-                GM_setValue('currentTab', config.currentTab);
-            }
-        };
-        const openStatus = (0,external_Vue_.ref)("false");
-        const openSetting = () => {
-            settingBackup = (0,misc/* deepcopy */.OJ)(setting);
-            openStatus.value = "true";
-        };
-        const closeSetting = (keep) => {
-            if (keep === true) {
-                settingBackup = (0,misc/* deepcopy */.OJ)(setting);
-            }
-            else {
-                Object.assign(setting, settingBackup);
-            }
-            openStatus.value = "false";
-        };
-        const onSettingClosed = (event) => {
-            if (event && event.target !== event.currentTarget) {
-                return;
-            }
-            closeSetting();
-        };
-        const onTabChange = (event) => {
-            const detail = event.detail;
-            if (detail?.value) {
-                setting.currentTab = detail.value;
-            }
-        };
-        const closeAndSaveSetting = async () => {
-            closeSetting(true);
-            await (0,misc/* sleep */.yy)(30);
-            setConfig((0,misc/* deepcopy */.OJ)(setting));
-            loglevel_default().info("[Init]自定义设置：" + JSON.stringify(setting));
-        };
-        return {
-            openStatus,
-            openSetting,
-            closeSetting,
-            onSettingClosed,
-            onTabChange,
-            closeAndSaveSetting,
-            saveFilter,
-            setting,
-            saveOptions,
-        };
-    },
-    template: setting,
-});
-app.config.compilerOptions.isCustomElement = (tag) => tag.startsWith("mdui-");
-const vm = app.mount(el);
-
-;// ./src/ui/button.ts
-
-
-
-
-
-
-
-
-
-
-const button_style = (0,dom/* createStyle */._r)(src_ui_button/* default */.A, "button-div-style");
-const button_el = (0,dom/* createEl */.a_)('<div id="nd-button"></div>');
-const button_app = (0,external_Vue_.createApp)({
-    data() {
-        return {
-            imgStart: src_setting/* iconStart0 */.Og,
-            imgSetting: src_setting/* iconSetting */.w1,
-            imgJump: src_setting/* iconJump */.GM,
-            isSettingSeen: src_GM/* _GM_info */.JX.scriptHandler !== "Greasemonkey",
-            uiObj: { type: "download" },
-        };
-    },
-    methods: {
-        startButtonClick() {
-            if (window.downloading) {
-                alert("正在下载中，请耐心等待……");
-                return;
-            }
-            const self = this;
-            self.imgStart = src_setting/* iconStart1 */.HE;
-            async function run() {
-                const ruleClass = await getRule();
-                await ruleClass.run();
-            }
-            run()
-                .then(() => {
-                self.imgStart = src_setting/* iconStart0 */.Og;
-            })
-                .catch((error) => loglevel_default().error(error));
-        },
-        settingButtonClick() {
-            vm.openSetting();
-        },
-        jumpButtonClick() {
-            this.uiObj.jumpFunction();
-        },
-    },
-    mounted() {
-        Object.assign(this.uiObj, getUI()());
-        if (typeof this.uiObj.isSettingSeen !== "undefined") {
-            this.isSettingSeen = this.uiObj.isSettingSeen;
-        }
-    },
-    template: ui_button,
-});
-button_app.config.compilerOptions.isCustomElement = (tag) => tag.startsWith("mdui-");
-const button_vm = button_app.mount(button_el);
-
-// EXTERNAL MODULE: ./src/ui/dialog.css
-var dialog = __webpack_require__("./src/ui/dialog.css");
-;// ./src/ui/dialog.html
-// Module
-var dialog_code = `<mdui-dialog v-bind:open="myPrivateStatus" v-bind:headline="dialogTitle" close-on-overlay-click close-on-esc v-on:closed="onDialogClosed(\$event)">
-  <slot></slot>
-  <button slot="header" v-on:click="dialogClose" class="nd-dialog-close" title="关闭">&times;</button>
-</mdui-dialog>
-`;
-// Exports
-/* harmony default export */ const ui_dialog = (dialog_code);
-;// ./src/ui/dialog.ts
-
-
-
-/* harmony default export */ const src_ui_dialog = ((0,external_Vue_.defineCustomElement)({
-    name: "Dialog",
-    props: {
-        dialogTitle: String,
-        status: String,
-    },
-    emits: ["dialogclose"],
-    data() {
-        return {
-            myPrivateStatus: this.status === "true",
-        };
-    },
-    methods: {
-        dialogClose() {
-            this.myPrivateStatus = false;
-            this.$emit("dialogclose");
-        },
-        onDialogClosed(event) {
-            if (event && event.target !== event.currentTarget) {
-                return;
-            }
-            this.myPrivateStatus = false;
-            this.$emit("dialogclose");
-        },
-    },
-    mounted() {
-        this.myPrivateStatus = this.status === "true";
-    },
-    watch: {
-        status() {
-            this.myPrivateStatus = this.status === "true";
-        },
-    },
-    template: ui_dialog,
-    styles: [dialog/* default */.A],
-}));
-
-// EXTERNAL MODULE: ./src/ui/mdui.css
-var ui_mdui = __webpack_require__("./src/ui/mdui.css");
-// EXTERNAL MODULE: ./src/ui/progress.ts + 1 modules
-var progress = __webpack_require__("./src/ui/progress.ts");
-;// ./src/ui/theme.ts
-async function initTheme(shadowHost) {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const updateTheme = () => {
-        try {
-            if (mediaQuery.matches) {
-                mdui.setTheme("dark", shadowHost);
-            }
-            else {
-                mdui.setTheme("light", shadowHost);
-            }
-        }
-        catch (e) {
-            console.warn("Failed to set theme:", e);
-        }
-    };
-    updateTheme();
-    try {
-        const color = await extractPagePrimaryColor();
-        if (color) {
-            mdui.setColorScheme(color, { target: shadowHost });
-        }
-    }
-    catch {
-    }
-    mediaQuery.addEventListener("change", updateTheme);
-}
-async function extractPagePrimaryColor() {
-    function isVibrantStr(colorStr) {
-        if (!colorStr)
-            return false;
-        let r = 0, g = 0, b = 0;
-        if (colorStr.startsWith("#")) {
-            let hex = colorStr.slice(1);
-            if (hex.length === 3)
-                hex = hex.split("").map(c => c + c).join("");
-            r = parseInt(hex.substring(0, 2), 16);
-            g = parseInt(hex.substring(2, 4), 16);
-            b = parseInt(hex.substring(4, 6), 16);
-        }
-        else {
-            const match = colorStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-            if (match) {
-                r = parseInt(match[1], 10);
-                g = parseInt(match[2], 10);
-                b = parseInt(match[3], 10);
-            }
-            else {
-                return false;
-            }
-        }
-        const max = Math.max(r, g, b) / 255;
-        const min = Math.min(r, g, b) / 255;
-        const l = (max + min) / 2;
-        if (l < 0.15 || l > 0.85)
-            return false;
-        const d = max - min;
-        const s = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
-        return s > 0.15;
-    }
-    const iconLinks = Array.from(document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"], link[rel*="icon"]'));
-    for (const link of iconLinks) {
-        if (link.href) {
-            try {
-                const color = await mdui.getColorFromImage(link.href);
-                if (isVibrantStr(color))
-                    return color;
-            }
-            catch {
-            }
-        }
-    }
-    const coverUrl = document.querySelector('meta[property="og:image"]')?.content
-        || Array.from(document.querySelectorAll('img')).find(img => {
-            const s = (img.src + img.className + img.alt + img.id).toLowerCase();
-            return s.includes('cover') || s.includes('fengmian') || s.includes('封面');
-        })?.src;
-    if (coverUrl) {
-        try {
-            const color = await mdui.getColorFromImage(coverUrl);
-            if (isVibrantStr(color))
-                return color;
-        }
-        catch {
-        }
-    }
-    const themeColorMeta = document.querySelector('meta[name="theme-color"], meta[name="msapplication-TileColor"]');
-    if (themeColorMeta) {
-        const color = themeColorMeta.getAttribute("content");
-        if (isVibrantStr(color))
-            return color;
-    }
-    try {
-        const bodyBg = window.getComputedStyle(document.body).backgroundColor;
-        if (isVibrantStr(bodyBg))
-            return bodyBg;
-        const links = document.querySelectorAll("a");
-        for (let i = 0; i < Math.min(links.length, 10); i++) {
-            const linkColor = window.getComputedStyle(links[i]).color;
-            if (isVibrantStr(linkColor))
-                return linkColor;
-        }
-    }
-    catch {
-        console.warn("Failed to extract page color");
-    }
-    return undefined;
-}
-
-;// ./src/ui/ui.ts
-
-
-
-
-
-
-
-
-
-function register() {
-    customElements.define("dialog-ui", src_ui_dialog);
-}
-function injectMduiStyles(shadowRoot) {
-    const styleEl = document.createElement("style");
-    styleEl.textContent = ui_mdui/* default */.A;
-    shadowRoot.prepend(styleEl);
-}
-async function ui_init() {
-    register();
-    const shadowHost = document.createElement("div");
-    shadowHost.id = "nd-shadow-host";
-    document.body.appendChild(shadowHost);
-    const shadowRoot = shadowHost.attachShadow({ mode: "open" });
-    injectMduiStyles(shadowRoot);
-    shadowRoot.appendChild(button_el);
-    shadowRoot.appendChild(progress.el);
-    shadowRoot.appendChild(el);
-    shadowRoot.appendChild(button_style);
-    shadowRoot.appendChild(progress/* style */.i);
-    shadowRoot.appendChild(setting_style);
-    shadowRoot.appendChild(FilterTab_style);
-    shadowRoot.appendChild(style);
-    shadowRoot.appendChild(TestUI_style);
-    initTheme(shadowHost);
-}
-
-;// ./src/index.ts
-
-
-
-
-
-async function printEnvironments() {
-    loglevel_default().info("[Init]开始载入小说下载器……");
-    Object.entries(await environments()).forEach((kv) => loglevel_default().info("[Init]" + kv.join("：")));
-}
-async function src_main(ev) {
-    if (ev) {
-        document.removeEventListener(ev.type, src_main);
-    }
-    init();
-    await printEnvironments();
-    await ui_init();
-}
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", src_main);
-}
-else {
-    src_main();
-}
 
 })();
 

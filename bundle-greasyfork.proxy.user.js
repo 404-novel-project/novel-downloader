@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1256
+// @version        5.2.1258
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -89,6 +89,8 @@
 // @exclude        *://m.chenkuan.com/*/*.html
 // @exclude        *://www.xfxs1.com/goreadbook/*/*.html
 // @exclude        *://uukanshu.cc/book/*/*.html
+// @exclude        *://sbxh1.com/novel/*/*
+// @exclude        *://www.sbxh1.com/novel/*/*
 // @match          *://101kks.com/book/*.html
 // @match          *://www.sudugu.com/*
 // @match          *://www.po18.tw/books/*
@@ -374,6 +376,8 @@
 // @match          *://www.xfxs1.com/goreadbook/*/
 // @match          *://uukanshu.cc/book/*/
 // @match          *://www.zjsw.org/read/*/
+// @match          *://sbxh1.com/novel/*
+// @match          *://www.sbxh1.com/novel/*
 // @compatible     Firefox 100+
 // @compatible     Chrome 85+
 // @compatible     Edge 85+
@@ -488,6 +492,7 @@
 // @require        https://unpkg.com/@oovz/esearch-ocr/dist/eSearchOCR.umd.js#sha512-UvCk39TnG39qAlff1bfsl3J5s8TrKVkNN14cyf2cDmnON+VOWZvHxYmFIvbw/GRmLz0M2CLs/oaVDdwuG5WS7Q==
 // @require        https://unpkg.com/@techstark/opencv-js@4.11.0-release.1/dist/opencv.js#sha512-6Rb1LoaC9dHPLtrQhND5lLcLe2u3hh92yKTvIRQkMSj2A1EDhK0O4aptnEXAuKQcKtKZwACDoQnrrEKCFt5WdA==
 // @require        https://unpkg.com/mdui@2/mdui.global.js#sha512-pVCG7X/2X4pMmIFT+0w0HX6XjT26xcSxH6jNLOI0Sv3lzd9s3sVZFnS6GUk8ZWcVtqF3kZ6yQcJDZDuXcbM25w==
+// @require        https://unpkg.com/css-tree@2.3.1/dist/csstree.js#sha512-Jm1Qn5EKWSQbtoTcblfyyd5ZTxxxTmiDeQGhOgduS6hZQfPO80Or5Q2JRIM7jjPedHHMf5DE6FnZHZmG6PCMdA==
 // @require        http://webpack.localhost:11944/bundle-greasyfork.user.js
 // @run-at         document-start
 // ==/UserScript==
