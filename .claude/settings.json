@@ -1,0 +1,6 @@
+{
+  "enabledPlugins": {
+    "web-access@web-access": true,
+    "superpowers@claude-plugins-official": true
+  }
+}

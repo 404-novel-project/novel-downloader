@@ -920,6 +920,12 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = zjsw();
       break;
     }
+    case "sbxh1.com":
+    case "www.sbxh1.com": {
+      const { sbxh } = await import("../rules/special/reprint/sbxh");
+      ruleClass = sbxh();
+      break;
+    }
     default: {
       // booktoki 多域名匹配 (booktokiNNN.com)
       if (/^booktoki\d+\.com$/.test(host) || /^www\.booktoki\d+\.com$/.test(host)) {
