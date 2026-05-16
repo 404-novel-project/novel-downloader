@@ -306,7 +306,9 @@
     "*://m.chenkuan.com/*/",
     "*://www.xfxs1.com/goreadbook/*/",
     "*://uukanshu.cc/book/*/",
-    "*://www.zjsw.org/read/*/"
+    "*://www.zjsw.org/read/*/",
+    "*://sbxh1.com/novel/*",
+    "*://www.sbxh1.com/novel/*"
   ],
   "include": [
     "/^https?:\\/\\/(?:www\\.)?booktoki\\d+\\.com\\/novel\\//"
@@ -391,7 +393,9 @@
     "*://m.shauthor.com/*/*.html",
     "*://m.chenkuan.com/*/*.html",
     "*://www.xfxs1.com/goreadbook/*/*.html",
-    "*://uukanshu.cc/book/*/*.html"
+    "*://uukanshu.cc/book/*/*.html",
+    "*://sbxh1.com/novel/*/*",
+    "*://www.sbxh1.com/novel/*/*"
   ],
   "grant": [
     "unsafeWindow",
@@ -500,6 +504,7 @@
     "https://unpkg.com/onnxruntime-web@1.22.0/dist/ort.min.js",
     "https://unpkg.com/@oovz/esearch-ocr/dist/eSearchOCR.umd.js",
     "https://unpkg.com/@techstark/opencv-js@4.11.0-release.1/dist/opencv.js",
-    "https://unpkg.com/mdui@2/mdui.global.js"
+    "https://unpkg.com/mdui@2/mdui.global.js",
+    "https://unpkg.com/css-tree@2.3.1/dist/csstree.js"
   ]
 }

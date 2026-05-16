@@ -71,6 +71,18 @@ const TEST_CASES: TestCase[] = [
     expectScriptInjected: true,
     validateMetadata: validateZjswMetadata,
   },
+  {
+    // sbxh1.com - Korean novel site with Cloudflare; uses iframe @run-at document-start
+    // attachShadow hijack + postMessage to bypass closed shadow-root.
+    // TODO: replace <REAL-BOOK-ID> with a real sbxh1.com book id before running E2E.
+    // The CF clearance cookie must already be set in the E2E Chrome profile —
+    // visit sbxh1.com manually once in that profile to solve the challenge.
+    name: "sbxh1-novel-page",
+    url: "https://www.sbxh1.com/novel/<REAL-BOOK-ID>",
+    waitForSelector: "#nd-button",
+    timeout: 60000,
+    expectScriptInjected: true,
+  },
 ];
 
 // ─── 元数据验证函数 ───────────────────────────────────────

@@ -66,7 +66,8 @@ export default {
     nunjucks: "nunjucks",
     vue: "Vue",
     "esearch-ocr": "eSearchOCR",
-    "onnxruntime-web": "ort"
+    "onnxruntime-web": "ort",
+    "css-tree": "csstree"
   },
   devServer: {
     server: "http",

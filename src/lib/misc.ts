@@ -1,6 +1,7 @@
 import { ExpectError } from "../main/main";
 import { _GM_info } from "./GM";
-import db from "mime-db";
+
+export { extensionToMimetype, mimetyepToCompressible } from "./mimeDbLite";
 
 export type PublicConstructor<T> = new () => T;
 
@@ -117,25 +118,6 @@ export function randomUUID(): string {
   } else {
     return createUUID();
   }
-}
-
-export function extensionToMimetype(ext: string): string {
-  for (const [mimetype, entry] of Object.entries(db)) {
-    if (entry.extensions?.includes(ext)) {
-      return mimetype;
-    }
-  }
-  return "application/octet-stream";
-}
-
-export function mimetyepToCompressible(mimeType: string): boolean {
-  if (db[mimeType]) {
-    const entry = db[mimeType];
-    if (entry["compressible"]) {
-      return entry["compressible"];
-    }
-  }
-  return false;
 }
 
 // https://stackoverflow.com/questions/3895478/does-javascript-have-a-method-like-range-to-generate-a-range-within-the-supp
