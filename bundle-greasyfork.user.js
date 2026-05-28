@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1258
+// @version        5.2.1259
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -23787,8 +23787,15 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
             const doc = await (0,http.getHtmlDOM)(chapterUrl, charset);
             const content = doc.querySelector("div.novelbody > div");
             if (content) {
+                const pcc = content.querySelector("#paragraph_comment_content");
+                if (pcc) {
+                    while (pcc.firstChild) {
+                        content.insertBefore(pcc.firstChild, pcc);
+                    }
+                    pcc.remove();
+                }
                 (0,lib_dom.rm)("hr", true, content);
-                const rawAuthorSayDom = content.querySelector("div.danmu_total_str");
+                const rawAuthorSayDom = content.querySelector("div.danmu_total_str") || content.querySelector("#note_danmu_wrapper");
                 let authorSayDom;
                 let authorSayText;
                 if (rawAuthorSayDom) {
