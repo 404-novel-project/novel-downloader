@@ -14,7 +14,7 @@ import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 import { retryLimit } from "../../../setting";
-import { replaceJjwxcCharacter } from "../../lib/jjwxcFontDecode";
+import { buildFontTableViaOCR } from "../../lib/jjwxcFontDecode";
 import { UnsafeWindow } from "../../../global";
 import { _GM_xmlhttpRequest } from "../../../lib/GM";
 
@@ -1185,7 +1185,7 @@ export class Jjwxc extends BaseRuleClass {
           // https://github.com/404-novel-project/novel-downloader/issues/521
 
           const cssText = Array.from(doc.querySelectorAll("style"))
-            .map((s) => s.innerText)
+            .map((s) => s.textContent)
             .join("\n");
           const ast = csstree.parse(cssText);
 
@@ -1324,19 +1324,36 @@ export class Jjwxc extends BaseRuleClass {
         let finalText = rawText;
         const fontName = getFontName(doc);
         if (fontName) {
-          // Replace Text using OCR-based font decoding
-          finalText = await replaceJjwxcCharacter(fontName, rawText);
-
-          // Replace DOM innerHTML using OCR-based font decoding
-          const replacedDom = document.createElement("div");
-          replacedDom.innerHTML = await replaceJjwxcCharacter(
-            fontName,
-            rawDom.innerHTML
-          );
-
-          finalDom = replacedDom;
+          const jjwxcFontTable = await buildFontTableViaOCR(fontName, rawText + rawDom.innerHTML);
+          if (jjwxcFontTable) {
+            const applyFontTable = (text: string) => {
+              let out = text;
+              for (const ch in jjwxcFontTable) {
+                if (Object.prototype.hasOwnProperty.call(jjwxcFontTable, ch)) {
+                  out = out.replaceAll(ch, jjwxcFontTable[ch]);
+                }
+              }
+              return out.replace(/\u200C/g, "");
+            };
+            finalText = applyFontTable(rawText);
+            const replacedDom = document.createElement("div");
+            replacedDom.innerHTML = applyFontTable(rawDom.innerHTML);
+            finalDom = replacedDom;
+            return {
+              chapterName: ChapterName,
+              contentRaw: content,
+              contentText: finalText,
+              contentHTML: finalDom,
+              contentImages: images,
+              additionalMetadate: null,
+            };
+          }
         }
-
+        // Font table unavailable; still strip ZWNJ noise
+        finalText = finalText.replace(/\u200C/g, "");
+        const zwnjDom = document.createElement("div");
+        zwnjDom.innerHTML = finalDom.innerHTML.replace(/\u200C/g, "");
+        finalDom = zwnjDom;
         return {
           chapterName: ChapterName,
           contentRaw: content,
@@ -1674,6 +1691,7 @@ export class Jjwxc extends BaseRuleClass {
           postscript,
         ].join("\n\n");
         contentText = postscript.trim().length === 0 ? contentText: [contentText, AUTHOR_SAY_PREFIX, postscript].join("\n\n");
+        contentText = contentText.replace(/\u200C/g, "");
         await sleep(2000 + Math.round(Math.random() * 2000));
         return {
           chapterName,

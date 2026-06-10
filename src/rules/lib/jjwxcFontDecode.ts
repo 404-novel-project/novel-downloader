@@ -46,7 +46,7 @@ interface JjwxcFontTable {
  * each encrypted character on canvas and OCRs it to determine
  * the real (visual) character.
  */
-async function buildFontTableViaOCR(
+export async function buildFontTableViaOCR(
   fontName: string,
   inputText: string,
 ): Promise<JjwxcFontTable | undefined> {
@@ -104,20 +104,7 @@ async function buildFontTableViaOCR(
   // Step 3: Wait for the font to become available
   try {
     if (document.fonts) {
-      await document.fonts.ready;
-      const loaded = await document.fonts.check(`48px "${fontName}"`);
-      if (!loaded) {
-        // Force load by rendering a test character
-        const testDiv = document.createElement("div");
-        testDiv.style.fontFamily = `"${fontName}", sans-serif`;
-        testDiv.style.fontSize = "48px";
-        testDiv.style.position = "absolute";
-        testDiv.style.left = "-9999px";
-        testDiv.textContent = ""; // A typical encrypted char
-        document.body.appendChild(testDiv);
-        await document.fonts.ready;
-        testDiv.remove();
-      }
+      await document.fonts.load(`48px "${fontName}"`);
       log.info(`[jjwxc-font-ocr]字体 ${fontName} 已加载`);
     }
   } catch (e) {
@@ -146,15 +133,27 @@ async function buildFontTableViaOCR(
 
   log.info(`[jjwxc-font-ocr]发现 ${uniqueEncryptedChars.length} 个唯一加密字符`);
 
-  // Step 5: Build decode map via batch canvas OCR
-  const decodeMap = await buildFontDecodeMap(fontName, uniqueEncryptedChars);
+  // Step 5: Build decode map — glyph comparison first, OCR fallback for unmapped chars
+  const candidateChars = [...new Set([...inputText].filter((ch) => {
+    const code = ch.codePointAt(0)!;
+    return (code >= 0x3400 && code <= 0x9FFF) || (code >= 0xF900 && code <= 0xFAFF);
+  }))];
+  const glyphMap = await buildFontDecodeMapViaGlyphComparison(fontName, uniqueEncryptedChars, candidateChars);
+  log.info(`[jjwxc-font-ocr]字形比对: ${glyphMap.size}/${uniqueEncryptedChars.length} 个字符已映射`);
+  const stillUnmapped = uniqueEncryptedChars.filter((ch) => !glyphMap.has(ch));
+  const decodeMap = new Map(glyphMap);
+  if (stillUnmapped.length > 0) {
+    log.info(`[jjwxc-font-ocr]${stillUnmapped.length} 个字符回退到OCR解码`);
+    const ocrMap = await buildFontDecodeMap(fontName, stillUnmapped);
+    for (const [k, v] of ocrMap) decodeMap.set(k, v);
+  }
 
   // Clean up
   fontStyle.remove();
   URL.revokeObjectURL(blobUrl);
 
   if (decodeMap.size === 0) {
-    log.error("[jjwxc-font-ocr]OCR解码映射表构建失败");
+    log.error("[jjwxc-font-ocr]解码映射表构建失败");
     return undefined;
   }
 
@@ -168,6 +167,92 @@ async function buildFontTableViaOCR(
     table[encrypted] = real;
   }
   return table;
+}
+
+async function buildFontDecodeMapViaGlyphComparison(
+  fontFamily: string,
+  uniquePUAChars: string[],
+  candidateChars: string[],
+): Promise<Map<string, string>> {
+  if (uniquePUAChars.length === 0) return new Map();
+  const SIZE = 32;
+  const GRID = 8;
+  const CELL = SIZE / GRID;
+  const canvas = document.createElement("canvas") as HTMLCanvasElement;
+  canvas.width = SIZE;
+  canvas.height = SIZE;
+  const ctx = canvas.getContext("2d")!;
+  ctx.textBaseline = "middle";
+  ctx.textAlign = "center";
+
+  function getFingerprint(ch: string, font: string): Float32Array | null {
+    ctx.clearRect(0, 0, SIZE, SIZE);
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, SIZE, SIZE);
+    ctx.fillStyle = "#000";
+    ctx.font = `${SIZE * 0.7}px ${font}`;
+    ctx.fillText(ch, SIZE / 2, SIZE / 2);
+    const data = ctx.getImageData(0, 0, SIZE, SIZE).data;
+    const fp = new Float32Array(GRID * GRID);
+    let total = 0;
+    for (let gy = 0; gy < GRID; gy++) {
+      for (let gx = 0; gx < GRID; gx++) {
+        let sum = 0;
+        for (let py = gy * CELL; py < (gy + 1) * CELL; py++) {
+          for (let px = gx * CELL; px < (gx + 1) * CELL; px++) {
+            sum += (255 - data[(py * SIZE + px) * 4]);
+          }
+        }
+        fp[gy * GRID + gx] = sum / (CELL * CELL * 255);
+        total += fp[gy * GRID + gx];
+      }
+    }
+    return total > 0.05 ? fp : null;
+  }
+
+  function cosineSim(a: Float32Array, b: Float32Array): number {
+    let dot = 0, na = 0, nb = 0;
+    for (let i = 0; i < a.length; i++) {
+      dot += a[i] * b[i];
+      na += a[i] * a[i];
+      nb += b[i] * b[i];
+    }
+    const d = Math.sqrt(na) * Math.sqrt(nb);
+    return d < 1e-10 ? 0 : dot / d;
+  }
+
+  const allCandidates = new Set(candidateChars);
+  for (let cp = 0x4E00; cp <= 0x9FFF; cp++) allCandidates.add(String.fromCodePoint(cp));
+
+  const candidateFPs: Array<{ ch: string; fp: Float32Array }> = [];
+  for (const ch of allCandidates) {
+    for (const sysFont of ["serif", "sans-serif"]) {
+      const fp = getFingerprint(ch, sysFont);
+      if (fp) candidateFPs.push({ ch, fp });
+    }
+  }
+
+  const THRESHOLD = 0.88;
+  const customFontStr = `"${fontFamily}"`;
+  const result = new Map<string, string>();
+  for (const puaChar of uniquePUAChars) {
+    const puaFP = getFingerprint(puaChar, customFontStr);
+    if (!puaFP) continue;
+    let bestSim = -1;
+    let bestChar: string | null = null;
+    for (const { ch, fp } of candidateFPs) {
+      const sim = cosineSim(puaFP, fp);
+      if (sim > bestSim) { bestSim = sim; bestChar = ch; }
+    }
+    if (bestSim >= THRESHOLD && bestChar !== null) {
+      result.set(puaChar, bestChar);
+      log.debug(`[jjwxc-glyph] U+${puaChar.codePointAt(0)?.toString(16).toUpperCase()} → ${bestChar} (sim=${bestSim.toFixed(3)})`);
+    }
+  }
+
+  canvas.width = 0;
+  canvas.height = 0;
+  return result;
 }
 
 /**
@@ -218,17 +303,25 @@ async function buildFontDecodeMap(
       }
 
       // OCR the batch
-      const pngData = canvasToUint8Array(canvas);
-      const ocrText = await ocrDecoder.decodeFullText(pngData);
-      const ocrChars = [...ocrText.replace(/[\s\n\r]/g, "")];
-
-      if (ocrChars.length === batch.length) {
-        for (let j = 0; j < batch.length; j++) {
-          map.set(batch[j], ocrChars[j]);
+      let batchOcrOk = false;
+      try {
+        const pngData = canvasToUint8Array(canvas);
+        const ocrText = await ocrDecoder.decodeFullText(pngData);
+        const ocrChars = [...ocrText.replace(/[\s\n\r]/g, "")];
+        if (ocrChars.length === batch.length) {
+          for (let j = 0; j < batch.length; j++) {
+            map.set(batch[j], ocrChars[j]);
+          }
+          batchOcrOk = true;
         }
-      } else {
+      } catch (batchErr) {
         log.warn(
-          `[jjwxc-font-ocr]批次 ${i}: 期望 ${batch.length} 个字符, OCR识别 ${ocrChars.length} 个. 回退到逐字OCR.`,
+          `[jjwxc-font-ocr]批次 ${i}: 全文OCR失败，回退到逐字: ${batchErr instanceof Error ? batchErr.message : String(batchErr)}`,
+        );
+      }
+      if (!batchOcrOk) {
+        log.warn(
+          `[jjwxc-font-ocr]批次 ${i}: 期望 ${batch.length} 个字符, 回退到逐字OCR.`,
         );
         for (const ch of batch) {
           if (map.has(ch)) continue;
