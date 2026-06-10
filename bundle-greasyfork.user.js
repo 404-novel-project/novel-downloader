@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1259
+// @version        5.2.1260
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -22973,19 +22973,7 @@ async function buildFontTableViaOCR(fontName, inputText) {
     document.head.appendChild(fontStyle);
     try {
         if (document.fonts) {
-            await document.fonts.ready;
-            const loaded = await document.fonts.check(`48px "${fontName}"`);
-            if (!loaded) {
-                const testDiv = document.createElement("div");
-                testDiv.style.fontFamily = `"${fontName}", sans-serif`;
-                testDiv.style.fontSize = "48px";
-                testDiv.style.position = "absolute";
-                testDiv.style.left = "-9999px";
-                testDiv.textContent = "";
-                document.body.appendChild(testDiv);
-                await document.fonts.ready;
-                testDiv.remove();
-            }
+            await document.fonts.load(`48px "${fontName}"`);
             loglevel_default().info(`[jjwxc-font-ocr]字体 ${fontName} 已加载`);
         }
     }
@@ -23005,11 +22993,24 @@ async function buildFontTableViaOCR(fontName, inputText) {
         return undefined;
     }
     loglevel_default().info(`[jjwxc-font-ocr]发现 ${uniqueEncryptedChars.length} 个唯一加密字符`);
-    const decodeMap = await buildFontDecodeMap(fontName, uniqueEncryptedChars);
+    const candidateChars = [...new Set([...inputText].filter((ch) => {
+            const code = ch.codePointAt(0);
+            return (code >= 0x3400 && code <= 0x9FFF) || (code >= 0xF900 && code <= 0xFAFF);
+        }))];
+    const glyphMap = await buildFontDecodeMapViaGlyphComparison(fontName, uniqueEncryptedChars, candidateChars);
+    loglevel_default().info(`[jjwxc-font-ocr]字形比对: ${glyphMap.size}/${uniqueEncryptedChars.length} 个字符已映射`);
+    const stillUnmapped = uniqueEncryptedChars.filter((ch) => !glyphMap.has(ch));
+    const decodeMap = new Map(glyphMap);
+    if (stillUnmapped.length > 0) {
+        loglevel_default().info(`[jjwxc-font-ocr]${stillUnmapped.length} 个字符回退到OCR解码`);
+        const ocrMap = await buildFontDecodeMap(fontName, stillUnmapped);
+        for (const [k, v] of ocrMap)
+            decodeMap.set(k, v);
+    }
     fontStyle.remove();
     URL.revokeObjectURL(blobUrl);
     if (decodeMap.size === 0) {
-        loglevel_default().error("[jjwxc-font-ocr]OCR解码映射表构建失败");
+        loglevel_default().error("[jjwxc-font-ocr]解码映射表构建失败");
         return undefined;
     }
     loglevel_default().info(`[jjwxc-font-ocr]解码映射表: ${decodeMap.size}/${uniqueEncryptedChars.length} 个字符已映射`);
@@ -23018,6 +23019,88 @@ async function buildFontTableViaOCR(fontName, inputText) {
         table[encrypted] = real;
     }
     return table;
+}
+async function buildFontDecodeMapViaGlyphComparison(fontFamily, uniquePUAChars, candidateChars) {
+    if (uniquePUAChars.length === 0)
+        return new Map();
+    const SIZE = 32;
+    const GRID = 8;
+    const CELL = SIZE / GRID;
+    const canvas = document.createElement("canvas");
+    canvas.width = SIZE;
+    canvas.height = SIZE;
+    const ctx = canvas.getContext("2d");
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "center";
+    function getFingerprint(ch, font) {
+        ctx.clearRect(0, 0, SIZE, SIZE);
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, SIZE, SIZE);
+        ctx.fillStyle = "#000";
+        ctx.font = `${SIZE * 0.7}px ${font}`;
+        ctx.fillText(ch, SIZE / 2, SIZE / 2);
+        const data = ctx.getImageData(0, 0, SIZE, SIZE).data;
+        const fp = new Float32Array(GRID * GRID);
+        let total = 0;
+        for (let gy = 0; gy < GRID; gy++) {
+            for (let gx = 0; gx < GRID; gx++) {
+                let sum = 0;
+                for (let py = gy * CELL; py < (gy + 1) * CELL; py++) {
+                    for (let px = gx * CELL; px < (gx + 1) * CELL; px++) {
+                        sum += (255 - data[(py * SIZE + px) * 4]);
+                    }
+                }
+                fp[gy * GRID + gx] = sum / (CELL * CELL * 255);
+                total += fp[gy * GRID + gx];
+            }
+        }
+        return total > 0.05 ? fp : null;
+    }
+    function cosineSim(a, b) {
+        let dot = 0, na = 0, nb = 0;
+        for (let i = 0; i < a.length; i++) {
+            dot += a[i] * b[i];
+            na += a[i] * a[i];
+            nb += b[i] * b[i];
+        }
+        const d = Math.sqrt(na) * Math.sqrt(nb);
+        return d < 1e-10 ? 0 : dot / d;
+    }
+    const allCandidates = new Set(candidateChars);
+    for (let cp = 0x4E00; cp <= 0x9FFF; cp++)
+        allCandidates.add(String.fromCodePoint(cp));
+    const candidateFPs = [];
+    for (const ch of allCandidates) {
+        for (const sysFont of ["serif", "sans-serif"]) {
+            const fp = getFingerprint(ch, sysFont);
+            if (fp)
+                candidateFPs.push({ ch, fp });
+        }
+    }
+    const THRESHOLD = 0.88;
+    const customFontStr = `"${fontFamily}"`;
+    const result = new Map();
+    for (const puaChar of uniquePUAChars) {
+        const puaFP = getFingerprint(puaChar, customFontStr);
+        if (!puaFP)
+            continue;
+        let bestSim = -1;
+        let bestChar = null;
+        for (const { ch, fp } of candidateFPs) {
+            const sim = cosineSim(puaFP, fp);
+            if (sim > bestSim) {
+                bestSim = sim;
+                bestChar = ch;
+            }
+        }
+        if (bestSim >= THRESHOLD && bestChar !== null) {
+            result.set(puaChar, bestChar);
+            loglevel_default().debug(`[jjwxc-glyph] U+${puaChar.codePointAt(0)?.toString(16).toUpperCase()} → ${bestChar} (sim=${bestSim.toFixed(3)})`);
+        }
+    }
+    canvas.width = 0;
+    canvas.height = 0;
+    return result;
 }
 async function buildFontDecodeMap(fontFamily, uniqueChars) {
     const map = new Map();
@@ -23048,16 +23131,23 @@ async function buildFontDecodeMap(fontFamily, uniqueChars) {
                 const y = PADDING + j * ROW_HEIGHT + ROW_HEIGHT / 2;
                 ctx.fillText(batch[j], x, y);
             }
-            const pngData = canvasToUint8Array(canvas);
-            const ocrText = await ocrDecoder.decodeFullText(pngData);
-            const ocrChars = [...ocrText.replace(/[\s\n\r]/g, "")];
-            if (ocrChars.length === batch.length) {
-                for (let j = 0; j < batch.length; j++) {
-                    map.set(batch[j], ocrChars[j]);
+            let batchOcrOk = false;
+            try {
+                const pngData = canvasToUint8Array(canvas);
+                const ocrText = await ocrDecoder.decodeFullText(pngData);
+                const ocrChars = [...ocrText.replace(/[\s\n\r]/g, "")];
+                if (ocrChars.length === batch.length) {
+                    for (let j = 0; j < batch.length; j++) {
+                        map.set(batch[j], ocrChars[j]);
+                    }
+                    batchOcrOk = true;
                 }
             }
-            else {
-                loglevel_default().warn(`[jjwxc-font-ocr]批次 ${i}: 期望 ${batch.length} 个字符, OCR识别 ${ocrChars.length} 个. 回退到逐字OCR.`);
+            catch (batchErr) {
+                loglevel_default().warn(`[jjwxc-font-ocr]批次 ${i}: 全文OCR失败，回退到逐字: ${batchErr instanceof Error ? batchErr.message : String(batchErr)}`);
+            }
+            if (!batchOcrOk) {
+                loglevel_default().warn(`[jjwxc-font-ocr]批次 ${i}: 期望 ${batch.length} 个字符, 回退到逐字OCR.`);
                 for (const ch of batch) {
                     if (map.has(ch))
                         continue;
@@ -24084,7 +24174,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                 const decryptContentDoc = new DOMParser().parseFromString(decryptContent, "text/html");
                 function decryptCssEncrypt() {
                     const cssText = Array.from(doc.querySelectorAll("style"))
-                        .map((s) => s.innerText)
+                        .map((s) => s.textContent)
                         .join("\n");
                     const ast = external_csstree_namespaceObject.parse(cssText);
                     external_csstree_namespaceObject.walk(ast, function (node) {
@@ -24173,11 +24263,35 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                 let finalText = rawText;
                 const fontName = getFontName(doc);
                 if (fontName) {
-                    finalText = await replaceJjwxcCharacter(fontName, rawText);
-                    const replacedDom = document.createElement("div");
-                    replacedDom.innerHTML = await replaceJjwxcCharacter(fontName, rawDom.innerHTML);
-                    finalDom = replacedDom;
+                    const jjwxcFontTable = await buildFontTableViaOCR(fontName, rawText + rawDom.innerHTML);
+                    if (jjwxcFontTable) {
+                        const applyFontTable = (text) => {
+                            let out = text;
+                            for (const ch in jjwxcFontTable) {
+                                if (Object.prototype.hasOwnProperty.call(jjwxcFontTable, ch)) {
+                                    out = out.replaceAll(ch, jjwxcFontTable[ch]);
+                                }
+                            }
+                            return out.replace(/\u200C/g, "");
+                        };
+                        finalText = applyFontTable(rawText);
+                        const replacedDom = document.createElement("div");
+                        replacedDom.innerHTML = applyFontTable(rawDom.innerHTML);
+                        finalDom = replacedDom;
+                        return {
+                            chapterName: ChapterName,
+                            contentRaw: content,
+                            contentText: finalText,
+                            contentHTML: finalDom,
+                            contentImages: images,
+                            additionalMetadate: null,
+                        };
+                    }
                 }
+                finalText = finalText.replace(/\u200C/g, "");
+                const zwnjDom = document.createElement("div");
+                zwnjDom.innerHTML = finalDom.innerHTML.replace(/\u200C/g, "");
+                finalDom = zwnjDom;
                 return {
                     chapterName: ChapterName,
                     contentRaw: content,
@@ -24391,6 +24505,7 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                         postscript,
                     ].join("\n\n");
                 contentText = postscript.trim().length === 0 ? contentText : [contentText, AUTHOR_SAY_PREFIX, postscript].join("\n\n");
+                contentText = contentText.replace(/\u200C/g, "");
                 await (0,misc/* sleep */.yy)(2000 + Math.round(Math.random() * 2000));
                 return {
                     chapterName,
