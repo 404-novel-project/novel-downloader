@@ -5,29 +5,32 @@ export const alphapolis = () =>
   mkRuleClass({
     bookUrl: document.location.href,
     bookname: (
-      document.querySelector("h1.title") as HTMLElement
+      document.querySelector("h1.p-content-info__title") as HTMLElement
     ).innerText.trim(),
     author: (
-      document.querySelector(
-        "div.author > span:nth-child(1) > a:nth-child(1)"
-      ) as HTMLAnchorElement
+      document.querySelector("a.p-content-info__author") as HTMLAnchorElement
     ).innerText.trim(),
-    introDom: document.querySelector(".abstract") as HTMLDivElement,
+    introDom: document.querySelector(
+      ".p-content-info__abstract"
+    ) as HTMLDivElement,
     introDomPatch: (dom) => dom,
     coverUrl:
-      (document.querySelector("div.cover > a > img") as HTMLImageElement)
-        ?.src ?? null,
+      (document.querySelector("img.c-banner") as HTMLImageElement)?.src ?? null,
     additionalMetadatePatch: (additionalMetadate) => {
       additionalMetadate.tags = Array.from(
-        document.querySelectorAll(".content-tags > .tag > a")
-      ).map((a) => (a as HTMLAnchorElement).innerText.trim());
+        document.querySelectorAll(".p-content-info__tags .c-tag")
+      ).map((a) => (a as HTMLElement).innerText.trim());
       return additionalMetadate;
     },
-    aList: document.querySelectorAll(".episodes > .episode > a"),
+    aList: document.querySelectorAll(
+      ".p-table-of-contents__episodes a.p-table-of-contents__episode-link"
+    ),
     getAName: (aElem) =>
-      (aElem.querySelector(".title") as HTMLSpanElement)?.innerText.trim(),
-    sections: document.querySelectorAll(".episodes > h3"),
-    getSName: (sElem) => (sElem as HTMLElement).innerText.trim(),
+      (
+        aElem.querySelector(
+          ".p-table-of-contents__episode-title"
+        ) as HTMLDivElement
+      )?.innerText.trim(),
     getContent: (doc) => doc.querySelector("#novelBody"),
     contentPatch: (content) => {
       insertBrBeforeText(content);
