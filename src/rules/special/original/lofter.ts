@@ -1,6 +1,7 @@
 import { getAttachment } from "../../../lib/attachments";
 import { cleanDOM } from "../../../lib/cleanDOM";
 import { getHtmlDOM, ggetHtmlDOM } from "../../../lib/http";
+import { sleep } from "../../../lib/misc";
 import { log } from "../../../log";
 import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
@@ -13,6 +14,8 @@ export class Lofter extends BaseRuleClass {
     super();
     this.attachmentMode = "TM";
     this.concurrencyLimit = 1;
+    this.sleepTime = 800;
+    this.maxSleepTime = 5000;
     this.streamZip = true;
   }
 
@@ -50,8 +53,18 @@ export class Lofter extends BaseRuleClass {
     const pageUrlSet: Set<string> = new Set();
 
     const indexPageUrls: string[] = [];
+    const visitedIndexPageUrls: Set<string> = new Set();
+    // 目录页串行抓取 + sleep，避免触发限流
+    const indexPageSleep = () =>
+      sleep(500 + Math.round(Math.random() * 500));
     const getPageUrl = async (url: string) => {
+      if (visitedIndexPageUrls.has(url)) {
+        return;
+      }
+      visitedIndexPageUrls.add(url);
+
       log.info(`[chapter]正在抓取目录页：${url}`);
+      await indexPageSleep();
       const doc = await getHtmlDOM(url, undefined);
 
       // 获取博文链接
@@ -73,12 +86,13 @@ export class Lofter extends BaseRuleClass {
       );
       urlSetl.forEach((item) => pageUrlSet.add(item));
 
-      // 获取新目录页
+      // 收集下一批目录页
       const getIndexPageNumber = (urlI: string) => {
         const _pageNumber = new URL(urlI).searchParams.get("page") ?? "1";
         return parseInt(_pageNumber);
       };
       const nowIndexPageNumber = getIndexPageNumber(url);
+      const nextIndexPageUrls: string[] = [];
       const indexPages = doc.querySelectorAll('a[href^="?page"]');
       for (const indexPage of Array.from(indexPages)) {
         const indexPageUrl = (indexPage as HTMLAnchorElement).href;
@@ -86,13 +100,22 @@ export class Lofter extends BaseRuleClass {
         _indexPageUrlFormat.searchParams.delete("t");
         const indexPageUrlFormat = _indexPageUrlFormat.toString();
         const indexPageNumber = getIndexPageNumber(indexPageUrl);
-        if (indexPageNumber !== nowIndexPageNumber) {
-          if (!indexPageUrls.includes(indexPageUrlFormat)) {
-            // 递归执行
-            indexPageUrls.push(indexPageUrlFormat);
-            await getPageUrl(indexPageUrl);
-          }
+        if (indexPageNumber === nowIndexPageNumber) {
+          continue;
         }
+        if (visitedIndexPageUrls.has(indexPageUrlFormat)) {
+          continue;
+        }
+        if (indexPageUrls.includes(indexPageUrlFormat)) {
+          continue;
+        }
+        indexPageUrls.push(indexPageUrlFormat);
+        nextIndexPageUrls.push(indexPageUrlFormat);
+      }
+
+      // 串行抓取后续目录页
+      for (const nextUrl of nextIndexPageUrls) {
+        await getPageUrl(nextUrl);
       }
     };
 
