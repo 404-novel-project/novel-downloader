@@ -136,7 +136,10 @@ export const syosetu = () => {
 
 export const syosetuOrg = () => {
   const getAList = () => {
-    const _aList = document.querySelectorAll('tr[class^="bgcolor"] > td > a');
+    const _aList = document.querySelectorAll(
+      "section.episode-list li.episode-list__item > a.episode-list__link, " +
+        'tr[class^="bgcolor"] > td > a'
+    );
     if (_aList.length !== 0) {
       return _aList;
     } else {
@@ -144,7 +147,8 @@ export const syosetuOrg = () => {
       a.href = document.location.href;
       a.innerText = (
         document.querySelector(
-          "div.ss:nth-child(1) > p:nth-child(1) > span:nth-child(1) > a:nth-child(1)"
+          'div.ss > span[itemprop="name"], ' +
+            "div.ss:nth-child(1) > p:nth-child(1) > span:nth-child(1) > a:nth-child(1)"
         ) as HTMLElement
       )?.innerText;
       return [a];
@@ -186,8 +190,13 @@ export const syosetuOrg = () => {
       return additionalMetadate;
     },
     aList,
+    getAName: (a) =>
+      (
+        a.querySelector(".episode-list__title") as HTMLElement | null
+      )?.innerText.trim() ?? (a as HTMLElement).innerText.trim(),
     sections: document.querySelectorAll(
-      'div.ss > table > tbody > tr > td[colspan="2"] > strong'
+      "section.episode-list li.episode-list__chapter > .episode-list__chapter-title, " +
+        'div.ss > table > tbody > tr > td[colspan="2"] > strong'
     ),
     getSName: (dom) => (dom as HTMLElement).innerText.trim(),
     getContent: (doc) => {
