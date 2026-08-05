@@ -15,6 +15,19 @@ export class Alphapolis extends BaseRuleClass {
 
   public async bookParse() {
     const bookUrl = document.location.href;
+
+    // Title, author, abstract, and TOC are all rendered by Vue after page
+    // load. Wait for the title first; the rest appear in the same render.
+    const maxWaitMs = 30000;
+    const pollMs = 250;
+    const waitStart = Date.now();
+    while (
+      !document.querySelector("h1.p-content-info__title") &&
+      Date.now() - waitStart < maxWaitMs
+    ) {
+      await sleep(pollMs);
+    }
+
     const bookname = (
       document.querySelector("h1.p-content-info__title") as HTMLElement
     ).innerText.trim();
@@ -37,15 +50,13 @@ export class Alphapolis extends BaseRuleClass {
       document.querySelectorAll(".p-content-info__tags .c-tag")
     ).map((a) => (a as HTMLElement).innerText.trim());
 
-    // The TOC is rendered by Vue after page load; wait for episode anchors.
+    // The TOC may render slightly after the title block.
     const episodeSelector =
       ".p-table-of-contents__episodes a.p-table-of-contents__episode-link";
-    const maxWaitMs = 30000;
-    const pollMs = 250;
-    const start = Date.now();
+    const tocWaitStart = Date.now();
     while (
       document.querySelectorAll(episodeSelector).length === 0 &&
-      Date.now() - start < maxWaitMs
+      Date.now() - tocWaitStart < maxWaitMs
     ) {
       await sleep(pollMs);
     }
