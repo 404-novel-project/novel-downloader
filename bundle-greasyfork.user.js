@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1260
+// @version        5.2.1268
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -272,6 +272,7 @@
 // @match          *://novel18.syosetu.com/*/
 // @match          *://novel18.syosetu.com/*
 // @match          *://syosetu.org/novel/*/
+// @match          *://h.syosetu.org/novel/*/
 // @match          *://houhuayuan.vip/*
 // @match          *://zhaoze.vip/*/
 // @match          *://www.myrics.com/novels/*
@@ -492,7 +493,7 @@
 // @require        https://unpkg.com/onnxruntime-web@1.22.0/dist/ort.min.js#sha512-at7pWj/BAyQT89+V/9BiuAa/WeHjsf87fLwrcgD+uzlgsvM8/kgKOgHV/xxzcWiB98XvSTezWc0bgKjCqZwjGw==
 // @require        https://unpkg.com/@oovz/esearch-ocr/dist/eSearchOCR.umd.js#sha512-UvCk39TnG39qAlff1bfsl3J5s8TrKVkNN14cyf2cDmnON+VOWZvHxYmFIvbw/GRmLz0M2CLs/oaVDdwuG5WS7Q==
 // @require        https://unpkg.com/@techstark/opencv-js@4.11.0-release.1/dist/opencv.js#sha512-6Rb1LoaC9dHPLtrQhND5lLcLe2u3hh92yKTvIRQkMSj2A1EDhK0O4aptnEXAuKQcKtKZwACDoQnrrEKCFt5WdA==
-// @require        https://unpkg.com/mdui@2/mdui.global.js#sha512-pVCG7X/2X4pMmIFT+0w0HX6XjT26xcSxH6jNLOI0Sv3lzd9s3sVZFnS6GUk8ZWcVtqF3kZ6yQcJDZDuXcbM25w==
+// @require        https://unpkg.com/mdui@2.1.5/mdui.global.js#sha512-JXX5f5Csr62LbfRa/yYLlRSxgDluAEUzhBnRb4qNqKNl63gYbgdIbHYjU1hEIgOWWoHBeNO0c4o6bbB3yFxa6g==
 // @require        https://unpkg.com/css-tree@2.3.1/dist/csstree.js#sha512-Jm1Qn5EKWSQbtoTcblfyyd5ZTxxxTmiDeQGhOgduS6hZQfPO80Or5Q2JRIM7jjPedHHMf5DE6FnZHZmG6PCMdA==
 // @run-at         document-start
 // @updateURL      https://github.com/yingziwu/novel-downloader/raw/gh-pages/bundle-greasyfork.meta.js
@@ -7061,7 +7062,8 @@ async function getRule() {
             ruleClass = syosetu();
             break;
         }
-        case "syosetu.org": {
+        case "syosetu.org":
+        case "h.syosetu.org": {
             const { syosetuOrg } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/syosetu.ts"));
             ruleClass = syosetuOrg();
             break;
@@ -7104,8 +7106,8 @@ async function getRule() {
             break;
         }
         case "www.alphapolis.co.jp": {
-            const { alphapolis } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/alphapolis.ts"));
-            ruleClass = alphapolis();
+            const { Alphapolis } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "./src/rules/onePage/original/alphapolis.ts"));
+            ruleClass = Alphapolis;
             break;
         }
         case "hongxiuzhao.net": {
@@ -17256,35 +17258,109 @@ const akatsuki = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass 
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   alphapolis: () => (/* binding */ alphapolis)
+/* harmony export */   Alphapolis: () => (/* binding */ Alphapolis)
 /* harmony export */ });
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/onePage/template.ts");
+/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/cleanDOM.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/rules.ts");
 
 
-const alphapolis = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
-    bookUrl: document.location.href,
-    bookname: document.querySelector("h1.title").innerText.trim(),
-    author: document.querySelector("div.author > span:nth-child(1) > a:nth-child(1)").innerText.trim(),
-    introDom: document.querySelector(".abstract"),
-    introDomPatch: (dom) => dom,
-    coverUrl: document.querySelector("div.cover > a > img")
-        ?.src ?? null,
-    additionalMetadatePatch: (additionalMetadate) => {
-        additionalMetadate.tags = Array.from(document.querySelectorAll(".content-tags > .tag > a")).map((a) => a.innerText.trim());
-        return additionalMetadate;
-    },
-    aList: document.querySelectorAll(".episodes > .episode > a"),
-    getAName: (aElem) => aElem.querySelector(".title")?.innerText.trim(),
-    sections: document.querySelectorAll(".episodes > h3"),
-    getSName: (sElem) => sElem.innerText.trim(),
-    getContent: (doc) => doc.querySelector("#novelBody"),
-    contentPatch: (content) => {
-        (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .insertBrBeforeText */ .Md)(content);
-        return content;
-    },
-    language: "ja",
-});
+
+
+
+
+
+
+class Alphapolis extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */ .Q {
+    constructor() {
+        super();
+        this.attachmentMode = "TM";
+    }
+    async bookParse() {
+        const bookUrl = document.location.href;
+        const maxWaitMs = 30000;
+        const pollMs = 250;
+        const waitStart = Date.now();
+        while (!document.querySelector("h1.p-content-info__title") &&
+            Date.now() - waitStart < maxWaitMs) {
+            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_3__/* .sleep */ .yy)(pollMs);
+        }
+        const bookname = document.querySelector("h1.p-content-info__title").innerText.trim();
+        const author = document.querySelector("a.p-content-info__author").innerText.trim();
+        const introDom = document.querySelector(".p-content-info__abstract");
+        const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_4__/* .introDomHandle */ .HV)(introDom, (dom) => dom);
+        const additionalMetadate = { language: "ja" };
+        additionalMetadate.tags = Array.from(document.querySelectorAll(".p-content-info__tags .c-tag")).map((a) => a.innerText.trim());
+        const episodeSelector = ".p-table-of-contents__episodes a.p-table-of-contents__episode-link";
+        const tocWaitStart = Date.now();
+        while (document.querySelectorAll(episodeSelector).length === 0 &&
+            Date.now() - tocWaitStart < maxWaitMs) {
+            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_3__/* .sleep */ .yy)(pollMs);
+        }
+        const aList = document.querySelectorAll(episodeSelector);
+        const chapters = [];
+        let chapterNumber = 0;
+        for (const aElem of Array.from(aList)) {
+            chapterNumber++;
+            const chapterName = aElem.querySelector(".p-table-of-contents__episode-title")?.innerText.trim();
+            const chapterUrl = aElem.href;
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
+                bookUrl,
+                bookname,
+                chapterUrl,
+                chapterNumber,
+                chapterName,
+                isVIP: false,
+                isPaid: false,
+                sectionName: null,
+                sectionNumber: null,
+                sectionChapterNumber: null,
+                chapterParse: this.chapterParse,
+                charset: this.charset,
+                options: { bookname },
+            });
+            chapters.push(chapter);
+        }
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
+            bookUrl,
+            bookname,
+            author,
+            introduction,
+            introductionHTML,
+            additionalMetadate,
+            chapters,
+        });
+    }
+    async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
+        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__.getHtmlDOM)(chapterUrl, charset);
+        const content = doc.querySelector("#novelBody");
+        if (content) {
+            (0,_lib_dom__WEBPACK_IMPORTED_MODULE_1__/* .insertBrBeforeText */ .Md)(content);
+            const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .cleanDOM */ .an)(content, "TM");
+            return {
+                chapterName,
+                contentRaw: content,
+                contentText: text,
+                contentHTML: dom,
+                contentImages: images,
+                additionalMetadate: null,
+            };
+        }
+        return {
+            chapterName,
+            contentRaw: null,
+            contentText: null,
+            contentHTML: null,
+            contentImages: null,
+            additionalMetadate: null,
+        };
+    }
+}
 
 
 /***/ },
@@ -17751,14 +17827,16 @@ const syosetu = () => {
 };
 const syosetuOrg = () => {
     const getAList = () => {
-        const _aList = document.querySelectorAll('tr[class^="bgcolor"] > td > a');
+        const _aList = document.querySelectorAll("section.episode-list li.episode-list__item > a.episode-list__link, " +
+            'tr[class^="bgcolor"] > td > a');
         if (_aList.length !== 0) {
             return _aList;
         }
         else {
             const a = document.createElement("a");
             a.href = document.location.href;
-            a.innerText = document.querySelector("div.ss:nth-child(1) > p:nth-child(1) > span:nth-child(1) > a:nth-child(1)")?.innerText;
+            a.innerText = document.querySelector('div.ss > span[itemprop="name"], ' +
+                "div.ss:nth-child(1) > p:nth-child(1) > span:nth-child(1) > a:nth-child(1)")?.innerText;
             return [a];
         }
     };
@@ -17782,7 +17860,9 @@ const syosetuOrg = () => {
             return additionalMetadate;
         },
         aList,
-        sections: document.querySelectorAll('div.ss > table > tbody > tr > td[colspan="2"] > strong'),
+        getAName: (a) => a.querySelector(".episode-list__title")?.innerText.trim() ?? a.innerText.trim(),
+        sections: document.querySelectorAll("section.episode-list li.episode-list__chapter > .episode-list__chapter-title, " +
+            'div.ss > table > tbody > tr > td[colspan="2"] > strong'),
         getSName: (dom) => dom.innerText.trim(),
         getContent: (doc) => {
             if (aList.length === 1 &&
@@ -23885,6 +23965,10 @@ class Jjwxc extends rules/* BaseRuleClass */.Q {
                     pcc.remove();
                 }
                 (0,lib_dom.rm)("hr", true, content);
+                const messageEl = content.querySelector("#message");
+                if (messageEl && /请稍[候后]/.test(messageEl.textContent ?? "")) {
+                    messageEl.remove();
+                }
                 const rawAuthorSayDom = content.querySelector("div.danmu_total_str") || content.querySelector("#note_danmu_wrapper");
                 let authorSayDom;
                 let authorSayText;
@@ -24999,13 +25083,14 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/attachments.ts");
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/rules.ts");
-/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/lib/dom.ts");
-/* harmony import */ var _lib_readability__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/readability.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_readability__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/lib/readability.ts");
 
 
 
@@ -25015,11 +25100,14 @@ class Linovel extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q
 
 
 
-class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_6__/* .BaseRuleClass */ .Q {
+
+class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_7__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
         this.concurrencyLimit = 1;
+        this.sleepTime = 800;
+        this.maxSleepTime = 5000;
         this.streamZip = true;
     }
     async bookParse() {
@@ -25047,13 +25135,20 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_6__/* .BaseRuleClass */ .Q 
                 .then((avatarClass) => {
                 additionalMetadate.cover = avatarClass;
             })
-                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_3___default().error(error));
+                .catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
         }
         const chapters = [];
         const pageUrlSet = new Set();
         const indexPageUrls = [];
+        const visitedIndexPageUrls = new Set();
+        const indexPageSleep = () => (0,_lib_misc__WEBPACK_IMPORTED_MODULE_3__/* .sleep */ .yy)(500 + Math.round(Math.random() * 500));
         const getPageUrl = async (url) => {
-            _log__WEBPACK_IMPORTED_MODULE_3___default().info(`[chapter]正在抓取目录页：${url}`);
+            if (visitedIndexPageUrls.has(url)) {
+                return;
+            }
+            visitedIndexPageUrls.add(url);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().info(`[chapter]正在抓取目录页：${url}`);
+            await indexPageSleep();
             const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__.getHtmlDOM)(url, undefined);
             const selector = `a[href^="${[document.location.origin, "post"].join("/")}"]`;
             const urlSet = new Set(Array.from(doc.querySelectorAll(selector)).map((a) => a.href));
@@ -25066,6 +25161,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_6__/* .BaseRuleClass */ .Q 
                 return parseInt(_pageNumber);
             };
             const nowIndexPageNumber = getIndexPageNumber(url);
+            const nextIndexPageUrls = [];
             const indexPages = doc.querySelectorAll('a[href^="?page"]');
             for (const indexPage of Array.from(indexPages)) {
                 const indexPageUrl = indexPage.href;
@@ -25073,18 +25169,26 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_6__/* .BaseRuleClass */ .Q 
                 _indexPageUrlFormat.searchParams.delete("t");
                 const indexPageUrlFormat = _indexPageUrlFormat.toString();
                 const indexPageNumber = getIndexPageNumber(indexPageUrl);
-                if (indexPageNumber !== nowIndexPageNumber) {
-                    if (!indexPageUrls.includes(indexPageUrlFormat)) {
-                        indexPageUrls.push(indexPageUrlFormat);
-                        await getPageUrl(indexPageUrl);
-                    }
+                if (indexPageNumber === nowIndexPageNumber) {
+                    continue;
                 }
+                if (visitedIndexPageUrls.has(indexPageUrlFormat)) {
+                    continue;
+                }
+                if (indexPageUrls.includes(indexPageUrlFormat)) {
+                    continue;
+                }
+                indexPageUrls.push(indexPageUrlFormat);
+                nextIndexPageUrls.push(indexPageUrlFormat);
+            }
+            for (const nextUrl of nextIndexPageUrls) {
+                await getPageUrl(nextUrl);
             }
         };
         await getPageUrl(document.location.href);
         let i = 0;
         for (const pageUrl of Array.from(pageUrlSet)) {
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_5__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl: pageUrl,
@@ -25102,7 +25206,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_6__/* .BaseRuleClass */ .Q 
             chapters.push(chapter);
             i++;
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_6__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -25114,7 +25218,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_6__/* .BaseRuleClass */ .Q 
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
         async function post() {
-            _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[chapter]请求页面：${chapterUrl}`);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[chapter]请求页面：${chapterUrl}`);
             const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__.getHtmlDOM)(chapterUrl, charset);
             chapterName =
                 doc
@@ -25131,19 +25235,19 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_6__/* .BaseRuleClass */ .Q 
             let content;
             for (const selector of selectors) {
                 const _content = doc.querySelector(selector);
-                if (_content !== null && !(0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__/* .isHidden */ .dK)(_content)) {
+                if (_content !== null && !(0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__/* .isHidden */ .dK)(_content)) {
                     content = _content;
                     break;
                 }
             }
             if (!content) {
-                const obj = (0,_lib_readability__WEBPACK_IMPORTED_MODULE_8__.parse)(doc);
+                const obj = (0,_lib_readability__WEBPACK_IMPORTED_MODULE_9__.parse)(doc);
                 if (obj?.content) {
                     content = obj.content;
                 }
             }
             if (content) {
-                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_7__.rm)(".otherinfo", true, content);
+                (0,_lib_dom__WEBPACK_IMPORTED_MODULE_8__.rm)(".otherinfo", true, content);
                 const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_1__/* .cleanDOM */ .an)(content, "TM");
                 return {
                     chapterName,
@@ -25159,7 +25263,7 @@ class Lofter extends _rules__WEBPACK_IMPORTED_MODULE_6__/* .BaseRuleClass */ .Q 
             }
         }
         async function lpost() {
-            _log__WEBPACK_IMPORTED_MODULE_3___default().debug(`[chapter]请求页面：${chapterUrl}`);
+            _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`[chapter]请求页面：${chapterUrl}`);
             const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .ggetHtmlDOM */ .pG)(chapterUrl, charset);
             chapterName = doc.querySelector("#title")?.innerText.trim();
             const content = doc.querySelector("#m-cnt .long-text");

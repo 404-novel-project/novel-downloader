@@ -1,1 +1,7 @@
-export declare const alphapolis: () => import("../../../lib/misc").PublicConstructor<import("../../../rules").BaseRuleClass>;
+import { Book } from "../../../main/Book";
+import { BaseRuleClass, ChapterParseObject } from "../../../rules";
+export declare class Alphapolis extends BaseRuleClass {
+    constructor();
+    bookParse(): Promise<Book>;
+    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean, charset: string, options: object): Promise<ChapterParseObject>;
+}
