@@ -384,10 +384,10 @@ export async function getRule(): Promise<BaseRuleClass> {
       break;
     }
     case "www.alphapolis.co.jp": {
-      const { alphapolis } = await import(
+      const { Alphapolis } = await import(
         "../rules/onePage/original/alphapolis"
       );
-      ruleClass = alphapolis();
+      ruleClass = Alphapolis;
       break;
     }
     case "hongxiuzhao.net": {

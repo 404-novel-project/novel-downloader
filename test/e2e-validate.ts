@@ -83,6 +83,15 @@ const TEST_CASES: TestCase[] = [
     timeout: 60000,
     expectScriptInjected: true,
   },
+  {
+    // alphapolis.co.jp - 日本小说站，章节列表由 Vue 异步渲染
+    name: "alphapolis-novel-page",
+    url: "https://www.alphapolis.co.jp/novel/233619333/640066901",
+    waitForSelector: "#nd-button",
+    timeout: 60000,
+    expectScriptInjected: true,
+    validateMetadata: validateAlphapolisMetadata,
+  },
 ];
 
 // ─── 元数据验证函数 ───────────────────────────────────────
@@ -273,6 +282,60 @@ async function validateZjswMetadata(page: Page): Promise<{ passed: boolean; deta
   const passed = issues.length === 0;
   const details = passed
     ? `书名="${result.bookname}", 作者="${result.author}", 章节=${result.chapterCount}, 简介="${(result.intro as string)?.substring(0, 30)}...", 封面="${(result.coverUrl as string)?.substring(0, 60) || "无"}"`
+    : issues.join("; ");
+
+  return { passed, details };
+}
+
+/** alphapolis.co.jp 元数据验证 (TOC 由 Vue 异步渲染，需先等待) */
+async function validateAlphapolisMetadata(page: Page): Promise<{ passed: boolean; details: string }> {
+  // Wait for the Vue-rendered TOC to populate before validating
+  await page.waitForFunction(
+    () =>
+      document.querySelectorAll(
+        ".p-table-of-contents__episodes a.p-table-of-contents__episode-link"
+      ).length > 0,
+    { timeout: 45000 }
+  ).catch(() => {
+    // Continue anyway; the validation below will report the empty TOC.
+  });
+
+  const issues: string[] = [];
+
+  const result = await page.evaluate(() => {
+    const data: Record<string, string | number | null> = {};
+    data.bookname =
+      document.querySelector("h1.p-content-info__title")?.textContent?.trim() ||
+      null;
+    data.author =
+      document.querySelector("a.p-content-info__author")?.textContent?.trim() ||
+      null;
+    data.intro =
+      document.querySelector(".p-content-info__abstract")?.textContent?.trim() ||
+      null;
+    data.chapterCount = document.querySelectorAll(
+      ".p-table-of-contents__episodes a.p-table-of-contents__episode-link"
+    ).length;
+    return data;
+  });
+
+  if (!result.bookname || (result.bookname as string).length < 2) {
+    issues.push(`书名异常: "${result.bookname || "(空)"}"`);
+  }
+  if (!result.author) {
+    issues.push("作者为空");
+  }
+  const introText = (result.intro as string) || "";
+  if (introText.length < 5) {
+    issues.push(`简介异常: "${introText.substring(0, 50) || "(空)"}"`);
+  }
+  if ((result.chapterCount as number) < 1) {
+    issues.push(`章节数不足: ${result.chapterCount} < 1 (Vue TOC 未渲染?)`);
+  }
+
+  const passed = issues.length === 0;
+  const details = passed
+    ? `书名="${result.bookname}", 作者="${result.author}", 章节=${result.chapterCount}, 简介="${(result.intro as string)?.substring(0, 30)}..."`
     : issues.join("; ");
 
   return { passed, details };
