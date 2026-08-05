@@ -337,7 +337,8 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = syosetu();
       break;
     }
-    case "syosetu.org": {
+    case "syosetu.org":
+    case "h.syosetu.org": {
       const { syosetuOrg } = await import("../rules/onePage/original/syosetu");
       ruleClass = syosetuOrg();
       break;
