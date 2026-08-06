@@ -21,16 +21,10 @@
 - **NEVER** use `@match` with `*` in the middle of a hostname (e.g., `booktoki*.com` is invalid). Use `@include` with regex instead.
 - Always scrape real HTML (via `tools/dev/scrape-dom.mjs` or E2E profile scraper) — never guess selectors from accessibility snapshots.
 
-## E2E Testing
-
-- Use `npx tsx test/e2e-validate.ts` for automated browser validation with Tampermonkey.
-- One-time setup: `yarn test:e2e:init` (or `powershell tools/dev/init-profile.ps1`) to create Chrome Profile with Tampermonkey. See `.github/skills/setup-e2e-env/SKILL.md` for full first-time setup guide.
-- Dev server must be running (`yarn dev`) before E2E tests.
-- Test cases are defined in `TEST_CASES` array in `test/e2e-validate.ts`.
-- Screenshots saved to `test/screenshots/`.
-
 ## Safety Checks
 
 - Do not remove or bypass the userscript metadata generation flow in `webpack.config.js`.
 - Do not change build output filenames unless the task explicitly requires it, because local dev relies on the stable proxy URL.
 - Tampermonkey 4.14 is intentionally treated as unsupported by runtime detection in `src/detect.ts`.
+- **NEVER** kill, terminate, or force-close existing browser processes (e.g. a Chrome instance holding the CDP/debug port) to free a port for an E2E or validation run. If a port is busy, stop and ask the user instead.
+- **NEVER** delete browser profile directories or user data (e.g. the `TampermonkeyE2E` profile, anything under Chrome's `User Data`). Treat all browser profile/user-data files as the user's and off-limits.
