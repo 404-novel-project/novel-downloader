@@ -1,5 +1,6 @@
 import { cleanDOM } from "../../../lib/cleanDOM";
-import { getHtmlDOM } from "../../../lib/http";
+import { getFrameContentConditionWithWindow, getHtmlDOM } from "../../../lib/http";
+import { log } from "../../../log";
 import { ExpectError } from "../../../main/main";
 import { Chapter } from "../../../main/Chapter";
 import { Book, BookAdditionalMetadate } from "../../../main/Book";
@@ -126,35 +127,89 @@ export class Sosadfun extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    const doc = await getHtmlDOM(chapterUrl, charset);
-    chapterName = (
-      doc.querySelector("strong.h3") as HTMLElement
-    ).innerText.trim();
+    const contentSelector = ".main-text.no-selection > span[id^=full]";
+    const authorSaySelector = ".main-text.no-selection > .grayout";
 
-    const content = document.createElement("div");
-
-    const _content = doc.querySelector(
-      ".main-text.no-selection > span[id^=full]"
-    ) as HTMLElement;
-    const _authorSay = doc.querySelector(".main-text.no-selection > .grayout");
-    if (_content) {
-      for (const elem of Array.from(
-        (_content.cloneNode(true) as HTMLElement).children
-      )) {
-        content.appendChild(elem);
-      }
+    // 优先用 frame 加载 JS 渲染后的页面；失败再回退到静态抓取
+    let doc: Document | null = null;
+    let win: Window | null = null;
+    let frame: HTMLIFrameElement | null = null;
+    try {
+      frame = await getFrameContentConditionWithWindow(chapterUrl, (f) => {
+        const d = f.contentWindow?.document ?? null;
+        return !!d?.querySelector(contentSelector);
+      });
+      doc = frame?.contentWindow?.document ?? null;
+      win = frame?.contentWindow ?? null;
+    } catch (e) {
+      log.error(`[sosadfun] frame 加载失败，回退到 getHtmlDOM: ${e}`);
+    }
+    const usedFrame = !!doc;
+    if (!doc) {
+      doc = await getHtmlDOM(chapterUrl, charset);
     }
 
-    if (_content) {
+    try {
+      if (!doc) {
+        return {
+          chapterName,
+          contentRaw: null,
+          contentText: null,
+          contentHTML: null,
+          contentImages: null,
+          additionalMetadate: null,
+        };
+      }
+
+      const nameEl = doc.querySelector("strong.h3") as HTMLElement | null;
+      if (nameEl) {
+        chapterName = nameEl.innerText.trim();
+      }
+
+      const _content = doc.querySelector(contentSelector) as HTMLElement | null;
+      const _authorSay = doc.querySelector(authorSaySelector);
+
+      if (!_content) {
+        return {
+          chapterName,
+          contentRaw: null,
+          contentText: null,
+          contentHTML: null,
+          contentImages: null,
+          additionalMetadate: null,
+        };
+      }
+
+      // 可见性过滤必须在 frame 仍挂载、文档处于实时渲染状态时进行
+      // （getComputedStyle 与几何读取都依赖实时渲染）。工具默认把 iframe 设为
+      // 1x1，几何尺寸不可靠，因此先放大到离屏的真实视口，待重排后再判定，
+      // 最后在 finally 移除 frame。
+      if (usedFrame && win && frame) {
+        expandFrameForLayout(frame);
+        await new Promise((r) => setTimeout(r, 100));
+        removeInvisibleElements(_content, win);
+        if (_authorSay) {
+          removeInvisibleElements(_authorSay as Element, win);
+        }
+      }
+
+      // 通过 innerHTML 将内容重解析到主文档上下文：frame 文档的元素原型链属于
+      // frame 窗口，append 到主文档也不会改变，cleanDOM 内的 instanceof HTMLElement
+      // 校验会全部失败。用主文档重新序列化/解析可规避该跨 realm 问题。
+      const content = document.createElement("div");
+      content.innerHTML = _content.innerHTML;
+
       // eslint-disable-next-line prefer-const
       let { dom, text, images } = await cleanDOM(content, "TM");
 
       if (_authorSay) {
+        const authorSayMain = document.createElement("div");
+        authorSayMain.innerHTML = (_authorSay as HTMLElement).innerHTML;
         const {
           dom: authorSayDom,
           text: authorySayText,
           images: authorSayImages,
-        } = await cleanDOM(_authorSay, "TM");
+        } = await cleanDOM(authorSayMain, "TM");
 
         const hrElem = document.createElement("hr");
         const authorSayDiv = document.createElement("div");
@@ -183,15 +238,80 @@ export class Sosadfun extends BaseRuleClass {
         contentImages: images,
         additionalMetadate: null,
       };
-    } else {
-      return {
-        chapterName,
-        contentRaw: null,
-        contentText: null,
-        contentHTML: null,
-        contentImages: null,
-        additionalMetadate: null,
-      };
+    } finally {
+      frame?.remove();
     }
   }
+}
+
+// 实际渲染宽/高小于此阈值（px）视为不可见
+const SIZE_THRESHOLD = 1;
+
+// 工具默认把 iframe 设为 1x1，在此尺寸下读取宽高不可靠；
+// 放大到离屏的真实视口，以便 getBoundingClientRect 反映实际渲染尺寸。
+function expandFrameForLayout(frame: HTMLIFrameElement) {
+  frame.style.position = "absolute";
+  frame.style.left = "-99999px";
+  frame.style.top = "0";
+  frame.style.border = "0";
+  frame.width = "1280";
+  frame.height = "800";
+}
+
+function hasText(el: Element): boolean {
+  const t = el.textContent;
+  return !!t && t.trim().length > 0;
+}
+
+// 移除区域内容中实际不可见的元素（覆盖所有标签，不限于 <p>）。
+// 判定依据：计算后样式（display/visibility/透明度/font-size:0/透明文字）
+// 以及实际渲染宽高过小。
+function removeInvisibleElements(root: Element, win: Window) {
+  for (const el of Array.from(root.querySelectorAll("*"))) {
+    if (!el.isConnected) {
+      // 已被隐藏的祖先连带移除
+      continue;
+    }
+    const st = win.getComputedStyle(el);
+    if (isInvisibleElement(el as HTMLElement, st)) {
+      el.remove();
+    }
+  }
+}
+
+function isInvisibleElement(
+  el: HTMLElement,
+  st: CSSStyleDeclaration
+): boolean {
+  if (
+    st.display === "none" ||
+    st.visibility === "hidden" ||
+    st.visibility === "collapse"
+  ) {
+    return true;
+  }
+  // 透明：opacity 为 0
+  if (parseFloat(st.opacity) === 0) {
+    return true;
+  }
+  // 透明：文字颜色 alpha 为 0（color: transparent / rgba(...,0)）
+  const m = st.color.match(/rgba?\(([^)]+)\)/);
+  if (m) {
+    const parts = m[1].split(",").map((s) => s.trim());
+    if (parts.length === 4 && parseFloat(parts[3]) === 0) {
+      return true;
+    }
+  }
+  // 文字本身不可见：font-size: 0
+  if (parseFloat(st.fontSize) === 0) {
+    return true;
+  }
+  // 实际渲染尺寸过小。仅对含文字的元素判定，避免误删空行占位（如空 <p>）。
+  if (hasText(el)) {
+    const rect = el.getBoundingClientRect();
+    if (rect.width < SIZE_THRESHOLD || rect.height < SIZE_THRESHOLD) {
+      return true;
+    }
+  }
+  return false;
 }
