@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1268
+// @version        5.2.1270
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -28944,17 +28944,20 @@ class Shuhai extends _rules__WEBPACK_IMPORTED_MODULE_10__/* .BaseRuleClass */ .Q
 /* harmony export */ });
 /* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/cleanDOM.ts");
 /* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/rules.ts");
 
 
 
 
 
 
-class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_5__/* .BaseRuleClass */ .Q {
+
+class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_6__/* .BaseRuleClass */ .Q {
     constructor() {
         super();
         this.attachmentMode = "TM";
@@ -28981,7 +28984,7 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_5__/* .BaseRuleClass */ .
         let introDom;
         if (needLogin()) {
             alert("本小说需要登录后浏览！");
-            throw new _main_main__WEBPACK_IMPORTED_MODULE_2__/* .ExpectError */ .K5("本小说需要登录后浏览！");
+            throw new _main_main__WEBPACK_IMPORTED_MODULE_3__/* .ExpectError */ .K5("本小说需要登录后浏览！");
         }
         else {
             introDom = document.createElement("div");
@@ -29017,7 +29020,7 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_5__/* .BaseRuleClass */ .
             chapterNumber++;
             const chapterName = a.innerText.trim();
             const chapterUrl = a.href;
-            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_3__/* .Chapter */ .I({
+            const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
                 bookUrl,
                 bookname,
                 chapterUrl,
@@ -29034,7 +29037,7 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_5__/* .BaseRuleClass */ .
             });
             chapters.push(chapter);
         }
-        return new _main_Book__WEBPACK_IMPORTED_MODULE_4__/* .Book */ .E({
+        return new _main_Book__WEBPACK_IMPORTED_MODULE_5__/* .Book */ .E({
             bookUrl,
             bookname,
             author,
@@ -29045,20 +29048,68 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_5__/* .BaseRuleClass */ .
         });
     }
     async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-        const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__.getHtmlDOM)(chapterUrl, charset);
-        chapterName = doc.querySelector("strong.h3").innerText.trim();
-        const content = document.createElement("div");
-        const _content = doc.querySelector(".main-text.no-selection > span[id^=full]");
-        const _authorSay = doc.querySelector(".main-text.no-selection > .grayout");
-        if (_content) {
-            for (const elem of Array.from(_content.cloneNode(true).children)) {
-                content.appendChild(elem);
-            }
+        const contentSelector = ".main-text.no-selection > span[id^=full]";
+        const authorSaySelector = ".main-text.no-selection > .grayout";
+        let doc = null;
+        let win = null;
+        let frame = null;
+        try {
+            frame = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__/* .getFrameContentConditionWithWindow */ .Q2)(chapterUrl, (f) => {
+                const d = f.contentWindow?.document ?? null;
+                return !!d?.querySelector(contentSelector);
+            });
+            doc = frame?.contentWindow?.document ?? null;
+            win = frame?.contentWindow ?? null;
         }
-        if (_content) {
+        catch (e) {
+            _log__WEBPACK_IMPORTED_MODULE_2___default().error(`[sosadfun] frame 加载失败，回退到 getHtmlDOM: ${e}`);
+        }
+        const usedFrame = !!doc;
+        if (!doc) {
+            doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__.getHtmlDOM)(chapterUrl, charset);
+        }
+        try {
+            if (!doc) {
+                return {
+                    chapterName,
+                    contentRaw: null,
+                    contentText: null,
+                    contentHTML: null,
+                    contentImages: null,
+                    additionalMetadate: null,
+                };
+            }
+            const nameEl = doc.querySelector("strong.h3");
+            if (nameEl) {
+                chapterName = nameEl.innerText.trim();
+            }
+            const _content = doc.querySelector(contentSelector);
+            const _authorSay = doc.querySelector(authorSaySelector);
+            if (!_content) {
+                return {
+                    chapterName,
+                    contentRaw: null,
+                    contentText: null,
+                    contentHTML: null,
+                    contentImages: null,
+                    additionalMetadate: null,
+                };
+            }
+            if (usedFrame && win && frame) {
+                expandFrameForLayout(frame);
+                await new Promise((r) => setTimeout(r, 100));
+                removeInvisibleElements(_content, win);
+                if (_authorSay) {
+                    removeInvisibleElements(_authorSay, win);
+                }
+            }
+            const content = document.createElement("div");
+            content.innerHTML = _content.innerHTML;
             let { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .cleanDOM */ .an)(content, "TM");
             if (_authorSay) {
-                const { dom: authorSayDom, text: authorySayText, images: authorSayImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .cleanDOM */ .an)(_authorSay, "TM");
+                const authorSayMain = document.createElement("div");
+                authorSayMain.innerHTML = _authorSay.innerHTML;
+                const { dom: authorSayDom, text: authorySayText, images: authorSayImages, } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .cleanDOM */ .an)(authorSayMain, "TM");
                 const hrElem = document.createElement("hr");
                 const authorSayDiv = document.createElement("div");
                 authorSayDiv.className = "authorSay";
@@ -29081,17 +29132,61 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_5__/* .BaseRuleClass */ .
                 additionalMetadate: null,
             };
         }
-        else {
-            return {
-                chapterName,
-                contentRaw: null,
-                contentText: null,
-                contentHTML: null,
-                contentImages: null,
-                additionalMetadate: null,
-            };
+        finally {
+            frame?.remove();
         }
     }
+}
+const SIZE_THRESHOLD = 1;
+function expandFrameForLayout(frame) {
+    frame.style.position = "absolute";
+    frame.style.left = "-99999px";
+    frame.style.top = "0";
+    frame.style.border = "0";
+    frame.width = "1280";
+    frame.height = "800";
+}
+function hasText(el) {
+    const t = el.textContent;
+    return !!t && t.trim().length > 0;
+}
+function removeInvisibleElements(root, win) {
+    for (const el of Array.from(root.querySelectorAll("*"))) {
+        if (!el.isConnected) {
+            continue;
+        }
+        const st = win.getComputedStyle(el);
+        if (isInvisibleElement(el, st)) {
+            el.remove();
+        }
+    }
+}
+function isInvisibleElement(el, st) {
+    if (st.display === "none" ||
+        st.visibility === "hidden" ||
+        st.visibility === "collapse") {
+        return true;
+    }
+    if (parseFloat(st.opacity) === 0) {
+        return true;
+    }
+    const m = st.color.match(/rgba?\(([^)]+)\)/);
+    if (m) {
+        const parts = m[1].split(",").map((s) => s.trim());
+        if (parts.length === 4 && parseFloat(parts[3]) === 0) {
+            return true;
+        }
+    }
+    if (parseFloat(st.fontSize) === 0) {
+        return true;
+    }
+    if (hasText(el)) {
+        const rect = el.getBoundingClientRect();
+        if (rect.width < SIZE_THRESHOLD || rect.height < SIZE_THRESHOLD) {
+            return true;
+        }
+    }
+    return false;
 }
 
 
