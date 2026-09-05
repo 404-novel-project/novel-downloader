@@ -1,9 +1,0 @@
-import { BaseRuleClass, ChapterParseObject } from "../../../rules";
-import { Book } from "../../../main/Book";
-export declare class kadokado extends BaseRuleClass {
-    constructor();
-    bookParse(): Promise<Book>;
-    chapterParse(chapterUrl: string, chapterName: string | null, isVIP: boolean, isPaid: boolean | null, charset: string, options: {
-        chapterId: number;
-    }): Promise<ChapterParseObject>;
-}
