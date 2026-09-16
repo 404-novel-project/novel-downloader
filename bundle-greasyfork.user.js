@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1278
+// @version        5.2.1280
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -9078,6 +9078,7 @@ async function getAttachment(url, mode, prefix = "", noMD5 = false, comments = g
   if (imgClassCache) {
     return imgClassCache;
   }
+  await (0,misc/* sleep */.yy)(300);
   const imgClass = new Attachment/* AttachmentClass */.q(
     url,
     comments,
@@ -9736,7 +9737,7 @@ async function cleanDOM(elem, imgMode, options) {
       return null;
     }
     map.set("a", a);
-    function getImg(url) {
+    async function getImg(url) {
       const imgClassCache = (0,_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachmentClassCache */ ._s)(url);
       if (imgClassCache) {
         const dom = document.createElement("img");
@@ -9757,7 +9758,7 @@ async function cleanDOM(elem, imgMode, options) {
           referrerMode: options?.referrerMode,
           customReferer: options?.customReferer
         };
-        const imgClass = (0,_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(
+        const imgClass = await (0,_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(
           url,
           imgMode,
           "chapter-",
@@ -9791,7 +9792,7 @@ async function cleanDOM(elem, imgMode, options) {
       return null;
     }
     map.set("img", img);
-    function audio(elem2) {
+    async function audio(elem2) {
       if (elem2 instanceof HTMLAudioElement) {
         const url = elem2.src;
         const attachmentCache = (0,_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachmentClassCache */ ._s)(url);
@@ -9816,7 +9817,7 @@ async function cleanDOM(elem, imgMode, options) {
             referrerMode: options?.referrerMode,
             customReferer: options?.customReferer
           };
-          const attachment = (0,_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(
+          const attachment = await (0,_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(
             url,
             imgMode,
             "chapter-",
@@ -37884,6 +37885,68 @@ let __webpack_exports__ = {};
 (() => {
 "use strict";
 
+;// ./src/lib/esjzoneShield.ts
+
+const TYPED_ARRAYS = [
+  "Int8Array",
+  "Uint8Array",
+  "Uint8ClampedArray",
+  "Int16Array",
+  "Uint16Array",
+  "Int32Array",
+  "Uint32Array",
+  "Float32Array",
+  "Float64Array"
+];
+function shieldTypedArrays() {
+  if (!/(^|\.)esjzone\.(cc|one)$/.test(document.location.host)) {
+    return;
+  }
+  const pristine = /* @__PURE__ */ new Map();
+  for (const name of TYPED_ARRAYS) {
+    const ctor = globalThis[name];
+    if (typeof ctor === "function") {
+      pristine.set(name, [
+        ctor,
+        Object.getOwnPropertyDescriptors(
+          ctor.prototype
+        )
+      ]);
+    }
+  }
+  const restore = () => {
+    const g = globalThis;
+    for (const [name, [ctor, proto]] of pristine) {
+      if (g[name] !== ctor) {
+        g[name] = ctor;
+      }
+      Object.defineProperties(ctor.prototype, proto);
+    }
+    for (const name of TYPED_ARRAYS) {
+      const ctor = g[name];
+      if (typeof ctor === "function") {
+        try {
+          Object.defineProperty(ctor, "toString", {
+            value: Function.prototype.toString,
+            configurable: true,
+            writable: true
+          });
+        } catch {
+        }
+      }
+    }
+  };
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", restore, { once: true });
+  } else {
+    restore();
+  }
+}
+
+;// ./src/index.ts
+
+
+shieldTypedArrays();
 (async () => {
   const { run } = await Promise.resolve(/* import() */).then(() => (__webpack_require__("./src/bootstrap/top.ts")));
   await run();
