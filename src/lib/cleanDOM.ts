@@ -744,7 +744,7 @@ export async function cleanDOM(
 
     map.set("a", a);
 
-    function getImg(url: string) {
+    async function getImg(url: string) {
       const imgClassCache = getAttachmentClassCache(url);
       if (imgClassCache) {
         const dom = document.createElement("img");
@@ -765,7 +765,8 @@ export async function cleanDOM(
           referrerMode: options?.referrerMode,
           customReferer: options?.customReferer,
         };
-        const imgClass = getAttachment(
+        // 串行下载：await 会阻塞遍历，直到该附件下载完成，避免并发请求过多触发超时
+        const imgClass = await getAttachment(
           url,
           imgMode,
           "chapter-",
@@ -808,7 +809,7 @@ export async function cleanDOM(
 
     map.set("img", img);
 
-    function audio(elem: Element) {
+    async function audio(elem: Element) {
       if (elem instanceof HTMLAudioElement) {
         const url = elem.src;
         const attachmentCache = getAttachmentClassCache(url);
@@ -834,7 +835,7 @@ export async function cleanDOM(
             referrerMode: options?.referrerMode,
             customReferer: options?.customReferer,
           };
-          const attachment = getAttachment(
+          const attachment = await getAttachment(
             url,
             imgMode,
             "chapter-",

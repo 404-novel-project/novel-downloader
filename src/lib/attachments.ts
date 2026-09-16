@@ -2,7 +2,7 @@ import { AttachmentClass } from "../main/Attachment";
 import { ReferrerMode } from "../main/main";
 import { calculateSha1 } from "./hash";
 import { log } from "../log";
-import { randomUUID } from "./misc";
+import { randomUUID, sleep } from "./misc";
 
 import { filetypeextension } from "magic-bytes.js";
 
@@ -46,6 +46,8 @@ export async function getAttachment(
   if (imgClassCache) {
     return imgClassCache;
   }
+  // 附件下载间加入间隔，降低并发压力，避免站点限流导致下载超时
+  await sleep(300);
   const imgClass = new AttachmentClass(
     url,
     comments,
