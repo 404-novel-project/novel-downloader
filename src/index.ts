@@ -1,3 +1,7 @@
+import { shieldTypedArrays } from "./lib/esjzoneShield";
+
+shieldTypedArrays();
+
 (async () => {
   const { run } = await import("./bootstrap/top");
   await run();
