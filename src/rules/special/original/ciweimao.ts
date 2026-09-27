@@ -166,8 +166,8 @@ export class Shubl extends BaseRuleClass {
         .catch((error) => log.error(error));
     }
     additionalMetadate.tags = Array.from(
-      document.querySelectorAll("div.row > span.tag")
-    ).map((span) => (span as HTMLSpanElement).innerText.trim());
+      document.querySelectorAll("div.row > span.tag, div.row > div.tag")
+    ).map((tag) => (tag as HTMLElement).innerText.trim());
 
     const chapters: Chapter[] = [];
     const chapterTitleList = Array.from(
@@ -307,8 +307,8 @@ export class Duread extends BaseRuleClass {
         .catch((error) => log.error(error));
     }
     additionalMetadate.tags = Array.from(
-      document.querySelectorAll("div.row > span.tag")
-    ).map((span) => (span as HTMLSpanElement).innerText.trim());
+      document.querySelectorAll("div.row > span.tag, div.row > div.tag")
+    ).map((tag) => (tag as HTMLElement).innerText.trim());
 
     const chapters: Chapter[] = [];
     const chapterTitleList = Array.from(
@@ -396,7 +396,7 @@ export class Duread extends BaseRuleClass {
     charset: string,
     options: object
   ) {
-    const rootPath = "https://www.cddaoyue.cn/";
+    const rootPath = document.location.origin + "/";
     const [parentWidth, setFontSize] = [939.2, "18"];
     return getChapter({
       chapterUrl,
@@ -639,7 +639,12 @@ function getChapter({
     }
 
     const getIsLogin = () => {
-      if (document.location.host === "www.cddaoyue.cn" || document.location.host === "cddaoyue.cn") {
+      if (
+        document.location.host === "www.cddaoyue.cn" ||
+        document.location.host === "cddaoyue.cn" ||
+        document.location.host === "www.nkwwlkj.cn" ||
+        document.location.host === "nkwwlkj.cn"
+      ) {
         return (
           document.querySelector("div.dropdown-menu")?.childElementCount === 3
         );

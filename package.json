@@ -5,7 +5,7 @@
   "type": "module",
   "source": "src/index.js",
   "scripts": {
-    "dev": "webpack serve --node-env development",
+    "dev": "webpack serve",
     "lint": "eslint src",
     "pretty": "prettier . -w",
     "build": "webpack build -c webpack.config.js",

@@ -79,7 +79,8 @@ Write-Host ""
 
 $tsxArgs = @("tsx", "test/e2e-validate.ts")
 if ($TestCase) {
-    # 可扩展：传入特定测试用例
+    # 按名称子串过滤用例，如 -TestCase duread
+    $tsxArgs += $TestCase
 }
 
 Push-Location $projectRoot

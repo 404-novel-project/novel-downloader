@@ -162,10 +162,26 @@ Add test case to `test/e2e-validate.ts`:
 
 Then run:
 ```bash
+# 全量运行
 npx tsx test/e2e-validate.ts
+# 按名称过滤单个用例（开发时推荐）
+npx tsx test/e2e-validate.ts <name-substring>   # e.g. duread
+# 9222 被其他进程占用时换调试端口
+E2E_CDP_PORT=9333 npx tsx test/e2e-validate.ts <name-substring>
 ```
 
 All checks must show ✅. If any check fails, fix the issue and re-run.
+
+#### E2E Profile Requirements (one-time)
+
+`tools/dev/init-profile.ps1` creates the dedicated profile, but two things need manual action once:
+
+1. **Install Tampermonkey** from the Web Store (native confirm dialog — cannot be automated), then install the dev proxy script from `http://webpack.localhost:11944/bundle.proxy.user.js`.
+2. **Enable「允许运行用户脚本 / Allow User Scripts」** for Tampermonkey: `chrome://extensions` → Tampermonkey → 详细信息/Details → turn the toggle on (required on Chrome 138+ / TM 5.5+).
+
+Symptom when #2 is missing: TM dashboard shows 请启用『允许用户脚本』扩展设置, the script appears installed, but `#nd-button` never attaches (waitForSelector times out) on any site — including sites that previously passed.
+
+Once set up, the proxy script auto-updates from the dev server — no reinstall needed after code changes.
 
 ## Checklist Summary
 
@@ -191,6 +207,8 @@ All checks must show ✅. If any check fails, fix the issue and re-run.
 5. **Import depth**: Files in `special/reprint/` are 3 levels deep — use `../../../lib/`.
 6. **NodeListOf iteration**: Use `Array.from()` for `querySelectorAll` results in for...of loops.
 7. **Cover image vs ads**: Verify cover selector doesn't match banner/ad images. Use `div.view-img img` or `div.col-sm-4 img` for precision.
+8. **tsx + `page.evaluate`**: named function declarations inside evaluate callbacks break under tsx — esbuild's keepNames injects a `__name(...)` helper that doesn't exist in the browser (`ReferenceError: __name is not defined`). Use inline arrow functions inside evaluate, or run the script as plain Node (`.mjs`).
+9. **API-based chapter validation**: replicate the rule's request semantics. Some chapter APIs require session cookies (prime them by fetching the chapter page in page context first) and the chapter-page Referer (`fetch(url, { referrer: chapterUrl })`). Missing either can return generic errors (e.g. `code:400001 此章节可能已删除`) even when the endpoint itself is fine.
 
 ## File Reference
 

@@ -12,7 +12,11 @@ const __dirname = dirname(__filename);
 
 const git = simpleGit();
 
-const dev = process.env.NODE_ENV === "development";
+// webpack-cli v7 removed --node-env, so detect `webpack serve` from argv;
+// NODE_ENV is still honored for CI and explicit env-var usage.
+const dev =
+  process.env.NODE_ENV === "development" ||
+  process.argv.includes("serve");
 console.log(`development: ${dev}`);
 
 export default {

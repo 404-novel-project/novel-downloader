@@ -52,11 +52,16 @@ Write-Host ""
 Write-Host "  Step 1: Install Tampermonkey extension" -ForegroundColor White
 Write-Host "          Click Add to Chrome on the Web Store page" -ForegroundColor Gray
 Write-Host ""
-Write-Host "  Step 2: Install Dev Proxy script" -ForegroundColor White
+Write-Host "  Step 2: Enable 'Allow User Scripts' for Tampermonkey" -ForegroundColor White
+Write-Host "          chrome://extensions -> Tampermonkey -> Details" -ForegroundColor Gray
+Write-Host "          -> turn on / 允许运行用户脚本 (required on Chrome 138+)" -ForegroundColor Gray
+Write-Host "          (otherwise no userscript will run in this profile)" -ForegroundColor Gray
+Write-Host ""
+Write-Host "  Step 3: Install Dev Proxy script" -ForegroundColor White
 Write-Host "          Make sure dev server is running (yarn dev)" -ForegroundColor Gray
 Write-Host "          Click Install in Tampermonkey on the proxy page" -ForegroundColor Gray
 Write-Host ""
-Write-Host "  Step 3: Close Chrome when done" -ForegroundColor White
+Write-Host "  Step 4: Close Chrome when done" -ForegroundColor White
 Write-Host ""
 Write-Host "NOTE: This is a one-time setup." -ForegroundColor Cyan
 Write-Host "After this, use 'yarn test:e2e' to run tests." -ForegroundColor Cyan

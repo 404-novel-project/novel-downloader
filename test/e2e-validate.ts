@@ -21,7 +21,7 @@ const DEV_SERVER_URL = "http://localhost:11944";
 const DEV_PROXY_URL = "http://webpack.localhost:11944/bundle.proxy.user.js";
 // Proxy script URL via localhost (Node.js cannot resolve webpack.localhost)
 const DEV_PROXY_URL_LOCALHOST = "http://localhost:11944/bundle.proxy.user.js";
-const SCREENSHOT_DIR = path.resolve(__dirname, "..", "..", "test", "screenshots");
+const SCREENSHOT_DIR = path.resolve(__dirname, "screenshots");
 
 // 测试用例：URL + 预期行为
 interface TestCase {
@@ -91,6 +91,15 @@ const TEST_CASES: TestCase[] = [
     timeout: 60000,
     expectScriptInjected: true,
     validateMetadata: validateAlphapolisMetadata,
+  },
+  {
+    // 独阅读 - 域名自 cddaoyue.cn 迁移至 nkwwlkj.cn
+    name: "duread-novel-page",
+    url: "https://www.nkwwlkj.cn/book/book_detail/100185027",
+    waitForSelector: "#nd-button",
+    timeout: 60000,
+    expectScriptInjected: true,
+    validateMetadata: validateDureadMetadata,
   },
 ];
 
@@ -341,6 +350,127 @@ async function validateAlphapolisMetadata(page: Page): Promise<{ passed: boolean
   return { passed, details };
 }
 
+/** 独阅读 (nkwwlkj.cn) 验证：复刻 Duread.bookParse 的选择器链 + 浏览器上下文章节 API 可达性 */
+async function validateDureadMetadata(page: Page): Promise<{ passed: boolean; details: string }> {
+  const issues: string[] = [];
+
+  const result = await page.evaluate(async () => {
+    const data: Record<string, unknown> = {};
+
+    // ── 与 Duread.bookParse 完全一致的选择器链 ──
+    data.bookname =
+      (document.querySelector(".book-title > span") as HTMLElement)?.innerText.trim() || null;
+    data.author =
+      (document.querySelector("div.username") as HTMLElement)?.innerText.trim() || null;
+    const introEl = document.querySelector(".book-brief") as HTMLElement | null;
+    data.introLen = introEl ? introEl.innerText.trim().length : 0;
+    const coverEl = document.querySelector(".book-img") as HTMLImageElement | null;
+    data.coverSrc = coverEl?.src || null;
+    data.coverDataOriginal = coverEl?.getAttribute("data-original") || null;
+    data.tags = Array.from(
+      document.querySelectorAll("div.row > span.tag, div.row > div.tag")
+    ).map((t) => (t as HTMLElement).innerText.trim());
+
+    // ── 章节提取：复刻 rule 的 section/articles 遍历 ──
+    const chapterTitleList = Array.from(
+      document.querySelectorAll("#chapter_list > div.chapter > div.chapter-title")
+    ).map((d) => (d as HTMLElement).innerText.trim());
+    const articlesList = document.querySelectorAll(
+      "#chapter_list > div.chapter > div.articles"
+    );
+    data.sections = chapterTitleList;
+    data.articlesBlocks = articlesList.length;
+
+    const chapters: { name: string; url: string; vip: boolean; paid: boolean }[] = [];
+    for (let i = 0; i < chapterTitleList.length; i++) {
+      const s = articlesList[i];
+      if (!s) continue;
+      for (const c of Array.from(s.querySelectorAll("span.chapter_item"))) {
+        const a = c.querySelector("a");
+        if (a) {
+          chapters.push({
+            name: (a as HTMLElement).innerText.trim(),
+            url: (a as HTMLAnchorElement).href,
+            vip: c.childElementCount === 2,
+            paid: c.querySelector("i")?.className === "unlock",
+          });
+        }
+      }
+    }
+    data.chapterCount = chapters.length;
+    data.freeCount = chapters.filter((c) => !c.vip).length;
+    data.first = chapters[0]?.name || null;
+    data.last = chapters[chapters.length - 1]?.name || null;
+
+    // ── 浏览器上下文章节 API（同源 fetch，等价于 chapterParse 的调用面） ──
+    const firstUrl = chapters[0]?.url;
+    if (firstUrl) {
+      const chapterId = firstUrl.split("/").slice(-1)[0];
+      try {
+        // 1) 先 GET 章节页：真实流程中 getChapterAuthorSay 会先访问章节页，
+        //    同时落下会话 cookie（缺它则正文接口返回 400001）
+        await fetch(firstUrl).catch(() => undefined);
+        // 2) session code（Referer=章节页）
+        const sessResp = await fetch("/chapter/ajax_get_session_code", {
+          method: "POST",
+          referrer: firstUrl,
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "X-Requested-With": "XMLHttpRequest",
+            Accept: "application/json, text/javascript, */*; q=0.01",
+          },
+          body: `chapter_id=${chapterId}`,
+        });
+        const sess = await sessResp.json();
+        data.sessionCode = sess.code;
+        if (sess.code === 100000 && sess.chapter_access_key) {
+          // 3) 正文（Referer=章节页）
+          const contentResp = await fetch("/chapter/get_book_chapter_detail_info", {
+            method: "POST",
+            referrer: firstUrl,
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+              "X-Requested-With": "XMLHttpRequest",
+              Accept: "application/json, text/javascript, */*; q=0.01",
+            },
+            body: `chapter_id=${chapterId}&chapter_access_key=${sess.chapter_access_key}`,
+          });
+          const content = await contentResp.json();
+          data.contentCode = content.code;
+          data.contentLength = (content.chapter_content || "").length;
+          data.encrytKeys = (content.encryt_keys || []).length;
+        }
+      } catch (e) {
+        data.fetchError = String(e);
+      }
+    }
+    return data;
+  });
+
+  // ── 判定 ──
+  if (!result.bookname) issues.push("书名为空");
+  if (!result.author) issues.push("作者为空");
+  if ((result.introLen as number) < 30) issues.push(`简介过短: ${result.introLen}`);
+  if ((result.tags as string[]).length === 0) issues.push("标签为空 (div.row > .tag 未命中)");
+  const sl = (result.sections as string[]).length;
+  const bl = result.articlesBlocks as number;
+  if (sl === 0 || bl !== sl) issues.push(`section/articles 不对齐: titles=${sl}, articles=${bl}`);
+  if ((result.chapterCount as number) < 100) issues.push(`章节数异常: ${result.chapterCount}`);
+  if (result.sessionCode !== 100000) {
+    issues.push(`chapter session API 异常: code=${result.sessionCode} err=${result.fetchError || "无"}`);
+  }
+  if ((result.contentLength as number) < 100) {
+    issues.push(`章节正文异常: contentLength=${result.contentLength}, code=${result.contentCode}`);
+  }
+
+  const passed = issues.length === 0;
+  const details = passed
+    ? `书名="${result.bookname}", 作者="${result.author}", 卷=${JSON.stringify(result.sections)}, 章节=${result.chapterCount}(免费${result.freeCount}), 首章="${result.first}", 末章="${result.last}", 标签=${JSON.stringify(result.tags)}, API=session:${result.sessionCode}/content:${result.contentCode}, 密文=${result.contentLength}字符, 密钥=${result.encrytKeys}条`
+    : issues.join("; ");
+
+  return { passed, details };
+}
+
 // ─── 工具函数 ─────────────────────────────────────────────
 function ensureDir(dir: string) {
   if (!fs.existsSync(dir)) {
@@ -365,6 +495,20 @@ async function runTests() {
   console.log("║  Tampermonkey E2E 自动化验证                     ║");
   console.log("╚══════════════════════════════════════════════════╝");
   console.log();
+
+  // 可选：按名称子串过滤用例，如 `npx tsx test/e2e-validate.ts duread`
+  const nameFilter = process.argv[2]?.toLowerCase();
+  const casesToRun = nameFilter
+    ? TEST_CASES.filter((tc) => tc.name.toLowerCase().includes(nameFilter))
+    : TEST_CASES;
+  if (nameFilter) {
+    if (casesToRun.length === 0) {
+      console.error(`❌ 没有匹配 "${process.argv[2]}" 的测试用例`);
+      process.exit(1);
+    }
+    console.log(`🎯 过滤: "${process.argv[2]}" → ${casesToRun.length} 个用例`);
+    console.log();
+  }
 
   // 1. 检查 Profile 目录
   if (!fs.existsSync(PROFILE_DIR)) {
@@ -394,7 +538,7 @@ async function runTests() {
   let context: BrowserContext | null = null;
   let chromeProcess: ReturnType<typeof spawn> | null = null;
 
-  const CDP_PORT = 9222;
+  const CDP_PORT = Number(process.env.E2E_CDP_PORT) || 9222;
 
   // 查找 Chrome
   const chromePaths = [
@@ -562,7 +706,7 @@ async function runTests() {
     console.log("✅ 预热完成");
     console.log();
 
-    for (const tc of TEST_CASES) {
+    for (const tc of casesToRun) {
       console.log(`▶ 运行测试: ${tc.name}`);
       console.log(`  URL: ${tc.url}`);
 
@@ -682,7 +826,7 @@ async function runTests() {
 
     // 6. 输出结果
     console.log("══════════════════════════════════════════════════");
-    console.log(`总计: ${TEST_CASES.length} | 通过: ${passed} | 失败: ${failed}`);
+    console.log(`总计: ${casesToRun.length} | 通过: ${passed} | 失败: ${failed}`);
     console.log("══════════════════════════════════════════════════");
 
     if (failed > 0) {
