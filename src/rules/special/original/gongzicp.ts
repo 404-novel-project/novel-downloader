@@ -1,5 +1,6 @@
 import * as CryptoJS from "crypto-js";
 import { getAttachment } from "../../../lib/attachments";
+import { gfetch } from "../../../lib/http";
 import { sleep } from "../../../lib/misc";
 import { introDomHandle } from "../../../lib/rule";
 import { log } from "../../../log";
@@ -9,6 +10,103 @@ import { Book, BookAdditionalMetadate } from "../../../main/Book";
 import { BaseRuleClass, ChapterParseObject } from "../../../rules";
 import { retryLimit } from "../../../setting";
 import { UnsafeWindow } from "../../../global";
+
+const CP_APP_CLIENT = "android";
+const CP_APP_VERSION = "2.8.7";
+const CP_APP_UA_POOL = [
+  "Mozilla/5.0 (Linux; Android 13; Pixel 7 Build/TQ3A.230805.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/114.0.5735.196 Mobile Safari/537.36",
+  "Mozilla/5.0 (Linux; Android 13; 2211133C Build/TKQ1.220829.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/113.0.5672.162 Mobile Safari/537.36",
+  "Mozilla/5.0 (Linux; Android 12; JAD-AL00 Build/HUAWEIJAD-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/110.0.5481.154 Mobile Safari/537.36",
+  "Mozilla/5.0 (Linux; Android 13; PGFM10 Build/TP1A.220905.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.5845.163 Mobile Safari/537.36",
+  "Mozilla/5.0 (Linux; Android 13; V2218A Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/115.0.5790.166 Mobile Safari/537.36",
+  "Mozilla/5.0 (Linux; Android 14; SM-S9110 Build/UP1A.231005.007; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/119.0.6045.194 Mobile Safari/537.36",
+  "Mozilla/5.0 (Linux; Android 14; PHB110 Build/UKQ1.230924.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/121.0.6167.178 Mobile Safari/537.36",
+  "Mozilla/5.0 (Linux; Android 13; 23013RK75C Build/TKQ1.221114.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/112.0.5615.136 Mobile Safari/537.36",
+];
+const CP_AUTH_BASIC = "Basic 6ZmI5aSn5a6dOmNwMTIzNDU2";
+const CP_SIGN_SECRET = "L59dV5u&";
+const CP_SIGN_SALT = "iO^40c";
+
+type CpApiMode = "app" | "pc";
+
+function cpRandStr(params: Record<string, unknown>, timestamp: number) {
+  let str =
+    "S" + "Ia7xu0" + "LRrbu$En3*I" + CP_SIGN_SECRET + CP_SIGN_SALT + "N49D";
+  for (const key of Object.keys(params).sort()) {
+    const value = params[key];
+    if (typeof value === "undefined") {
+      continue;
+    }
+    str +=
+      `&${key}=` +
+      (typeof value === "object" ? JSON.stringify(value) : `${value}`);
+  }
+  str += `&${timestamp}`;
+  return CryptoJS.MD5(str).toString();
+}
+
+function cpImei() {
+  let imei = localStorage.getItem("cp-imei");
+  if (!imei) {
+    const uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      (c) => {
+        const r = (Math.random() * 16) | 0;
+        return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+      }
+    );
+    imei = CryptoJS.MD5(uuid).toString();
+    localStorage.setItem("cp-imei", imei);
+  }
+  return imei;
+}
+
+function cpUserAgent() {
+  let ua = localStorage.getItem("cp-ua");
+  if (!ua) {
+    ua =
+      CP_APP_UA_POOL[Math.floor(Math.random() * CP_APP_UA_POOL.length)] +
+      " CP private APP/" +
+      CP_APP_VERSION;
+    localStorage.setItem("cp-ua", ua);
+  }
+  return ua;
+}
+
+function cpApiHeaders(
+  mode: CpApiMode,
+  method: "GET" | "POST",
+  params: Record<string, unknown>
+): Record<string, string> {
+  const token =
+    (unsafeWindow as UnsafeWindow).sessionStorage.getItem("token") ?? "";
+  if (mode === "app") {
+    const headers: Record<string, string> = {
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json;charset=utf-8",
+      Client: CP_APP_CLIENT,
+      version: CP_APP_VERSION,
+      imei: cpImei(),
+      Authorization: CP_AUTH_BASIC,
+      token,
+      "User-Agent": cpUserAgent(),
+      referer: "https://www.gongzicp.com",
+    };
+    if (method !== "GET") {
+      const timestamp = Math.round(Date.now() / 1000);
+      headers.Timestamp = `${timestamp}`;
+      headers["Rand-Str"] = cpRandStr(params, timestamp);
+    }
+    return headers;
+  }
+  return {
+    Accept: "application/json, text/plain, */*",
+    Client: "pc",
+    "Content-Type": "application/json",
+    Authorization: CP_AUTH_BASIC,
+    Token: token,
+  };
+}
 
 
 export class Gongzicp extends BaseRuleClass {
@@ -88,6 +186,7 @@ export class Gongzicp extends BaseRuleClass {
       is_sub: boolean; // false
       price: number; // 0
       is_free_limit: number; // 0
+      chapter_type: number;
     }
 
     interface CpUpdateDateObj {
@@ -179,6 +278,7 @@ export class Gongzicp extends BaseRuleClass {
       novel_uptime: string; // "6 小时前"
       novel_createtime: number; // 1612108890
       novel_is_collection: number; // 0
+      page_view_status: boolean;
       author_id: number; // 272
       novel_startcid: number; // 1896248
       latest_cid: number; // 1896248
@@ -380,10 +480,14 @@ export class Gongzicp extends BaseRuleClass {
         const isVIP = chapterObj.pay;
         const isPaid = chapterObj.is_sub || chapterObj.is_free_limit === 1;
         const isLock = chapterObj.lock || chapterObj.chapter_status !== 1;
+        const isAppVip =
+          data.page_view_status === false &&
+          (chapterObj.pay || chapterObj.chapter_type === 1);
         sectionChapterNumber++;
         const chapterOption = {
           novel_id: data.novel_id,
           chapter_id: chapterObj.id,
+          appVip: isAppVip,
         };
         const chapter = new Chapter({
           bookUrl,
@@ -546,55 +650,95 @@ export class Gongzicp extends BaseRuleClass {
       chapterGetInfoUrl.searchParams.set("cid", cid.toString());
       chapterGetInfoUrl.searchParams.set("server", "0");
 
+      const params = { cid: cid.toString(), server: 0 };
       let retryTime = 0;
 
-      async function getChapterInfo(url: string): Promise<ChapterInfo> {
+      async function getChapterInfo(
+        url: string,
+        mode: CpApiMode
+      ): Promise<ChapterInfo | undefined> {
         log.debug(
-          `请求地址: ${url}, Referrer: ${chapterUrl}，retryTime：${retryTime}`
+          `请求地址: ${url}（${
+            mode === "app" ? "手机版API" : "网页版API"
+          }）, Referrer: ${chapterUrl}，retryTime：${retryTime}`
         );
-        const token = (unsafeWindow as UnsafeWindow).sessionStorage.getItem("token");
-        const resultI: ChapterInfo = await fetch(url, {
-          credentials: "include",
-          headers: {
-            Accept: "application/json, text/plain, */*",
-            Client: "pc",
-            "Content-Type": "application/json",
-            "Authorization": "Basic 6ZmI5aSn5a6dOmNwMTIzNDU2",
-            "Token": `${token}`,
-          },
-          referrer: chapterUrl,
-          method: "GET",
-          //mode: "cors",
-        })
-          .then((resp) => resp.json())
-          .catch((error) => log.error(error));
-        const isPaid = resultI.data.chapterInfo.isSub !== 0 || resultI.data.chapterInfo.is_free_limit !== 0;
-        if (
-          isPaid &&
-          resultI.data.chapterInfo.content.length < 30
-        ) {
-          retryTime++;
-          if (retryTime > retryLimit) {
-            log.error(`请求 ${url} 失败`);
-            throw new Error(`请求 ${url} 失败`);
+        try {
+          if (mode === "app") {
+            const resp = await gfetch(url, {
+              method: "GET",
+              headers: cpApiHeaders(mode, "GET", params),
+            });
+            return JSON.parse(resp.responseText) as ChapterInfo;
           }
-
-          log.warn("[chapter]疑似被阻断，进行随机翻页……");
-          const walkerTime = Math.round(Math.random() * retryTime) + 1;
-          for (let i = 0; i < walkerTime; i++) {
-            await sleep(3000 + Math.round(Math.random() * 5000));
-            randomWalker();
-          }
-          await sleep(3000 + Math.round(Math.random() * 2000));
-          return getChapterInfo(url);
-        } else {
-          retryTime = 0;
-          return resultI;
+          return (await fetch(url, {
+            credentials: "include",
+            headers: cpApiHeaders(mode, "GET", params),
+            referrer: chapterUrl,
+            method: "GET",
+            //mode: "cors",
+          }).then((resp) => resp.json())) as ChapterInfo;
+        } catch (error) {
+          log.error(error);
+          return undefined;
         }
       }
 
-      const result = await getChapterInfo(chapterGetInfoUrl.toString());
-      if (result.code === 200) {
+      function isBlocked(resultI: ChapterInfo | undefined): boolean {
+        const chapterInfo = resultI?.data?.chapterInfo;
+        if (!chapterInfo) {
+          return false;
+        }
+        const isPaid =
+          chapterInfo.isSub !== 0 || chapterInfo.is_free_limit !== 0;
+        return isPaid && chapterInfo.content.length < 30;
+      }
+
+      let result: ChapterInfo | undefined;
+      if (options.appVip) {
+        log.info("[chapter]该章节为APP专享（仅APP浏览），使用手机版API请求");
+        result = await getChapterInfo(chapterGetInfoUrl.toString(), "app");
+        if ((result?.data?.chapterInfo?.content ?? "").length < 30) {
+          const pcResult = await getChapterInfo(
+            chapterGetInfoUrl.toString(),
+            "pc"
+          );
+          const pcContent = pcResult?.data?.chapterInfo?.content ?? "";
+          if (pcContent.length >= 30 || !isBlocked(pcResult)) {
+            result = pcResult;
+          }
+        }
+      } else {
+        result = await getChapterInfo(chapterGetInfoUrl.toString(), "pc");
+      }
+
+      while (isBlocked(result)) {
+        retryTime++;
+        if (retryTime > retryLimit) {
+          log.error(`请求 ${chapterGetInfoUrl.toString()} 失败`);
+          throw new Error(`请求 ${chapterGetInfoUrl.toString()} 失败`);
+        }
+
+        const appResult = await getChapterInfo(
+          chapterGetInfoUrl.toString(),
+          "app"
+        );
+        const appContent = appResult?.data?.chapterInfo?.content ?? "";
+        if (appContent.length >= 30) {
+          log.info("[chapter]网页版疑似被阻断，手机版API成功取到正文");
+          result = appResult;
+          break;
+        }
+
+        log.warn("[chapter]疑似被阻断，进行随机翻页……");
+        const walkerTime = Math.round(Math.random() * retryTime) + 1;
+        for (let i = 0; i < walkerTime; i++) {
+          await sleep(3000 + Math.round(Math.random() * 5000));
+          randomWalker();
+        }
+        await sleep(3000 + Math.round(Math.random() * 2000));
+        result = await getChapterInfo(chapterGetInfoUrl.toString(), "pc");
+      }
+      if (result && result.code === 200) {
         const chapterInfo = result.data.chapterInfo;
         // 从目录获取章节名
         // const chapterName = chapterInfo.name;
@@ -726,4 +870,5 @@ export class Gongzicp extends BaseRuleClass {
 interface ChapterOption {
   novel_id: number;
   chapter_id: number;
+  appVip?: boolean;
 }
