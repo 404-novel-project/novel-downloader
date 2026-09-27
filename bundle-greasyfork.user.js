@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1280
+// @version        5.2.1282
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -320,6 +320,8 @@
 // @match          *://www.mijiashe.com/*/
 // @match          *://www.cddaoyue.cn/book/*
 // @match          *://cddaoyue.cn/book/*
+// @match          *://www.nkwwlkj.cn/book/*
+// @match          *://nkwwlkj.cn/book/*
 // @match          *://www.ttkan.co/novel/chapters/*
 // @match          *://cn.ttkan.co/novel/chapters/*
 // @match          *://tw.ttkan.co/novel/chapters/*
@@ -456,6 +458,7 @@
 // @connect        qingoo.cn
 // @connect        sundung.com
 // @connect        cddaoyue.cn
+// @connect        nkwwlkj.cn
 // @connect        ttkan.co
 // @connect        bg3.co
 // @connect        wanbengo.com
@@ -4966,7 +4969,9 @@ async function getRule() {
       break;
     }
     case "cddaoyue.cn":
-    case "www.cddaoyue.cn": {
+    case "www.cddaoyue.cn":
+    case "nkwwlkj.cn":
+    case "www.nkwwlkj.cn": {
       const { Duread } = await Promise.resolve(/* import() */).then(() => (__webpack_require__("./src/rules/special/original/ciweimao.ts")));
       ruleClass = Duread;
       break;
@@ -20839,8 +20844,8 @@ class Shubl extends _rules__WEBPACK_IMPORTED_MODULE_11__/* .BaseRuleClass */ .Q 
       }).catch((error) => _log__WEBPACK_IMPORTED_MODULE_6___default().error(error));
     }
     additionalMetadate.tags = Array.from(
-      document.querySelectorAll("div.row > span.tag")
-    ).map((span) => span.innerText.trim());
+      document.querySelectorAll("div.row > span.tag, div.row > div.tag")
+    ).map((tag) => tag.innerText.trim());
     const chapters = [];
     const chapterTitleList = Array.from(
       document.querySelectorAll(
@@ -20951,8 +20956,8 @@ class Duread extends _rules__WEBPACK_IMPORTED_MODULE_11__/* .BaseRuleClass */ .Q
       }).catch((error) => _log__WEBPACK_IMPORTED_MODULE_6___default().error(error));
     }
     additionalMetadate.tags = Array.from(
-      document.querySelectorAll("div.row > span.tag")
-    ).map((span) => span.innerText.trim());
+      document.querySelectorAll("div.row > span.tag, div.row > div.tag")
+    ).map((tag) => tag.innerText.trim());
     const chapters = [];
     const chapterTitleList = Array.from(
       document.querySelectorAll(
@@ -21021,7 +21026,7 @@ class Duread extends _rules__WEBPACK_IMPORTED_MODULE_11__/* .BaseRuleClass */ .Q
     });
   }
   async chapterParse(chapterUrl, chapterName, isVIP, isPaid, charset, options) {
-    const rootPath = "https://www.cddaoyue.cn/";
+    const rootPath = document.location.origin + "/";
     const [parentWidth, setFontSize] = [939.2, "18"];
     return getChapter({
       chapterUrl,
@@ -21178,7 +21183,7 @@ function getChapter({
       return vipCHapterImageUrlI;
     }
     const getIsLogin = () => {
-      if (document.location.host === "www.cddaoyue.cn" || document.location.host === "cddaoyue.cn") {
+      if (document.location.host === "www.cddaoyue.cn" || document.location.host === "cddaoyue.cn" || document.location.host === "www.nkwwlkj.cn" || document.location.host === "nkwwlkj.cn") {
         return document.querySelector("div.dropdown-menu")?.childElementCount === 3;
       } else if (document.location.host === "www.shubl.com" || document.location.host === "shubl.com") {
         return document.querySelector("div.pull-right:nth-child(2)")?.childElementCount === 3;
@@ -22354,14 +22359,15 @@ async function fetchRemoteFont(fontName) {
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("crypto-js");
 /* harmony import */ var crypto_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(crypto_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _lib_attachments__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/attachments.ts");
-/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/misc.ts");
-/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/rule.ts");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
-/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./src/main/main.ts");
-/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/Chapter.ts");
-/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Book.ts");
-/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/rules.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _lib_misc__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./src/lib/misc.ts");
+/* harmony import */ var _lib_rule__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./src/lib/rule.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _main_main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./src/main/main.ts");
+/* harmony import */ var _main_Chapter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./src/main/Chapter.ts");
+/* harmony import */ var _main_Book__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./src/main/Book.ts");
+/* harmony import */ var _rules__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./src/rules.ts");
 
 
 
@@ -22373,7 +22379,87 @@ async function fetchRemoteFont(fontName) {
 
 
 
-class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .Q {
+
+const CP_APP_CLIENT = "android";
+const CP_APP_VERSION = "2.8.7";
+const CP_APP_UA_POOL = [
+  "Mozilla/5.0 (Linux; Android 13; Pixel 7 Build/TQ3A.230805.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/114.0.5735.196 Mobile Safari/537.36",
+  "Mozilla/5.0 (Linux; Android 13; 2211133C Build/TKQ1.220829.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/113.0.5672.162 Mobile Safari/537.36",
+  "Mozilla/5.0 (Linux; Android 12; JAD-AL00 Build/HUAWEIJAD-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/110.0.5481.154 Mobile Safari/537.36",
+  "Mozilla/5.0 (Linux; Android 13; PGFM10 Build/TP1A.220905.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.5845.163 Mobile Safari/537.36",
+  "Mozilla/5.0 (Linux; Android 13; V2218A Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/115.0.5790.166 Mobile Safari/537.36",
+  "Mozilla/5.0 (Linux; Android 14; SM-S9110 Build/UP1A.231005.007; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/119.0.6045.194 Mobile Safari/537.36",
+  "Mozilla/5.0 (Linux; Android 14; PHB110 Build/UKQ1.230924.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/121.0.6167.178 Mobile Safari/537.36",
+  "Mozilla/5.0 (Linux; Android 13; 23013RK75C Build/TKQ1.221114.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/112.0.5615.136 Mobile Safari/537.36"
+];
+const CP_AUTH_BASIC = "Basic 6ZmI5aSn5a6dOmNwMTIzNDU2";
+const CP_SIGN_SECRET = "L59dV5u&";
+const CP_SIGN_SALT = "iO^40c";
+function cpRandStr(params, timestamp) {
+  let str = "SIa7xu0LRrbu$En3*I" + CP_SIGN_SECRET + CP_SIGN_SALT + "N49D";
+  for (const key of Object.keys(params).sort()) {
+    const value = params[key];
+    if (typeof value === "undefined") {
+      continue;
+    }
+    str += `&${key}=` + (typeof value === "object" ? JSON.stringify(value) : `${value}`);
+  }
+  str += `&${timestamp}`;
+  return crypto_js__WEBPACK_IMPORTED_MODULE_0__.MD5(str).toString();
+}
+function cpImei() {
+  let imei = localStorage.getItem("cp-imei");
+  if (!imei) {
+    const uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      (c) => {
+        const r = Math.random() * 16 | 0;
+        return (c === "x" ? r : r & 3 | 8).toString(16);
+      }
+    );
+    imei = crypto_js__WEBPACK_IMPORTED_MODULE_0__.MD5(uuid).toString();
+    localStorage.setItem("cp-imei", imei);
+  }
+  return imei;
+}
+function cpUserAgent() {
+  let ua = localStorage.getItem("cp-ua");
+  if (!ua) {
+    ua = CP_APP_UA_POOL[Math.floor(Math.random() * CP_APP_UA_POOL.length)] + " CP private APP/" + CP_APP_VERSION;
+    localStorage.setItem("cp-ua", ua);
+  }
+  return ua;
+}
+function cpApiHeaders(mode, method, params) {
+  const token = unsafeWindow.sessionStorage.getItem("token") ?? "";
+  if (mode === "app") {
+    const headers = {
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json;charset=utf-8",
+      Client: CP_APP_CLIENT,
+      version: CP_APP_VERSION,
+      imei: cpImei(),
+      Authorization: CP_AUTH_BASIC,
+      token,
+      "User-Agent": cpUserAgent(),
+      referer: "https://www.gongzicp.com"
+    };
+    if (method !== "GET") {
+      const timestamp = Math.round(Date.now() / 1e3);
+      headers.Timestamp = `${timestamp}`;
+      headers["Rand-Str"] = cpRandStr(params, timestamp);
+    }
+    return headers;
+  }
+  return {
+    Accept: "application/json, text/plain, */*",
+    Client: "pc",
+    "Content-Type": "application/json",
+    Authorization: CP_AUTH_BASIC,
+    Token: token
+  };
+}
+class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_9__/* .BaseRuleClass */ .Q {
   constructor() {
     super();
     this.attachmentMode = "TM";
@@ -22401,7 +22487,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .
     const novelGetListBaseUrl = "https://www.gongzicp.com/webapi/novel/chapterGetList";
     const novelGetListUrl = new URL(novelGetListBaseUrl);
     novelGetListUrl.searchParams.set("nid", bookId);
-    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`\u8BF7\u6C42\u5730\u5740: ${novelGetInfoUrl.toString()}`);
+    _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`\u8BF7\u6C42\u5730\u5740: ${novelGetInfoUrl.toString()}`);
     const novelInfo = await fetch(novelGetInfoUrl.toString(), {
       credentials: "include",
       headers: {
@@ -22413,7 +22499,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .
       referrer: bookUrl,
       method: "GET",
       mode: "cors"
-    }).then((response) => response.json()).catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+    }).then((response) => response.json()).catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
     if (novelInfo.code !== 200) {
       throw new Error(`\u6570\u636E\u63A5\u53E3\u8BF7\u6C42\u5931\u8D25\uFF0CURL:${novelGetInfoUrl.toString()}`);
     }
@@ -22422,18 +22508,18 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .
     const author = data.author_nickname;
     const introDom = document.createElement("div");
     introDom.innerHTML = data.novel_info;
-    const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_3__/* .introDomHandle */ .HV)(introDom);
+    const [introduction, introductionHTML] = await (0,_lib_rule__WEBPACK_IMPORTED_MODULE_4__/* .introDomHandle */ .HV)(introDom);
     const additionalMetadate = {};
     const coverUrl = data.novel_cover;
     if (coverUrl) {
       (0,_lib_attachments__WEBPACK_IMPORTED_MODULE_1__/* .getAttachment */ ["if"])(coverUrl, this.attachmentMode, "cover-").then((coverClass) => {
         additionalMetadate.cover = coverClass;
-      }).catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+      }).catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
     }
     additionalMetadate.tags = data.tag_list;
     async function isLogin() {
       const getUserInfoUrl = "https://www.gongzicp.com/webapi/user/getUserInfo";
-      _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`\u6B63\u5728\u8BF7\u6C42: ${getUserInfoUrl}`);
+      _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`\u6B63\u5728\u8BF7\u6C42: ${getUserInfoUrl}`);
       const userInfo = await fetch(getUserInfoUrl, {
         headers: {
           accept: "application/json, text/javascript, */*; q=0.01",
@@ -22442,11 +22528,11 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .
         method: "GET",
         mode: "cors",
         credentials: "include"
-      }).then((response) => response.json()).catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+      }).then((response) => response.json()).catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
       return userInfo.code === 200;
     }
     const logined = await isLogin();
-    _log__WEBPACK_IMPORTED_MODULE_4___default().debug(`\u8BF7\u6C42\u5730\u5740: ${novelGetListUrl.toString()}`);
+    _log__WEBPACK_IMPORTED_MODULE_5___default().debug(`\u8BF7\u6C42\u5730\u5740: ${novelGetListUrl.toString()}`);
     const chapterList = await fetch(novelGetListUrl.toString(), {
       credentials: "include",
       headers: {
@@ -22458,7 +22544,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .
       referrer: bookUrl,
       method: "GET",
       mode: "cors"
-    }).then((response) => response.json()).catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
+    }).then((response) => response.json()).catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
     if (novelInfo.code !== 200) {
       throw new Error(`\u6570\u636E\u63A5\u53E3\u8BF7\u6C42\u5931\u8D25\uFF0CURL:${novelGetListUrl.toString()}`);
     }
@@ -22483,12 +22569,14 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .
         const isVIP = chapterObj.pay;
         const isPaid = chapterObj.is_sub || chapterObj.is_free_limit === 1;
         const isLock = chapterObj.lock || chapterObj.chapter_status !== 1;
+        const isAppVip = data.page_view_status === false && (chapterObj.pay || chapterObj.chapter_type === 1);
         sectionChapterNumber++;
         const chapterOption = {
           novel_id: data.novel_id,
-          chapter_id: chapterObj.id
+          chapter_id: chapterObj.id,
+          appVip: isAppVip
         };
-        const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_6__/* .Chapter */ .I({
+        const chapter = new _main_Chapter__WEBPACK_IMPORTED_MODULE_7__/* .Chapter */ .I({
           bookUrl,
           bookname,
           chapterUrl,
@@ -22504,12 +22592,12 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .
           options: chapterOption
         });
         if (isVIP && !(logined && chapter.isPaid) || isLock) {
-          chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_5__/* .Status */ .nW.aborted;
+          chapter.status = _main_main__WEBPACK_IMPORTED_MODULE_6__/* .Status */ .nW.aborted;
         }
         chapters.push(chapter);
       }
     }
-    return new _main_Book__WEBPACK_IMPORTED_MODULE_7__/* .Book */ .E({
+    return new _main_Book__WEBPACK_IMPORTED_MODULE_8__/* .Book */ .E({
       bookUrl,
       bookname,
       author,
@@ -22555,7 +22643,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .
       return content;
     }
     function randomWalker() {
-      _log__WEBPACK_IMPORTED_MODULE_4___default().info("[chapter]\u968F\u673A\u7FFB\u9875\u4E2D\u2026\u2026");
+      _log__WEBPACK_IMPORTED_MODULE_5___default().info("[chapter]\u968F\u673A\u7FFB\u9875\u4E2D\u2026\u2026");
       if (document.location.pathname.includes("novel")) {
         document.querySelector(
           ".chapter-list .chapter a"
@@ -22580,7 +22668,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .
         } else if (btn2 && btn2.textContent?.includes("\u4E00\u7AE0")) {
           btn2.click();
         } else {
-          _log__WEBPACK_IMPORTED_MODULE_4___default().info("[chapter]\u968F\u673A\u7FFB\u9875\u5931\u8D25\uFF0C\u53EF\u80FD\u662F\u9875\u9762\u7ED3\u6784\u53D8\u5316\u6216\u8005\u53EA\u6709\u4E00\u7AE0");
+          _log__WEBPACK_IMPORTED_MODULE_5___default().info("[chapter]\u968F\u673A\u7FFB\u9875\u5931\u8D25\uFF0C\u53EF\u80FD\u662F\u9875\u9762\u7ED3\u6784\u53D8\u5316\u6216\u8005\u53EA\u6709\u4E00\u7AE0");
         }
       }
     }
@@ -22590,47 +22678,83 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .
       const chapterGetInfoUrl = new URL(chapterGetInfoBaseUrl);
       chapterGetInfoUrl.searchParams.set("cid", cid.toString());
       chapterGetInfoUrl.searchParams.set("server", "0");
+      const params = { cid: cid.toString(), server: 0 };
       let retryTime = 0;
-      async function getChapterInfo(url) {
-        _log__WEBPACK_IMPORTED_MODULE_4___default().debug(
-          `\u8BF7\u6C42\u5730\u5740: ${url}, Referrer: ${chapterUrl}\uFF0CretryTime\uFF1A${retryTime}`
+      async function getChapterInfo(url, mode) {
+        _log__WEBPACK_IMPORTED_MODULE_5___default().debug(
+          `\u8BF7\u6C42\u5730\u5740: ${url}\uFF08${mode === "app" ? "\u624B\u673A\u7248API" : "\u7F51\u9875\u7248API"}\uFF09, Referrer: ${chapterUrl}\uFF0CretryTime\uFF1A${retryTime}`
         );
-        const token = unsafeWindow.sessionStorage.getItem("token");
-        const resultI = await fetch(url, {
-          credentials: "include",
-          headers: {
-            Accept: "application/json, text/plain, */*",
-            Client: "pc",
-            "Content-Type": "application/json",
-            "Authorization": "Basic 6ZmI5aSn5a6dOmNwMTIzNDU2",
-            "Token": `${token}`
-          },
-          referrer: chapterUrl,
-          method: "GET"
-          //mode: "cors",
-        }).then((resp) => resp.json()).catch((error) => _log__WEBPACK_IMPORTED_MODULE_4___default().error(error));
-        const isPaid2 = resultI.data.chapterInfo.isSub !== 0 || resultI.data.chapterInfo.is_free_limit !== 0;
-        if (isPaid2 && resultI.data.chapterInfo.content.length < 30) {
-          retryTime++;
-          if (retryTime > (/* inlined export .retryLimit */5)) {
-            _log__WEBPACK_IMPORTED_MODULE_4___default().error(`\u8BF7\u6C42 ${url} \u5931\u8D25`);
-            throw new Error(`\u8BF7\u6C42 ${url} \u5931\u8D25`);
+        try {
+          if (mode === "app") {
+            const resp = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__/* .gfetch */ ._V)(url, {
+              method: "GET",
+              headers: cpApiHeaders(mode, "GET", params)
+            });
+            return JSON.parse(resp.responseText);
           }
-          _log__WEBPACK_IMPORTED_MODULE_4___default().warn("[chapter]\u7591\u4F3C\u88AB\u963B\u65AD\uFF0C\u8FDB\u884C\u968F\u673A\u7FFB\u9875\u2026\u2026");
-          const walkerTime = Math.round(Math.random() * retryTime) + 1;
-          for (let i = 0; i < walkerTime; i++) {
-            await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ .yy)(3e3 + Math.round(Math.random() * 5e3));
-            randomWalker();
-          }
-          await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ .yy)(3e3 + Math.round(Math.random() * 2e3));
-          return getChapterInfo(url);
-        } else {
-          retryTime = 0;
-          return resultI;
+          return await fetch(url, {
+            credentials: "include",
+            headers: cpApiHeaders(mode, "GET", params),
+            referrer: chapterUrl,
+            method: "GET"
+            //mode: "cors",
+          }).then((resp) => resp.json());
+        } catch (error) {
+          _log__WEBPACK_IMPORTED_MODULE_5___default().error(error);
+          return void 0;
         }
       }
-      const result = await getChapterInfo(chapterGetInfoUrl.toString());
-      if (result.code === 200) {
+      function isBlocked(resultI) {
+        const chapterInfo = resultI?.data?.chapterInfo;
+        if (!chapterInfo) {
+          return false;
+        }
+        const isPaid2 = chapterInfo.isSub !== 0 || chapterInfo.is_free_limit !== 0;
+        return isPaid2 && chapterInfo.content.length < 30;
+      }
+      let result;
+      if (options.appVip) {
+        _log__WEBPACK_IMPORTED_MODULE_5___default().info("[chapter]\u8BE5\u7AE0\u8282\u4E3AAPP\u4E13\u4EAB\uFF08\u4EC5APP\u6D4F\u89C8\uFF09\uFF0C\u4F7F\u7528\u624B\u673A\u7248API\u8BF7\u6C42");
+        result = await getChapterInfo(chapterGetInfoUrl.toString(), "app");
+        if ((result?.data?.chapterInfo?.content ?? "").length < 30) {
+          const pcResult = await getChapterInfo(
+            chapterGetInfoUrl.toString(),
+            "pc"
+          );
+          const pcContent = pcResult?.data?.chapterInfo?.content ?? "";
+          if (pcContent.length >= 30 || !isBlocked(pcResult)) {
+            result = pcResult;
+          }
+        }
+      } else {
+        result = await getChapterInfo(chapterGetInfoUrl.toString(), "pc");
+      }
+      while (isBlocked(result)) {
+        retryTime++;
+        if (retryTime > (/* inlined export .retryLimit */5)) {
+          _log__WEBPACK_IMPORTED_MODULE_5___default().error(`\u8BF7\u6C42 ${chapterGetInfoUrl.toString()} \u5931\u8D25`);
+          throw new Error(`\u8BF7\u6C42 ${chapterGetInfoUrl.toString()} \u5931\u8D25`);
+        }
+        const appResult = await getChapterInfo(
+          chapterGetInfoUrl.toString(),
+          "app"
+        );
+        const appContent = appResult?.data?.chapterInfo?.content ?? "";
+        if (appContent.length >= 30) {
+          _log__WEBPACK_IMPORTED_MODULE_5___default().info("[chapter]\u7F51\u9875\u7248\u7591\u4F3C\u88AB\u963B\u65AD\uFF0C\u624B\u673A\u7248API\u6210\u529F\u53D6\u5230\u6B63\u6587");
+          result = appResult;
+          break;
+        }
+        _log__WEBPACK_IMPORTED_MODULE_5___default().warn("[chapter]\u7591\u4F3C\u88AB\u963B\u65AD\uFF0C\u8FDB\u884C\u968F\u673A\u7FFB\u9875\u2026\u2026");
+        const walkerTime = Math.round(Math.random() * retryTime) + 1;
+        for (let i = 0; i < walkerTime; i++) {
+          await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_3__/* .sleep */ .yy)(3e3 + Math.round(Math.random() * 5e3));
+          randomWalker();
+        }
+        await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_3__/* .sleep */ .yy)(3e3 + Math.round(Math.random() * 2e3));
+        result = await getChapterInfo(chapterGetInfoUrl.toString(), "pc");
+      }
+      if (result && result.code === 200) {
         const chapterInfo = result.data.chapterInfo;
         if (
           // chapterInfo.isSub !== 1 &&
@@ -22709,7 +22833,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_8__/* .BaseRuleClass */ .
       if (Math.random() < 0.2) {
         randomWalker();
       }
-      await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_2__/* .sleep */ .yy)(3e3 + Math.round(Math.random() * 4e3));
+      await (0,_lib_misc__WEBPACK_IMPORTED_MODULE_3__/* .sleep */ .yy)(3e3 + Math.round(Math.random() * 4e3));
     }
     async function publicChapter() {
       await antiAntiCrawler();
