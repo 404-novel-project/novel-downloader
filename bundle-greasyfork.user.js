@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1282
+// @version        5.2.1283
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -22470,17 +22470,29 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_9__/* .BaseRuleClass */ .
   }
   async bookParse() {
     const bookUrl = document.location.href;
-    let bookIdSpan = document.querySelector("span.c-light-gray");
+    function getBookId() {
+      const bookIdSpan = document.querySelector(
+        "span.c-light-gray"
+      );
+      const text = bookIdSpan?.innerText.trim() ?? "";
+      const match = text.match(/CP\s*(\d+)/i) ?? text.match(/^\d+$/);
+      return match?.[1] ?? "";
+    }
+    let bookId = getBookId();
     let retry = 0;
-    while (!bookIdSpan && retry < 50) {
+    while (!bookId && retry < 50) {
       await new Promise((r) => setTimeout(r, 500));
-      bookIdSpan = document.querySelector("span.c-light-gray");
+      bookId = getBookId();
       retry++;
     }
-    if (!bookIdSpan) {
-      throw new Error("\u83B7\u53D6bookID\u51FA\u9519: \u627E\u4E0D\u5230\u5BF9\u5E94\u5143\u7D20(span.c-light-gray)");
+    if (!bookId) {
+      bookId = document.location.pathname.match(/novel-(\d+)\.html/)?.[1] ?? "";
     }
-    const bookId = bookIdSpan.innerText.replace("CP", "");
+    if (!bookId) {
+      throw new Error(
+        "\u83B7\u53D6bookID\u51FA\u9519: span.c-light-gray \u4E2D\u65E0CP\u53F7\uFF0C\u9875\u9762\u5730\u5740\u4E2D\u4E5F\u65E0ID"
+      );
+    }
     const novelGetInfoBaseUrl = "https://www.gongzicp.com/webapi/novel/novelInfo";
     const novelGetInfoUrl = new URL(novelGetInfoBaseUrl);
     novelGetInfoUrl.searchParams.set("id", bookId);
@@ -22500,7 +22512,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_9__/* .BaseRuleClass */ .
       method: "GET",
       mode: "cors"
     }).then((response) => response.json()).catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
-    if (novelInfo.code !== 200) {
+    if (!novelInfo || novelInfo.code !== 200) {
       throw new Error(`\u6570\u636E\u63A5\u53E3\u8BF7\u6C42\u5931\u8D25\uFF0CURL:${novelGetInfoUrl.toString()}`);
     }
     const data = novelInfo.data;
@@ -22545,7 +22557,7 @@ class Gongzicp extends _rules__WEBPACK_IMPORTED_MODULE_9__/* .BaseRuleClass */ .
       method: "GET",
       mode: "cors"
     }).then((response) => response.json()).catch((error) => _log__WEBPACK_IMPORTED_MODULE_5___default().error(error));
-    if (novelInfo.code !== 200) {
+    if (!chapterList || chapterList.code !== 200) {
       throw new Error(`\u6570\u636E\u63A5\u53E3\u8BF7\u6C42\u5931\u8D25\uFF0CURL:${novelGetListUrl.toString()}`);
     }
     const chapters = [];
