@@ -181,7 +181,7 @@ All checks must show ✅. If any check fails, fix the issue and re-run.
 
 Symptom when #2 is missing: TM dashboard shows 请启用『允许用户脚本』扩展设置, the script appears installed, but `#nd-button` never attaches (waitForSelector times out) on any site — including sites that previously passed.
 
-Once set up, the proxy script auto-updates from the dev server — no reinstall needed after code changes.
+Once set up, no manual reinstall is needed after code changes: the E2E warmup (`refreshTampermonkeyBundle` in `test/e2e-validate.ts`) keeps the installed script fresh. The dev proxy declares no `@updateURL`, so Tampermonkey would otherwise cache the `@require`d `bundle.user.js` forever — the warmup overwrites that cache entry with the current dev-server bundle and calls `chrome.runtime.reload()`. Check its log line: `已更新 TM 缓存` = fresh code is now in use; `✅ TM 脚本缓存已是最新` = nothing to do.
 
 ## Checklist Summary
 
@@ -209,6 +209,7 @@ Once set up, the proxy script auto-updates from the dev server — no reinstall 
 7. **Cover image vs ads**: Verify cover selector doesn't match banner/ad images. Use `div.view-img img` or `div.col-sm-4 img` for precision.
 8. **tsx + `page.evaluate`**: named function declarations inside evaluate callbacks break under tsx — esbuild's keepNames injects a `__name(...)` helper that doesn't exist in the browser (`ReferenceError: __name is not defined`). Use inline arrow functions inside evaluate, or run the script as plain Node (`.mjs`).
 9. **API-based chapter validation**: replicate the rule's request semantics. Some chapter APIs require session cookies (prime them by fetching the chapter page in page context first) and the chapter-page Referer (`fetch(url, { referrer: chapterUrl })`). Missing either can return generic errors (e.g. `code:400001 此章节可能已删除`) even when the endpoint itself is fine.
+10. **Stale TM @require cache**: if a code change seems to have no effect — or an old bug randomly reappears/disappears between runs — suspect the E2E profile running a cached old bundle. The warmup now refreshes it automatically. Diagnostic pattern: throttle the network (CDP `Network.emulateNetworkConditions`) before a page load — old code fails deterministically where new code does not; watch the requests for impossible URLs (e.g. `novelInfo?id=` with an empty param) to tell which revision is actually running.
 
 ## File Reference
 

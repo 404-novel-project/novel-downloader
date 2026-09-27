@@ -101,6 +101,17 @@ const TEST_CASES: TestCase[] = [
     expectScriptInjected: true,
     validateMetadata: validateDureadMetadata,
   },
+  {
+    // gongzicp (长佩文学) - Vue SPA，书籍ID 由 span.c-light-gray 异步渲染。
+    // 回归：ID 先渲染占位文本 "CP"、数字稍后补齐，只等元素出现会取到空 ID，
+    // 导致 novelInfo?id= 请求失败、目录（章节列表）无法加载。
+    name: "gongzicp-novel-page",
+    url: "https://www.gongzicp.com/novel-273600.html",
+    waitForSelector: "#nd-button",
+    timeout: 60000,
+    expectScriptInjected: true,
+    validateMetadata: validateGongzicpMetadata,
+  },
 ];
 
 // ─── 元数据验证函数 ───────────────────────────────────────
@@ -471,6 +482,138 @@ async function validateDureadMetadata(page: Page): Promise<{ passed: boolean; de
   return { passed, details };
 }
 
+/** gongzicp (长佩) 验证：驱动真实脚本 UI 实测「目录能否加载」，并复刻 bookParse 的 ID 提取链核对接口 */
+async function validateGongzicpMetadata(
+  page: Page
+): Promise<{ passed: boolean; details: string }> {
+  const issues: string[] = [];
+
+  // 脚本注入后 ChapterList 组件挂载即自动触发 bookParse()（设置面板虽未打开，
+  // 组件已渲染）。打开「设置 → 自定义筛选条件」让目录可见，同时兜底触发加载。
+  await page.evaluate(() => {
+    const sr = document.querySelector("#nd-shadow-host")?.shadowRoot;
+    const btn = sr?.querySelector('button[title="设置"]');
+    if (btn) (btn as HTMLElement).click();
+  });
+  await page.waitForTimeout(1500);
+  // 用真实鼠标点击切到「自定义筛选条件」tab（合成 click 不会触发 mdui-tabs 的切换）
+  await page
+    .locator('mdui-tab[value="tab-2"]')
+    .first()
+    .click({ timeout: 5000 })
+    .catch(() => {
+      // 点击失败也继续：章节列表数据在 shadow DOM 中仍可读取
+    });
+  await page.waitForTimeout(1000);
+
+  // 等待章节列表出结果：要么渲染出章节，要么出现「加载章节失败！」
+  await page
+    .waitForFunction(
+      () => {
+        const sr = document.querySelector("#nd-shadow-host")?.shadowRoot;
+        if (!sr) return false;
+        if (sr.querySelectorAll(".chapter-list .chapter").length > 0) {
+          return true;
+        }
+        return !!sr.querySelector(".chapter-list-loading h2");
+      },
+      { timeout: 90000 }
+    )
+    .catch(() => {
+      // 超时则下面的校验给出结论
+    });
+
+  const result = (await page.evaluate(async () => {
+    const data: Record<string, unknown> = {};
+    const sr = document.querySelector("#nd-shadow-host")?.shadowRoot;
+    data.shadowFound = !!sr;
+
+    // ── UI 层：设置 → 自定义筛选条件 tab 中的目录 ──
+    if (sr) {
+      const chapterLinks = sr.querySelectorAll(".chapter-list .chapter a");
+      data.uiChapterCount = chapterLinks.length;
+      data.firstUiChapter = (chapterLinks[0]?.textContent ?? "").trim();
+      const failH2 = sr.querySelector(".chapter-list-loading h2");
+      data.uiError = failH2 ? (failH2.textContent ?? "").trim() : null;
+      data.uiSections = Array.from(
+        sr.querySelectorAll(".chapter-list .section .section-label")
+      ).map((el) => (el.textContent ?? "").trim());
+    }
+
+    // ── 复刻 Gongzicp.bookParse 的 ID 提取链（与规则同一逻辑） ──
+    const idText =
+      document.querySelector("span.c-light-gray")?.textContent?.trim() ?? "";
+    data.idSpanText = idText;
+    const idMatch = idText.match(/CP\s*(\d+)/i) ?? idText.match(/^\d+$/);
+    const bookId: string | null = idMatch?.[1] ?? null;
+    data.bookId = bookId;
+
+    if (bookId) {
+      const headers = {
+        Accept: "application/json, text/plain, */*",
+        Client: "pc",
+        Lang: "cn",
+        "Content-Type": "application/json;charset=utf-8",
+      };
+      try {
+        // 与 bookParse 相同的请求面
+        const info = await (
+          await fetch(
+            `https://www.gongzicp.com/webapi/novel/novelInfo?id=${bookId}`,
+            { credentials: "include", headers, method: "GET" }
+          )
+        ).json();
+        data.infoCode = info?.code ?? null;
+        data.novelName = info?.data?.novel_name ?? null;
+        data.author = info?.data?.author_nickname ?? null;
+        data.introLen = (info?.data?.novel_info ?? "").length;
+        data.tagCount = info?.data?.tag_list?.length ?? 0;
+
+        const list = await (
+          await fetch(
+            `https://www.gongzicp.com/webapi/novel/chapterGetList?nid=${bookId}`,
+            { credentials: "include", headers, method: "GET" }
+          )
+        ).json();
+        data.listCode = list?.code ?? null;
+        data.apiChapterCount = list?.data?.list?.length ?? 0;
+      } catch (e) {
+        data.fetchError = String(e);
+      }
+    }
+    return data;
+  })) as Record<string, string | number | string[] | null>;
+
+  // ── 判定 ──
+  if (!result.shadowFound) issues.push("未找到 #nd-shadow-host（脚本 UI 未注入）");
+  if (result.uiError) issues.push(`目录加载失败: ${result.uiError}`);
+  if ((result.uiChapterCount as number) < 50) {
+    issues.push(`UI 章节列表异常: ${result.uiChapterCount} 章 (< 50)`);
+  }
+  if (!result.bookId) issues.push(`bookID 提取失败: span="${result.idSpanText}"`);
+  if (result.infoCode !== 200) {
+    issues.push(
+      `novelInfo 接口异常: code=${result.infoCode} err=${result.fetchError ?? "无"}`
+    );
+  }
+  if (!result.novelName) issues.push("书名为空");
+  if (!result.author) issues.push("作者为空");
+  if ((result.introLen as number) < 10) issues.push(`简介过短: ${result.introLen}`);
+  if (result.listCode !== 200) {
+    issues.push(`chapterGetList 接口异常: code=${result.listCode}`);
+  }
+  if ((result.apiChapterCount as number) < 50) {
+    issues.push(`接口章节数异常: ${result.apiChapterCount} (< 50)`);
+  }
+
+  const passed = issues.length === 0;
+  const details = passed
+    ? `bookID=${result.bookId}, 书名="${result.novelName}", 作者="${result.author}", 标签=${result.tagCount}, UI目录=${result.uiChapterCount}章, 接口=${result.apiChapterCount}条/卷=${JSON.stringify(result.uiSections)}, 首章="${result.firstUiChapter}"`
+    : issues.join("; ");
+
+  return { passed, details };
+}
+
 // ─── 工具函数 ─────────────────────────────────────────────
 function ensureDir(dir: string) {
   if (!fs.existsSync(dir)) {
@@ -486,6 +629,122 @@ async function checkDevServer(): Promise<boolean> {
     return resp.ok;
   } catch {
     return false;
+  }
+}
+
+/**
+ * 预热：刷新 E2E profile 中 Tampermonkey 的 @require 缓存。
+ *
+ * 背景：dev proxy 脚本没有 @updateURL，TM 不会自动更新 @require 的
+ * bundle.user.js；导航到 .user.js URL 也不会触发安装拦截。若不刷新，
+ * E2E 会静默地一直运行旧代码（表现为代码修改时而生效、时而无效）。
+ * 做法：在 TM options page 的存储里按资源 URL 找到 bundle 缓存条目，
+ * 用 dev server 的最新内容覆盖，再 chrome.runtime.reload() 让 TM 重读。
+ */
+async function refreshTampermonkeyBundle(
+  context: BrowserContext
+): Promise<boolean> {
+  const tmExtId = "dhdgffkkebhmkfjojejmpbldmpobfkfo";
+  const bundleUrl = "http://webpack.localhost:11944/bundle.user.js";
+
+  let freshProxy: string;
+  let freshBundleB64: string;
+  try {
+    const [proxyResp, bundleResp] = await Promise.all([
+      fetch(DEV_PROXY_URL_LOCALHOST),
+      fetch("http://localhost:11944/bundle.user.js"),
+    ]);
+    if (!proxyResp.ok || !bundleResp.ok) return false;
+    freshProxy = await proxyResp.text();
+    freshBundleB64 = Buffer.from(
+      await bundleResp.arrayBuffer()
+    ).toString("base64");
+  } catch {
+    return false;
+  }
+
+  const page = await context.newPage();
+  try {
+    await page.goto(`chrome-extension://${tmExtId}/options.html`, {
+      waitUntil: "domcontentloaded",
+      timeout: 15000,
+    });
+    await page.waitForTimeout(2500);
+
+    const result = (await page.evaluate(
+      async (payload: {
+        bundleUrl: string;
+        freshProxy: string;
+        freshBundleB64: string;
+      }) => {
+        const ch = (window as any).chrome;
+        const all = await ch.storage.local.get(null);
+
+        // 通过 @source 中包含 dev server 的 bundle URL 定位代理脚本
+        let uuid: string | null = null;
+        for (const k of Object.keys(all)) {
+          if (!k.startsWith("!extdb.@source#")) continue;
+          const src = typeof all[k]?.value === "string" ? all[k].value : "";
+          if (src.includes("bundle.user.js")) {
+            uuid = k.split("#")[1];
+            break;
+          }
+        }
+        if (!uuid) {
+          return { found: false, sourceChanged: false, bundleChanged: false };
+        }
+
+        let sourceChanged = false;
+        let bundleChanged = false;
+
+        const sourceKey = `!extdb.@source#${uuid}`;
+        if (all[sourceKey] && all[sourceKey].value !== payload.freshProxy) {
+          all[sourceKey].value = payload.freshProxy;
+          await ch.storage.local.set({ [sourceKey]: all[sourceKey] });
+          sourceChanged = true;
+        }
+
+        for (const k of Object.keys(all)) {
+          if (!k.startsWith(`!extdb.@ext#${uuid}:`)) continue;
+          const entry = all[k];
+          if (entry?.value?.url !== payload.bundleUrl) continue;
+          if (entry.value.resource?.base !== payload.freshBundleB64) {
+            entry.value.resource.base = payload.freshBundleB64;
+            entry.value.ts = Date.now();
+            await ch.storage.local.set({ [k]: entry });
+            bundleChanged = true;
+          }
+        }
+        return { found: true, sourceChanged, bundleChanged };
+      },
+      { bundleUrl, freshProxy, freshBundleB64 }
+    )) as { found: boolean; sourceChanged: boolean; bundleChanged: boolean };
+
+    if (!result.found) {
+      console.log(
+        "  ⚠️ TM 中未找到开发版代理脚本：需先在 E2E profile 手动安装一次（见 .claude/skills/site-rule-dev）"
+      );
+      return false;
+    }
+
+    if (result.bundleChanged || result.sourceChanged) {
+      console.log(
+        `  🔄 已更新 TM 缓存 (bundle:${result.bundleChanged} source:${result.sourceChanged})，重载扩展…`
+      );
+      // 扩展重载会终止当前页上下文，调用本身报错属正常
+      await page
+        .evaluate(() => (window as any).chrome.runtime.reload())
+        .catch(() => {});
+      await new Promise((r) => setTimeout(r, 5000));
+    } else {
+      console.log("  ✅ TM 脚本缓存已是最新");
+    }
+    return true;
+  } catch (e) {
+    console.log(`  (TM 缓存刷新失败: ${String(e).slice(0, 120)})`);
+    return false;
+  } finally {
+    await page.close().catch(() => {});
   }
 }
 
@@ -599,110 +858,9 @@ async function runTests() {
     let passed = 0;
     let failed = 0;
 
-    // 预热：自动更新 Tampermonkey proxy 脚本
-    console.log("🔄 预热：自动更新 Tampermonkey 脚本...");
-    const warmupPage = await context.newPage();
-    try {
-      const tmExtId = "dhdgffkkebhmkfjojejmpbldmpobfkfo";
-
-      // 方法1：通过 Tampermonkey options page 的内部 API 安装/更新脚本
-      // 这是最可靠的方法，直接通过 Tampermonkey 的 runtime 消息 API 传递完整脚本内容
-      try {
-        const tmOptionsUrl = `chrome-extension://${tmExtId}/options.html`;
-        await warmupPage.goto(tmOptionsUrl, { waitUntil: "load", timeout: 8000 });
-
-        // 从 dev server 获取最新的 proxy 脚本内容
-        const scriptInstalled = await warmupPage.evaluate(async (extId: string) => {
-          try {
-            // 获取 proxy 脚本内容
-            const resp = await fetch("http://localhost:11944/bundle.proxy.user.js");
-            const scriptContent = await resp.text();
-
-            // 通过 Tampermonkey 的内部 API 安装脚本
-            // Tampermonkey 的 options page 可以访问 chrome.runtime.sendMessage
-            const chrome_ = (window as any).chrome;
-            return new Promise<boolean>((resolve) => {
-              chrome_?.runtime?.sendMessage(extId, {
-                method: "apiInstall",
-                data: { source: scriptContent },
-              }, (response: any) => {
-                if (chrome_.runtime.lastError) {
-                  resolve(false);
-                } else if (response?.data?.success) {
-                  resolve(true);
-                } else {
-                  resolve(!!response || false);
-                }
-              });
-              // 超时回退
-              setTimeout(() => resolve(false), 5000);
-            });
-          } catch (_e) {
-            return false;
-          }
-        }, tmExtId);
-
-        if (scriptInstalled) {
-          console.log("  ✅ 通过 Tampermonkey API 安装脚本成功");
-        } else {
-          console.log("  (Tampermonkey API 安装未成功，尝试备用方法...)");
-        }
-      } catch (e) {
-        console.log(`  (Tampermonkey API 不可用: ${(e as Error).message?.substring(0, 80)})`);
-      }
-
-      // 方法2：导航到 proxy 脚本 URL 触发安装/更新
-      // Tampermonkey 检测到 .user.js URL 会自动弹出安装对话框
-      try {
-        const proxyPage = await context.newPage();
-        await proxyPage.goto("http://webpack.localhost:11944/bundle.proxy.user.js", {
-          waitUntil: "domcontentloaded",
-          timeout: 15000,
-        });
-        await proxyPage.waitForTimeout(2000);
-
-        // Tampermonkey 可能已接管页面显示安装对话框
-        // 使用更健壮的按钮查找逻辑：遍历所有可点击元素，匹配按钮文本
-        const clicked = await proxyPage.evaluate(() => {
-          const findAndClick = (): string | null => {
-            // 查找所有按钮和链接
-            const clickables = Array.from(document.querySelectorAll("input[type='submit'], input[type='button'], button, a.btn"));
-            for (const el of clickables) {
-              const text = (el as HTMLElement).textContent?.trim() || (el as HTMLInputElement).value?.trim() || "";
-              if (/install|reinstall|安装|确认|ok|save/i.test(text)) {
-                (el as HTMLElement).click();
-                return text;
-              }
-            }
-            // 尝试更宽泛的查找
-            const allInputs = Array.from(document.querySelectorAll("input, button"));
-            for (const el of allInputs) {
-              const text = (el as HTMLElement).textContent?.trim() || (el as HTMLInputElement).value?.trim() || "";
-              if (text.length > 0 && text.length < 30 && /install|安装|确认|reinstall/i.test(text)) {
-                (el as HTMLElement).click();
-                return text;
-              }
-            }
-            return null;
-          };
-          return findAndClick();
-        });
-
-        if (clicked) {
-          console.log(`  📦 点击 Tampermonkey 安装按钮 ("${clicked}")`);
-          await proxyPage.waitForTimeout(3000);
-        }
-        await proxyPage.close();
-      } catch {
-        // 导航可能被 Tampermonkey 拦截并自动处理
-      }
-
-      // 等待 Tampermonkey 处理完所有变更
-      await new Promise((r) => setTimeout(r, 3000));
-    } catch {
-      console.log("  (预热步骤未完全成功，继续执行测试)");
-    }
-    await warmupPage.close();
+    // 预热：刷新 Tampermonkey 的 @require 缓存（否则 E2E 会静默运行旧代码）
+    console.log("🔄 预热：刷新 Tampermonkey 开发版脚本缓存...");
+    await refreshTampermonkeyBundle(context);
     console.log("✅ 预热完成");
     console.log();
 

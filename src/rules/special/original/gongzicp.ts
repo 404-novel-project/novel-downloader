@@ -122,19 +122,37 @@ export class Gongzicp extends BaseRuleClass {
   public async bookParse() {
     const bookUrl = document.location.href;
 
-    // 长佩可能是动态渲染或加载较慢，增加轮询等待元素
-    let bookIdSpan = document.querySelector("span.c-light-gray") as HTMLSpanElement | null;
+    // 长佩是动态渲染：span.c-light-gray 会先以占位文本 "CP" 出现，
+    // 数字 ID 稍后才补上。只等元素出现会在占位阶段读到空 ID
+    // （表现为 novelInfo?id= 请求失败），因此轮询等待「CP+数字」渲染完成
+    function getBookId() {
+      const bookIdSpan = document.querySelector(
+        "span.c-light-gray"
+      ) as HTMLSpanElement | null;
+      const text = bookIdSpan?.innerText.trim() ?? "";
+      const match = text.match(/CP\s*(\d+)/i) ?? text.match(/^\d+$/);
+      return match?.[1] ?? "";
+    }
+
+    let bookId = getBookId();
     let retry = 0;
-    while (!bookIdSpan && retry < 50) { // 最多等 25 秒
+    while (!bookId && retry < 50) { // 最多等 25 秒
       await new Promise(r => setTimeout(r, 500));
-      bookIdSpan = document.querySelector("span.c-light-gray") as HTMLSpanElement | null;
+      bookId = getBookId();
       retry++;
     }
 
-    if (!bookIdSpan) {
-      throw new Error("获取bookID出错: 找不到对应元素(span.c-light-gray)");
+    if (!bookId) {
+      // 兜底：novel-<id>.html 形式的页面地址本身包含书籍 ID
+      bookId =
+        document.location.pathname.match(/novel-(\d+)\.html/)?.[1] ?? "";
     }
-    const bookId = bookIdSpan.innerText.replace("CP", "");
+
+    if (!bookId) {
+      throw new Error(
+        "获取bookID出错: span.c-light-gray 中无CP号，页面地址中也无ID"
+      );
+    }
 
     const novelGetInfoBaseUrl =
       "https://www.gongzicp.com/webapi/novel/novelInfo";
@@ -326,7 +344,7 @@ export class Gongzicp extends BaseRuleClass {
       .then((response) => response.json())
       .catch((error) => log.error(error));
 
-    if (novelInfo.code !== 200) {
+    if (!novelInfo || novelInfo.code !== 200) {
       throw new Error(`数据接口请求失败，URL:${novelGetInfoUrl.toString()}`);
     }
     const data = novelInfo.data;
@@ -455,7 +473,7 @@ export class Gongzicp extends BaseRuleClass {
       .then((response) => response.json())
       .catch((error) => log.error(error));
 
-    if (novelInfo.code !== 200) {
+    if (!chapterList || chapterList.code !== 200) {
       throw new Error(`数据接口请求失败，URL:${novelGetListUrl.toString()}`);
     }
     const chapters: Chapter[] = [];
