@@ -4,6 +4,8 @@ import fs from "node:fs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import { execSync, spawn } from "node:child_process";
+import got from "got";
+import CryptoJS from "crypto-js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -111,6 +113,18 @@ const TEST_CASES: TestCase[] = [
     timeout: 60000,
     expectScriptInjected: true,
     validateMetadata: validateGongzicpMetadata,
+  },
+  {
+    // ciyuanji.com (次元姬) - Next.js SPA。回归：chapterParse 原先读目录页的
+    // document 而非章节页的 doc，且按旧的嵌套结构取
+    // pageProps.chapterContent.chapter.chapterContentFormat。站点已改为扁平结构：
+    // 章节信息直接在 pageProps.chapterContent 上，加密正文在 content 字段。
+    name: "ciyuanji-novel-page",
+    url: "https://www.ciyuanji.com/bookDetails/catalog/5824",
+    waitForSelector: "#nd-button",
+    timeout: 60000,
+    expectScriptInjected: true,
+    validateMetadata: validateCiyuanjiMetadata,
   },
 ];
 
@@ -609,6 +623,218 @@ async function validateGongzicpMetadata(
   const passed = issues.length === 0;
   const details = passed
     ? `bookID=${result.bookId}, 书名="${result.novelName}", 作者="${result.author}", 标签=${result.tagCount}, UI目录=${result.uiChapterCount}章, 接口=${result.apiChapterCount}条/卷=${JSON.stringify(result.uiSections)}, 首章="${result.firstUiChapter}"`
+    : issues.join("; ");
+
+  return { passed, details };
+}
+
+/**
+ * ciyuanji.com (次元姬) 元数据 + 章节正文解析验证。
+ *
+ * 复刻 Ciyuanji 规则的解析链（与 src/rules/special/original/ciyuanji.ts 同一逻辑），
+ * 在 Node 侧直接请求线上页面，因此不依赖浏览器中是否注入 CryptoJS：
+ *   - bookParse:  __NEXT_DATA__.props.pageProps.book / .bookChapter.chapterList
+ *   - chapterParse: 章节页 doc 的 __NEXT_DATA__.props.pageProps.chapterContent.content
+ *     → DES/ECB/Pkcs7 解密 → 换行转 <br/><br/>
+ *
+ * 同时断言旧的嵌套结构（pageProps.chapterContent.chapter 与
+ * chapterContentFormat）不存在，作为 issue #991 的回归护栏：
+ * 这两个字段一旦重新出现，说明站点结构又变了，规则需复查。
+ */
+async function validateCiyuanjiMetadata(
+  page: Page
+): Promise<{ passed: boolean; details: string }> {
+  const issues: string[] = [];
+
+  // 与规则相同的 DES 密钥
+  const CIYUANJI_KEY =
+    "ZUreQN0Epkpxh3pooWOgixjTfPwumCTYWzYTQ7SMgDnqFLQ1s9tqpVhkGf02we89moQwhSQ07DVzc3LWupRgbVvm29aYeY7zyFN";
+
+  function decrypt(input: string | null | undefined): string | null {
+    if (input && "string" === typeof input) {
+      input = input.replace(/\n/g, "");
+      const key = CryptoJS.enc.Utf8.parse(CIYUANJI_KEY);
+      return CryptoJS.DES.decrypt(input, key, {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7,
+      }).toString(CryptoJS.enc.Utf8);
+    }
+    return null;
+  }
+
+  function extractNextData(html: string): any {
+    const m = html.match(
+      /<script id="__NEXT_DATA__" type="application\/json">([\s\S]*?)<\/script>/
+    );
+    return m ? JSON.parse(m[1]) : null;
+  }
+
+  // ── 1. 脚本 UI 是否注入 ──
+  const shadowFound = await page.evaluate(
+    () => !!document.querySelector("#nd-shadow-host")
+  );
+  if (!shadowFound) issues.push("未找到 #nd-shadow-host（脚本 UI 未注入）");
+
+  // ── 2. 浏览器内复刻 chapterParse 的完整读取路径 ──
+  // 规则走 getHtmlDOM()：fetch → arrayBuffer → new TextDecoder(charset).decode
+  //   → DOMParser → getElementById("__NEXT_DATA__") → JSON.parse
+  // 其中 charset = document.characterSet（目录页的字符集）。
+  // 若字符集判断错误，JSON 会乱码、JSON.parse 抛错或 chapterName 变火星文——
+  // 这一层用 Node 的 got 测不到，必须在真实浏览器里验证。
+  {
+    const domCheck = (await page.evaluate(async () => {
+      const out: Record<string, unknown> = {};
+      try {
+        out.pageCharset = document.characterSet;
+        const res = await fetch(
+          "https://www.ciyuanji.com/chapter/5824_2266759",
+          { credentials: "include" }
+        );
+        out.status = res.status;
+        // 与 getText 相同：按 charset 走 TextDecoder，而非 response.text()
+        const buffer = await res.arrayBuffer();
+        const html = new TextDecoder(document.characterSet).decode(buffer);
+        // 与 getHtmlDOM 相同的解析方式
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        const el = doc.getElementById("__NEXT_DATA__");
+        out.foundById = !!el;
+        if (!el) return out;
+        out.innerHTMLLen = el.innerHTML.length;
+        const next = JSON.parse(el.innerHTML);
+        const cc = next?.props?.pageProps?.chapterContent;
+        out.hasChapterContent = !!cc;
+        out.hasContentField = typeof cc?.content;
+        out.chapterName = cc?.chapterName ?? null;
+        out.nestedChapterAbsent = cc?.chapter === undefined;
+        out.legacyFieldAbsent = cc?.chapterContentFormat === undefined;
+      } catch (e) {
+        out.error = String(e);
+      }
+      return out;
+    })) as Record<string, string | number | boolean | null>;
+
+    if (domCheck.error) issues.push(`浏览器内 DOM 读取失败: ${domCheck.error}`);
+    if (!domCheck.foundById) {
+      issues.push("DOMParser 文档中找不到 #__NEXT_DATA__（规则取不到数据）");
+    }
+    if (domCheck.hasContentField !== "string") {
+      issues.push(
+        `chapterContent.content 不是字符串: ${domCheck.hasContentField}`
+      );
+    }
+    if (domCheck.nestedChapterAbsent !== true) {
+      issues.push("浏览器内仍存在嵌套结构 chapterContent.chapter");
+    }
+    if (domCheck.legacyFieldAbsent !== true) {
+      issues.push("浏览器内仍存在旧字段 chapterContentFormat");
+    }
+    // 字符集若判断错，这里会拿到乱码而不是正常中文
+    if (domCheck.chapterName !== "第一章 转生了！史莱姆？") {
+      issues.push(
+        `浏览器内 chapterName 异常（疑似字符集问题）: ${domCheck.chapterName}`
+      );
+    }
+  }
+
+  // ── 3. bookParse：目录页取 book / bookChapter ──
+  let bookName: string | null = null;
+  let author: string | null = null;
+  let chapterCount = 0;
+  let freeChapterIds: number[] = [];
+  let bookId: number | null = null;
+
+  try {
+    const res = await got("https://www.ciyuanji.com/bookDetails/catalog/5824", {
+      headers: {
+        "user-agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+        "accept-language": "zh-CN,zh;q=0.9",
+      },
+      timeout: { request: 60000 },
+    });
+    const next = extractNextData(res.body);
+    const pageProps = next?.props?.pageProps;
+    bookName = pageProps?.book?.bookName ?? null;
+    author = pageProps?.book?.authorName ?? null;
+    bookId = pageProps?.book?.bookId ?? null;
+    const chapterList: any[] = pageProps?.bookChapter?.chapterList ?? [];
+    chapterCount = chapterList.length;
+    freeChapterIds = chapterList
+      .filter((c) => c.isFee === "0")
+      .slice(0, 3)
+      .map((c) => c.chapterId);
+  } catch (e) {
+    issues.push(`目录页请求失败: ${String(e)}`);
+  }
+
+  if (!bookName) issues.push("书名为空");
+  if (!author) issues.push("作者为空");
+  if (chapterCount < 50) issues.push(`章节数异常: ${chapterCount} (< 50)`);
+  if (freeChapterIds.length === 0) issues.push("未取到免费章节");
+
+  // ── 4. chapterParse：逐章验证解密后的正文 ──
+  const chapterResults: string[] = [];
+
+  for (const chapterId of freeChapterIds) {
+    try {
+      const res = await got(
+        `https://www.ciyuanji.com/chapter/${bookId}_${chapterId}`,
+        {
+          headers: {
+            "user-agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+            "accept-language": "zh-CN,zh;q=0.9",
+          },
+          timeout: { request: 60000 },
+        }
+      );
+      const next = extractNextData(res.body);
+      const chapterObj = next?.props?.pageProps?.chapterContent;
+
+      // 回归护栏：旧的嵌套结构必须不存在（issue #991 的根因）。
+      // 章节页的 chapterContent 是扁平对象，旧代码读 .chapter 只会得到 undefined，
+      // 因此这里断言「嵌套字段缺失 + 旧字段名缺失」，而不是指望它抛错。
+      if (chapterObj && chapterObj.chapter !== undefined) {
+        issues.push(
+          `章节 ${chapterId}: 嵌套结构 chapterContent.chapter 重新出现，规则需复查`,
+        );
+      }
+      if (chapterObj && chapterObj.chapterContentFormat !== undefined) {
+        issues.push(
+          `章节 ${chapterId}: 旧字段 chapterContentFormat 重新出现，规则需复查`,
+        );
+      }
+      if (chapterObj && typeof chapterObj.content !== "string") {
+        issues.push(`章节 ${chapterId}: content 不是字符串`);
+        continue;
+      }
+
+      if (!chapterObj || !chapterObj.content) {
+        issues.push(`章节 ${chapterId}: chapterContent.content 为空`);
+        continue;
+      }
+
+      const plain = decrypt(chapterObj.content);
+      if (!plain) {
+        issues.push(`章节 ${chapterId}: 解密结果为空`);
+        continue;
+      }
+      const cjk = (plain.match(/[一-龥]/g) || []).length;
+      if (cjk < 200) {
+        issues.push(`章节 ${chapterId}: 正文中文仅 ${cjk} 字 (< 200)`);
+        continue;
+      }
+      chapterResults.push(
+        `${chapterObj.chapterName}: ${plain.length}字符/${cjk}中文`,
+      );
+    } catch (e) {
+      issues.push(`章节 ${chapterId}: ${String(e)}`);
+    }
+  }
+
+  const passed = issues.length === 0;
+  const details = passed
+    ? `bookId=${bookId}, 书名="${bookName}", 作者="${author}", 目录=${chapterCount}章, 正文校验 ${chapterResults.length}/${freeChapterIds.length} 章 [${chapterResults.join("; ")}]`
     : issues.join("; ");
 
   return { passed, details };
