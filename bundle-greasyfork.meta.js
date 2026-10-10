@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1284
+// @version        5.2.1286
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -288,8 +288,8 @@
 // @match          *://www.cool18.com/bbs4/index.php?*
 // @match          *://www.biquge5200.cc/*_*/
 // @match          *://www.yqxsge.cc/html/*/*/index.html
-// @match          *://www.18kanshu.com/*/*/info.html
-// @match          *://www.18kanshu.com/module/novel/info.php?*
+// @match          *://www.18kanshu.com/*/
+// @match          *://www.18kanshu.com/*/index.html
 // @match          *://www.bixia3.com/txt/*/
 // @match          *://www.xiaoshuowu.com/html/*/*/
 // @match          *://www.xrzww.com/bookdetail/*

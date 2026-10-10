@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1284
+// @version        5.2.1286
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -288,8 +288,8 @@
 // @match          *://www.cool18.com/bbs4/index.php?*
 // @match          *://www.biquge5200.cc/*_*/
 // @match          *://www.yqxsge.cc/html/*/*/index.html
-// @match          *://www.18kanshu.com/*/*/info.html
-// @match          *://www.18kanshu.com/module/novel/info.php?*
+// @match          *://www.18kanshu.com/*/
+// @match          *://www.18kanshu.com/*/index.html
 // @match          *://www.bixia3.com/txt/*/
 // @match          *://www.xiaoshuowu.com/html/*/*/
 // @match          *://www.xrzww.com/bookdetail/*
@@ -5339,7 +5339,7 @@ async function getRule() {
       break;
     }
     case "www.18kanshu.com": {
-      const { c18kanshu } = await Promise.resolve(/* import() */).then(() => (__webpack_require__("./src/rules/twoPage/18kanshu.ts")));
+      const { c18kanshu } = await Promise.resolve(/* import() */).then(() => (__webpack_require__("./src/rules/onePageWithMultiIndexPage/18kanshu.ts")));
       ruleClass = c18kanshu();
       break;
     }
@@ -6122,6 +6122,14 @@ function getUI() {
           return errorObject;
         }
       };
+    }
+    case "www.alicesw.com":
+    case "pornhulu.com":
+    case "xn--yhqvcx66l.xnxnxn7.xyz":
+    case "321dh.org": {
+      localStorage.setItem("ageVerified", "true");
+      document.getElementById("age-gate-iframe")?.remove();
+      return () => defaultObject;
     }
     case "www.quanzhifashi.com":
     case "www.42zw.la":
@@ -18980,6 +18988,57 @@ const zjsw = () => (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ .
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, [
 /* harmony export */   "zjsw", 0, /* binding */ zjsw
+/* harmony export */ ]);
+
+
+/***/ },
+
+/***/ "./src/rules/onePageWithMultiIndexPage/18kanshu.ts"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _lib_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/lib/http.ts");
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+
+
+
+
+const c18kanshu = () => {
+  const isIndexPage = document.location.pathname.endsWith("index.html");
+  const getText = (selector) => document.querySelector(selector)?.innerText.trim() ?? "";
+  return (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname: isIndexPage ? getText("h1").replace(/目录$/, "") : getText("div.jieshao h1"),
+    author: isIndexPage ? "" : getText("div.jieshao div.msg > em:first-child > a"),
+    introDom: isIndexPage ? void 0 : document.querySelector(
+      "div.jieshao div.intro > div > p"
+    ),
+    introDomPatch: (dom) => dom,
+    coverUrl: isIndexPage ? document.querySelector('meta[property="og:image"]')?.content ?? null : document.querySelector(
+      "div.jieshao div.lf img"
+    )?.src ?? null,
+    getIndexPages: async () => {
+      if (isIndexPage) {
+        return [document];
+      }
+      const indexUrl = document.querySelector("a.indexinfoad")?.href ?? new URL("index.html", document.location.href).href;
+      return [await (0,_lib_http__WEBPACK_IMPORTED_MODULE_1__.getHtmlDOM)(indexUrl, "UTF-8")];
+    },
+    getAList: (doc) => doc.querySelectorAll("div.mulu > ul > li > a.infoad"),
+    getContent: (doc) => doc.querySelector("div.yd_text2"),
+    contentPatch: (content) => {
+      (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script, #br_tip", true, content);
+      (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)([/^[\s.]+$/, /转码失败/, /本章完/, /^相关：/], content);
+      (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)([/readx;\s*/g], content);
+      return content;
+    },
+    nsfw: true
+  });
+};
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "c18kanshu", 0, /* binding */ c18kanshu
 /* harmony export */ ]);
 
 
@@ -35439,71 +35498,6 @@ function getAnotherPageUrl(bookUrl) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, [
 /* harmony export */   "c101kanshu", 0, /* binding */ c101kanshu
-/* harmony export */ ]);
-
-
-/***/ },
-
-/***/ "./src/rules/twoPage/18kanshu.ts"
-(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/cleanDOM.ts");
-/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./src/rules/twoPage/template.ts");
-
-
-
-const c18kanshu = () => (0,_template__WEBPACK_IMPORTED_MODULE_1__/* .mkRuleClass */ .N)({
-  bookUrl: document.location.href,
-  anotherPageUrl: document.querySelector("div.menu_more_black > a").href,
-  getBookname: (doc) => document.querySelector(".in_textone").innerText.trim(),
-  getAuthor: (doc) => {
-    const authorElem = document.querySelector(
-      "div.in_texttwo:nth-child(2)"
-    );
-    const author = /作者：(.+)$/.exec(authorElem.innerText.trim())?.[1] ?? "";
-    return author;
-  },
-  getIntroDom: (doc) => document.querySelector(".janjie"),
-  introDomPatch: (dom) => dom,
-  getCoverUrl: (doc) => document.querySelector(".book_top > div.img > img").src,
-  getAList: (doc) => {
-    const _aList = doc.querySelectorAll("div.list_main.book_list");
-    const reducer = (out, div) => {
-      const onclick = div.getAttribute("onclick");
-      const href = onclick?.substring(
-        onclick.indexOf("'") + 1,
-        onclick.lastIndexOf("'")
-      ) ?? "";
-      const a = document.createElement("a");
-      a.href = href;
-      a.innerHTML = div.innerHTML.trim();
-      out.push(a);
-      return out;
-    };
-    const aList = Array.from(_aList).reduce(reducer, []);
-    return aList;
-  },
-  getContent: (doc) => doc.querySelector(".readcontent"),
-  contentPatch: (dom) => {
-    Array.from(dom.childNodes).filter((node) => node instanceof Text).forEach((text) => {
-      if (text.textContent?.includes("\u3000\u3000")) {
-        text.parentNode?.insertBefore(
-          document.createElement("br"),
-          text
-        );
-      }
-    });
-    if ((0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .isFixWidth */ .eu)(dom)) {
-      (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_0__/* .convertFixWidth */ .N0)(dom);
-    }
-    return dom;
-  },
-  nsfw: true
-});
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, [
-/* harmony export */   "c18kanshu", 0, /* binding */ c18kanshu
 /* harmony export */ ]);
 
 
