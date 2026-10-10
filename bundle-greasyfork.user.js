@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1283
+// @version        5.2.1284
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -21399,16 +21399,20 @@ class Ciyuanji extends _rules__WEBPACK_IMPORTED_MODULE_9__/* .BaseRuleClass */ .
       }
     }
     const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_3__.getHtmlDOM)(chapterUrl, charset);
-    const nextDataElement = document.getElementById("__NEXT_DATA__");
+    const nextDataElement = doc.getElementById("__NEXT_DATA__");
     if (!nextDataElement) {
       throw new Error("\u65E0\u6CD5\u627E\u5230'__NEXT_DATA__'\uFF0C\u4E0B\u8F7D\u5931\u8D25");
     }
     const __NEXT_DATA__ = JSON.parse(nextDataElement.innerHTML);
-    const chapterObj = __NEXT_DATA__.props.pageProps.chapterContent.chapter;
+    const pageProps = __NEXT_DATA__.props.pageProps;
+    const chapterObj = pageProps.chapterContent;
+    if (!chapterObj || !chapterObj.content) {
+      throw new Error("\u65E0\u6CD5\u89E3\u6790'chapterContent'\uFF0C\u4E0B\u8F7D\u5931\u8D25");
+    }
     const content = document.createElement("div");
-    const chapterContent = decrypt(chapterObj.chapterContentFormat);
+    const chapterContent = decrypt(chapterObj.content);
     if (chapterContent) {
-      content.innerHTML = chapterContent;
+      content.innerHTML = chapterContent.replace(/\n/g, "<br/><br/>");
       const { dom, text, images } = await (0,_lib_cleanDOM__WEBPACK_IMPORTED_MODULE_2__/* .cleanDOM */ .an)(content, "TM");
       return {
         chapterName,
