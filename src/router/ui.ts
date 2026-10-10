@@ -403,6 +403,18 @@ export function getUI(): () => UIObject {
         }
       };
     }
+    case "www.alicesw.com":
+    case "pornhulu.com":
+    case "xn--yhqvcx66l.xnxnxn7.xyz":
+    case "321dh.org": {
+      // 书页有一个全屏年龄验证浮层 #age-gate-iframe（position:fixed / z-index:10000），
+      // 会盖住 shadow host 里的下载按钮，导致按钮点不动、无法直接下载。
+      // 该浮层只由 localStorage.ageVerified 控制：预先写入标记让站点自身脚本跳过注入，
+      // 再移除本次已经插进 DOM 的浮层。
+      localStorage.setItem("ageVerified", "true");
+      document.getElementById("age-gate-iframe")?.remove();
+      return () => defaultObject;
+    }
     case "www.quanzhifashi.com":
     case "www.42zw.la":
     case "www.boqugew.com":

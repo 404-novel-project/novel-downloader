@@ -1,3 +1,12 @@
+// 爱丽丝书屋（www.alicesw.com，diyquge 模板）：
+// 1. 书页 /novel/*.html 有一个全屏年龄验证浮层 #age-gate-iframe，会挡住下载按钮，
+//    已在 src/router/ui.ts 中通过 localStorage.ageVerified 预先跳过并移除。
+// 2. 章节正文是服务端直接渲染在 div.read-content 里的，但阅读器 JS（global.js 的
+//    getChapterInfo）在翻页/预加载时会用 AJAX 结果覆盖 .j_readContent，
+//    所以仍用 iframe 等待页面自身脚本跑完再取内容。
+// 3. 站点对 /book/ 章节路由有很严格的反爬频率限制，超限会返回「访问异常」提示页并
+//    封锁 IP 一段时间，因此 concurrencyLimit / sleepTime 不宜调高。
+
 import { getFrameContentCondition } from "../../lib/http";
 import { mkRuleClass } from "./template";
 
