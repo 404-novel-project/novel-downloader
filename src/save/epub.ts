@@ -13,7 +13,7 @@ import { Options, SaveOptions } from "./options";
 import { AttachmentClass } from "../main/Attachment";
 import { Status } from "../main/main";
 import { convertHTMLtoXHTML } from "../lib/dom";
-import { getSectionsObj } from "./misc";
+import { getSectionsObj, mkSaveFileNameBase } from "./misc";
 import { escapeHTML } from "../lib/dom";
 
 import chapterHtml from "./chapter.html.j2";
@@ -172,7 +172,7 @@ const getMessageXhtml = (book: Book) => `<?xml version="1.0" encoding="utf-8"?>
     <div><strong>制作信息</strong></div>
     <hr/>
     <div>题名：${book.bookname}</div>
-    <div>作者：${book.author}</div>
+    ${book.author ? `<div>作者：${book.author}</div>` : ""}
     <div>原始地址：<a href="${book.bookUrl}">${book.bookUrl}</a></div>
     <div>本文件由<a href="https://github.com/404-novel-project/novel-downloader">小说下载器</a>生成。</div>
     ${
@@ -231,7 +231,7 @@ export class EPUB extends Options {
     this.book = book;
     // this.chapters = this.book.chapters;
 
-    const zipFilename = `[${this.book.author}]${this.book.bookname}.epub`;
+    const zipFilename = `${mkSaveFileNameBase(this.book.author, this.book.bookname)}.epub`;
     this.epubZip = new FflateZip(
       zipFilename,
       streamZip,

@@ -10,6 +10,15 @@ export interface SectionsObj {
   [sectionNumber: number]: SectionObj;
 }
 
+/**
+ * 生成保存文件名的基名。
+ * 作者为空（或只有空白）时不输出空的 `[]` 前缀，例如作者未知的帖子直接存为 `书名.epub`。
+ */
+export function mkSaveFileNameBase(author: string, bookname: string): string {
+  const _author = (author ?? "").trim();
+  return _author ? `[${_author}]${bookname}` : bookname;
+}
+
 export function getSectionsObj(
   chapters: Chapter[],
   chapterSort = (a: Chapter, b: Chapter) => a.chapterNumber - b.chapterNumber

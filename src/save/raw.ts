@@ -1,6 +1,7 @@
 import { FflateZip } from "../lib/zip";
 import { Book } from "../main/Book";
 import { extensionToMimetype } from "../lib/misc";
+import { mkSaveFileNameBase } from "./misc";
 
 export class Raw {
   private readonly book: Book;
@@ -10,7 +11,7 @@ export class Raw {
     this.book = book;
 
     if (this.book.saveType.raw instanceof Object) {
-      const zipFilename = `[${this.book.author}]${this.book.bookname}.${this.book.saveType.raw.ext}`;
+      const zipFilename = `${mkSaveFileNameBase(this.book.author, this.book.bookname)}.${this.book.saveType.raw.ext}`;
       this.epubZip = new FflateZip(
         zipFilename,
         false,

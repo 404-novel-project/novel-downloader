@@ -37,8 +37,14 @@ export class Cool18 extends BaseRuleClass {
       bookname = matchs[1];
       author = matchs[3];
     } else {
-      bookname = title;
-      author = (doc.querySelector("span.sender") as HTMLElement).innerText.trim();
+      // 标题没带「作者：xxx」时，作者取「送交者」的用户名。
+      // 只能取 span.sender 里 <a> 的文本：整个 span.sender 还混有
+      // 「送交者:」标签、声望品衔和发帖时间（含多处换行），直接当作者
+      // 会把元数据和保存文件名一起撑坏。见 #995
+      const senderLink = doc.querySelector<HTMLElement>("span.sender a");
+      if (senderLink) {
+        author = senderLink.innerText.trim();
+      }
     }
     const introduction = null;
     const introductionHTML = null;
@@ -94,11 +100,14 @@ export class Cool18 extends BaseRuleClass {
     const chapters = aElems.map((a) => {
       const chapterUrl = a.href;
       const chapterNumber = -1;
-      const chapterName = a.innerText
+      let chapterName = a.innerText
         .replace(`【${bookname}】`, "")
         .replace(`《${bookname}》`, "")
-        .replace(`作者：${author}`, "")
         .trim();
+      // 作者为空时不能替换「作者：」，否则会误删标题里的字样
+      if (author) {
+        chapterName = chapterName.replace(`作者：${author}`, "").trim();
+      }
       return new Chapter({
         bookUrl,
         bookname,
@@ -151,8 +160,11 @@ export class Cool18 extends BaseRuleClass {
     ).innerText
       .replace(`【${options.bookname}】`, "")
       .replace(`《${options.bookname}》`, "")
-      .replace(`作者：${options.author}`, "")
       .trim();
+    // 作者为空时不能替换「作者：」，否则会误删标题里的字样
+    if (options.author) {
+      chapterName = chapterName.replace(`作者：${options.author}`, "").trim();
+    }
     const dom = doc.querySelector("#content-section > pre, #content-section > div");
     if (dom) {
       // 移除隐藏字符

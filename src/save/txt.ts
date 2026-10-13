@@ -3,6 +3,7 @@ import { log } from "../log";
 import { Book } from "../main/Book";
 import { enableDebug } from "../setting";
 import { Options, SaveOptions } from "./options";
+import { mkSaveFileNameBase } from "./misc";
 
 export class TXT extends Options {
   private readonly book: Book;
@@ -12,7 +13,7 @@ export class TXT extends Options {
   public constructor(book: Book, options?: SaveOptions) {
     super();
     this.book = book;
-    this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
+    this.saveFileNameBase = mkSaveFileNameBase(this.book.author, this.book.bookname);
 
     if (options) {
       Object.assign(this, options);
