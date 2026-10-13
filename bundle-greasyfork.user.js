@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1287
+// @version        5.2.1288
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -14062,7 +14062,7 @@ const getMessageXhtml = (book) => `<?xml version="1.0" encoding="utf-8"?>
     <div><strong>\u5236\u4F5C\u4FE1\u606F</strong></div>
     <hr/>
     <div>\u9898\u540D\uFF1A${book.bookname}</div>
-    <div>\u4F5C\u8005\uFF1A${book.author}</div>
+    ${book.author ? `<div>\u4F5C\u8005\uFF1A${book.author}</div>` : ""}
     <div>\u539F\u59CB\u5730\u5740\uFF1A<a href="${book.bookUrl}">${book.bookUrl}</a></div>
     <div>\u672C\u6587\u4EF6\u7531<a href="https://github.com/404-novel-project/novel-downloader">\u5C0F\u8BF4\u4E0B\u8F7D\u5668</a>\u751F\u6210\u3002</div>
     ${book.introductionHTML ? `<hr/><span>\u7B80\u4ECB\uFF1A</span>${book.introductionHTML.outerHTML}` : ""}
@@ -14105,7 +14105,7 @@ class EPUB extends Options {
     super();
     const self = this;
     this.book = book;
-    const zipFilename = `[${this.book.author}]${this.book.bookname}.epub`;
+    const zipFilename = `${(0,save_misc/* mkSaveFileNameBase */.S)(this.book.author, this.book.bookname)}.epub`;
     this.epubZip = new FflateZip(
       zipFilename,
       streamZip,
@@ -14614,6 +14614,7 @@ class EPUB extends Options {
 
 
 
+
 class TXT extends Options {
   book;
   savedTextArray = [];
@@ -14621,7 +14622,7 @@ class TXT extends Options {
   constructor(book, options) {
     super();
     this.book = book;
-    this.saveFileNameBase = `[${this.book.author}]${this.book.bookname}`;
+    this.saveFileNameBase = (0,save_misc/* mkSaveFileNameBase */.S)(this.book.author, this.book.bookname);
     if (options) {
       Object.assign(this, options);
     }
@@ -14662,13 +14663,14 @@ class TXT extends Options {
 
 
 
+
 class Raw {
   book;
   epubZip;
   constructor(book) {
     this.book = book;
     if (this.book.saveType.raw instanceof Object) {
-      const zipFilename = `[${this.book.author}]${this.book.bookname}.${this.book.saveType.raw.ext}`;
+      const zipFilename = `${(0,save_misc/* mkSaveFileNameBase */.S)(this.book.author, this.book.bookname)}.${this.book.saveType.raw.ext}`;
       this.epubZip = new FflateZip(
         zipFilename,
         false,
@@ -21535,8 +21537,10 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_5__/* .BaseRuleClass */ .Q 
       bookname = matchs[1];
       author = matchs[3];
     } else {
-      bookname = title;
-      author = doc.querySelector("span.sender").innerText.trim();
+      const senderLink = doc.querySelector("span.sender a");
+      if (senderLink) {
+        author = senderLink.innerText.trim();
+      }
     }
     const introduction = null;
     const introductionHTML = null;
@@ -21582,7 +21586,10 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_5__/* .BaseRuleClass */ .Q 
     const chapters = aElems.map((a) => {
       const chapterUrl = a.href;
       const chapterNumber = -1;
-      const chapterName = a.innerText.replace(`\u3010${bookname}\u3011`, "").replace(`\u300A${bookname}\u300B`, "").replace(`\u4F5C\u8005\uFF1A${author}`, "").trim();
+      let chapterName = a.innerText.replace(`\u3010${bookname}\u3011`, "").replace(`\u300A${bookname}\u300B`, "").trim();
+      if (author) {
+        chapterName = chapterName.replace(`\u4F5C\u8005\uFF1A${author}`, "").trim();
+      }
       return new _main_Chapter__WEBPACK_IMPORTED_MODULE_4__/* .Chapter */ .I({
         bookUrl,
         bookname,
@@ -21618,7 +21625,10 @@ class Cool18 extends _rules__WEBPACK_IMPORTED_MODULE_5__/* .BaseRuleClass */ .Q 
     const doc = await (0,_lib_http__WEBPACK_IMPORTED_MODULE_2__.getHtmlDOM)(chapterUrl, charset);
     chapterName = doc.querySelector(
       "h1.main-title"
-    ).innerText.replace(`\u3010${options.bookname}\u3011`, "").replace(`\u300A${options.bookname}\u300B`, "").replace(`\u4F5C\u8005\uFF1A${options.author}`, "").trim();
+    ).innerText.replace(`\u3010${options.bookname}\u3011`, "").replace(`\u300A${options.bookname}\u300B`, "").trim();
+    if (options.author) {
+      chapterName = chapterName.replace(`\u4F5C\u8005\uFF1A${options.author}`, "").trim();
+    }
     const dom = doc.querySelector("#content-section > pre, #content-section > div");
     if (dom) {
       Array.from(dom.querySelectorAll('font[color*="E6E6DD"]')).forEach(
@@ -36598,9 +36608,14 @@ const yibige = () => (0,_template__WEBPACK_IMPORTED_MODULE_3__/* .mkRuleClass */
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   S: () => (/* binding */ mkSaveFileNameBase),
 /* harmony export */   e: () => (/* binding */ getSectionsObj)
 /* harmony export */ });
 
+function mkSaveFileNameBase(author, bookname) {
+  const _author = (author ?? "").trim();
+  return _author ? `[${_author}]${bookname}` : bookname;
+}
 function getSectionsObj(chapters, chapterSort = (a, b) => a.chapterNumber - b.chapterNumber) {
   const _sectionsObj = {};
   for (const chapter of chapters) {
