@@ -18,15 +18,15 @@ export class Sosadfun extends BaseRuleClass {
     const bookname = (
       document.querySelector(".font-1") as HTMLElement
     ).innerText.trim();
-    const authorDom = document.querySelector(
+    // 马甲发文时作者位由 a 标签变为 span.majia（匿名作者同样渲染为 span.majia）
+    const authorDom = (document.querySelector(
       "div.h5:nth-child(1) > div:nth-child(1) > a:nth-child(1)"
-    ) as HTMLElement;
-    let author;
-    if (authorDom) {
-      author = authorDom.innerText.trim();
-    } else {
-      author = "匿名咸鱼";
-    }
+    ) ??
+      document.querySelector(
+        "div.h5:nth-child(1) > div:nth-child(1) > span.majia"
+      ) ??
+      document.querySelector("span.majia")) as HTMLElement | null;
+    const author = authorDom ? authorDom.innerText.trim() : "匿名咸鱼";
 
     const needLogin = () => {
       const mainDom = document.querySelector(
