@@ -5,7 +5,7 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1288
+// @version        5.2.1289
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
@@ -29693,13 +29693,10 @@ class Sosadfun extends _rules__WEBPACK_IMPORTED_MODULE_6__/* .BaseRuleClass */ .
     const bookname = document.querySelector(".font-1").innerText.trim();
     const authorDom = document.querySelector(
       "div.h5:nth-child(1) > div:nth-child(1) > a:nth-child(1)"
-    );
-    let author;
-    if (authorDom) {
-      author = authorDom.innerText.trim();
-    } else {
-      author = "\u533F\u540D\u54B8\u9C7C";
-    }
+    ) ?? document.querySelector(
+      "div.h5:nth-child(1) > div:nth-child(1) > span.majia"
+    ) ?? document.querySelector("span.majia");
+    const author = authorDom ? authorDom.innerText.trim() : "\u533F\u540D\u54B8\u9C7C";
     const needLogin = () => {
       const mainDom = document.querySelector(
         ".col-xs-12 > .main-text.no-selection"
