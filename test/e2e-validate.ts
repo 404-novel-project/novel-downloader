@@ -126,6 +126,16 @@ const TEST_CASES: TestCase[] = [
     expectScriptInjected: true,
     validateMetadata: validateCiyuanjiMetadata,
   },
+  {
+    // bookkor (북코) - 韩国转载小说站，Laravel + Inertia 服务端渲染。
+    // 域名是 NNN.bookkor.com 镜像，旧编号会 301 到当前主域。
+    name: "bookkor-novel-page",
+    url: "https://011.bookkor.com/%ED%99%94%EC%82%B0%EA%B7%80%ED%99%98",
+    waitForSelector: "#nd-button",
+    timeout: 60000,
+    expectScriptInjected: true,
+    validateMetadata: validateBookkorMetadata,
+  },
 ];
 
 // ─── 元数据验证函数 ───────────────────────────────────────
@@ -838,6 +848,31 @@ async function validateCiyuanjiMetadata(
     : issues.join("; ");
 
   return { passed, details };
+}
+
+/**
+ * bookkor (북코) 元数据验证。
+ * 注意：站点对不带 Sec-CH-UA 头的请求会把正文换成随机韩文音节，浏览器自带该头，
+ * 所以 E2E（真实 Chrome）不受影响；若书名/作者/章节数异常，先确认不是走了降级响应。
+ */
+async function validateBookkorMetadata(
+  page: Page
+): Promise<{ passed: boolean; details: string }> {
+  return validateMetadataCommon(page, {
+    booknameSelector: "h1",
+    // 书名下方信息行：评分项带 gap-1、「소설」角标带 rounded-sm，都要排除
+    authorSelector:
+      "div.mt-2.flex.flex-wrap.items-center > span.inline-flex.items-center:not(.rounded-sm):not(.gap-1)",
+    introSelector: "p.line-clamp-4",
+    coverSelector: 'div[style*="aspect-ratio"] img',
+    chapterListSelector: "ul.ep-chunk a.ep-a",
+    booknameMinLength: 2,
+    authorNotDefault: "未知作者",
+    introMinLength: 5,
+    coverUrlPattern: "/storage/",
+    // 首屏目录懒加载只渲染 10 话
+    chapterCountMin: 5,
+  });
 }
 
 // ─── 工具函数 ─────────────────────────────────────────────

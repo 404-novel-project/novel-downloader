@@ -316,7 +316,8 @@
     "*://www.sbxh1.com/novel/*"
   ],
   "include": [
-    "/^https?:\\/\\/(?:www\\.)?booktoki\\d+\\.com\\/novel\\//"
+    "/^https?:\\/\\/(?:www\\.)?booktoki\\d+\\.com\\/novel\\//",
+    "/^https?:\\/\\/[\\w-]+\\.bookkor\\.com\\//"
   ],
   "exclude": [
     "*://www.jjwxc.net/onebook.php?novelid=*&chapterid=*",

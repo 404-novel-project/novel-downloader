@@ -938,6 +938,12 @@ export async function getRule(): Promise<BaseRuleClass> {
         ruleClass = booktoki();
         break;
       }
+      // bookkor 多域名匹配 (NNN.bookkor.com)
+      if (/^[\w-]+\.bookkor\.com$/.test(host)) {
+        const { bookkor } = await import("../rules/onePageWithMultiIndexPage/bookkor");
+        ruleClass = bookkor();
+        break;
+      }
       throw new Error("Not Found Rule!");
     }
   }
