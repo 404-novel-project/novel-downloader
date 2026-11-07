@@ -5,10 +5,11 @@
 // @description    一个可扩展的通用型小说下载器。
 // @description:en An scalable universal novel downloader.
 // @description:ja スケーラブルなユニバーサル小説ダウンローダー。
-// @version        5.2.1289
+// @version        5.2.1290
 // @author         bgme
 // @supportURL     https://github.com/404-novel-project/novel-downloader
 // @include        /^https?:\/\/(?:www\.)?booktoki\d+\.com\/novel\//
+// @include        /^https?:\/\/[\w-]+\.bookkor\.com\//
 // @exclude        *://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
 // @exclude        *://m.yuzhaige.cc/tag/*/
 // @exclude        *://m.yuzhaige.cc/sort/*/
@@ -5638,6 +5639,11 @@ async function getRule() {
       if (/^booktoki\d+\.com$/.test(host) || /^www\.booktoki\d+\.com$/.test(host)) {
         const { booktoki } = await Promise.resolve(/* import() */).then(() => (__webpack_require__("./src/rules/special/reprint/booktoki.ts")));
         ruleClass = booktoki();
+        break;
+      }
+      if (/^[\w-]+\.bookkor\.com$/.test(host)) {
+        const { bookkor } = await Promise.resolve(/* import() */).then(() => (__webpack_require__("./src/rules/onePageWithMultiIndexPage/bookkor.ts")));
+        ruleClass = bookkor();
         break;
       }
       throw new Error("Not Found Rule!");
@@ -19392,6 +19398,88 @@ const biqugetw = () => (0,_template__WEBPACK_IMPORTED_MODULE_0__/* .mkRuleClass 
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, [
 /* harmony export */   "biqugetw", 0, /* binding */ biqugetw
+/* harmony export */ ]);
+
+
+/***/ },
+
+/***/ "./src/rules/onePageWithMultiIndexPage/bookkor.ts"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _lib_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./src/lib/dom.ts");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/loglevel/lib/loglevel.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_log__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _template__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./src/rules/onePageWithMultiIndexPage/template.ts");
+
+
+
+
+function getInertiaProps(doc) {
+  const el = doc.querySelector('script[data-page="app"]');
+  if (!el?.textContent) {
+    return null;
+  }
+  try {
+    return JSON.parse(el.textContent).props ?? null;
+  } catch (error) {
+    _log__WEBPACK_IMPORTED_MODULE_1___default().error(error);
+    return null;
+  }
+}
+function getIndexPageCount(doc) {
+  const last = getInertiaProps(doc)?.epPages?.last;
+  if (typeof last === "number" && last > 0) {
+    return last;
+  }
+  const pages = Array.from(
+    doc.querySelectorAll(
+      'nav[aria-label="\uD68C\uCC28 \uBAA9\uB85D"] a[href*="page="]'
+    )
+  ).map((a) => Number(new URL(a.href).searchParams.get("page"))).filter((page) => Number.isFinite(page) && page > 0);
+  return Math.max(1, ...pages);
+}
+const bookkor = () => {
+  const bookname = document.querySelector("h1")?.innerText.trim() ?? "";
+  const author = document.querySelector(
+    "div.mt-2.flex.flex-wrap.items-center > span.inline-flex.items-center:not(.rounded-sm):not(.gap-1)"
+  )?.innerText.trim() ?? "";
+  return (0,_template__WEBPACK_IMPORTED_MODULE_2__/* .mkRuleClass */ .N)({
+    bookUrl: document.location.href,
+    bookname,
+    author,
+    introDom: document.querySelector("p.line-clamp-4"),
+    introDomPatch: (introDom) => introDom,
+    coverUrl: document.querySelector(
+      'div[style*="aspect-ratio"] img'
+    )?.src ?? null,
+    getIndexUrls: () => {
+      const urls = [];
+      for (let page = 1; page <= getIndexPageCount(document); page++) {
+        const url = new URL(document.location.href);
+        url.search = "";
+        url.searchParams.set("order", "asc");
+        url.searchParams.set("page", String(page));
+        urls.push(url.href);
+      }
+      return urls;
+    },
+    getAList: (doc) => doc.querySelectorAll("ul.ep-chunk a.ep-a"),
+    getContent: (doc) => doc.querySelector("article.novel-reader"),
+    contentPatch: (content) => {
+      (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__.rm)("script, style, iframe, ins", true, content);
+      (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rm2 */ .Sf)([/원문은 구글에/, /^구글에 "북코"를 검색하세요/], content);
+      (0,_lib_dom__WEBPACK_IMPORTED_MODULE_0__/* .rms */ .j3)([/\u00a0/g], content);
+      return content;
+    },
+    concurrencyLimit: 2,
+    sleepTime: 500,
+    language: "ko"
+  });
+};
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "bookkor", 0, /* binding */ bookkor
 /* harmony export */ ]);
 
 
