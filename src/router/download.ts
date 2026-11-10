@@ -517,6 +517,11 @@ export async function getRule(): Promise<BaseRuleClass> {
       ruleClass = chenkuan();
       break;
     }
+    case "www.libahao2.com": {
+      const { libahao } = await import("../rules/onePage/libahao");
+      ruleClass = libahao();
+      break;
+    }
     /* onePage End */
 
     /* onePageWithMultiIndexPage Start */
