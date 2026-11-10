@@ -1,10 +1,51 @@
 import { rm } from "../../lib/dom";
+import { getHtmlDOM } from "../../lib/http";
+import { sleep } from "../../lib/misc";
 import { nextPageParse } from "../../lib/rule";
 import { ChapterAbortError } from "../../main/Chapter";
+import { BaseRuleClass } from "../../rules";
 import { mkRuleClass } from "./template";
 
 const placeholderText =
   "亲爱的读者，本章节内容仍在更新中，暂时无法提供完整正文，请您耐心等待。您可以先返回目录阅读其他章节，或稍后再次打开本页查看更新。感谢您的理解与支持！";
+
+const defaultPageRequestInterval = 5000;
+
+let ruleInstance: BaseRuleClass | null = null;
+
+let lastPageRequestTime = 0;
+
+function getPageRequestInterval(): number {
+  const sleepTime = ruleInstance?.sleepTime;
+  if (
+    typeof sleepTime === "number" &&
+    Number.isFinite(sleepTime) &&
+    sleepTime >= 0
+  ) {
+    return sleepTime;
+  }
+  return defaultPageRequestInterval;
+}
+
+async function getHtmlDOMWithInterval(
+  input: RequestInfo,
+  charset?: string,
+  init?: RequestInit,
+  test = (response: Response) => Promise.resolve(false)
+) {
+  if (lastPageRequestTime !== 0) {
+    const waitTime =
+      lastPageRequestTime + getPageRequestInterval() - Date.now();
+    if (waitTime > 0) {
+      await sleep(waitTime);
+    }
+  }
+  try {
+    return await getHtmlDOM(input, charset, init, test);
+  } finally {
+    lastPageRequestTime = Date.now();
+  }
+}
 
 export const libahao = () =>
   mkRuleClass({
@@ -67,12 +108,15 @@ export const libahao = () =>
         },
         continueCondition: (_content, nextLink) => nextLink !== "",
         enableCleanDOM: false,
+        getHtmlDomFunc: getHtmlDOMWithInterval,
       });
       return contentRaw;
     },
     contentPatch: (content) => content,
     language: "zh",
     concurrencyLimit: 1,
-    sleepTime: 3000,
-    maxSleepTime: 6000,
+    sleepTime: defaultPageRequestInterval,
+    overrideConstructor: (classThis) => {
+      ruleInstance = classThis;
+    },
   });
